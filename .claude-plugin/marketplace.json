@@ -1,0 +1,31 @@
+{
+  "name": "mrbogomips-tools",
+  "owner": {
+    "name": "Mr Bogomips",
+    "email": "giovanni.costagliola@gmail.com"
+  },
+  "metadata": {
+    "description": "A collection of developer tools and plugins",
+    "version": "1.0.0",
+    "license": "MIT"
+  },
+  "plugins": [
+    {
+      "name": "code-formatter",
+      "source": "./plugins/formatter",
+      "description": "Automatic code formatting on save",
+      "version": "2.1.0",
+      "author": {
+        "name": "DevTools Team"
+      }
+    },
+    {
+      "name": "deployment-tools",
+      "source": {
+        "source": "github",
+        "repo": "company/deploy-plugin"
+      },
+      "description": "Deployment automation tools"
+    }
+  ]
+}
