@@ -11,37 +11,10 @@
     "license": "MIT"
   },
   "plugins": [
-    {
-      "name": "example-commands",
-      "source": "./plugins/example-commands",
-      "description": "Example slash commands demonstrating command patterns for Claude Code",
-      "version": "1.0.0",
-      "category": "development",
-      "tags": ["example", "commands", "template"]
-    },
-    {
-      "name": "example-agents",
-      "source": "./plugins/example-agents",
-      "description": "Example custom agents demonstrating agent patterns for Claude Code",
-      "version": "1.0.0",
-      "category": "development",
-      "tags": ["example", "agents", "template"]
-    },
-    {
-      "name": "example-skills",
-      "source": "./plugins/example-skills",
-      "description": "Example skills demonstrating skill patterns for Claude Code",
-      "version": "1.0.0",
-      "category": "development",
-      "tags": ["example", "skills", "template"]
-    },
-    {
-      "name": "example-hooks",
-      "source": "./plugins/example-hooks",
-      "description": "Example hooks demonstrating event-driven patterns for Claude Code",
-      "version": "1.0.0",
-      "category": "development",
-      "tags": ["example", "hooks", "template"]
-    }
+    "./plugins/example-commands",
+    "./plugins/example-agents",
+    "./plugins/example-skills",
+    "./plugins/example-hooks",
+    "./plugins/devcontainer-generator"
   ]
 }
