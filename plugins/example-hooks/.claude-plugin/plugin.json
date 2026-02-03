@@ -1,0 +1,15 @@
+{
+  "name": "example-hooks",
+  "version": "1.0.0",
+  "description": "Example hooks demonstrating event-driven patterns for Claude Code",
+  "author": {
+    "name": "Mr Bogomips",
+    "email": "giovanni.costagliola@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": ["example", "hooks", "template"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrBogomips/claude-code"
+  }
+}

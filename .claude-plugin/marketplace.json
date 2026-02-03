@@ -1,31 +1,47 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "mrbogomips-tools",
   "owner": {
     "name": "Mr Bogomips",
     "email": "giovanni.costagliola@gmail.com"
   },
   "metadata": {
-    "description": "A collection of developer tools and plugins",
+    "description": "A collection of developer tools and plugins for Claude Code",
     "version": "1.0.0",
     "license": "MIT"
   },
   "plugins": [
     {
-      "name": "code-formatter",
-      "source": "./plugins/formatter",
-      "description": "Automatic code formatting on save",
-      "version": "2.1.0",
-      "author": {
-        "name": "DevTools Team"
-      }
+      "name": "example-commands",
+      "source": "./plugins/example-commands",
+      "description": "Example slash commands demonstrating command patterns for Claude Code",
+      "version": "1.0.0",
+      "category": "development",
+      "tags": ["example", "commands", "template"]
     },
     {
-      "name": "deployment-tools",
-      "source": {
-        "source": "github",
-        "repo": "company/deploy-plugin"
-      },
-      "description": "Deployment automation tools"
+      "name": "example-agents",
+      "source": "./plugins/example-agents",
+      "description": "Example custom agents demonstrating agent patterns for Claude Code",
+      "version": "1.0.0",
+      "category": "development",
+      "tags": ["example", "agents", "template"]
+    },
+    {
+      "name": "example-skills",
+      "source": "./plugins/example-skills",
+      "description": "Example skills demonstrating skill patterns for Claude Code",
+      "version": "1.0.0",
+      "category": "development",
+      "tags": ["example", "skills", "template"]
+    },
+    {
+      "name": "example-hooks",
+      "source": "./plugins/example-hooks",
+      "description": "Example hooks demonstrating event-driven patterns for Claude Code",
+      "version": "1.0.0",
+      "category": "development",
+      "tags": ["example", "hooks", "template"]
     }
   ]
 }

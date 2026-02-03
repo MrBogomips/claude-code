@@ -1,0 +1,15 @@
+{
+  "name": "example-commands",
+  "version": "1.0.0",
+  "description": "Example slash commands demonstrating command patterns for Claude Code",
+  "author": {
+    "name": "Mr Bogomips",
+    "email": "giovanni.costagliola@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": ["example", "commands", "template"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrBogomips/claude-code"
+  }
+}

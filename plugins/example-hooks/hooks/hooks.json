@@ -1,0 +1,38 @@
+{
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "matcher": {
+        "tool_name": "Bash"
+      },
+      "hook": {
+        "type": "prompt",
+        "prompt": "Before executing this bash command, verify it is safe. Check for: 1) No destructive operations (rm -rf, etc.) without explicit user confirmation, 2) No exposure of secrets or credentials, 3) No network requests to untrusted sources. If the command appears unsafe, suggest a safer alternative."
+      }
+    },
+    {
+      "event": "PostToolUse",
+      "matcher": {
+        "tool_name": "Write"
+      },
+      "hook": {
+        "type": "prompt",
+        "prompt": "A file was just written. Briefly note: 1) What type of file was created, 2) Any potential issues to be aware of (missing imports, incomplete implementation, etc.)."
+      }
+    },
+    {
+      "event": "SessionStart",
+      "hook": {
+        "type": "prompt",
+        "prompt": "Session started. Remind the user they can use /help to see available commands and plugins."
+      }
+    },
+    {
+      "event": "Stop",
+      "hook": {
+        "type": "prompt",
+        "prompt": "Before concluding, verify: 1) All requested tasks are complete, 2) Any created files are properly saved, 3) The user has been given clear next steps if applicable."
+      }
+    }
+  ]
+}
