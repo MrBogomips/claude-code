@@ -1,0 +1,11 @@
+{
+  "name": "devcontainer-generator",
+  "version": "1.0.0",
+  "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack",
+  "author": {
+    "name": "MrBogomips",
+    "url": "https://github.com/MrBogomips"
+  },
+  "license": "MIT",
+  "keywords": ["devcontainer", "docker", "development-environment", "vscode"]
+}
