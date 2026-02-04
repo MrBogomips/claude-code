@@ -1,6 +1,6 @@
 ---
 name: devcontainer-generator
-description: Generate production-ready devcontainer configurations by analyzing repository tech stack. Detects languages, frameworks, package managers, and services to create a complete .devcontainer setup with Docker Compose, shell configurations, and optional developer tools like Claude Code.
+description: This skill should be used when the user asks to create a devcontainer, set up a dev container, generate a development container configuration, or containerize a project for development. Analyzes repository tech stack to detect languages, frameworks, package managers, and services to create production-ready .devcontainer configurations with Docker Compose, shell configurations, and optional developer tools.
 user_invocable: true
 ---
 
@@ -64,6 +64,63 @@ Detect by presence of:
 - `serverless.yml` with AWS, `aws-cdk.*` → AWS
 - `app.yaml` (GCP), `cloudbuild.yaml` → GCP
 
+**Existing Configuration:**
+If `.devcontainer/` directory already exists, ask the user:
+- Overwrite existing configuration (replace all files)
+- Merge with existing (preserve customizations where possible)
+- Cancel generation
+
+### Phase 1b: Interactive Stack Discovery (Empty/Unknown Projects)
+
+If the repository is empty or no tech stack is detected, engage the user in an interactive discovery process:
+
+**Step 1: Application Type**
+Ask: "What kind of application are you building?"
+- Web application (frontend)
+- Web API (backend)
+- Full-stack application
+- CLI tool
+- Library/Package
+- Other (describe)
+
+**Step 2: Primary Language**
+Based on application type, ask: "What primary language will you use?"
+- Present relevant options (e.g., for web: TypeScript/JavaScript, Python, Go, .NET, etc.)
+
+**Step 3: Framework Selection**
+Based on language, ask: "Which framework do you want to use?"
+- Present framework options for the selected language
+- Example for TypeScript web: Next.js, Angular, Nuxt, Vite + React, etc.
+
+**Step 4: Package Manager** (if applicable)
+Ask: "Which package manager do you prefer?"
+- pnpm (Recommended)
+- yarn
+- npm
+- bun
+
+**Step 5: Services**
+Ask: "Do you need any backend services?"
+- Database (PostgreSQL, MySQL, MongoDB)
+- Cache (Redis)
+- Message Queue (RabbitMQ, Kafka)
+- Storage Emulator (Azurite, LocalStack)
+- None
+
+**Step 6: Confirmation**
+Present a summary of the configured stack:
+```
+Configured Stack:
+- Application: Full-stack web application
+- Language: TypeScript
+- Framework: Next.js
+- Package Manager: pnpm
+- Services: PostgreSQL, Redis
+```
+Ask: "Does this configuration look correct? Proceed with generation?"
+
+Continue iterating if user requests changes. Once confirmed, proceed to Phase 2.
+
 ### Phase 2: User Questions
 
 After analysis, ask the user about their preferences using the AskUserQuestion tool.
@@ -71,12 +128,12 @@ After analysis, ask the user about their preferences using the AskUserQuestion t
 **Q1: Developer Tools** (multiSelect: true)
 Present detected tools and optional extras. Default selections marked with checkmarks:
 - Claude Code (with ~/.claude mount) - Selected by default
-- ccyolo alias (claude --dangerously-skip-permissions) - Selected by default
+- ccyolo alias (claude --dangerously-skip-permissions)
 - GitHub CLI (gh) - Selected by default
 - fzf (fuzzy finder)
 
 **Q2: Shell Preference** (multiSelect: false)
-- Zsh with Oh My Zsh (Recommended)
+- Zsh with Oh My Zsh - Recommended
 - Fish
 - Bash
 
@@ -85,6 +142,14 @@ Show detected services and ask which to include:
 - [Each detected database]
 - [Each detected message queue]
 - Storage emulators (Azurite for Azure, LocalStack for AWS) - if cloud provider detected
+
+**Q4: Version Confirmation** (only if versions were detected)
+Present detected versions and allow override:
+- Node.js: {{detected or 22}}
+- .NET: {{detected or 10.0}}
+- Python: {{detected or 3.12}}
+
+Ask: "I detected these runtime versions. Would you like to use them or specify different versions?"
 
 ### Phase 3: Generate Files
 
