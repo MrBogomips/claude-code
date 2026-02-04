@@ -145,6 +145,58 @@ export async function validatePlugin(pluginPath) {
 }
 
 /**
+ * Validates a single plugin entry in the marketplace
+ * @param {any} plugin - The plugin entry to validate
+ * @param {number} index - Index in the plugins array
+ * @returns {{errors: string[], warnings: string[]}}
+ */
+export function validatePluginEntry(plugin, index) {
+  const errors = [];
+  const warnings = [];
+
+  // Explicitly reject string entries with clear error message
+  if (typeof plugin === 'string') {
+    errors.push(
+      `plugins[${index}]: Invalid format - expected object with {name, source, description}, received string "${plugin}". ` +
+      `Plugin entries must be objects, not path strings.`
+    );
+    return { errors, warnings };
+  }
+
+  // Reject non-object types
+  if (plugin === null || typeof plugin !== 'object' || Array.isArray(plugin)) {
+    errors.push(
+      `plugins[${index}]: Invalid format - expected object with {name, source, description}, received ${
+        plugin === null ? 'null' : Array.isArray(plugin) ? 'array' : typeof plugin
+      }`
+    );
+    return { errors, warnings };
+  }
+
+  // Validate required fields
+  if (!plugin.name) {
+    errors.push(`plugins[${index}]: Missing required field 'name'`);
+  } else if (typeof plugin.name !== 'string') {
+    errors.push(`plugins[${index}]: Field 'name' must be a string, received ${typeof plugin.name}`);
+  }
+
+  if (!plugin.source) {
+    errors.push(`plugins[${index}] (${plugin.name || 'unknown'}): Missing required field 'source'`);
+  } else if (typeof plugin.source !== 'string') {
+    errors.push(`plugins[${index}] (${plugin.name || 'unknown'}): Field 'source' must be a string, received ${typeof plugin.source}`);
+  }
+
+  // Validate optional fields
+  if (!plugin.description) {
+    warnings.push(`plugins[${index}] (${plugin.name || 'unknown'}): Missing recommended field 'description'`);
+  } else if (typeof plugin.description !== 'string') {
+    errors.push(`plugins[${index}] (${plugin.name || 'unknown'}): Field 'description' must be a string, received ${typeof plugin.description}`);
+  }
+
+  return { errors, warnings };
+}
+
+/**
  * Validates marketplace.json
  * @param {string} marketplacePath - Path to marketplace.json
  * @returns {Promise<{valid: boolean, errors: string[], warnings: string[]}>}
@@ -182,17 +234,11 @@ export async function validateMarketplace(marketplacePath) {
     return { valid: false, errors, warnings };
   }
 
-  // Validate each plugin reference
-  for (const plugin of manifest.plugins) {
-    if (!plugin.name) {
-      errors.push('Plugin entry missing required field: name');
-    }
-    if (!plugin.source) {
-      errors.push(`Plugin '${plugin.name || 'unknown'}' missing required field: source`);
-    }
-    if (!plugin.description) {
-      warnings.push(`Plugin '${plugin.name || 'unknown'}' missing description`);
-    }
+  // Validate each plugin entry with detailed type checking
+  for (let i = 0; i < manifest.plugins.length; i++) {
+    const result = validatePluginEntry(manifest.plugins[i], i);
+    errors.push(...result.errors);
+    warnings.push(...result.warnings);
   }
 
   return {

@@ -8,6 +8,7 @@ import assert from 'node:assert';
 import { readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validatePluginEntry } from '../shared/validation/plugin-validator.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = join(__dirname, '..');
@@ -65,6 +66,104 @@ describe('Marketplace Manifest', () => {
         'Version should follow semver format'
       );
     }
+  });
+});
+
+describe('Plugin Entry Schema Validation', () => {
+  it('should reject string entries in plugins array', () => {
+    const result = validatePluginEntry('./plugins/example', 0);
+
+    assert.ok(result.errors.length > 0, 'Should have validation errors');
+    assert.ok(
+      result.errors[0].includes('expected object'),
+      'Error should mention expected object format'
+    );
+    assert.ok(
+      result.errors[0].includes('received string'),
+      'Error should mention received string type'
+    );
+  });
+
+  it('should reject null entries', () => {
+    const result = validatePluginEntry(null, 0);
+
+    assert.ok(result.errors.length > 0, 'Should have validation errors');
+    assert.ok(
+      result.errors[0].includes('received null'),
+      'Error should mention received null'
+    );
+  });
+
+  it('should reject array entries', () => {
+    const result = validatePluginEntry(['./path'], 0);
+
+    assert.ok(result.errors.length > 0, 'Should have validation errors');
+    assert.ok(
+      result.errors[0].includes('received array'),
+      'Error should mention received array'
+    );
+  });
+
+  it('should require name field', () => {
+    const result = validatePluginEntry({ source: './path', description: 'desc' }, 0);
+
+    assert.ok(result.errors.length > 0, 'Should have validation errors');
+    assert.ok(
+      result.errors.some(e => e.includes("Missing required field 'name'")),
+      'Error should mention missing name'
+    );
+  });
+
+  it('should require source field', () => {
+    const result = validatePluginEntry({ name: 'test', description: 'desc' }, 0);
+
+    assert.ok(result.errors.length > 0, 'Should have validation errors');
+    assert.ok(
+      result.errors.some(e => e.includes("Missing required field 'source'")),
+      'Error should mention missing source'
+    );
+  });
+
+  it('should warn when description is missing', () => {
+    const result = validatePluginEntry({ name: 'test', source: './path' }, 0);
+
+    assert.strictEqual(result.errors.length, 0, 'Should have no errors');
+    assert.ok(result.warnings.length > 0, 'Should have warnings');
+    assert.ok(
+      result.warnings[0].includes('description'),
+      'Warning should mention missing description'
+    );
+  });
+
+  it('should validate field types', () => {
+    const result = validatePluginEntry(
+      { name: 123, source: [], description: {} },
+      0
+    );
+
+    assert.ok(result.errors.length >= 3, 'Should have errors for all invalid types');
+    assert.ok(
+      result.errors.some(e => e.includes("'name' must be a string")),
+      'Should error on non-string name'
+    );
+    assert.ok(
+      result.errors.some(e => e.includes("'source' must be a string")),
+      'Should error on non-string source'
+    );
+    assert.ok(
+      result.errors.some(e => e.includes("'description' must be a string")),
+      'Should error on non-string description'
+    );
+  });
+
+  it('should accept valid plugin entry', () => {
+    const result = validatePluginEntry(
+      { name: 'test-plugin', source: './plugins/test', description: 'A test plugin' },
+      0
+    );
+
+    assert.strictEqual(result.errors.length, 0, 'Should have no errors');
+    assert.strictEqual(result.warnings.length, 0, 'Should have no warnings');
   });
 });
 

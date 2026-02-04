@@ -11,10 +11,30 @@
     "license": "MIT"
   },
   "plugins": [
-    "./plugins/example-commands",
-    "./plugins/example-agents",
-    "./plugins/example-skills",
-    "./plugins/example-hooks",
-    "./plugins/devcontainer-generator"
+    {
+      "name": "example-commands",
+      "source": "./plugins/example-commands",
+      "description": "Example slash commands demonstrating command patterns for Claude Code"
+    },
+    {
+      "name": "example-agents",
+      "source": "./plugins/example-agents",
+      "description": "Example custom agents demonstrating agent patterns for Claude Code"
+    },
+    {
+      "name": "example-skills",
+      "source": "./plugins/example-skills",
+      "description": "Example skills demonstrating skill patterns for Claude Code"
+    },
+    {
+      "name": "example-hooks",
+      "source": "./plugins/example-hooks",
+      "description": "Example hooks demonstrating event-driven patterns for Claude Code"
+    },
+    {
+      "name": "devcontainer-generator",
+      "source": "./plugins/devcontainer-generator",
+      "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack"
+    }
   ]
 }
