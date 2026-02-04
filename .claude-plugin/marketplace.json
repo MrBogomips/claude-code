@@ -10,11 +10,5 @@
     "version": "1.0.0",
     "license": "MIT"
   },
-  "plugins": [
-    "./plugins/example-commands",
-    "./plugins/example-agents",
-    "./plugins/example-skills",
-    "./plugins/example-hooks",
-    "./plugins/devcontainer-generator"
-  ]
+  "plugins": []
 }
