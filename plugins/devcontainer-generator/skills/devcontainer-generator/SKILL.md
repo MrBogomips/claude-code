@@ -14,6 +14,18 @@ This skill operates in three phases:
 
 ### Phase 1: Repository Analysis
 
+**Empty Folder Detection:**
+First, check if the directory is empty or contains only hidden files (like `.git`):
+- If empty/minimal: Skip tech detection and go directly to Phase 1b for interactive setup
+- Ask if user wants a "Claude-only" environment or wants to describe their project
+
+**Official Template Fetching:**
+Before template selection, fetch the current list of available templates:
+1. WebFetch from https://containers.dev/templates
+2. Parse official templates (Dev Container Spec Maintainers)
+3. Parse community templates (Microsoft Azure, research tools, etc.)
+4. Cache results for the session
+
 Analyze the repository to detect the tech stack. Check both the root directory and subdirectories (for monorepo support).
 
 **Monorepo Indicators:**
@@ -64,6 +76,13 @@ Detect by presence of:
 - `serverless.yml` with AWS, `aws-cdk.*` → AWS
 - `app.yaml` (GCP), `cloudbuild.yaml` → GCP
 
+**Base Template Selection:**
+After detecting tech stack, match to official templates using `references/template-selection-guide.md`:
+- Single match → use that template
+- Multiple matches → ask user to choose (Microsoft templates first)
+- Combo match (language + database) → prefer combo template
+- No match → use Universal template
+
 **Existing Configuration:**
 If `.devcontainer/` directory already exists, ask the user:
 - Overwrite existing configuration (replace all files)
@@ -73,6 +92,27 @@ If `.devcontainer/` directory already exists, ask the user:
 ### Phase 1b: Interactive Stack Discovery (Empty/Unknown Projects)
 
 If the repository is empty or no tech stack is detected, engage the user in an interactive discovery process:
+
+**Step 0: Usage Intent**
+Ask: "What do you want to use this devcontainer for?"
+- Full development environment (Recommended)
+- Claude Code execution only (minimal container)
+
+If "Claude Code execution only" selected:
+- Generate minimal devcontainer using `references/templates/minimal-claude-only/`
+- Install Claude Code with ccyolo alias
+- Optionally install CCometixLine if selected
+- Provide shell commands to attach:
+  ```bash
+  # Build and start the devcontainer
+  devcontainer up --workspace-folder .
+
+  # Attach to the running container
+  devcontainer exec --workspace-folder . /bin/zsh
+
+  # Or use VS Code: Command Palette → "Dev Containers: Attach to Running Container"
+  ```
+- Skip remaining questions and proceed to file generation
 
 **Step 1: Application Type**
 Ask: "What kind of application are you building?"
@@ -125,25 +165,38 @@ Continue iterating if user requests changes. Once confirmed, proceed to Phase 2.
 
 After analysis, ask the user about their preferences using the AskUserQuestion tool.
 
-**Q1: Developer Tools** (multiSelect: true)
-Present detected tools and optional extras. Default selections marked with checkmarks:
-- Claude Code (with ~/.claude mount) - Selected by default
-- ccyolo alias (claude --dangerously-skip-permissions)
+**Q1: Agentic Coding Assistant** (multiSelect: false)
+- Claude Code with CCometixLine (Recommended) - Full integration with statusline
+- Claude Code only - Basic installation without statusline
+- None - I'll configure my own agentic coder
+- Other agentic coder - Provide customization guidance
+
+If "Claude Code with CCometixLine" or "Claude Code only" selected:
+- Add ccyolo alias automatically
+- Mount ~/.claude from host for configuration persistence
+- Show what will be installed
+
+If "Other agentic coder" selected:
+- Generate post-create.sh with clear customization section for their preferred tool
+
+**Q2: Developer Tools** (multiSelect: true)
+Present optional tools. Default selections marked with checkmarks:
 - GitHub CLI (gh) - Selected by default
 - fzf (fuzzy finder)
+- httpie (HTTP client)
 
-**Q2: Shell Preference** (multiSelect: false)
+**Q3: Shell Preference** (multiSelect: false)
 - Zsh with Oh My Zsh - Recommended
 - Fish
 - Bash
 
-**Q3: Detected Services** (only if services were detected, multiSelect: true)
+**Q4: Detected Services** (only if services were detected, multiSelect: true)
 Show detected services and ask which to include:
 - [Each detected database]
 - [Each detected message queue]
 - Storage emulators (Azurite for Azure, LocalStack for AWS) - if cloud provider detected
 
-**Q4: Version Confirmation** (only if versions were detected)
+**Q5: Version Confirmation** (only if versions were detected)
 Present detected versions and allow override:
 - Node.js: {{detected or 22}}
 - .NET: {{detected or 10.0}}
@@ -168,8 +221,10 @@ Use the templates in `references/templates/` and configurations in `references/c
 
 2. `.devcontainer/Dockerfile`
    - Use template: `references/templates/Dockerfile.tmpl`
+   - **Always generate Dockerfile** even for simple scenarios (ensures customization point)
    - Select appropriate base image for primary language
    - Include runtime installations for detected languages
+   - For multi-stack projects, layer additional runtimes
    - Add framework-specific tooling (Angular CLI, etc.)
    - Use Ubuntu Noble package names (e.g., `libasound2t64`)
 
@@ -182,8 +237,11 @@ Use the templates in `references/templates/` and configurations in `references/c
 
 4. `.devcontainer/scripts/post-create.sh`
    - Use template: `references/templates/post-create.sh.tmpl`
-   - Include Claude Code installation if selected
-   - Add ccyolo alias if selected
+   - Include Claude Code installation based on Q1 selection:
+     - If CCometixLine: Install Claude Code + npm install -g @cometix/ccline + configure settings.json
+     - If Claude Code only: Install Claude Code
+     - If Other: Add customization section with examples
+   - Add ccyolo alias if Claude Code selected
    - Configure selected shell
    - Install language-specific tools
 
@@ -204,6 +262,36 @@ Use the templates in `references/templates/` and configurations in `references/c
 - `{{PYTHON_VERSION}}` - Detected or default Python version (3.12)
 - `{{PNPM_VERSION}}` - Detected or default pnpm version (9)
 
+**Claude Code Installation Block:**
+If Claude Code selected (with or without CCometixLine):
+1. Install Claude Code via official script
+2. If CCometixLine selected:
+   - Install via npm: `npm install -g @cometix/ccline`
+   - Configure Claude Code settings.json with statusline
+3. Add ccyolo alias to shell config
+4. Verify installation in summary output
+
+**Other Agentic Coder Customization:**
+If "Other agentic coder" selected, add this section to post-create.sh:
+```bash
+# -----------------------------------------------------------------------------
+# Agentic Coder Customization
+# -----------------------------------------------------------------------------
+# Uncomment and modify for your preferred agentic coder:
+#
+# Aider (https://aider.chat):
+# pip install aider-chat
+#
+# Continue (VS Code extension):
+# Code will prompt to install the Continue extension
+#
+# Cline/Roo Code (VS Code extension):
+# Code will prompt to install the Cline extension
+#
+# Add your custom installation commands here:
+#
+```
+
 ## Best Practices
 
 Follow the patterns documented in `references/devcontainer-patterns.md`:
@@ -216,10 +304,13 @@ Follow the patterns documented in `references/devcontainer-patterns.md`:
 ## References
 
 @references/devcontainer-patterns.md
+@references/template-selection-guide.md
 @references/templates/devcontainer.json.tmpl
 @references/templates/Dockerfile.tmpl
 @references/templates/docker-compose.yml.tmpl
 @references/templates/post-create.sh.tmpl
+@references/templates/minimal-claude-only/devcontainer.json
+@references/templates/minimal-claude-only/post-create.sh
 @references/configs/firewall-rules.conf
 @references/configs/zshrc.tmpl
 @references/configs/config.fish.tmpl

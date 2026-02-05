@@ -1,5 +1,27 @@
 # Devcontainer Best Practices & Patterns
 
+## Official Template Selection
+
+Always prefer Microsoft official templates from `ghcr.io/devcontainers/templates/`:
+
+**Priority order when multiple stacks detected:**
+1. Primary language template (e.g., dotnet for .NET + Node.js project)
+2. Universal template as fallback
+3. Community templates only when official doesn't exist
+
+**Template + Database combinations:**
+When database services are selected, prefer combo templates:
+- Python + PostgreSQL → `ghcr.io/devcontainers/templates/python-3-postgres`
+- Node.js + PostgreSQL → `ghcr.io/devcontainers/templates/javascript-node-postgres`
+- Node.js + MongoDB → `ghcr.io/devcontainers/templates/javascript-node-mongo`
+
+**Specialized templates:**
+Check containers.dev/templates for specialized scenarios:
+- Quantum Computing: Julia, Qiskit
+- Robotics: ROS, ROS2
+- Enterprise: Salesforce DX, SAP
+- Scientific: R, Miniconda
+
 ## Official Features Only
 
 Always use official devcontainer features from `ghcr.io/devcontainers/features/`:
@@ -232,3 +254,35 @@ When Claude Code is selected:
 curl -fsSL https://claude.ai/install.sh | bash
 alias ccyolo="claude --dangerously-skip-permissions"
 ```
+
+## CCometixLine Integration
+
+CCometixLine provides a statusline integration for Claude Code. When selected:
+
+1. Install via npm after Claude Code installation:
+```bash
+npm install -g @cometix/ccline
+```
+
+2. Configure Claude Code settings.json:
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/ccline/ccline",
+    "padding": 0
+  }
+}
+```
+
+3. Only configure if settings.json doesn't already exist (preserve user customizations)
+
+## Other Agentic Coders
+
+When "Other agentic coder" is selected, provide a customization section in post-create.sh with examples for:
+
+- **Aider**: `pip install aider-chat`
+- **Continue**: VS Code extension `Continue.continue`
+- **Cline/Roo Code**: VS Code extension `saoudrizwan.claude-dev`
+
+Note: Cursor uses its own editor and is not applicable to devcontainers.

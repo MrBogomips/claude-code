@@ -14,14 +14,21 @@ This skill automatically:
    - Cloud providers (Azure, AWS, GCP)
    - Monorepo structures
 
-2. **Asks about your preferences**:
-   - Developer tools (Claude Code, ccyolo alias, GitHub CLI, fzf)
+2. **Selects official templates** from containers.dev:
+   - Fetches current template list dynamically
+   - Matches detected stack to official Microsoft templates
+   - Supports combo templates (e.g., python-3-postgres)
+   - Falls back to Universal template when no match
+
+3. **Asks about your preferences**:
+   - Agentic coding assistant (Claude Code with CCometixLine, Claude Code only, or other)
+   - Developer tools (GitHub CLI, fzf, httpie)
    - Shell preference (Zsh with Oh My Zsh, Fish, Bash)
    - Which detected services to include
 
-3. **Generates a complete `.devcontainer` setup**:
+4. **Generates a complete `.devcontainer` setup**:
    - `devcontainer.json` with features and VS Code extensions
-   - `Dockerfile` with multi-runtime support
+   - `Dockerfile` with multi-runtime support (always generated)
    - `docker-compose.yml` with services and health checks
    - `post-create.sh` setup script
    - Shell configurations (Zsh/Fish)
@@ -37,13 +44,65 @@ claude /devcontainer-generator
 Or simply ask:
 > "Generate a devcontainer for this project"
 
-## Default Integrations
+## Claude-Only Mode
 
-The following are **enabled by default** when generating:
+For empty folders or when you just need Claude Code execution without a full development environment:
 
-- **Claude Code** - Mounts `~/.claude` for configuration persistence
-- **ccyolo alias** - Quick access to `claude --dangerously-skip-permissions`
-- **GitHub CLI (gh)** - For GitHub operations
+1. Run `/devcontainer-generator` in an empty folder
+2. Select "Claude Code execution only (minimal container)"
+3. A lightweight container is generated with just Claude Code
+
+**Attaching to the container:**
+```bash
+# Build and start the devcontainer
+devcontainer up --workspace-folder .
+
+# Attach to the running container
+devcontainer exec --workspace-folder . /bin/zsh
+
+# Or use VS Code: Command Palette → "Dev Containers: Attach to Running Container"
+```
+
+## Agentic Coding Integration
+
+### Claude Code with CCometixLine (Recommended)
+
+Full integration with statusline for enhanced visibility:
+- Installs Claude Code via official script
+- Installs CCometixLine (`npm install -g @cometix/ccline`)
+- Configures statusline in `~/.claude/settings.json`
+- Adds `ccyolo` alias for quick access
+
+### Claude Code Only
+
+Basic installation without statusline:
+- Installs Claude Code via official script
+- Mounts `~/.claude` for configuration persistence
+- Adds `ccyolo` alias
+
+### Other Agentic Coders
+
+Generate a customization-ready post-create.sh with examples for:
+- **Aider**: `pip install aider-chat`
+- **Continue**: VS Code extension
+- **Cline/Roo Code**: VS Code extension
+
+## Official Template Selection
+
+The skill fetches templates from https://containers.dev/templates and selects the best match:
+
+| Detected Stack | Selected Template |
+|---------------|-------------------|
+| Python | `python` |
+| Python + PostgreSQL | `python-3-postgres` |
+| Node.js | `javascript-node` |
+| Node.js + MongoDB | `javascript-node-mongo` |
+| TypeScript | `typescript-node` |
+| .NET | `dotnet` |
+| Go | `go` |
+| Rust | `rust` |
+| Java | `java` |
+| Multi-stack / Unknown | `universal` |
 
 ## Supported Tech Stacks
 
@@ -97,11 +156,13 @@ Detects monorepo structures via:
 
 The generated configurations follow these best practices:
 
+- **Official templates** - Prefers Microsoft official templates from containers.dev
 - **Official features only** - Uses `ghcr.io/devcontainers/features/`
 - **Named volumes** - Project-prefixed to avoid conflicts
 - **Health checks** - All services include proper health checks
 - **Telemetry opt-out** - Disabled by default for privacy
 - **Ubuntu Noble compatibility** - Uses correct package names (e.g., `libasound2t64`)
+- **Always generates Dockerfile** - Ensures customization point even for simple stacks
 
 ## Customization
 
@@ -111,6 +172,7 @@ After generation, you can customize the files:
 2. **Modify Dockerfile** to add additional tools
 3. **Configure services** in `docker-compose.yml`
 4. **Add shell aliases** in `config/.zshrc` or `config/fish/config.fish`
+5. **Add agentic coder** by editing the customization section in `post-create.sh`
 
 ## Installation
 
