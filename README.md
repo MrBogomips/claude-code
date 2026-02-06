@@ -60,54 +60,7 @@ Once installed, plugins are available immediately:
 
 Agents are invoked automatically by Claude when appropriate, or explicitly via the Task tool.
 
-## Development
-
-### Prerequisites
-
-- Node.js 20.x or later
-- npm
-
-### Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/MrBogomips/claude-code.git
-cd claude-code
-
-# Install dependencies
-npm install
-```
-
-### Available Scripts
-
-```bash
-# Run tests
-npm test
-
-# Validate all plugins
-npm run validate
-
-# Lint code and markdown
-npm run lint
-
-# Create a new plugin interactively
-npm run new-plugin
-
-# Build/update marketplace.json
-npm run build
-```
-
-### Creating a New Plugin
-
-The easiest way to create a new plugin is with the scaffolding tool:
-
-```bash
-npm run new-plugin
-```
-
-This will guide you through creating a plugin with the components you need.
-
-### Plugin Structure
+## Plugin Structure
 
 Every plugin follows this structure:
 
@@ -128,19 +81,6 @@ plugins/my-plugin/
 └── README.md            # Required: documentation
 ```
 
-### Testing Your Plugin
-
-```bash
-# Validate structure
-npm run validate
-
-# Run tests
-npm test
-
-# Test with Claude Code
-claude --plugin-dir ./plugins/my-plugin
-```
-
 ## Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
@@ -148,10 +88,11 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 ### Quick Start
 
 1. Fork this repository
-2. Create a new plugin: `npm run new-plugin`
-3. Implement your plugin
-4. Run `npm test` and `npm run validate`
-5. Submit a pull request
+2. Create your plugin directory under `plugins/`
+3. Add a `.claude-plugin/plugin.json` manifest
+4. Implement your plugin components (commands, agents, skills, hooks)
+5. Add an entry to `.claude-plugin/marketplace.json`
+6. Submit a pull request
 
 ## License
 
