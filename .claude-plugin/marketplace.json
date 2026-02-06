@@ -8,13 +8,12 @@
     "description": "A collection of developer tools and plugins for Claude Code",
     "version": "1.0.0",
     "license": "MIT",
-    "pluginRoot": "./plugins",
     "generatedAt": "2026-02-06T14:30:41.630Z"
   },
   "plugins": [
     {
       "name": "devcontainer-generator",
-      "source": "./devcontainer-generator",
+      "source": "./plugins/devcontainer-generator",
       "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack",
       "version": "1.1.0"
     },
@@ -26,7 +25,7 @@
     },
     {
       "name": "example-commands",
-      "source": "./example-commands",
+      "source": "./plugins/example-commands",
       "description": "Example slash commands demonstrating command patterns for Claude Code",
       "version": "1.0.0"
     },
@@ -38,7 +37,7 @@
     },
     {
       "name": "example-skills",
-      "source": "./example-skills",
+      "source": "./plugins/example-skills",
       "description": "Example skills demonstrating skill patterns for Claude Code",
       "version": "1.0.0"
     }
