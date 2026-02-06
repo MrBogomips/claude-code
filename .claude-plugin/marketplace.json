@@ -8,36 +8,37 @@
     "description": "A collection of developer tools and plugins for Claude Code",
     "version": "1.0.0",
     "license": "MIT",
+    "pluginRoot": "./plugins",
     "generatedAt": "2026-02-06T14:30:41.630Z"
   },
   "plugins": [
     {
       "name": "devcontainer-generator",
-      "source": "./plugins/devcontainer-generator",
+      "source": "./devcontainer-generator",
       "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack",
       "version": "1.1.0"
     },
     {
       "name": "example-agents",
-      "source": "./plugins/example-agents",
+      "source": "./example-agents",
       "description": "Example custom agents demonstrating agent patterns for Claude Code",
       "version": "1.0.0"
     },
     {
       "name": "example-commands",
-      "source": "./plugins/example-commands",
+      "source": "./example-commands",
       "description": "Example slash commands demonstrating command patterns for Claude Code",
       "version": "1.0.0"
     },
     {
       "name": "example-hooks",
-      "source": "./plugins/example-hooks",
+      "source": "./example-hooks",
       "description": "Example hooks demonstrating event-driven patterns for Claude Code",
       "version": "1.0.0"
     },
     {
       "name": "example-skills",
-      "source": "./plugins/example-skills",
+      "source": "./example-skills",
       "description": "Example skills demonstrating skill patterns for Claude Code",
       "version": "1.0.0"
     }
