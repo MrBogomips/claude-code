@@ -7,7 +7,5 @@
     "url": "https://github.com/MrBogomips"
   },
   "license": "MIT",
-  "keywords": ["devcontainer", "docker", "development-environment", "vscode", "claude-code"],
-  "category": "development",
-  "tags": ["devcontainer", "docker", "development environment"]
+  "keywords": ["devcontainer", "docker", "development-environment", "vscode", "claude-code"]
 }
