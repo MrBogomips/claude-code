@@ -42,6 +42,7 @@ claude /devcontainer-generator
 ```
 
 Or simply ask:
+
 > "Generate a devcontainer for this project"
 
 ## Claude-Only Mode
@@ -53,6 +54,7 @@ For empty folders or when you just need Claude Code execution without a full dev
 3. A lightweight container is generated with just Claude Code
 
 **Attaching to the container:**
+
 ```bash
 # Build and start the devcontainer
 devcontainer up --workspace-folder .
@@ -68,6 +70,7 @@ devcontainer exec --workspace-folder . /bin/zsh
 ### Claude Code with CCometixLine (Recommended)
 
 Full integration with statusline for enhanced visibility:
+
 - Installs Claude Code via official script
 - Installs CCometixLine (`npm install -g @cometix/ccline`)
 - Configures statusline in `~/.claude/settings.json`
@@ -76,6 +79,7 @@ Full integration with statusline for enhanced visibility:
 ### Claude Code Only
 
 Basic installation without statusline:
+
 - Installs Claude Code via official script
 - Mounts `~/.claude` for configuration persistence
 - Adds `ccyolo` alias
@@ -83,6 +87,7 @@ Basic installation without statusline:
 ### Other Agentic Coders
 
 Generate a customization-ready post-create.sh with examples for:
+
 - **Aider**: `pip install aider-chat`
 - **Continue**: VS Code extension
 - **Cline/Roo Code**: VS Code extension
@@ -91,50 +96,54 @@ Generate a customization-ready post-create.sh with examples for:
 
 The skill fetches templates from https://containers.dev/templates and selects the best match:
 
-| Detected Stack | Selected Template |
-|---------------|-------------------|
-| Python | `python` |
-| Python + PostgreSQL | `python-3-postgres` |
-| Node.js | `javascript-node` |
-| Node.js + MongoDB | `javascript-node-mongo` |
-| TypeScript | `typescript-node` |
-| .NET | `dotnet` |
-| Go | `go` |
-| Rust | `rust` |
-| Java | `java` |
-| Multi-stack / Unknown | `universal` |
+| Detected Stack        | Selected Template       |
+| --------------------- | ----------------------- |
+| Python                | `python`                |
+| Python + PostgreSQL   | `python-3-postgres`     |
+| Node.js               | `javascript-node`       |
+| Node.js + MongoDB     | `javascript-node-mongo` |
+| TypeScript            | `typescript-node`       |
+| .NET                  | `dotnet`                |
+| Go                    | `go`                    |
+| Rust                  | `rust`                  |
+| Java                  | `java`                  |
+| Multi-stack / Unknown | `universal`             |
 
 ## Supported Tech Stacks
 
 ### Languages & Runtimes
-| Detection File | Runtime |
-|---------------|---------|
-| `package.json` | Node.js |
-| `*.csproj`, `*.sln` | .NET |
-| `requirements.txt`, `pyproject.toml` | Python |
-| `go.mod` | Go |
-| `Cargo.toml` | Rust |
-| `pom.xml`, `build.gradle` | Java |
+
+| Detection File                       | Runtime |
+| ------------------------------------ | ------- |
+| `package.json`                       | Node.js |
+| `*.csproj`, `*.sln`                  | .NET    |
+| `requirements.txt`, `pyproject.toml` | Python  |
+| `go.mod`                             | Go      |
+| `Cargo.toml`                         | Rust    |
+| `pom.xml`, `build.gradle`            | Java    |
 
 ### Package Managers
-| Lock File | Manager |
-|-----------|---------|
-| `pnpm-lock.yaml` | pnpm |
-| `yarn.lock` | Yarn |
-| `package-lock.json` | npm |
-| `bun.lockb` | Bun |
+
+| Lock File           | Manager |
+| ------------------- | ------- |
+| `pnpm-lock.yaml`    | pnpm    |
+| `yarn.lock`         | Yarn    |
+| `package-lock.json` | npm     |
+| `bun.lockb`         | Bun     |
 
 ### Frameworks
-| Config File | Framework |
-|-------------|-----------|
-| `angular.json` | Angular |
-| `next.config.*` | Next.js |
-| `nuxt.config.*` | Nuxt |
-| `vite.config.*` | Vite |
+
+| Config File            | Framework  |
+| ---------------------- | ---------- |
+| `angular.json`         | Angular    |
+| `next.config.*`        | Next.js    |
+| `nuxt.config.*`        | Nuxt       |
+| `vite.config.*`        | Vite       |
 | `docusaurus.config.js` | Docusaurus |
-| `.storybook/` | Storybook |
+| `.storybook/`          | Storybook  |
 
 ### Services
+
 - PostgreSQL (with PostGIS)
 - MySQL
 - MongoDB
@@ -145,7 +154,9 @@ The skill fetches templates from https://containers.dev/templates and selects th
 - LocalStack (AWS Emulator)
 
 ### Monorepo Support
+
 Detects monorepo structures via:
+
 - `pnpm-workspace.yaml`
 - `lerna.json`
 - `nx.json`

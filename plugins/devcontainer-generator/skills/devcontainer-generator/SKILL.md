@@ -16,12 +16,14 @@ This skill operates in three phases:
 
 **Empty Folder Detection:**
 First, check if the directory is empty or contains only hidden files (like `.git`):
+
 - If empty/minimal: Skip tech detection and go directly to Phase 1b for interactive setup
-- Ask if user wants a "Claude-only" environment or wants to describe their project
+- Ask if user wants a "Claude-safe-only" environment or wants to describe their project
 
 **Official Template Fetching:**
 Before template selection, fetch the current list of available templates:
-1. WebFetch from https://containers.dev/templates
+
+1. WebFetch from <https://containers.dev/templates>
 2. Parse official templates (Dev Container Spec Maintainers)
 3. Parse community templates (Microsoft Azure, research tools, etc.)
 4. Cache results for the session
@@ -30,18 +32,21 @@ Analyze the repository to detect the tech stack. Check both the root directory a
 
 **Monorepo Indicators:**
 Look for these files at the root:
+
 - `pnpm-workspace.yaml` - pnpm workspaces
 - `lerna.json` - Lerna monorepo
 - `nx.json` - Nx workspace
 - `turbo.json` - Turborepo
 
 And these directories:
+
 - `apps/` - Application packages
 - `packages/` - Library packages
 - `services/` - Service packages
 
 **Language Runtimes:**
 Detect by presence of:
+
 - `package.json` → Node.js (check `engines.node` for version)
 - `*.csproj`, `*.sln`, `global.json` → .NET (check `global.json` for SDK version)
 - `requirements.txt`, `pyproject.toml`, `setup.py` → Python
@@ -50,12 +55,14 @@ Detect by presence of:
 - `pom.xml`, `build.gradle`, `build.gradle.kts` → Java
 
 **Package Managers:**
+
 - `pnpm-lock.yaml` → pnpm
 - `yarn.lock` → Yarn
 - `package-lock.json` → npm
 - `bun.lockb` → Bun
 
 **Frameworks:**
+
 - `angular.json` → Angular (check version in package.json)
 - `next.config.js`, `next.config.mjs`, `next.config.ts` → Next.js
 - `nuxt.config.js`, `nuxt.config.ts` → Nuxt
@@ -64,6 +71,7 @@ Detect by presence of:
 - `.storybook/` → Storybook
 
 **Services (from docker-compose.yml, environment variables, or connection strings):**
+
 - PostgreSQL (port 5432)
 - MySQL (port 3306)
 - MongoDB (port 27017)
@@ -72,12 +80,14 @@ Detect by presence of:
 - Kafka (port 9092)
 
 **Cloud Providers:**
+
 - `azure-pipelines.yml`, `azuredeploy.json`, Bicep files → Azure
 - `serverless.yml` with AWS, `aws-cdk.*` → AWS
 - `app.yaml` (GCP), `cloudbuild.yaml` → GCP
 
 **Base Template Selection:**
 After detecting tech stack, match to official templates using `references/template-selection-guide.md`:
+
 - Single match → use that template
 - Multiple matches → ask user to choose (Microsoft templates first)
 - Combo match (language + database) → prefer combo template
@@ -85,6 +95,7 @@ After detecting tech stack, match to official templates using `references/templa
 
 **Existing Configuration:**
 If `.devcontainer/` directory already exists, ask the user:
+
 - Overwrite existing configuration (replace all files)
 - Merge with existing (preserve customizations where possible)
 - Cancel generation
@@ -95,14 +106,17 @@ If the repository is empty or no tech stack is detected, engage the user in an i
 
 **Step 0: Usage Intent**
 Ask: "What do you want to use this devcontainer for?"
+
 - Full development environment (Recommended)
 - Claude Code execution only (minimal container)
 
 If "Claude Code execution only" selected:
+
 - Generate minimal devcontainer using `references/templates/minimal-claude-only/`
 - Install Claude Code with ccyolo alias
 - Optionally install CCometixLine if selected
 - Provide shell commands to attach:
+
   ```bash
   # Build and start the devcontainer
   devcontainer up --workspace-folder .
@@ -112,10 +126,12 @@ If "Claude Code execution only" selected:
 
   # Or use VS Code: Command Palette → "Dev Containers: Attach to Running Container"
   ```
+
 - Skip remaining questions and proceed to file generation
 
 **Step 1: Application Type**
 Ask: "What kind of application are you building?"
+
 - Web application (frontend)
 - Web API (backend)
 - Full-stack application
@@ -125,15 +141,18 @@ Ask: "What kind of application are you building?"
 
 **Step 2: Primary Language**
 Based on application type, ask: "What primary language will you use?"
+
 - Present relevant options (e.g., for web: TypeScript/JavaScript, Python, Go, .NET, etc.)
 
 **Step 3: Framework Selection**
 Based on language, ask: "Which framework do you want to use?"
+
 - Present framework options for the selected language
 - Example for TypeScript web: Next.js, Angular, Nuxt, Vite + React, etc.
 
 **Step 4: Package Manager** (if applicable)
 Ask: "Which package manager do you prefer?"
+
 - pnpm (Recommended)
 - yarn
 - npm
@@ -141,6 +160,7 @@ Ask: "Which package manager do you prefer?"
 
 **Step 5: Services**
 Ask: "Do you need any backend services?"
+
 - Database (PostgreSQL, MySQL, MongoDB)
 - Cache (Redis)
 - Message Queue (RabbitMQ, Kafka)
@@ -149,6 +169,7 @@ Ask: "Do you need any backend services?"
 
 **Step 6: Confirmation**
 Present a summary of the configured stack:
+
 ```
 Configured Stack:
 - Application: Full-stack web application
@@ -157,6 +178,7 @@ Configured Stack:
 - Package Manager: pnpm
 - Services: PostgreSQL, Redis
 ```
+
 Ask: "Does this configuration look correct? Proceed with generation?"
 
 Continue iterating if user requests changes. Once confirmed, proceed to Phase 2.
@@ -166,41 +188,49 @@ Continue iterating if user requests changes. Once confirmed, proceed to Phase 2.
 After analysis, ask the user about their preferences using the AskUserQuestion tool.
 
 **Q1: Agentic Coding Assistant** (multiSelect: false)
+
 - Claude Code with CCometixLine (Recommended) - Full integration with statusline
 - Claude Code only - Basic installation without statusline
 - None - I'll configure my own agentic coder
 - Other agentic coder - Provide customization guidance
 
 If "Claude Code with CCometixLine" or "Claude Code only" selected:
+
 - Add ccyolo alias automatically
 - Mount ~/.claude from host for configuration persistence
 - Show what will be installed
 
 If "Other agentic coder" selected:
+
 - Generate post-create.sh with clear customization section for their preferred tool
 
 **Q2: Developer Tools** (multiSelect: true)
 Present optional tools. Default selections marked with checkmarks:
+
 - GitHub CLI (gh) - Selected by default
 - fzf (fuzzy finder)
 - httpie (HTTP client)
+- rg (ripgrep for fast searching)
 
 **Q3: Shell Preference** (multiSelect: false)
+
 - Zsh with Oh My Zsh - Recommended
 - Fish
 - Bash
 
 **Q4: Detected Services** (only if services were detected, multiSelect: true)
 Show detected services and ask which to include:
+
 - [Each detected database]
 - [Each detected message queue]
 - Storage emulators (Azurite for Azure, LocalStack for AWS) - if cloud provider detected
 
 **Q5: Version Confirmation** (only if versions were detected)
 Present detected versions and allow override:
-- Node.js: {{detected or 22}}
-- .NET: {{detected or 10.0}}
-- Python: {{detected or 3.12}}
+
+- Node.js: {{detected or latest}}
+- .NET: {{detected or latest}}
+- Python: {{detected or latest}}
 
 Ask: "I detected these runtime versions. Would you like to use them or specify different versions?"
 
@@ -255,6 +285,7 @@ Use the templates in `references/templates/` and configurations in `references/c
    - Fish: `.devcontainer/config/fish/config.fish` from `references/configs/config.fish.tmpl`
 
 **Template Placeholders:**
+
 - `{{PROJECT_NAME}}` - Project directory name in kebab-case
 - `{{WORKSPACE_FOLDER}}` - Full workspace path
 - `{{NODE_VERSION}}` - Detected or default Node.js version (22)
@@ -264,6 +295,7 @@ Use the templates in `references/templates/` and configurations in `references/c
 
 **Claude Code Installation Block:**
 If Claude Code selected (with or without CCometixLine):
+
 1. Install Claude Code via official script
 2. If CCometixLine selected:
    - Install via npm: `npm install -g @cometix/ccline`
@@ -273,6 +305,7 @@ If Claude Code selected (with or without CCometixLine):
 
 **Other Agentic Coder Customization:**
 If "Other agentic coder" selected, add this section to post-create.sh:
+
 ```bash
 # -----------------------------------------------------------------------------
 # Agentic Coder Customization
@@ -295,6 +328,7 @@ If "Other agentic coder" selected, add this section to post-create.sh:
 ## Best Practices
 
 Follow the patterns documented in `references/devcontainer-patterns.md`:
+
 - Use official devcontainer features only
 - Name volumes with project prefix to avoid conflicts
 - Include health checks for all services

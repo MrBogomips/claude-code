@@ -1,5 +1,4 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "mrbogomips-tools",
   "owner": {
     "name": "Mr Bogomips",
@@ -8,33 +7,39 @@
   "metadata": {
     "description": "A collection of developer tools and plugins for Claude Code",
     "version": "1.0.0",
-    "license": "MIT"
+    "license": "MIT",
+    "generatedAt": "2026-02-06T14:30:41.630Z"
   },
   "plugins": [
     {
-      "name": "example-commands",
-      "source": "./plugins/example-commands",
-      "description": "Example slash commands demonstrating command patterns for Claude Code"
+      "name": "devcontainer-generator",
+      "source": "./plugins/devcontainer-generator",
+      "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack",
+      "version": "1.1.0"
     },
     {
       "name": "example-agents",
       "source": "./plugins/example-agents",
-      "description": "Example custom agents demonstrating agent patterns for Claude Code"
+      "description": "Example custom agents demonstrating agent patterns for Claude Code",
+      "version": "1.0.0"
     },
     {
-      "name": "example-skills",
-      "source": "./plugins/example-skills",
-      "description": "Example skills demonstrating skill patterns for Claude Code"
+      "name": "example-commands",
+      "source": "./plugins/example-commands",
+      "description": "Example slash commands demonstrating command patterns for Claude Code",
+      "version": "1.0.0"
     },
     {
       "name": "example-hooks",
       "source": "./plugins/example-hooks",
-      "description": "Example hooks demonstrating event-driven patterns for Claude Code"
+      "description": "Example hooks demonstrating event-driven patterns for Claude Code",
+      "version": "1.0.0"
     },
     {
-      "name": "devcontainer-generator",
-      "source": "./plugins/devcontainer-generator",
-      "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack"
+      "name": "example-skills",
+      "source": "./plugins/example-skills",
+      "description": "Example skills demonstrating skill patterns for Claude Code",
+      "version": "1.0.0"
     }
   ]
 }
