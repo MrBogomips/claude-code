@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A collection of developer tools and plugins for Claude Code",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "license": "MIT"
   },
   "plugins": [
@@ -14,18 +14,12 @@
       "name": "devcontainer-generator",
       "source": "./plugins/devcontainer-generator",
       "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack",
-      "version": "1.2.0"
+      "version": "1.3.0"
     },
     {
       "name": "example-agents",
       "source": "./example-agents",
       "description": "Example custom agents demonstrating agent patterns for Claude Code",
-      "version": "1.0.0"
-    },
-    {
-      "name": "example-commands",
-      "source": "./plugins/example-commands",
-      "description": "Example slash commands demonstrating command patterns for Claude Code",
       "version": "1.0.0"
     },
     {
