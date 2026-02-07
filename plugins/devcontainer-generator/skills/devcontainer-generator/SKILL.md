@@ -4,6 +4,7 @@ description: Generate or configure .devcontainer setups by analyzing repository 
 user-invokable: true
 context: fork
 disable-model-invocation: true
+allowed-tools: Read, Write, Glob, Grep, WebFetch, AskUserQuestion
 ---
 
 # Devcontainer Generator
