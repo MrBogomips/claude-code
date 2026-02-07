@@ -26,154 +26,37 @@ Phase 3: Generation ----> devcontainer.json, Dockerfile, docker-compose.yml,
 
 ## Phase 1: Repository analysis
 
-The skill reads project files to identify your stack. It checks both the root directory and subdirectories for monorepo support.
+The skill first checks whether the directory is empty or contains only hidden files (like `.git`). If so, it skips stack detection and jumps to [Phase 1b](#phase-1b-interactive-stack-discovery) for interactive setup.
 
-### Language detection
+Otherwise, it fetches the current template list from [containers.dev/templates](https://containers.dev/templates) to keep template references current, then reads project files to identify your stack across six categories: **languages** (Node.js, .NET, Python, Go, Rust, Java), **package managers** (pnpm, Yarn, npm, Bun), **frameworks** (Angular, Next.js, Nuxt, Vite, Docusaurus, Storybook), **services** (PostgreSQL, MySQL, MongoDB, Redis, RabbitMQ, Kafka), **cloud providers** (Azure, AWS, GCP), and **monorepo tools** (pnpm workspaces, Lerna, Nx, Turborepo, directory conventions). Both root and subdirectories are scanned. See the [Overview](index.md) for the full detection tables.
 
-| Indicator | Runtime |
-|-----------|---------|
-| `package.json` | Node.js (reads `engines.node` for version) |
-| `*.csproj`, `*.sln`, `global.json` | .NET (reads `global.json` for SDK version) |
-| `requirements.txt`, `pyproject.toml`, `setup.py` | Python |
-| `go.mod` | Go |
-| `Cargo.toml` | Rust |
-| `pom.xml`, `build.gradle`, `build.gradle.kts` | Java |
+After detection, the skill matches your stack to official templates — see [Template Selection](template-system.md) for the algorithm.
 
-### Package manager detection
-
-| Lock file | Manager |
-|-----------|---------|
-| `pnpm-lock.yaml` | pnpm |
-| `yarn.lock` | Yarn |
-| `package-lock.json` | npm |
-| `bun.lockb` | Bun |
-
-### Framework detection
-
-| Config file | Framework |
-|-------------|-----------|
-| `angular.json` | Angular (reads version from `package.json`) |
-| `next.config.js`, `next.config.mjs`, `next.config.ts` | Next.js |
-| `nuxt.config.js`, `nuxt.config.ts` | Nuxt |
-| `vite.config.*` | Vite |
-| `docusaurus.config.js` | Docusaurus |
-| `.storybook/` | Storybook |
-
-### Service detection
-
-The skill looks at `docker-compose.yml`, environment variables, and connection strings for:
-
-| Service | Default port |
-|---------|-------------|
-| PostgreSQL | 5432 |
-| MySQL | 3306 |
-| MongoDB | 27017 |
-| Redis | 6379 |
-| RabbitMQ | 5672, 15672 |
-| Kafka | 9092 |
-
-### Cloud provider detection
-
-| Indicator | Provider |
-|-----------|----------|
-| `azure-pipelines.yml`, `azuredeploy.json`, Bicep files | Azure |
-| `serverless.yml` with AWS, `aws-cdk.*` | AWS |
-| `app.yaml` (GCP), `cloudbuild.yaml` | GCP |
-
-### Monorepo detection
-
-| Indicator | Tool |
-|-----------|------|
-| `pnpm-workspace.yaml` | pnpm workspaces |
-| `lerna.json` | Lerna |
-| `nx.json` | Nx |
-| `turbo.json` | Turborepo |
-| `apps/`, `packages/`, `services/` directories | Convention |
-
-### Template fetching
-
-Before selecting a template, the skill fetches the current template list from [containers.dev/templates](https://containers.dev/templates). This ensures template references stay current as the official registry evolves. See [Template Selection](template-system.md) for the full matching algorithm.
-
-### Existing configuration
-
-If a `.devcontainer/` directory already exists, the skill asks whether to:
-
-- Overwrite the existing configuration (replace all files)
-- Merge with existing (preserve customizations where possible)
-- Cancel generation
+If a `.devcontainer/` directory already exists, the skill asks whether to **overwrite** (replace all files), **merge** (preserve customizations where possible), or **cancel** generation.
 
 ## Phase 1b: Interactive stack discovery
 
-For empty repositories or projects where no tech stack is detected, the skill walks you through an interactive setup:
+For empty repositories or projects where no tech stack is detected, the skill walks you through a 6-step interactive setup: usage intent, application type, primary language, framework, package manager, and services. Each step filters options based on prior answers — for example, framework choices depend on the selected language.
 
-**Step 0 -- Usage intent:**
-Choose between a full development environment or a Claude Code execution only (minimal container). If you select Claude-only, the skill skips to file generation with a minimal template.
-
-**Step 1 -- Application type:**
-Web application (frontend), Web API (backend), full-stack, CLI tool, library/package, or other.
-
-**Step 2 -- Primary language:**
-Options are filtered by application type. For example, a web frontend might show TypeScript/JavaScript, while a CLI tool might show Go, Rust, or Python.
-
-**Step 3 -- Framework:**
-Options are filtered by language. For TypeScript web: Next.js, Angular, Nuxt, Vite + React, etc.
-
-**Step 4 -- Package manager** (if applicable):
-pnpm (recommended), Yarn, npm, or Bun.
-
-**Step 5 -- Services:**
-Database (PostgreSQL, MySQL, MongoDB), cache (Redis), message queue (RabbitMQ, Kafka), storage emulator (Azurite, LocalStack), or none.
-
-**Step 6 -- Confirmation:**
-A summary of the configured stack is displayed. You can iterate until it looks correct.
-
-```
-Configured Stack:
-- Application: Full-stack web application
-- Language: TypeScript
-- Framework: Next.js
-- Package Manager: pnpm
-- Services: PostgreSQL, Redis
-```
+If you choose **Claude-Only** in the first step, the skill skips to file generation with a minimal container template and **deny-all firewall enabled by default** — ideal for running Claude Code in YOLO mode inside a secure, isolated environment. See [Network Firewall](firewall.md) for enforcement details.
 
 ## Phase 2: User preference questions
 
-After analysis, the skill asks six questions:
+After analysis, the skill asks six questions to customize the generated configuration:
 
-**Q1: Agentic coding assistant**
-- Claude Code with CCometixLine (recommended) -- full integration with statusline
-- Claude Code only -- basic installation
-- None -- configure your own
-- Other agentic coder -- generates a customization section in post-create.sh
+| # | Topic | Type |
+|---|-------|------|
+| Q1 | Agentic coding assistant (Claude Code with CCometixLine, Claude Code only, none, other) | Single-select |
+| Q2 | Developer tools (gh, fzf, httpie, ripgrep) | Multi-select |
+| Q3 | Shell preference (Zsh + Oh My Zsh, Fish, Bash) | Single-select |
+| Q4 | Detected services and storage emulators to include | Multi-select |
+| Q5 | Runtime version confirmation / override | Confirmation |
+| Q6 | Network firewall policy (deny-all, allow-all, disabled) | Single-select |
 
-**Q2: Developer tools** (multi-select)
-- GitHub CLI (gh) -- selected by default
-- fzf (fuzzy finder)
-- httpie (HTTP client)
-- rg (ripgrep)
-
-**Q3: Shell preference**
-- Zsh with Oh My Zsh (recommended)
-- Fish
-- Bash
-
-**Q4: Detected services** (only if services were found, multi-select)
-Lists each detected database, message queue, and storage emulator.
-
-**Q5: Version confirmation** (only if versions were detected)
-Shows detected runtime versions and lets you override them.
-
-**Q6: Network firewall**
-- Enabled with deny-all policy (recommended) -- only whitelisted domains accessible
-- Enabled with allow-all policy -- all traffic allowed, specific domains can be blocked
-- Disabled -- no network restrictions
-
-See [Network Firewall](firewall.md) for details on how firewall enforcement works.
+Q4 and Q5 only appear when services or versions were detected during Phase 1. See [Network Firewall](firewall.md) for details on how firewall enforcement works.
 
 ## Phase 3: File generation
 
-The skill uses template files with `{{PLACEHOLDER}}` markers. Each placeholder is resolved based on your answers and detected stack. Conditional sections (commented-out blocks prefixed with `// {{PLACEHOLDER}}`) are uncommented when the condition is met.
+The skill resolves a set of internal templates against your detected stack and preference answers to produce the final configuration files. Conditional sections are included or excluded based on your choices — for example, selecting deny-all firewall adds post-start enforcement rules, while choosing Claude Code with CCometixLine adds the full installation block to `post-create.sh`.
 
-For example, if you select Claude Code with CCometixLine, the `{{INSTALL_CLAUDE_FULL}}` block in `post-create.sh` is uncommented. If you select the deny-all firewall policy, the `{{FIREWALL_POST_START}}` block in `devcontainer.json` is uncommented and `DENY *` remains as the last rule in `firewall-rules.conf`.
-
-The full set of generated files is documented in [Generated Files](generated-files.md).
+The complete set of generated files is documented in [Generated Files](generated-files.md).
