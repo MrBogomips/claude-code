@@ -27,14 +27,16 @@ The skill must be invoked explicitly. It does not activate on its own.
 
 Or in natural language:
 
-> "Generate a devcontainer for this project"
+> "Generate a devcontainer using the skill `devcontainer-generator`."
 
 ## Two modes
+
+The skill supports two modes of operation, depending on your needs:
 
 | Mode | Use case |
 |------|----------|
 | **Full Development Environment** | Existing or new projects that need runtimes, services, and tooling |
-| **Claude-Only** | Empty folders or cases where you only need a minimal container with Claude Code |
+| **Claude-Only** | Empty folders or cases where you only need a minimal container with Claude Code. This scenario is ideal for using Claude Code in yolo mode into an isolated environment. |
 
 ## Supported tech stacks
 
@@ -109,15 +111,7 @@ The skill definition includes several frontmatter options that control its behav
 
 ## Installation
 
-```bash
-# Clone the marketplace
-git clone https://github.com/MrBogomips/claude-code.git
-
-# Or copy just this plugin
-cp -r plugins/devcontainer-generator ~/.claude/plugins/
-```
-
-Then configure in your Claude Code settings.
+Add the plugin marketplace `MrBogomips/claude-code` and install the `devcontainer-generator` skill.
 
 ## Next steps
 
