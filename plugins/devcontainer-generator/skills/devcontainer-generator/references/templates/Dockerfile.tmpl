@@ -34,6 +34,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zsh \
     jq \
     httpie \
+    # {{APT_FIREWALL}} - Add if firewall enabled:
+    # iptables \
+    # dnsutils \
     # {{APT_FZF}} - Add if fzf selected:
     # fzf \
     # Graphics and document processing (optional)
@@ -128,7 +131,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # =============================================================================
 COPY scripts/ /devcontainer/scripts/
 COPY config/ /devcontainer/config/
-# {{COPY_FIREWALL}} - Add if firewall rules needed:
+# {{COPY_FIREWALL}} - Add if firewall enabled:
 # COPY firewall-rules.conf /devcontainer/firewall-rules.conf
 
 # Ensure scripts are executable

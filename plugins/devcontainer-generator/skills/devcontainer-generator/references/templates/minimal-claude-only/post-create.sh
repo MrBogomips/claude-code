@@ -17,6 +17,25 @@ log() {
 log "Starting minimal Claude Code setup..."
 
 # -----------------------------------------------------------------------------
+# Firewall Prerequisites
+# -----------------------------------------------------------------------------
+log "Installing firewall prerequisites..."
+
+sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends \
+    iptables \
+    dnsutils \
+    && sudo apt-get clean \
+    && sudo rm -rf /var/lib/apt/lists/*
+
+# Ensure firewall script is executable
+if [[ -f .devcontainer/scripts/apply-firewall.sh ]]; then
+    chmod +x .devcontainer/scripts/apply-firewall.sh
+    log "  Firewall prerequisites installed"
+else
+    log "  Warning: apply-firewall.sh not found"
+fi
+
+# -----------------------------------------------------------------------------
 # Git Configuration
 # -----------------------------------------------------------------------------
 log "Configuring Git..."

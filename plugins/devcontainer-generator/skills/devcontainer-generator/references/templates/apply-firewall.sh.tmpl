@@ -1,0 +1,171 @@
+#!/bin/bash
+# =============================================================================
+# apply-firewall.sh - Runtime firewall enforcement for devcontainers
+# =============================================================================
+# Reads firewall-rules.conf and applies iptables/ip6tables rules.
+# Syntax: ALLOW|DENY target (first match wins)
+# Root (uid 0) is always exempt from firewall rules.
+#
+# Usage: sudo bash apply-firewall.sh [path/to/firewall-rules.conf]
+# =============================================================================
+
+set -euo pipefail
+
+RULES_FILE="${1:-.devcontainer/firewall-rules.conf}"
+CHAIN="DEVCONTAINER_FW"
+
+LOG_PREFIX="[firewall]"
+log() { echo "$LOG_PREFIX $1"; }
+
+if [[ ! -f "$RULES_FILE" ]]; then
+    log "ERROR: Rules file not found: $RULES_FILE"
+    exit 1
+fi
+
+# -----------------------------------------------------------------------------
+# Wait for DNS readiness (network may not be ready at container start)
+# -----------------------------------------------------------------------------
+for i in {1..30}; do
+    if dig +short +timeout=1 google.com A >/dev/null 2>&1; then
+        break
+    fi
+    if [[ $i -eq 30 ]]; then
+        log "WARNING: DNS not ready after 30s, domain rules may be incomplete"
+    fi
+    sleep 1
+done
+
+# -----------------------------------------------------------------------------
+# Setup chains (flush if exists, create if not)
+# -----------------------------------------------------------------------------
+setup_chain() {
+    local cmd="$1"
+    $cmd -N "$CHAIN" 2>/dev/null || $cmd -F "$CHAIN"
+}
+
+setup_chain iptables
+setup_chain ip6tables
+
+# -----------------------------------------------------------------------------
+# Root exemption (uid 0 always allowed)
+# -----------------------------------------------------------------------------
+iptables  -A "$CHAIN" -m owner --uid-owner 0 -j RETURN
+ip6tables -A "$CHAIN" -m owner --uid-owner 0 -j RETURN
+
+# -----------------------------------------------------------------------------
+# System essentials (always allowed before user rules)
+# -----------------------------------------------------------------------------
+for cmd in iptables ip6tables; do
+    # Loopback
+    $cmd -A "$CHAIN" -o lo -j ACCEPT
+    # Established/related connections
+    $cmd -A "$CHAIN" -m state --state ESTABLISHED,RELATED -j ACCEPT
+    # DNS (required for domain resolution)
+    $cmd -A "$CHAIN" -p udp --dport 53 -j ACCEPT
+    $cmd -A "$CHAIN" -p tcp --dport 53 -j ACCEPT
+    # DHCP
+    $cmd -A "$CHAIN" -p udp --dport 67:68 -j ACCEPT
+done
+
+log "System rules applied (loopback, established, DNS, DHCP)"
+
+# -----------------------------------------------------------------------------
+# Parse and apply user rules (first match wins - native iptables behavior)
+# -----------------------------------------------------------------------------
+rule_count=0
+
+while IFS= read -r line || [[ -n "$line" ]]; do
+    # Strip leading/trailing whitespace
+    line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+    # Skip comments and empty lines
+    [[ -z "$line" || "$line" =~ ^# ]] && continue
+
+    action="$(echo "$line" | awk '{print toupper($1)}')"
+    target="$(echo "$line" | awk '{print $2}')"
+
+    # Validate target exists
+    if [[ -z "$target" ]]; then
+        log "WARNING: Missing target in rule: $line (skipping)"
+        continue
+    fi
+
+    # Validate action
+    if [[ "$action" != "ALLOW" && "$action" != "DENY" ]]; then
+        log "WARNING: Invalid action '$action' in rule: $line (skipping)"
+        continue
+    fi
+
+    # Map to iptables action
+    [[ "$action" == "ALLOW" ]] && ipt_action="ACCEPT" || ipt_action="DROP"
+
+    if [[ "$target" == "*" ]]; then
+        # Default policy (catch-all)
+        iptables  -A "$CHAIN" -j "$ipt_action"
+        ip6tables -A "$CHAIN" -j "$ipt_action"
+        log "Default policy: $action *"
+        ((rule_count++))
+
+    elif [[ "$target" == \*.* ]]; then
+        # Wildcard domain (*.example.com) -> resolve base domain, use /24 CIDR
+        # Note: /24 is a pragmatic approximation; cloud-hosted services may share subnets
+        base="${target#\*.}"
+        resolved=0
+        # IPv4
+        for ip in $(dig +short "$base" A 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'); do
+            iptables -A "$CHAIN" -d "${ip%.*}.0/24" -j "$ipt_action"
+            ((resolved++))
+        done
+        # IPv6
+        for ip in $(dig +short "$base" AAAA 2>/dev/null | grep -E '^[0-9a-fA-F:]+$'); do
+            ip6tables -A "$CHAIN" -d "$ip/64" -j "$ipt_action"
+            ((resolved++))
+        done
+        if [[ $resolved -eq 0 ]]; then
+            log "WARNING: Could not resolve $base (for $target)"
+        fi
+        log "Rule: $action $target (wildcard, $resolved IPs)"
+        ((rule_count++))
+
+    elif [[ "$target" =~ / ]]; then
+        # CIDR notation (e.g. 10.0.0.0/8, fd00::/8)
+        if [[ "$target" =~ : ]]; then
+            ip6tables -A "$CHAIN" -d "$target" -j "$ipt_action"
+        else
+            iptables -A "$CHAIN" -d "$target" -j "$ipt_action"
+        fi
+        log "Rule: $action $target (CIDR)"
+        ((rule_count++))
+
+    else
+        # Domain or plain IP -> resolve
+        resolved=0
+        # IPv4
+        for ip in $(dig +short "$target" A 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'); do
+            iptables -A "$CHAIN" -d "$ip" -j "$ipt_action"
+            ((resolved++))
+        done
+        # IPv6
+        for ip in $(dig +short "$target" AAAA 2>/dev/null | grep -E '^[0-9a-fA-F:]+$'); do
+            ip6tables -A "$CHAIN" -d "$ip" -j "$ipt_action"
+            ((resolved++))
+        done
+        if [[ $resolved -eq 0 ]]; then
+            log "WARNING: Could not resolve $target"
+        fi
+        log "Rule: $action $target ($resolved IPs)"
+        ((rule_count++))
+    fi
+done < "$RULES_FILE"
+
+# -----------------------------------------------------------------------------
+# Insert chain into OUTPUT (idempotent: remove first, then insert)
+# -----------------------------------------------------------------------------
+iptables  -D OUTPUT -j "$CHAIN" 2>/dev/null || true
+iptables  -I OUTPUT 1 -j "$CHAIN"
+
+ip6tables -D OUTPUT -j "$CHAIN" 2>/dev/null || true
+ip6tables -I OUTPUT 1 -j "$CHAIN"
+
+log "Firewall applied: $rule_count rules processed"
+log "Chain $CHAIN active in OUTPUT (IPv4 + IPv6)"

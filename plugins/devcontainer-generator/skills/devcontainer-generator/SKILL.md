@@ -115,6 +115,9 @@ If "Claude Code execution only" selected:
 - Generate minimal devcontainer using `references/templates/minimal-claude-only/`
 - Install Claude Code with ccyolo alias
 - Optionally install CCometixLine if selected
+- **Firewall enabled by default**: runtime iptables enforcement via `apply-firewall.sh`, deny-all-except-whitelist policy
+- Generate `firewall-rules.conf` (ALLOW/DENY format) and `scripts/apply-firewall.sh`
+- Container gets `CAP_NET_ADMIN` and `postStartCommand` for firewall enforcement
 - Provide shell commands to attach:
 
   ```bash
@@ -234,6 +237,30 @@ Present detected versions and allow override:
 
 Ask: "I detected these runtime versions. Would you like to use them or specify different versions?"
 
+**Q6: Network Firewall** (multiSelect: false)
+
+- Enabled with deny-all policy (Recommended) - Only whitelisted domains accessible, blocks all other traffic
+- Enabled with allow-all policy - All traffic allowed, specific domains can be blocked
+- Disabled - No network restrictions
+
+If firewall enabled:
+
+- Add `CAP_NET_ADMIN` capability to container
+- Generate `firewall-rules.conf` with ALLOW/DENY rules from `references/configs/firewall-rules.conf`
+- Generate `scripts/apply-firewall.sh` from `references/templates/apply-firewall.sh.tmpl`
+- Add `postStartCommand` to run firewall on every container start
+- Uncomment `{{INSTALL_FIREWALL}}`, `{{APT_FIREWALL}}`, `{{COPY_FIREWALL}}`, `{{CAP_ADD_FIREWALL}}`, `{{FIREWALL_POST_START}}`, `{{CAP_NET_ADMIN}}` placeholders
+- If deny-all: last rule is `DENY *`
+- If allow-all: last rule is `ALLOW *`
+
+Firewall rules format (first match wins):
+```
+ACTION TARGET
+# ACTION: ALLOW or DENY
+# TARGET: domain | *.domain | CIDR | IPv4 | IPv6 | * (all)
+# Root (uid 0) always exempt. DNS (port 53) always allowed.
+```
+
 ### Phase 3: Generate Files
 
 Use the templates in `references/templates/` and configurations in `references/configs/` to generate the devcontainer files.
@@ -248,6 +275,7 @@ Use the templates in `references/templates/` and configurations in `references/c
    - Configure VS Code extensions for detected languages/frameworks
    - Set up port forwarding based on detected frameworks and services
    - Add telemetry opt-out environment variables
+   - If firewall enabled: add `postStartCommand`, `capAdd: ["NET_ADMIN"]`
 
 2. `.devcontainer/Dockerfile`
    - Use template: `references/templates/Dockerfile.tmpl`
@@ -275,12 +303,21 @@ Use the templates in `references/templates/` and configurations in `references/c
    - Configure selected shell
    - Install language-specific tools
 
-5. `.devcontainer/firewall-rules.conf`
+5. `.devcontainer/firewall-rules.conf` (if firewall enabled, or Claude-only mode)
    - Use config: `references/configs/firewall-rules.conf`
+   - Format: `ACTION TARGET` (ALLOW/DENY syntax, first match wins)
    - Include domain patterns for detected package registries
    - Add cloud provider endpoints if detected
+   - Set default policy based on Q6 selection (`DENY *` or `ALLOW *`)
 
-6. Shell configuration (based on selection):
+6. `.devcontainer/scripts/apply-firewall.sh` (if firewall enabled, or Claude-only mode)
+   - Use template: `references/templates/apply-firewall.sh.tmpl`
+   - Runtime enforcement via iptables/ip6tables
+   - Root (uid 0) always exempt — system tools (apt-get, systemd) work normally
+   - System essentials hardcoded: loopback, established, DNS (port 53), DHCP
+   - Runs on every container start via `postStartCommand` (idempotent: flush + recreate)
+
+7. Shell configuration (based on selection):
    - Zsh: `.devcontainer/config/.zshrc` from `references/configs/zshrc.tmpl`
    - Fish: `.devcontainer/config/fish/config.fish` from `references/configs/config.fish.tmpl`
 
@@ -343,6 +380,7 @@ Follow the patterns documented in `references/devcontainer-patterns.md`:
 @references/templates/Dockerfile.tmpl
 @references/templates/docker-compose.yml.tmpl
 @references/templates/post-create.sh.tmpl
+@references/templates/apply-firewall.sh.tmpl
 @references/templates/minimal-claude-only/devcontainer.json
 @references/templates/minimal-claude-only/post-create.sh
 @references/configs/firewall-rules.conf

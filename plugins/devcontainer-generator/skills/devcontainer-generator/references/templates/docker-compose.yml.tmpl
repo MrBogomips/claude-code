@@ -49,6 +49,9 @@ services:
     #   - redis
     #   - mongodb
     #   - azurite
+    # {{CAP_ADD_FIREWALL}} - Add if firewall enabled:
+    # cap_add:
+    #   - NET_ADMIN
     # Keep container running
     command: sleep infinity
 

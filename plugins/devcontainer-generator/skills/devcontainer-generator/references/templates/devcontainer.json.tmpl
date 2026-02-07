@@ -9,6 +9,14 @@
   // Run post-create script
   "postCreateCommand": "/devcontainer/scripts/post-create.sh",
 
+  // {{FIREWALL_POST_START}} - Add if firewall enabled:
+  // "postStartCommand": "sudo bash /devcontainer/scripts/apply-firewall.sh /devcontainer/firewall-rules.conf",
+
+  // {{CAP_NET_ADMIN}} - Add if firewall enabled:
+  // "capAdd": [
+  //   "NET_ADMIN"
+  // ],
+
   // Features - Add/remove based on detected stack
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
