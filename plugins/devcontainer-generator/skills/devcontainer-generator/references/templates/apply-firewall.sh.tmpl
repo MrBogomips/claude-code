@@ -25,11 +25,11 @@ fi
 # -----------------------------------------------------------------------------
 # Wait for DNS readiness (network may not be ready at container start)
 # -----------------------------------------------------------------------------
-for i in {1..30}; do
-    if dig +short +timeout=1 google.com A >/dev/null 2>&1; then
+for i in $(seq 1 30); do
+    if dig +short +timeout=1 github.com A >/dev/null 2>&1; then
         break
     fi
-    if [[ $i -eq 30 ]]; then
+    if [[ "$i" -eq 30 ]]; then
         log "WARNING: DNS not ready after 30s, domain rules may be incomplete"
     fi
     sleep 1
@@ -104,7 +104,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
         iptables  -A "$CHAIN" -j "$ipt_action"
         ip6tables -A "$CHAIN" -j "$ipt_action"
         log "Default policy: $action *"
-        ((rule_count++))
+        ((++rule_count))
 
     elif [[ "$target" == \*.* ]]; then
         # Wildcard domain (*.example.com) -> resolve base domain, use /24 CIDR
@@ -114,18 +114,18 @@ while IFS= read -r line || [[ -n "$line" ]]; do
         # IPv4
         for ip in $(dig +short "$base" A 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'); do
             iptables -A "$CHAIN" -d "${ip%.*}.0/24" -j "$ipt_action"
-            ((resolved++))
+            ((++resolved))
         done
         # IPv6
         for ip in $(dig +short "$base" AAAA 2>/dev/null | grep -E '^[0-9a-fA-F:]+$'); do
             ip6tables -A "$CHAIN" -d "$ip/64" -j "$ipt_action"
-            ((resolved++))
+            ((++resolved))
         done
         if [[ $resolved -eq 0 ]]; then
             log "WARNING: Could not resolve $base (for $target)"
         fi
         log "Rule: $action $target (wildcard, $resolved IPs)"
-        ((rule_count++))
+        ((++rule_count))
 
     elif [[ "$target" =~ / ]]; then
         # CIDR notation (e.g. 10.0.0.0/8, fd00::/8)
@@ -135,7 +135,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
             iptables -A "$CHAIN" -d "$target" -j "$ipt_action"
         fi
         log "Rule: $action $target (CIDR)"
-        ((rule_count++))
+        ((++rule_count))
 
     else
         # Domain or plain IP -> resolve
@@ -143,18 +143,18 @@ while IFS= read -r line || [[ -n "$line" ]]; do
         # IPv4
         for ip in $(dig +short "$target" A 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'); do
             iptables -A "$CHAIN" -d "$ip" -j "$ipt_action"
-            ((resolved++))
+            ((++resolved))
         done
         # IPv6
         for ip in $(dig +short "$target" AAAA 2>/dev/null | grep -E '^[0-9a-fA-F:]+$'); do
             ip6tables -A "$CHAIN" -d "$ip" -j "$ipt_action"
-            ((resolved++))
+            ((++resolved))
         done
         if [[ $resolved -eq 0 ]]; then
             log "WARNING: Could not resolve $target"
         fi
         log "Rule: $action $target ($resolved IPs)"
-        ((rule_count++))
+        ((++rule_count))
     fi
 done < "$RULES_FILE"
 

@@ -15,7 +15,7 @@
       "name": "devcontainer-generator",
       "source": "./plugins/devcontainer-generator",
       "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "name": "example-agents",
