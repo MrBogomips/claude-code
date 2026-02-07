@@ -1,7 +1,6 @@
 ---
 name: devcontainer-generator
-description: Use this skill whenever the user wants to create, configure, set up, modify, or generate a devcontainer, dev container, development container, or containerized development environment. Triggers include any mention of "devcontainer", ".devcontainer", "dev container", "devcontainer.json", "development container", Docker-based development setup, VS Code Remote Containers, GitHub Codespaces configuration, or reproducible development environments. Also trigger when the user asks to containerize a project for development, set up a Docker development workflow, create a consistent development environment, configure a project to run in a container, prepare the workspace or repository for containerized development, or generate Docker Compose configurations specifically for development purposes. This skill analyzes repository tech stack to detect languages, frameworks, package managers, and services to create production-ready .devcontainer configurations with Dockerfile, Docker Compose, shell configurations, firewall rules, and optional developer tools like Claude Code integration. Do NOT use for production Docker deployments, CI/CD pipeline Docker configurations, or general Docker questions unrelated to development environments.
-allowed-tools: Read, Grep, Glob, WebFetch
+description: Generate or configure .devcontainer setups by analyzing repository tech stack. Triggers on devcontainer, dev container, devcontainer.json, development container, containerized development environment, VS Code Remote Containers, GitHub Codespaces, Docker-based development setup, reproducible development environment. Produces Dockerfile, Docker Compose, post-create scripts, shell configs, firewall rules, and Claude Code integration. Not for production Docker, CI/CD pipelines, or general Docker questions.
 user-invokable: true
 context: fork
 disable-model-invocation: true
@@ -115,10 +114,13 @@ Ask: "What do you want to use this devcontainer for?"
 
 If "Claude Code execution only" selected:
 
-- Generate minimal devcontainer using `references/templates/minimal-claude-only/`
-- Install Claude Code with ccyolo alias
-- Optionally install CCometixLine if selected
-- **Firewall enabled by default**: runtime iptables enforcement via `apply-firewall.sh`, deny-all-except-whitelist policy
+- Use the same templates as full mode (`devcontainer.json.tmpl`, `Dockerfile.tmpl`, `docker-compose.yml.tmpl`, `post-create.sh.tmpl`) with these settings:
+  - **Base image**: keep default `mcr.microsoft.com/devcontainers/base:ubuntu`
+  - **Dockerfile**: activate only `{{APT_FIREWALL}}` and `{{COPY_FIREWALL}}`
+  - **docker-compose.yml**: devcontainer service only, no database services
+  - **devcontainer.json**: activate `{{FIREWALL_POST_START}}`, `{{CAP_NET_ADMIN}}`, basic features (common-utils, git, node)
+  - **post-create.sh**: activate `{{INSTALL_FIREWALL}}`, `{{INSTALL_CLAUDE}}`, `{{ALIAS_CCYOLO}}`, `{{VERIFY_CLAUDE}}`, `{{CLAUDE_USAGE_HINT}}`
+- **Firewall**: enabled by default with deny-all policy
 - Generate `firewall-rules.conf` (ALLOW/DENY format) and `scripts/apply-firewall.sh`
 - Container gets `CAP_NET_ADMIN` and `postStartCommand` for firewall enforcement
 - Provide shell commands to attach:
@@ -195,15 +197,13 @@ After analysis, ask the user about their preferences using the AskUserQuestion t
 
 **Q1: Agentic Coding Assistant** (multiSelect: false)
 
-- Claude Code with CCometixLine (Recommended) - Full integration with statusline
-- Claude Code only - Basic installation without statusline
+- Claude Code (Recommended) - Install with ccyolo alias
 - None - I'll configure my own agentic coder
 - Other agentic coder - Provide customization guidance
 
-If "Claude Code with CCometixLine" or "Claude Code only" selected:
+If "Claude Code" selected:
 
 - Add ccyolo alias automatically
-- Mount ~/.claude from host for configuration persistence
 - Show what will be installed
 
 If "Other agentic coder" selected:
@@ -299,8 +299,7 @@ Use the templates in `references/templates/` and configurations in `references/c
 4. `.devcontainer/scripts/post-create.sh`
    - Use template: `references/templates/post-create.sh.tmpl`
    - Include Claude Code installation based on Q1 selection:
-     - If CCometixLine: Install Claude Code + npm install -g @cometix/ccline + configure settings.json
-     - If Claude Code only: Install Claude Code
+     - If Claude Code: Install Claude Code
      - If Other: Add customization section with examples
    - Add ccyolo alias if Claude Code selected
    - Configure selected shell
@@ -334,14 +333,13 @@ Use the templates in `references/templates/` and configurations in `references/c
 - `{{PNPM_VERSION}}` - Detected or default pnpm version (9)
 
 **Claude Code Installation Block:**
-If Claude Code selected (with or without CCometixLine):
+If Claude Code selected:
 
 1. Install Claude Code via official script
-2. If CCometixLine selected:
-   - Install via npm: `npm install -g @cometix/ccline`
-   - Configure Claude Code settings.json with statusline
-3. Add ccyolo alias to shell config
-4. Verify installation in summary output
+2. Add ccyolo alias to shell config
+3. Verify installation in summary output
+
+For Claude-only mode, use the same templates with fewer placeholders activated (see Phase 1b).
 
 **Other Agentic Coder Customization:**
 If "Other agentic coder" selected, add this section to post-create.sh:
@@ -384,8 +382,6 @@ Follow the patterns documented in `references/devcontainer-patterns.md`:
 @references/templates/docker-compose.yml.tmpl
 @references/templates/post-create.sh.tmpl
 @references/templates/apply-firewall.sh.tmpl
-@references/templates/minimal-claude-only/devcontainer.json
-@references/templates/minimal-claude-only/post-create.sh
 @references/configs/firewall-rules.conf
 @references/configs/zshrc.tmpl
 @references/configs/config.fish.tmpl
