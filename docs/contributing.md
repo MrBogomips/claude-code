@@ -124,35 +124,7 @@ When creating plugins, consider these categories:
 | Productivity | Workflow automation, shortcuts |
 | Learning | Tutorials, explanations, best practices |
 
-## Component Guidelines
-
-### Commands
-
-- Use clear, descriptive names
-- Support optional arguments where sensible
-- Provide helpful error messages
-- Document all arguments
-
-### Agents
-
-- Define a clear purpose
-- Limit tool access to what's needed
-- Include detailed system prompts
-- Specify the appropriate model
-
-### Skills
-
-- Focus on reusable knowledge
-- Organize with references for detailed content
-- Make them user-invocable when appropriate
-- Include practical examples
-
-### Hooks
-
-- Use appropriate events
-- Keep prompts concise and focused
-- Test thoroughly to avoid blocking legitimate actions
-- Document any side effects
+For component-specific guidelines (commands, agents, skills, hooks), see the [official plugin development docs](https://docs.anthropic.com/en/docs/claude-code/plugins).
 
 ## Questions?
 

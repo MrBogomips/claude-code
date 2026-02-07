@@ -8,6 +8,8 @@ title: Devcontainer Generator
 
 A Claude Code plugin that generates production-ready `.devcontainer` configurations by analyzing your repository's tech stack.
 
+> For details on skills in Claude Code, see the [official documentation](https://docs.anthropic.com/en/docs/claude-code/plugins).
+
 ## What it does
 
 The skill examines your repository, detects languages, frameworks, package managers, and services, then generates a complete `.devcontainer/` directory. The process has four phases:
@@ -97,17 +99,6 @@ devcontainer exec --workspace-folder . /bin/zsh
 ```
 
 Or in VS Code: Command Palette > "Dev Containers: Attach to Running Container".
-
-## Skill frontmatter reference
-
-The skill definition includes several frontmatter options that control its behavior:
-
-| Option | Value | Meaning |
-|--------|-------|---------|
-| `user-invokable` | `true` | The skill appears as a slash command (`/devcontainer-generator`) and can be invoked by the user directly. |
-| `disable-model-invocation` | `true` | The model never auto-triggers this skill. Generation only starts when you explicitly ask for it. |
-| `context` | `fork` | The skill runs in a forked (isolated) context, so it does not pollute the main conversation with intermediate analysis. |
-| `allowed-tools` | `Read, Grep, Glob, WebFetch` | During the analysis phase, the skill is limited to read-only operations. It cannot write files or run commands until the generation phase. |
 
 ## Installation
 

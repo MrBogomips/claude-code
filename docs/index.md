@@ -11,88 +11,30 @@ A collection of developer tools and plugins for [Claude Code](https://claude.com
 
 ## Overview
 
-This marketplace provides a curated set of plugins that extend Claude Code's capabilities with:
-
-- **Slash Commands** - Quick actions invoked with `/plugin:command`
-- **Custom Agents** - Specialized subagents for complex tasks
-- **Skills** - Reusable knowledge and workflows
-- **Hooks** - Event-driven automation
+This marketplace provides plugins that extend Claude Code with custom agents, skills, and hooks. For an introduction to Claude Code plugins, see the [official documentation](https://docs.anthropic.com/en/docs/claude-code/plugins).
 
 ## Available Plugins
 
 | Plugin | Description | Components |
 |--------|-------------|------------|
-| [Devcontainer Generator](/skills/devcontainer-generator) | Generate production-ready devcontainer configurations | Skills |
-| [Example Commands](/commands/example-commands) | Example slash commands demonstrating command patterns | Commands |
-| [Example Agents](/agents/example-agents) | Example custom agents demonstrating agent patterns | Agents |
-| [Example Skills](/skills/example-skills) | Example skills demonstrating skill patterns | Skills |
-| [Example Hooks](/hooks/example-hooks) | Example hooks demonstrating event-driven patterns | Hooks |
+| [Devcontainer Generator](/devcontainer-generator) | Generate production-ready devcontainer configurations | Skills |
+| [Example Agents](/example-agents) | Example custom agents demonstrating agent patterns | Agents |
+| [Example Skills](/example-skills) | Example skills demonstrating skill patterns | Skills |
+| [Example Hooks](/example-hooks) | Example hooks demonstrating event-driven patterns | Hooks |
 
 ## Installation
 
-### Using the Marketplace
-
-Add this marketplace to your Claude Code configuration:
-
 ```bash
-# Install from GitHub
+# Install the marketplace
 claude plugins install github:MrBogomips/claude-code
 ```
 
-### Using Individual Plugins
-
-Install a specific plugin:
-
-```bash
-# From local path
-claude --plugin-dir ./plugins/example-commands
-
-# Add to project settings (.claude/settings.local.json)
-{
-  "plugins": ["./plugins/example-commands"]
-}
-```
-
-## Usage
-
-Once installed, plugins are available immediately:
-
-```
-# Commands
-/example-commands:hello
-/example-commands:review-code src/app.ts
-
-# Skills
-/example-skills:code-quality
-```
-
-Agents are invoked automatically by Claude when appropriate, or explicitly via the Task tool.
-
-## Plugin Structure
-
-Every plugin follows this structure:
-
-```
-plugins/my-plugin/
-├── .claude-plugin/
-│   └── plugin.json      # Required: plugin manifest
-├── commands/            # Optional: slash commands
-│   └── my-command.md
-├── agents/              # Optional: custom agents
-│   └── my-agent/
-│       └── AGENT.md
-├── skills/              # Optional: skills
-│   └── my-skill/
-│       └── SKILL.md
-├── hooks/               # Optional: event hooks
-│   └── hooks.json
-└── README.md            # Required: documentation
-```
+For individual plugin installation and usage details, see the [official plugin docs](https://docs.anthropic.com/en/docs/claude-code/plugins).
 
 ## Resources
 
-- [Claude Code Documentation](https://code.claude.com/docs)
-- [Plugin Development Guide](https://code.claude.com/docs/en/plugins)
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
+- [Plugin Development Guide](https://docs.anthropic.com/en/docs/claude-code/plugins)
 - [GitHub Repository](https://github.com/MrBogomips/claude-code)
 
 ## Author

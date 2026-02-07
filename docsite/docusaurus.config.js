@@ -61,24 +61,27 @@ const config = {
             label: 'Home',
           },
           {
-            to: '/skills',
-            label: 'Skills',
+            type: 'dropdown',
+            label: 'Plugins',
             position: 'left',
-          },
-          {
-            to: '/agents',
-            label: 'Agents',
-            position: 'left',
-          },
-          {
-            to: '/commands',
-            label: 'Commands',
-            position: 'left',
-          },
-          {
-            to: '/hooks',
-            label: 'Hooks',
-            position: 'left',
+            items: [
+              {
+                to: '/devcontainer-generator',
+                label: 'Devcontainer Generator',
+              },
+              {
+                to: '/example-agents',
+                label: 'Example Agents',
+              },
+              {
+                to: '/example-skills',
+                label: 'Example Skills',
+              },
+              {
+                to: '/example-hooks',
+                label: 'Example Hooks',
+              },
+            ],
           },
           {
             to: '/contributing',
@@ -104,12 +107,12 @@ const config = {
                 to: '/',
               },
               {
-                label: 'Skills',
-                to: '/skills',
+                label: 'Devcontainer Generator',
+                to: '/devcontainer-generator',
               },
               {
-                label: 'Agents',
-                to: '/agents',
+                label: 'Example Plugins',
+                to: '/example-agents',
               },
             ],
           },
@@ -118,11 +121,11 @@ const config = {
             items: [
               {
                 label: 'Claude Code Docs',
-                href: 'https://code.claude.com/docs',
+                href: 'https://docs.anthropic.com/en/docs/claude-code',
               },
               {
                 label: 'Plugin Development',
-                href: 'https://code.claude.com/docs/en/plugins',
+                href: 'https://docs.anthropic.com/en/docs/claude-code/plugins',
               },
             ],
           },
