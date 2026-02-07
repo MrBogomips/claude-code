@@ -140,7 +140,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright \u00a9 ${new Date().getFullYear()} Mr Bogomips. Built with Docusaurus.`,
+        copyright: `Copyright \u00a9 ${new Date().getFullYear()} Mr Bogomips.`,
       },
       prism: {
         additionalLanguages: ['bash', 'json', 'yaml', 'docker'],
