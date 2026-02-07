@@ -21,7 +21,7 @@ This skill automatically:
    - Falls back to Universal template when no match
 
 3. **Asks about your preferences**:
-   - Agentic coding assistant (Claude Code with CCometixLine, Claude Code only, or other)
+   - Agentic coding assistant (Claude Code or other)
    - Developer tools (GitHub CLI, fzf, httpie)
    - Shell preference (Zsh with Oh My Zsh, Fish, Bash)
    - Which detected services to include
@@ -67,22 +67,9 @@ devcontainer exec --workspace-folder . /bin/zsh
 
 ## Agentic Coding Integration
 
-### Claude Code with CCometixLine (Recommended)
+### Claude Code
 
-Full integration with statusline for enhanced visibility:
-
-- Installs Claude Code via official script
-- Installs CCometixLine (`npm install -g @cometix/ccline`)
-- Configures statusline in `~/.claude/settings.json`
-- Adds `ccyolo` alias for quick access
-
-### Claude Code Only
-
-Basic installation without statusline:
-
-- Installs Claude Code via official script
-- Mounts `~/.claude` for configuration persistence
-- Adds `ccyolo` alias
+Installs Claude Code via the official installer script and adds the `ccyolo` alias.
 
 ### Other Agentic Coders
 

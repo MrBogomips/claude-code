@@ -77,6 +77,9 @@ mkdir -p ~/.local/bin 2>/dev/null || sudo mkdir -p ~/.local/bin && sudo chown -R
 if ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' ~/.bashrc 2>/dev/null; then
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 fi
+if ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' ~/.zshrc 2>/dev/null; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+fi
 
 # {{PATH_DOTNET}} - Add if .NET detected:
 # if ! grep -q 'export PATH="$HOME/.dotnet/tools:$PATH"' ~/.bashrc 2>/dev/null; then
@@ -84,46 +87,9 @@ fi
 # fi
 
 # -----------------------------------------------------------------------------
-# Claude Code + CCometixLine Installation
+# Claude Code Installation
 # -----------------------------------------------------------------------------
-# {{INSTALL_CLAUDE_FULL}} - Add if Claude Code with CCometixLine selected:
-# log "Installing Claude Code..."
-# curl -fsSL https://claude.ai/install.sh | bash || {
-#     log "  Warning: Claude Code installation failed, continuing..."
-# }
-#
-# if command -v claude &> /dev/null; then
-#     log "  Claude Code installed: $(claude --version 2>/dev/null || echo 'version unknown')"
-# elif [[ -x "$HOME/.local/bin/claude" ]]; then
-#     log "  Claude Code installed to ~/.local/bin"
-# else
-#     log "  Warning: Claude Code not found after installation"
-# fi
-#
-# log "Installing CCometixLine..."
-# npm install -g @cometix/ccline || {
-#     log "  Warning: CCometixLine installation failed"
-# }
-#
-# # Configure Claude Code statusline
-# mkdir -p ~/.claude
-# if [[ ! -f ~/.claude/settings.json ]]; then
-#     cat > ~/.claude/settings.json << 'SETTINGS'
-# {
-#   "statusLine": {
-#     "type": "command",
-#     "command": "~/.claude/ccline/ccline",
-#     "padding": 0
-#   }
-# }
-# SETTINGS
-#     log "  CCometixLine configured in ~/.claude/settings.json"
-# else
-#     log "  ~/.claude/settings.json already exists, skipping CCometixLine configuration"
-#     log "  To enable CCometixLine, add the statusLine configuration manually"
-# fi
-
-# {{INSTALL_CLAUDE}} - Add if Claude Code only selected (without CCometixLine):
+# {{INSTALL_CLAUDE}} - Add if Claude Code selected:
 # log "Installing Claude Code..."
 #
 # curl -fsSL https://claude.ai/install.sh | bash || {
@@ -371,11 +337,6 @@ fi
 #     echo "Claude Code: installed (in ~/.local/bin)"
 # fi
 
-# {{VERIFY_CCOMETIXLINE}} - Add if CCometixLine selected:
-# if command -v ccline &> /dev/null; then
-#     echo "CCometixLine: $(ccline --version 2>/dev/null || echo 'installed')"
-# fi
-
 # {{VERIFY_FZF}} - Add if fzf selected:
 # if command -v fzf &> /dev/null; then
 #     echo "fzf: $(fzf --version)"
@@ -385,6 +346,13 @@ fi
 # if command -v http &> /dev/null; then
 #     echo "httpie: $(http --version)"
 # fi
+
+# {{CLAUDE_USAGE_HINT}} - Add if Claude Code selected:
+# echo "To start using Claude Code:"
+# echo "  claude"
+# echo ""
+# echo "Or with skip permissions:"
+# echo "  ccyolo"
 
 echo ""
 # {{SERVICES_SUMMARY}} - Add based on selected services:

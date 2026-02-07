@@ -6,33 +6,11 @@ title: Claude Code Integration
 
 # Claude Code Integration
 
-The generator supports three levels of agentic coding assistant integration.
+The generator supports two levels of agentic coding assistant integration.
 
-## Claude Code with CCometixLine
+## Claude Code
 
-The recommended option. This installs Claude Code and adds [CCometixLine](https://www.npmjs.com/package/@cometix/ccline) for an enhanced statusline.
-
-**What gets installed:**
-
-1. Claude Code via the official installer script (`curl -fsSL https://claude.ai/install.sh | bash`)
-2. CCometixLine via npm (`npm install -g @cometix/ccline`)
-3. Claude Code settings.json with statusline configuration:
-
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/ccline/ccline",
-    "padding": 0
-  }
-}
-```
-
-The settings file is only created if `~/.claude/settings.json` does not already exist. If it does, a log message tells you to configure CCometixLine manually.
-
-## Claude Code only
-
-Installs Claude Code without the statusline. Same installer script, same bind mount, same `ccyolo` alias -- just no CCometixLine.
+The recommended option. Installs Claude Code via the official installer script and adds the `ccyolo` alias.
 
 ## Other agentic coders
 
@@ -51,25 +29,6 @@ If you select "Other agentic coder", the generator adds a commented-out customiz
 
 Uncomment and modify as needed.
 
-## The `.claude` bind mount
-
-When Claude Code is selected (either option), the generator adds a bind mount from `~/.claude` on your host to `/home/vscode/.claude` inside the container:
-
-```json
-"mounts": [
-  "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached"
-]
-```
-
-This means the following persist across container rebuilds:
-
-- API keys and authentication tokens
-- Claude Code settings (`settings.json`)
-- Conversation history
-- Installed plugins and plugin settings
-
-The directory must exist on your host before starting the container. If it does not exist, Docker will create it as a root-owned directory, which may cause permission issues.
-
 ## The `ccyolo` alias
 
 When Claude Code is selected, the generator adds the following alias to both `.bashrc` and `.zshrc`:
@@ -86,10 +45,10 @@ For empty folders or when you only need Claude Code without a full development e
 
 ### What gets generated
 
-The minimal mode produces a simpler set of files:
+The minimal mode uses the same file structure as full mode (`Dockerfile`, `docker-compose.yml`, `devcontainer.json`, `post-create.sh`) but with the `mcr.microsoft.com/devcontainers/base:ubuntu` image, no database services, and fewer activated placeholders. Includes the `common-utils`, `git`, and `node` features.
 
-- **devcontainer.json** -- uses `mcr.microsoft.com/devcontainers/base:ubuntu` directly (no Dockerfile or docker-compose.yml). Includes the `common-utils`, `git`, and `node` features.
-- **post-create.sh** -- installs firewall prerequisites, Git configuration, Claude Code, shell aliases, and runs environment verification.
+Additional files:
+
 - **firewall-rules.conf** -- same default whitelist as the full mode.
 - **scripts/apply-firewall.sh** -- same firewall script as the full mode.
 

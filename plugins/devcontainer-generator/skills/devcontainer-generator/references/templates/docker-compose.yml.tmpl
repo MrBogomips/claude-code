@@ -12,8 +12,6 @@ services:
     volumes:
       # Workspace mount
       - ..:/workspaces/{{PROJECT_NAME}}:cached
-      # {{VOLUME_CLAUDE}} - Add if Claude Code selected:
-      # - ~/.claude:/home/vscode/.claude:cached
       # Named volumes for caches
       # {{VOLUME_NUGET}} - Add if .NET detected:
       # - devcontainer-{{PROJECT_NAME}}-nuget:/home/vscode/.nuget

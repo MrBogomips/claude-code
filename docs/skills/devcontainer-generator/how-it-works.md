@@ -46,7 +46,7 @@ After analysis, the skill asks six questions to customize the generated configur
 
 | # | Topic | Type |
 |---|-------|------|
-| Q1 | Agentic coding assistant (Claude Code with CCometixLine, Claude Code only, none, other) | Single-select |
+| Q1 | Agentic coding assistant (Claude Code, none, other) | Single-select |
 | Q2 | Developer tools (gh, fzf, httpie, ripgrep) | Multi-select |
 | Q3 | Shell preference (Zsh + Oh My Zsh, Fish, Bash) | Single-select |
 | Q4 | Detected services and storage emulators to include | Multi-select |
@@ -57,6 +57,6 @@ Q4 and Q5 only appear when services or versions were detected during Phase 1. Se
 
 ## Phase 3: File generation
 
-The skill resolves a set of internal templates against your detected stack and preference answers to produce the final configuration files. Conditional sections are included or excluded based on your choices — for example, selecting deny-all firewall adds post-start enforcement rules, while choosing Claude Code with CCometixLine adds the full installation block to `post-create.sh`.
+The skill resolves a set of internal templates against your detected stack and preference answers to produce the final configuration files. Conditional sections are included or excluded based on your choices — for example, selecting deny-all firewall adds post-start enforcement rules, while choosing Claude Code adds the installation block to `post-create.sh`.
 
 The complete set of generated files is documented in [Generated Files](generated-files.md).

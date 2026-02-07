@@ -239,43 +239,14 @@ mongodb:
 ## Claude Code Integration
 
 When Claude Code is selected:
-1. Mount `~/.claude` from host for configuration persistence
-2. Install via official script in post-create.sh
-3. Add `ccyolo` alias if selected
-
-```json
-"mounts": [
-  "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached"
-]
-```
+1. Install via official script in post-create.sh
+2. Add `ccyolo` alias
 
 ```bash
 # In post-create.sh
 curl -fsSL https://claude.ai/install.sh | bash
 alias ccyolo="claude --dangerously-skip-permissions"
 ```
-
-## CCometixLine Integration
-
-CCometixLine provides a statusline integration for Claude Code. When selected:
-
-1. Install via npm after Claude Code installation:
-```bash
-npm install -g @cometix/ccline
-```
-
-2. Configure Claude Code settings.json:
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/ccline/ccline",
-    "padding": 0
-  }
-}
-```
-
-3. Only configure if settings.json doesn't already exist (preserve user customizations)
 
 ## Other Agentic Coders
 

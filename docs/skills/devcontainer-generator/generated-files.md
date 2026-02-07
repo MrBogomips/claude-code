@@ -41,7 +41,6 @@ The main configuration file that ties everything together.
 - **`forwardPorts`** -- port forwarding for detected frameworks and services
 - **`portsAttributes`** -- labels and auto-forward behavior per port
 - **`containerEnv`** -- telemetry opt-out variables and development mode flags
-- **`mounts`** -- bind mount for `~/.claude` (if Claude Code selected)
 - **`remoteUser`** -- `vscode`
 
 ### Port forwarding defaults
@@ -109,7 +108,6 @@ Defines the main `devcontainer` service and any infrastructure services you sele
 **Main service features:**
 
 - Workspace volume mount: `..:/workspaces/{{PROJECT_NAME}}:cached`
-- Optional `~/.claude` bind mount for Claude Code
 - Named volumes for package manager caches (NuGet, pnpm, npm, yarn)
 - Connection string environment variables for each selected service
 - `depends_on` for selected services
@@ -129,7 +127,7 @@ A lifecycle script that runs once when the container is first created (`postCrea
 2. **Git configuration** -- credential helper, autocrlf, default branch, color, pull/push behavior
 3. **Shell configuration** -- copies `.zshrc` or `config.fish` to home directory
 4. **PATH setup** -- ensures `~/.local/bin` is in PATH, optionally adds `~/.dotnet/tools`
-5. **Claude Code installation** -- installs Claude Code and optionally CCometixLine (see [Claude Code Integration](claude-integration.md))
+5. **Claude Code installation** -- installs Claude Code (see [Claude Code Integration](claude-integration.md))
 6. **Agentic coder customization** -- commented-out examples for Aider, Continue, Cline/Roo Code
 7. **.NET tools** -- installs `dotnet-ef` and `dotnet-outdated-tool` (if .NET detected)
 8. **Development certificates** -- `dotnet dev-certs https --trust` (if .NET detected)

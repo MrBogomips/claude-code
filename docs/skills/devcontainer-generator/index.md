@@ -117,5 +117,5 @@ Add the plugin marketplace `MrBogomips/claude-code` and install the `devcontaine
 
 - [How It Works](how-it-works.md) -- the full generation pipeline
 - [Network Firewall](firewall.md) -- deny-all-except-whitelist network isolation
-- [Claude Code Integration](claude-integration.md) -- bind mounts, aliases, and agentic coders
+- [Claude Code Integration](claude-integration.md) -- aliases and agentic coders
 - [Customization](customization.md) -- extension points for generated files
