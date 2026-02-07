@@ -32,3 +32,8 @@ Thumbs.db
 
 # Serena
 .serena/
+
+# Docusaurus
+docsite/node_modules/
+docsite/.docusaurus/
+docsite/build/
