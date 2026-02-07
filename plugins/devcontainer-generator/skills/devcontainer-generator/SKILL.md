@@ -1,7 +1,6 @@
 ---
 name: devcontainer-generator
-description: This skill should be used when the user asks to create a devcontainer, set up a dev container, generate a development container configuration, or containerize a project for development. Analyzes repository tech stack to detect languages, frameworks, package managers, and services to create production-ready .devcontainer configurations with Docker Compose, shell configurations, and optional developer tools.
-user_invocable: true
+description: Use this skill whenever the user wants to create, configure, set up, modify, or generate a devcontainer, dev container, development container, or containerized development environment. Triggers include any mention of "devcontainer", ".devcontainer", "dev container", "devcontainer.json", "development container", Docker-based development setup, VS Code Remote Containers, GitHub Codespaces configuration, or reproducible development environments. Also trigger when the user asks to containerize a project for development, set up a Docker development workflow, create a consistent development environment, configure a project to run in a container, prepare the workspace or repository for containerized development, or generate Docker Compose configurations specifically for development purposes. This skill analyzes repository tech stack to detect languages, frameworks, package managers, and services to create production-ready .devcontainer configurations with Dockerfile, Docker Compose, shell configurations, firewall rules, and optional developer tools like Claude Code integration. Do NOT use for production Docker deployments, CI/CD pipeline Docker configurations, or general Docker questions unrelated to development environments.
 ---
 
 # Devcontainer Generator
