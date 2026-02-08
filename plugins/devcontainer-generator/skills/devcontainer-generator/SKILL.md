@@ -234,7 +234,9 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
 
 3. **Read reference data** from loaded stack/service/tool files and **compose** the final content by replacing template placeholders with assembled content blocks.
 
-4. **Generate these 7 files**:
+4. **IMPORTANT — remoteUser**: The `remoteUser` MUST always be `"vscode"`. The `common-utils:2` feature guarantees this user exists regardless of base image. Never use image-specific users (`node`, `python`, etc.) as `remoteUser` — they may not survive feature layering.
+
+5. **Generate these 7 files**:
 
    **a. `.devcontainer/devcontainer.json`**
    - Replace `{{PROJECT_NAME}}` with CWD directory name (kebab-case)
@@ -289,7 +291,7 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
    - If MCP servers selected: add MCP configuration section with install commands, `.mcp.json` example, required API keys
    - Fill in customization instructions
 
-5. After generation, display a summary of what was created and suggest next steps:
+6. After generation, display a summary of what was created and suggest next steps:
    - Open in VS Code / Rebuild container
    - Review firewall rules
    - Check DEVCONTAINER.md for service credentials and host binding

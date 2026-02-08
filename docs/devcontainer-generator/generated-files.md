@@ -1,172 +1,276 @@
 ---
-sidebar_position: 4
-sidebar_label: Generated Files
-title: Generated Files Reference
+sidebar_position: 7
+title: Generated Files
 ---
 
-# Generated Files Reference
+# Generated Files
 
-The generator produces the following directory structure inside `.devcontainer/`:
+The devcontainer generator produces 7 files inside `.devcontainer/`. Each file is built from a template skeleton (`references/templates/*.tmpl`) with `{{PLACEHOLDER}}` markers replaced by content assembled from your selected stack, service, and tool reference files.
 
 ```
 .devcontainer/
-  devcontainer.json
-  Dockerfile
-  docker-compose.yml
-  firewall-rules.conf          # if firewall enabled
-  scripts/
-    post-create.sh
-    apply-firewall.sh           # if firewall enabled
-  config/
-    .zshrc                      # if Zsh selected
-    fish/
-      config.fish               # if Fish selected
+├── devcontainer.json         # Container config, extensions, ports, lifecycle
+├── Dockerfile                # Base image, system deps, runtime layers
+├── docker-compose.yml        # App container + infrastructure services
+├── firewall-rules.conf       # Domain allowlist / denylist
+├── scripts/
+│   ├── post-create.sh        # Git, tools, aliases, deps — runs once after build
+│   └── apply-firewall.sh     # iptables enforcement — runs on every start
+└── DEVCONTAINER.md           # Human-readable config summary
 ```
+
+---
 
 ## devcontainer.json
 
-The main configuration file that ties everything together.
+The central configuration file read by VS Code Remote Containers and GitHub Codespaces.
 
-**Key sections:**
+### Key Sections
 
-- **`dockerComposeFile`** -- points to `docker-compose.yml`
-- **`service`** -- `devcontainer` (the main service)
-- **`workspaceFolder`** -- `/workspaces/{{PROJECT_NAME}}`
-- **`postCreateCommand`** -- runs `post-create.sh` once after container creation
-- **`postStartCommand`** -- runs `apply-firewall.sh` on every container start (if firewall enabled)
-- **`capAdd`** -- `["NET_ADMIN"]` (if firewall enabled)
-- **`features`** -- official devcontainer features (`common-utils`, `git`, `docker-outside-of-docker`, optionally `azure-cli`, `github-cli`)
-- **`customizations.vscode.extensions`** -- VS Code extensions matched to detected stack
-- **`customizations.vscode.settings`** -- editor settings (format on save, tab size, default terminal)
-- **`forwardPorts`** -- port forwarding for detected frameworks and services
-- **`portsAttributes`** -- labels and auto-forward behavior per port
-- **`containerEnv`** -- telemetry opt-out variables and development mode flags
-- **`remoteUser`** -- `vscode`
+| Section | Purpose |
+|---------|---------|
+| `dockerComposeFile` / `service` | Points to `docker-compose.yml` and the `devcontainer` service |
+| `workspaceFolder` | `/workspaces/{{PROJECT_NAME}}` |
+| `postCreateCommand` | Runs `scripts/post-create.sh` once after container build |
+| `postStartCommand` | Runs `apply-firewall.sh` on every container start |
+| `capAdd: ["NET_ADMIN"]` | Required for firewall (always present) |
+| `features` | Devcontainer features: common-utils, git, github-cli, docker-outside-of-docker, plus stack-specific features |
+| `customizations.vscode.extensions` | Common + stack-specific + service-specific extensions |
+| `customizations.vscode.settings` | Editor defaults (formatOnSave, tabSize, trimWhitespace, zsh shell) |
+| `forwardPorts` | Framework and service ports |
+| `portsAttributes` | Port labels and auto-forward behavior |
+| `containerEnv` | Telemetry opt-out and development mode variables |
+| `remoteUser` | `vscode` |
 
-### Port forwarding defaults
+### Template Placeholders
 
-| Framework/Service | Port | Auto-forward |
-|-------------------|------|-------------|
-| Next.js | 3000 | notify |
-| Angular | 4200 | notify |
-| Vite | 5173 | notify |
-| Storybook | 6006 | notify |
-| .NET API | 5000-5001 | notify |
-| PostgreSQL | 5432 | silent |
-| RabbitMQ | 5672, 15672 | silent |
-| Redis | 6379 | silent |
-| MongoDB | 27017 | silent |
-| Azurite | 10000-10002 | silent |
+| Placeholder | Source |
+|-------------|--------|
+| `{{PROJECT_NAME}}` | CWD directory name (kebab-case) |
+| `{{FEATURES}}` | Stack-specific devcontainer features (e.g., `azure-cli`) |
+| `{{EXTENSIONS}}` | Stack and service VS Code extension IDs |
+| `{{SETTINGS}}` | Stack-specific editor settings |
+| `{{PORTS}}` | Framework dev ports + service ports |
+| `{{PORT_ATTRS}}` | Port labels and auto-forward config |
+| `{{CONTAINER_ENV}}` | Telemetry opt-out environment variables |
+| `{{REMOTE_ENV}}` | Project-specific environment variables |
 
-### Telemetry opt-out
+### Customization
 
-The following environment variables are set by default:
+- **Add extensions**: append extension IDs to the `extensions` array
+- **Add features**: add entries to the `features` object (use `ghcr.io/devcontainers/features/` only)
+- **Change ports**: modify `forwardPorts` and `portsAttributes`
+- **Add environment variables**: add to `containerEnv` or `remoteEnv`
 
-```json
-{
-  "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
-  "NEXT_TELEMETRY_DISABLED": "1",
-  "NG_CLI_ANALYTICS": "false",
-  "GATSBY_TELEMETRY_DISABLED": "1",
-  "NUXT_TELEMETRY_DISABLED": "1",
-  "HOMEBREW_NO_ANALYTICS": "1"
-}
-```
+---
 
 ## Dockerfile
 
-A multi-section Dockerfile that always uses a Microsoft devcontainer base image.
+Defines the container image build. Always generated (even for simple stacks) to provide a customization point.
 
-**Base image selection:**
+### Structure
 
-| Primary stack | Base image |
-|--------------|------------|
-| .NET | `mcr.microsoft.com/devcontainers/dotnet:{{DOTNET_VERSION}}` |
-| Node.js | `mcr.microsoft.com/devcontainers/javascript-node:{{NODE_VERSION}}` |
-| Python | `mcr.microsoft.com/devcontainers/python:{{PYTHON_VERSION}}` |
-| Go | `mcr.microsoft.com/devcontainers/go:latest` |
-| Rust | `mcr.microsoft.com/devcontainers/rust:latest` |
-| Multi-stack / Unknown | `mcr.microsoft.com/devcontainers/universal:2` |
+```dockerfile
+FROM {{BASE_IMAGE}} AS base
 
-**Sections in order:**
+# System dependencies (always included)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential curl wget gnupg2 ca-certificates lsb-release jq \
+    iptables dnsutils \        # Firewall prerequisites (always)
+    {{APT_EXTRA}} \            # Stack/service client packages
+    && apt-get clean
 
-1. Base image selection
-2. System dependencies (`apt-get install` -- build-essential, curl, shells, optionally iptables/dnsutils)
-3. Node.js installation (if detected as secondary runtime)
-4. Package manager installation (pnpm, yarn)
-5. Framework CLI installation (Angular CLI)
-6. Python/Go/Rust installation (if secondary)
-7. Copy configuration files and scripts
-8. Set default shell
+{{RUNTIME_LAYERS}}             # Additional runtime installations
 
-The Dockerfile uses Ubuntu Noble (24.04) package names where they differ from earlier releases (for example, `libasound2t64` instead of `libasound2`).
+COPY scripts/ /devcontainer/scripts/
+COPY firewall-rules.conf /devcontainer/firewall-rules.conf
+RUN chmod +x /devcontainer/scripts/*.sh
+```
+
+### Template Placeholders
+
+| Placeholder | Source |
+|-------------|--------|
+| `{{BASE_IMAGE}}` | Official devcontainer image for the primary stack |
+| `{{APT_EXTRA}}` | Service client packages (`postgresql-client`, `mysql-client`, `mongosh`, `redis-tools`, `awscli`) and `git-lfs` if selected |
+| `{{RUNTIME_LAYERS}}` | Installation commands for secondary stacks (e.g., Node.js layer on a .NET base) |
+
+### Customization
+
+- **Add system packages**: insert into the `apt-get install` list and rebuild
+- **Add runtime layers**: append `RUN` commands after `{{RUNTIME_LAYERS}}`
+- **Change base image**: modify the `FROM` line
+
+---
 
 ## docker-compose.yml
 
-Defines the main `devcontainer` service and any infrastructure services you selected.
+Defines the app container and all infrastructure services.
 
-**Main service features:**
+### Structure
 
-- Workspace volume mount: `..:/workspaces/{{PROJECT_NAME}}:cached`
-- Named volumes for package manager caches (NuGet, pnpm, npm, yarn)
-- Connection string environment variables for each selected service
-- `depends_on` for selected services
-- `cap_add: [NET_ADMIN]` if firewall enabled
-- `command: sleep infinity` to keep the container running
+```yaml
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspaces/{{PROJECT_NAME}}:cached
+      {{CACHE_VOLUMES}}        # Package manager cache mounts
+    environment:
+      {{ENV_VARS}}             # Connection strings, env vars
+    {{DEPENDS_ON}}             # Service dependencies
+    cap_add:
+      - NET_ADMIN              # Always present (firewall)
+    command: sleep infinity
 
-**Volume naming convention:**
-All named volumes follow the pattern `devcontainer-{{PROJECT_NAME}}-<purpose>`. This avoids collisions when running multiple devcontainers on the same Docker host.
+  {{SERVICES}}                 # Infrastructure service blocks
 
-See [Docker Compose Services](services.md) for per-service configuration details.
+volumes:
+  {{NAMED_VOLUMES}}            # Named volumes for data persistence
+```
 
-## post-create.sh
+### Template Placeholders
 
-A lifecycle script that runs once when the container is first created (`postCreateCommand`). Sections execute in this order:
+| Placeholder | Source |
+|-------------|--------|
+| `{{PROJECT_NAME}}` | CWD directory name (kebab-case) |
+| `{{CACHE_VOLUMES}}` | Package manager cache volume mounts (e.g., npm, pip, NuGet) |
+| `{{ENV_VARS}}` | Service connection strings and environment variables |
+| `{{DEPENDS_ON}}` | `depends_on` block listing selected services |
+| `{{SERVICES}}` | Full Docker Compose service blocks from service reference files |
+| `{{NAMED_VOLUMES}}` | Named volume declarations for all services and caches |
 
-1. **Firewall prerequisites** -- installs `iptables` and `dnsutils` via apt (if firewall enabled)
-2. **Git configuration** -- credential helper, autocrlf, default branch, color, pull/push behavior
-3. **Shell configuration** -- copies `.zshrc` or `config.fish` to home directory
-4. **PATH setup** -- ensures `~/.local/bin` is in PATH, optionally adds `~/.dotnet/tools`
-5. **Claude Code installation** -- installs Claude Code (see [Claude Code Integration](claude-integration.md))
-6. **Agentic coder customization** -- commented-out examples for Aider, Continue, Cline/Roo Code
-7. **.NET tools** -- installs `dotnet-ef` and `dotnet-outdated-tool` (if .NET detected)
-8. **Development certificates** -- `dotnet dev-certs https --trust` (if .NET detected)
-9. **Node.js packages** -- runs the selected package manager's install command
-10. **Python virtual environment** -- creates `.venv` and installs from `requirements.txt`
-11. **Developer tools** -- fzf, httpie (if selected)
-12. **Aliases** -- development, git, docker, language-specific, and `ccyolo` aliases
-13. **Workspace setup** -- creates common directories (`~/.cache`, `~/.config`)
-14. **Environment verification** -- prints installed versions summary
+### Customization
+
+- **Add services**: add a new service block with image, ports, volumes, and health check
+- **Modify environment**: add connection strings to the `devcontainer` environment
+- **Add volumes**: declare under `volumes:` and mount in the relevant service
+
+---
+
+## scripts/post-create.sh
+
+Runs **once** after the container is built (`postCreateCommand`). Sets up the development environment.
+
+### Sections
+
+1. **Git Configuration** — credential helper, autocrlf, default branch, push.autoSetupRemote, color, rebase
+2. **Git LFS** — `git lfs install` (if selected)
+3. **Path Setup** — ensures `~/.local/bin` is on PATH
+4. **Shell Configuration** — Oh My Zsh history, completion, directory navigation, FZF, editor
+5. **Agentic Tool Installation** — Claude Code, Codex CLI, Gemini (from tool reference files)
+6. **Stack-Specific Setup** — package installation (npm ci, pip install, dotnet restore, etc.)
+7. **Aliases** — navigation, project, git, docker aliases + stack-specific + tool-specific aliases
+8. **Workspace Setup** — creates `~/.cache` and `~/.config`
+9. **Environment Verification** — prints version info for installed tools and services
+
+### Template Placeholders
+
+| Placeholder | Source |
+|-------------|--------|
+| `{{PROJECT_NAME}}` | CWD directory name |
+| `{{GIT_LFS}}` | `git lfs install` if Git LFS selected |
+| `{{PATH_EXTRA}}` | Additional PATH entries from stack reference |
+| `{{INSTALL_TOOLS}}` | Agentic tool installation blocks |
+| `{{STACK_SETUP}}` | Stack post-create steps (package install, tool install) |
+| `{{ALIASES_EXTRA}}` | Stack and tool aliases |
+| `{{VERIFY}}` | Version check commands for tools and runtimes |
+| `{{SERVICES_SUMMARY}}` | Service access info (ports, credentials) |
+
+### Customization
+
+- **Add tools**: append installation commands in the "Agentic Tool Installation" section
+- **Add aliases**: append to the `ALIASES` variable or the `{{ALIASES_EXTRA}}` section
+- **Add setup steps**: insert commands in the "Stack-Specific Setup" section
+
+---
+
+## scripts/apply-firewall.sh
+
+Copied **as-is** from the template — no placeholder replacement. Runs on **every container start** (`postStartCommand`).
+
+See [Network Firewall](./firewall) for full documentation on how this script works.
+
+### Customization
+
+This file should generally not be modified. To change firewall behavior, edit `firewall-rules.conf` instead.
+
+---
 
 ## firewall-rules.conf
 
-A text file listing network rules in `ACTION TARGET` format. See [Network Firewall](firewall.md) for the full syntax reference, default whitelist, and practical examples.
+The editable rule file read by `apply-firewall.sh`. See [Network Firewall](./firewall) for syntax and customization.
 
-## apply-firewall.sh
+### Assembly
 
-A bash script that reads `firewall-rules.conf` and applies iptables/ip6tables rules. It runs on every container start via `postStartCommand`. See [Network Firewall](firewall.md) for a technical deep-dive.
+The file is assembled from multiple sources:
 
-## Shell configurations
+1. **Base rules** from `references/configs/firewall-rules.conf` (common domains: GitHub, Docker, CDNs, CAs, etc.)
+2. **Stack-specific domains** from each selected stack's reference file
+3. **Tool-specific domains** from each selected agentic tool's reference file
+4. **MCP server domains** from `references/mcp-servers.md` for each selected server
+5. **Default policy** — `DENY *` (deny-all) or `ALLOW *` (allow-all) as the last line
 
-### Zsh (`.devcontainer/config/.zshrc`)
+### Customization
 
-- Oh My Zsh with `robbyrussell` theme
-- Plugins: `git`, `docker`, `docker-compose`, plus stack-specific plugins (`npm`, `node`, `dotnet`)
-- History: 10,000 entries, deduplication, shared across sessions
-- Emacs key bindings with history search
-- Case-insensitive completion
-- Auto-cd, auto-pushd
-- fzf integration (if installed)
-- Environment variables: `EDITOR`, `VISUAL`, `LANG`, `LC_ALL`
-- Development aliases (navigation, git, docker, language-specific)
-- Loads `~/.zshrc.local` if present (for local overrides that survive regeneration)
+Edit directly and re-apply:
 
-### Fish (`.devcontainer/config/fish/config.fish`)
+```bash
+sudo bash /devcontainer/scripts/apply-firewall.sh /devcontainer/firewall-rules.conf
+```
 
-- Custom greeting showing container name and runtime versions
-- Environment variables: `EDITOR`, `VISUAL`, `LANG`, `LC_ALL`
-- fzf configuration
-- Same alias set as Zsh
-- Loads `~/.config/fish/config.local.fish` if present (for local overrides)
+---
 
-See [Customization](customization.md) for details on local override files.
+## DEVCONTAINER.md
+
+A human-readable summary document generated alongside the container configuration. Not used by Docker or VS Code — it's for developers to reference.
+
+### Sections
+
+| Section | Content |
+|---------|---------|
+| **Configuration Summary** | Stack, services, tools, firewall policy, base image |
+| **Generated Files** | Table of all 6 config files with purpose |
+| **Services** | Ports, credentials, and health check for each service |
+| **Host Reachability** | Per-framework binding guidance (`0.0.0.0`) |
+| **MCP Servers** | Configuration and API key requirements (if MCP selected) |
+| **Customization** | How to edit firewall rules, add dependencies, add services |
+| **Common Operations** | Rebuild, restart, reset volumes, check firewall |
+
+### Customization
+
+This file is informational. Update it when you modify other generated files to keep the documentation in sync.
+
+---
+
+## Common Operations
+
+### Rebuild the container
+
+After modifying `Dockerfile`, `docker-compose.yml`, or `devcontainer.json`:
+
+> VS Code → Command Palette → **Dev Containers: Rebuild Container**
+
+### Restart the container
+
+> VS Code → Command Palette → **Dev Containers: Reopen in Container**
+
+### Reset all volumes (fresh databases, caches)
+
+```bash
+docker compose -f .devcontainer/docker-compose.yml down -v
+```
+
+### Re-run post-create script
+
+```bash
+bash /devcontainer/scripts/post-create.sh
+```
+
+### Re-apply firewall rules
+
+```bash
+sudo bash /devcontainer/scripts/apply-firewall.sh /devcontainer/firewall-rules.conf
+```

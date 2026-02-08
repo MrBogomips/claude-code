@@ -1,182 +1,260 @@
 ---
-sidebar_position: 7
-sidebar_label: Docker Compose Services
-title: Docker Compose Services
+sidebar_position: 4
+title: Infrastructure Services
 ---
 
-# Docker Compose Services
+# Infrastructure Services
 
-When you select infrastructure services during generation, each one is added to `docker-compose.yml` with sensible defaults, a health check, and a named volume.
+Reference for the 8 supported infrastructure services. Each service is added as a Docker Compose sidecar with health checks, named volumes, connection strings for all 6 language stacks, and client tools.
+
+---
 
 ## PostgreSQL (with PostGIS)
 
 | Property | Value |
 |----------|-------|
-| Image | `postgis/postgis:16-3.4` |
-| Port | 5432 |
-| Username | `postgres` |
-| Password | `postgres` |
-| Database | `{{PROJECT_NAME}}` |
-| Volume | `devcontainer-{{PROJECT_NAME}}-postgres-data` |
-| Health check | `pg_isready -U postgres` |
+| **Image** | `postgis/postgis:16-3.4` |
+| **Port** | 5432 |
+| **Username** | `postgres` |
+| **Password** | `postgres` |
+| **Database** | `{{PROJECT_NAME}}` |
+| **Volume** | `devcontainer-{{PROJECT_NAME}}-postgres-data` → `/var/lib/postgresql/data` |
+| **Health check** | `pg_isready -U postgres` |
+| **VS Code extension** | `ckolkman.vscode-postgres` |
+| **Client tools (apt)** | `postgresql-client` — provides `psql`, `pg_dump`, `pg_restore` |
 
-**Connection string** (set as an environment variable on the devcontainer service):
+### Connection Strings
 
-```
-Host=postgres;Port=5432;Database={{PROJECT_NAME}};Username=postgres;Password=postgres
-```
+| Language | Connection String |
+|----------|------------------|
+| Node.js | `postgresql://postgres:postgres@postgres:5432/{{PROJECT_NAME}}` |
+| Python | `postgresql://postgres:postgres@postgres:5432/{{PROJECT_NAME}}` |
+| .NET | `Host=postgres;Port=5432;Database={{PROJECT_NAME}};Username=postgres;Password=postgres` |
+| Go | `postgres://postgres:postgres@postgres:5432/{{PROJECT_NAME}}?sslmode=disable` |
+| Java | `jdbc:postgresql://postgres:5432/{{PROJECT_NAME}}` |
 
-PostGIS is included by default for spatial data support. If you do not need it, replace the image with `postgres:16`.
+---
 
 ## MySQL
 
 | Property | Value |
 |----------|-------|
-| Image | `mysql:8` |
-| Port | 3306 |
-| Root password | `root` |
-| Username | `dev` |
-| Password | `dev` |
-| Database | `{{PROJECT_NAME}}` |
-| Volume | `devcontainer-{{PROJECT_NAME}}-mysql-data` |
-| Health check | `mysqladmin ping -h localhost` |
+| **Image** | `mysql:8` |
+| **Port** | 3306 |
+| **Root credentials** | `root` / `root` |
+| **App credentials** | `dev` / `dev` |
+| **Database** | `{{PROJECT_NAME}}` |
+| **Volume** | `devcontainer-{{PROJECT_NAME}}-mysql-data` → `/var/lib/mysql` |
+| **Health check** | `mysqladmin ping -h localhost` |
+| **VS Code extension** | `cweijan.vscode-mysql-client2` |
+| **Client tools (apt)** | `mysql-client` — provides `mysql`, `mysqldump` |
+
+### Connection Strings
+
+| Language | Connection String |
+|----------|------------------|
+| Node.js | `mysql://dev:dev@mysql:3306/{{PROJECT_NAME}}` |
+| Python | `mysql+pymysql://dev:dev@mysql:3306/{{PROJECT_NAME}}` |
+| .NET | `Server=mysql;Port=3306;Database={{PROJECT_NAME}};User=dev;Password=dev` |
+| Go | `dev:dev@tcp(mysql:3306)/{{PROJECT_NAME}}` |
+| Java | `jdbc:mysql://mysql:3306/{{PROJECT_NAME}}` |
+
+---
 
 ## MongoDB
 
 | Property | Value |
 |----------|-------|
-| Image | `mongo:7` |
-| Port | 27017 |
-| Root username | `admin` |
-| Root password | `admin` |
-| Volume | `devcontainer-{{PROJECT_NAME}}-mongodb-data` |
-| Health check | `mongosh --eval "db.adminCommand('ping')"` |
+| **Image** | `mongo:7` |
+| **Port** | 27017 |
+| **Username** | `admin` |
+| **Password** | `admin` |
+| **Auth source** | `admin` |
+| **Database** | `{{PROJECT_NAME}}` |
+| **Volume** | `devcontainer-{{PROJECT_NAME}}-mongodb-data` → `/data/db` |
+| **Health check** | `mongosh --eval "db.adminCommand('ping')"` |
+| **VS Code extension** | `mongodb.mongodb-vscode` |
+| **Client tools (apt)** | `mongosh` — MongoDB Shell |
 
-**Connection string:**
+### Connection Strings
 
-```
-mongodb://admin:admin@mongodb:27017
-```
+| Language | Connection String |
+|----------|------------------|
+| All | `mongodb://admin:admin@mongodb:27017/{{PROJECT_NAME}}?authSource=admin` |
+
+---
 
 ## Redis
 
 | Property | Value |
 |----------|-------|
-| Image | `redis:7-alpine` |
-| Port | 6379 |
-| Volume | `devcontainer-{{PROJECT_NAME}}-redis-data` |
-| Health check | `redis-cli ping` |
+| **Image** | `redis:7-alpine` |
+| **Port** | 6379 |
+| **Authentication** | None (no password by default) |
+| **Default database** | `0` |
+| **Volume** | `devcontainer-{{PROJECT_NAME}}-redis-data` → `/data` |
+| **Health check** | `redis-cli ping` |
+| **VS Code extension** | `cweijan.vscode-redis-client` |
+| **Client tools (apt)** | `redis-tools` — provides `redis-cli` |
 
-**Connection string:**
+### Connection Strings
 
-```
-redis:6379
-```
+| Language | Connection String |
+|----------|------------------|
+| Node.js | `redis://redis:6379` |
+| Python | `redis://redis:6379/0` |
+| .NET | `redis:6379` |
+| Go | `redis://redis:6379/0` |
+| Java | `redis://redis:6379` |
 
-## RabbitMQ (with Management UI)
+---
+
+## RabbitMQ
 
 | Property | Value |
 |----------|-------|
-| Image | `rabbitmq:3.13-management` |
-| AMQP port | 5672 |
-| Management UI port | 15672 |
-| Username | `guest` |
-| Password | `guest` |
-| Volume | `devcontainer-{{PROJECT_NAME}}-rabbitmq-data` |
-| Health check | `rabbitmq-diagnostics check_running` |
+| **Image** | `rabbitmq:3.13-management` |
+| **Ports** | 5672 (AMQP), 15672 (Management UI) |
+| **Username** | `guest` |
+| **Password** | `guest` |
+| **Management UI** | `http://localhost:15672` |
+| **Volume** | `devcontainer-{{PROJECT_NAME}}-rabbitmq-data` → `/var/lib/rabbitmq` |
+| **Health check** | `rabbitmq-diagnostics check_running` |
+| **VS Code extension** | None — use the Management UI |
+| **Client tools** | None — use language-specific libraries (`amqplib`, `pika`, etc.) |
 
-The management UI is available at `http://localhost:15672` after starting the container.
+### Connection Strings
+
+| Language | Connection String |
+|----------|------------------|
+| Node.js | `amqp://guest:guest@rabbitmq:5672` |
+| Python | `amqp://guest:guest@rabbitmq:5672/` |
+| .NET | `amqp://guest:guest@rabbitmq:5672` |
+| Go | `amqp://guest:guest@rabbitmq:5672/` |
+| Java | `amqp://guest:guest@rabbitmq:5672` |
+
+---
 
 ## Kafka (with Zookeeper)
 
-Kafka requires Zookeeper, so two services are added:
-
-### Zookeeper
+Kafka is deployed as a two-container setup: Zookeeper + Kafka broker.
 
 | Property | Value |
 |----------|-------|
-| Image | `confluentinc/cp-zookeeper:7.5.0` |
-| Client port | 2181 |
-| Volumes | `devcontainer-{{PROJECT_NAME}}-zookeeper-data`, `devcontainer-{{PROJECT_NAME}}-zookeeper-logs` |
+| **Kafka image** | `confluentinc/cp-kafka:7.5.0` |
+| **Zookeeper image** | `confluentinc/cp-zookeeper:7.5.0` |
+| **Ports** | 9092 (host access), 29092 (inter-container), 2181 (Zookeeper) |
+| **Authentication** | None |
+| **Kafka health check** | `kafka-broker-api-versions --bootstrap-server localhost:9092` |
+| **VS Code extension** | None — use CLI tools inside the Kafka container |
 
-### Kafka
+### Volumes
 
-| Property | Value |
-|----------|-------|
-| Image | `confluentinc/cp-kafka:7.5.0` |
-| External port | 9092 |
-| Internal port | 29092 |
-| Volume | `devcontainer-{{PROJECT_NAME}}-kafka-data` |
-| Health check | `kafka-broker-api-versions --bootstrap-server localhost:9092` |
-| Depends on | Zookeeper |
+| Volume | Mount Path |
+|--------|-----------|
+| `devcontainer-{{PROJECT_NAME}}-zookeeper-data` | `/var/lib/zookeeper/data` |
+| `devcontainer-{{PROJECT_NAME}}-zookeeper-logs` | `/var/lib/zookeeper/log` |
+| `devcontainer-{{PROJECT_NAME}}-kafka-data` | `/var/lib/kafka/data` |
 
-Kafka advertises two listeners: `PLAINTEXT` on port 29092 (for inter-broker communication) and `PLAINTEXT_HOST` on port 9092 (for host access).
+### Connection Strings
+
+| Context | Bootstrap Servers |
+|---------|-------------------|
+| From container | `kafka:29092` |
+| From host | `localhost:9092` |
+
+### CLI Operations
+
+```bash
+# Create a topic
+docker exec -it kafka kafka-topics \
+  --create --topic my-topic \
+  --bootstrap-server localhost:9092 \
+  --partitions 1 --replication-factor 1
+
+# Produce messages
+docker exec -it kafka kafka-console-producer \
+  --topic my-topic --bootstrap-server localhost:9092
+
+# Consume messages
+docker exec -it kafka kafka-console-consumer \
+  --topic my-topic --bootstrap-server localhost:9092 --from-beginning
+```
+
+---
 
 ## Azurite (Azure Storage Emulator)
 
 | Property | Value |
 |----------|-------|
-| Image | `mcr.microsoft.com/azure-storage/azurite` |
-| Blob port | 10000 |
-| Queue port | 10001 |
-| Table port | 10002 |
-| Volume | `devcontainer-{{PROJECT_NAME}}-azurite-data` |
+| **Image** | `mcr.microsoft.com/azure-storage/azurite` |
+| **Ports** | 10000 (Blob), 10001 (Queue), 10002 (Table) |
+| **Account name** | `devstoreaccount1` |
+| **Account key** | `Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==` |
+| **Volume** | `devcontainer-{{PROJECT_NAME}}-azurite-data` → `/data` |
+| **Health check** | None (Azurite has no built-in health check) |
+| **VS Code extension** | `Azurite.azurite` |
 
-**Connection string:**
+These are the well-known Azurite development credentials — they are not secret.
+
+### Connection String (all languages)
 
 ```
-DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1
+DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
 ```
 
-This is the well-known Azurite development key, not a secret.
+---
 
-## LocalStack (AWS Emulator)
+## LocalStack (AWS Cloud Emulator)
 
 | Property | Value |
 |----------|-------|
-| Image | `localstack/localstack:latest` |
-| Port | 4566 |
-| Default services | S3, SQS, SNS, DynamoDB, Lambda |
-| Volume | `devcontainer-{{PROJECT_NAME}}-localstack-data` |
+| **Image** | `localstack/localstack:latest` |
+| **Port** | 4566 (unified gateway for all AWS services) |
+| **Access Key ID** | `test` |
+| **Secret Access Key** | `test` |
+| **Region** | `us-east-1` |
+| **Volume** | `devcontainer-{{PROJECT_NAME}}-localstack-data` → `/var/lib/localstack` |
+| **Client tools (apt)** | `awscli` — AWS CLI |
 
-## Named volume convention
+These are dummy credentials used by LocalStack — they are not secret.
 
-All service volumes follow the pattern:
+### Default Services
 
-```
-devcontainer-{{PROJECT_NAME}}-<service>-data
-```
+The `SERVICES` environment variable controls which AWS services are started. Default: `s3,sqs,sns,dynamodb,lambda`
 
-This avoids collisions when running multiple devcontainers on the same Docker host. The `{{PROJECT_NAME}}` is derived from the project directory name in kebab-case.
+Add more by appending to the comma-separated list (e.g., `SERVICES=s3,sqs,sns,dynamodb,lambda,ses,secretsmanager`).
 
-## Adding a custom service
+### Endpoint Configuration
 
-To add a service not covered by the generator, add it to the `services:` section of `.devcontainer/docker-compose.yml` and declare its volume under `volumes:`. Follow the naming convention above. For example:
+| Language | Configuration |
+|----------|--------------|
+| AWS CLI | `--endpoint-url http://localstack:4566` |
+| Node.js | `{ endpoint: 'http://localstack:4566', region: 'us-east-1' }` |
+| Python | `boto3.client('s3', endpoint_url='http://localstack:4566', region_name='us-east-1')` |
+| .NET | `ServiceURL = "http://localstack:4566"` with `ForcePathStyle = true` |
+| Go | `aws.String("http://localstack:4566")` as endpoint resolver |
+| Java | `.endpointOverride(URI.create("http://localstack:4566"))` |
 
-```yaml
-services:
-  # ... existing services ...
+### Health Check
 
-  elasticsearch:
-    image: elasticsearch:8.12.0
-    restart: unless-stopped
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-    ports:
-      - "9200:9200"
-    volumes:
-      - devcontainer-my-project-elasticsearch-data:/usr/share/elasticsearch/data
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  devcontainer-my-project-elasticsearch-data:
+```bash
+curl http://localstack:4566/_localstack/health
 ```
 
-If the service needs to be accessible from the devcontainer via hostname, add it to `depends_on` on the `devcontainer` service.
+### CLI Examples
 
-See [Customization](customization.md) for more extension points and [Generated Files](generated-files.md) for the full docker-compose.yml structure.
+```bash
+# Create S3 bucket
+aws --endpoint-url http://localhost:4566 s3 mb s3://my-bucket
+
+# List SQS queues
+aws --endpoint-url http://localhost:4566 sqs list-queues
+
+# Create DynamoDB table
+aws --endpoint-url http://localhost:4566 dynamodb create-table \
+  --table-name my-table \
+  --attribute-definitions AttributeName=id,AttributeType=S \
+  --key-schema AttributeName=id,KeyType=HASH \
+  --billing-mode PAY_PER_REQUEST
+```

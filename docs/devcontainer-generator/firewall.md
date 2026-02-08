@@ -1,172 +1,220 @@
 ---
-sidebar_position: 5
-sidebar_label: Network Firewall
+sidebar_position: 6
 title: Network Firewall
 ---
 
 # Network Firewall
 
-The generator includes an optional network firewall that restricts outbound traffic from the devcontainer. When enabled, it uses Linux iptables to enforce a whitelist (or blocklist) at the kernel level.
+The devcontainer generator **always deploys** a firewall — `apply-firewall.sh` and `firewall-rules.conf` are generated regardless of policy choice. The policy determines whether traffic is blocked by default (deny-all) or allowed by default (allow-all).
 
-## Firewall modes
-
-| Mode | Default rule | Behavior |
-|------|-------------|----------|
-| **Deny-all** (default) | `DENY *` | Only whitelisted domains are accessible. Everything else is blocked. |
-| **Allow-all** | `ALLOW *` | All traffic is allowed. You can block specific domains with `DENY` rules. |
-| **Disabled** | (none) | No network restrictions. No firewall files are generated. |
-
-## Rules file syntax
-
-The rules file (`.devcontainer/firewall-rules.conf`) uses a simple `ACTION TARGET` format:
+## Architecture
 
 ```
+┌─────────────────────────────────────────────┐
+│ devcontainer                                │
+│                                             │
+│   iptables OUTPUT chain                     │
+│   ┌───────────────────────────────────┐     │
+│   │ DEVCONTAINER_FW chain             │     │
+│   │ 1. Root (uid 0) → RETURN (exempt) │     │
+│   │ 2. Loopback → ACCEPT             │     │
+│   │ 3. Established/Related → ACCEPT   │     │
+│   │ 4. DNS (53) → ACCEPT             │     │
+│   │ 5. DHCP (67-68) → ACCEPT         │     │
+│   │ 6. User rules (first match wins)  │     │
+│   │ 7. Default policy: DENY/ALLOW *   │     │
+│   └───────────────────────────────────┘     │
+│                                             │
+│   postStartCommand runs apply-firewall.sh   │
+│   capAdd: NET_ADMIN                         │
+└─────────────────────────────────────────────┘
+```
+
+**Key properties:**
+- Runs on every container start via `postStartCommand`
+- Requires `NET_ADMIN` capability (always present in `devcontainer.json` and `docker-compose.yml`)
+- Uses both `iptables` (IPv4) and `ip6tables` (IPv6)
+- Root (uid 0) is **always exempt** from firewall rules
+- System essentials (loopback, established connections, DNS, DHCP) are **always allowed** before user rules
+
+## Rule Syntax
+
+Rules are defined in `firewall-rules.conf`:
+
+```
+# Comments start with #
 ACTION TARGET
+
+# Examples:
+ALLOW example.com          # Allow specific domain
+ALLOW *.example.com         # Allow all subdomains (wildcard)
+DENY suspicious.com         # Block specific domain
+ALLOW 10.0.0.0/8            # Allow CIDR range
+ALLOW 192.168.1.100         # Allow specific IP
+DENY *                      # Block all remaining traffic (catch-all)
+ALLOW *                     # Allow all remaining traffic (catch-all)
 ```
 
-- **ACTION**: `ALLOW` or `DENY`
-- **TARGET**: one of the following:
-  - `domain.com` -- a specific domain (resolved to IPs via DNS at apply time)
-  - `*.domain.com` -- a wildcard domain (resolves the base domain and uses a `/24` CIDR approximation)
-  - `10.0.0.0/8` -- a CIDR range (IPv4)
-  - `fd00::/8` -- a CIDR range (IPv6)
-  - `192.168.1.1` -- a specific IP address
-  - `*` -- all traffic (used as the catch-all default policy)
+| Element | Options |
+|---------|---------|
+| **ACTION** | `ALLOW` or `DENY` |
+| **TARGET** | Domain, `*.domain` (wildcard), CIDR notation, IPv4/IPv6 address, `*` (all) |
 
-Rules are evaluated top to bottom, first match wins. Lines starting with `#` are comments. The last rule should be a catch-all (`DENY *` or `ALLOW *`).
+### Evaluation
 
-Root (uid 0) is always exempt from firewall rules.
+- **First match wins** — rules are evaluated top-to-bottom
+- The **last rule** should be a catch-all: `DENY *` (restrictive) or `ALLOW *` (permissive)
+- Lines starting with `#` are comments
+- Empty lines are ignored
 
-## Default whitelist
+### Domain Resolution
 
-When the deny-all policy is selected, the generated `firewall-rules.conf` includes ALLOW rules for the following categories:
+The firewall resolves domains to IP addresses at apply time:
 
-| Category | Domains |
+- **Exact domains** (e.g., `github.com`): resolved to all A (IPv4) and AAAA (IPv6) records
+- **Wildcard domains** (e.g., `*.github.com`): the base domain is resolved, then a `/24` (IPv4) or `/64` (IPv6) CIDR range is applied — this is a pragmatic approximation for cloud-hosted services that share subnets
+
+## Default Whitelist
+
+When deny-all policy is selected, the generated `firewall-rules.conf` includes these categories:
+
+| Category | Examples |
 |----------|---------|
-| **Claude AI** | `api.anthropic.com`, `claude.ai`, `*.anthropic.com` |
-| **GitHub** | `github.com`, `*.github.com`, `*.githubusercontent.com`, `ghcr.io`, `*.ghcr.io` |
-| **NPM** | `registry.npmjs.org`, `*.npmjs.org`, `*.npmjs.com`, `npm.pkg.github.com` |
-| **PyPI** | `pypi.org`, `*.pypi.org`, `files.pythonhosted.org` |
-| **NuGet** | `api.nuget.org`, `*.nuget.org`, `nuget.pkg.github.com` |
-| **Docker** | `docker.io`, `*.docker.io`, `registry-1.docker.io`, `mcr.microsoft.com` |
-| **Microsoft/Azure** | `*.microsoft.com`, `*.azure.com`, `*.azureedge.net`, `*.windows.net`, `*.visualstudio.com` |
-| **CDN** | `*.cloudflare.com`, `cdn.jsdelivr.net`, `unpkg.com`, `esm.sh` |
-| **Node.js** | `nodejs.org`, `deb.nodesource.com`, `yarnpkg.com`, `pnpm.io`, `volta.sh` |
-| **.NET** | `dotnet.microsoft.com`, `dotnetcli.azureedge.net` |
-| **Documentation** | `docs.github.com`, `learn.microsoft.com`, `react.dev`, `nextjs.org`, `angular.dev`, `tailwindcss.com` |
-| **Fonts** | `fonts.googleapis.com`, `fonts.gstatic.com`, `*.fontawesome.com` |
-| **Databases** | `postgresql.org`, `redis.io`, `mongodb.com`, `rabbitmq.com` |
-| **Dev tools** | `httpbin.org`, `jsonplaceholder.typicode.com`, `postman.com` |
+| **Claude AI Services** | `api.anthropic.com`, `claude.ai`, `*.anthropic.com` |
+| **GitHub** | `github.com`, `*.github.com`, `*.githubusercontent.com`, `ghcr.io` |
+| **NPM** | `registry.npmjs.org`, `*.npmjs.org` |
+| **PyPI** | `pypi.org`, `files.pythonhosted.org` |
+| **NuGet** | `api.nuget.org`, `*.nuget.org` |
+| **Docker/Container registries** | `docker.io`, `*.docker.io`, `mcr.microsoft.com` |
+| **Microsoft/Azure** | `*.microsoft.com`, `*.azure.com`, `*.visualstudio.com` |
+| **CDNs** | `*.cloudflare.com`, `cdn.jsdelivr.net`, `unpkg.com` |
+| **Node.js ecosystem** | `nodejs.org`, `yarnpkg.com`, `pnpm.io` |
+| **.NET ecosystem** | `dotnet.microsoft.com`, `dotnetcli.azureedge.net` |
+| **Documentation sites** | `react.dev`, `nextjs.org`, `angular.dev`, `tailwindcss.com` |
+| **Fonts** | `fonts.googleapis.com`, `fonts.gstatic.com` |
+| **Database docs** | `postgresql.org`, `redis.io`, `mongodb.com` |
+| **Dev tools** | `httpbin.org`, `postman.com` |
 | **OpenAI** | `api.openai.com`, `*.openai.com` |
-| **SSL/TLS CAs** | `*.digicert.com`, `*.letsencrypt.org`, `ocsp.pki.goog` |
+| **SSL/TLS CAs** | `*.digicert.com`, `*.letsencrypt.org`, OCSP responders |
 | **Error tracking** | `sentry.io`, `*.sentry.io` |
 
-## Editing rules
+Stack-specific, tool-specific, and MCP server firewall domains are **appended dynamically** based on your selections.
 
-### Add a domain
+## How `apply-firewall.sh` Works
 
-Add a line before the catch-all rule:
+1. **Wait for DNS** — retries `dig github.com` for up to 30 seconds (network may not be ready at container start)
+2. **Create/flush chain** — creates `DEVCONTAINER_FW` chain (or flushes if it exists)
+3. **Root exemption** — uid 0 always gets `RETURN` (exempt)
+4. **System essentials** — loopback, established/related, DNS (port 53), DHCP (ports 67-68)
+5. **Parse rules** — reads `firewall-rules.conf` line by line:
+   - `*` → catch-all ACCEPT or DROP
+   - `*.domain` → resolve base domain, apply /24 (IPv4) or /64 (IPv6) CIDR
+   - `CIDR` → direct iptables rule
+   - `domain/IP` → resolve to IPs, add individual rules
+6. **Insert into OUTPUT** — inserts `DEVCONTAINER_FW` at position 1 in the OUTPUT chain (idempotent)
+
+### Container Requirements
+
+The firewall needs two things in the container configuration (both are always present in generated files):
+
+```json
+// devcontainer.json
+"capAdd": ["NET_ADMIN"],
+"postStartCommand": "sudo bash /devcontainer/scripts/apply-firewall.sh /devcontainer/firewall-rules.conf"
+```
+
+```yaml
+# docker-compose.yml
+cap_add:
+  - NET_ADMIN
+```
+
+## Practical Recipes
+
+### Check current rules
+
+```bash
+sudo iptables -L DEVCONTAINER_FW -n -v
+```
+
+### Temporarily bypass firewall
+
+```bash
+sudo iptables -F DEVCONTAINER_FW
+sudo iptables -A DEVCONTAINER_FW -j ACCEPT
+```
+
+### Add a domain at runtime
+
+```bash
+# Resolve and add
+for ip in $(dig +short newdomain.com A); do
+  sudo iptables -I DEVCONTAINER_FW -d "$ip" -j ACCEPT
+done
+```
+
+### Permanently add a domain
+
+Edit `.devcontainer/firewall-rules.conf` and add:
 
 ```
-ALLOW my-internal-registry.example.com
-```
-
-### Add a CIDR range
-
-```
-ALLOW 10.0.0.0/8
-```
-
-### Switch from deny-all to allow-all
-
-Change the last line of `firewall-rules.conf` from:
-
-```
-DENY *
-```
-
-to:
-
-```
-ALLOW *
+ALLOW newdomain.com
 ```
 
 Then re-apply:
 
 ```bash
-sudo bash .devcontainer/scripts/apply-firewall.sh .devcontainer/firewall-rules.conf
+sudo bash /devcontainer/scripts/apply-firewall.sh /devcontainer/firewall-rules.conf
 ```
 
-## Practical examples
+### Switch from deny-all to allow-all
 
-### Temporarily bypass the firewall for a single command
+Change the last line of `firewall-rules.conf` from `DENY *` to `ALLOW *`, then re-apply.
 
-Root is exempt from firewall rules. Use `sudo` to bypass the firewall for a one-off operation:
+### Re-apply after editing rules
 
 ```bash
-sudo curl https://blocked-domain.com/file.tar.gz -o /tmp/file.tar.gz
+sudo bash /devcontainer/scripts/apply-firewall.sh /devcontainer/firewall-rules.conf
 ```
 
-### Temporarily open all traffic
+## Troubleshooting
 
-Flush the firewall chain and add an ACCEPT-all rule:
+### "Could not resolve" warnings at container start
+
+DNS may not be ready when the container starts. The script retries for 30 seconds. If warnings persist:
+- The domain may be unreachable or misspelled
+- Check DNS configuration: `dig +short example.com`
+
+### Package install fails (npm, pip, etc.)
+
+The domain may not be in the whitelist. Check:
 
 ```bash
-sudo iptables -F DEVCONTAINER_FW && sudo iptables -A DEVCONTAINER_FW -j ACCEPT
+# Test connectivity
+curl -v https://registry.npmjs.org 2>&1 | head -20
+
+# Check if domain is blocked
+sudo iptables -L DEVCONTAINER_FW -n -v | grep DROP
 ```
 
-This lasts until the next container restart (when `postStartCommand` re-applies the rules from the conf file).
+Add the missing domain to `firewall-rules.conf` and re-apply.
 
-### Re-apply rules after editing the conf file
+### API calls to external services fail
+
+External APIs need their domains whitelisted. Common additions:
+
+```
+ALLOW api.stripe.com         # Stripe
+ALLOW api.twilio.com         # Twilio
+ALLOW *.amazonaws.com        # AWS services
+ALLOW *.firebaseio.com       # Firebase
+```
+
+### Container starts but firewall not active
+
+Verify `NET_ADMIN` capability is present and `postStartCommand` is set:
 
 ```bash
-sudo bash .devcontainer/scripts/apply-firewall.sh .devcontainer/firewall-rules.conf
+# Check if chain exists
+sudo iptables -L DEVCONTAINER_FW 2>/dev/null && echo "Active" || echo "Not active"
 ```
-
-### Check current rules
-
-```bash
-sudo iptables -L DEVCONTAINER_FW -n --line-numbers
-```
-
-## Technical details: how apply-firewall.sh works
-
-The script runs as root via `postStartCommand` on every container start. Here is what it does, in order:
-
-1. **DNS wait loop** -- waits up to 30 seconds for DNS to become available (the network stack may not be ready immediately at container start). Tests by resolving `github.com`.
-
-2. **Chain setup** -- creates an iptables chain named `DEVCONTAINER_FW`. If the chain already exists, it is flushed (this makes the script idempotent).
-
-3. **Root exemption** -- adds a RETURN rule for uid 0, so root always bypasses the firewall. This ensures system tools like `apt-get` work normally.
-
-4. **System essentials** -- adds ACCEPT rules for:
-   - Loopback interface (`-o lo`)
-   - Established/related connections (`-m state --state ESTABLISHED,RELATED`)
-   - DNS on port 53 (UDP and TCP)
-   - DHCP on ports 67-68 (UDP)
-
-5. **Rule parsing** -- reads `firewall-rules.conf` line by line, skipping comments and empty lines. For each rule:
-   - `*` (catch-all): adds an ACCEPT or DROP rule for all traffic
-   - `*.domain.com` (wildcard): resolves the base domain via DNS, then applies a `/24` CIDR rule for each resolved IPv4 address and a `/64` rule for each IPv6 address
-   - `x.x.x.x/N` or `xxxx::/N` (CIDR): adds a direct CIDR rule to the appropriate iptables command (IPv4 or IPv6)
-   - `domain.com` or plain IP: resolves via DNS and adds a rule for each resolved address
-
-6. **OUTPUT chain insertion** -- removes any existing jump to `DEVCONTAINER_FW` from the OUTPUT chain, then inserts it at position 1. This is idempotent: running the script twice does not create duplicate jumps.
-
-7. **Dual-stack** -- all rules are applied to both `iptables` (IPv4) and `ip6tables` (IPv6).
-
-## Container requirements
-
-For the firewall to work, the container needs:
-
-- **`CAP_NET_ADMIN`** capability -- added via `capAdd` in devcontainer.json and `cap_add` in docker-compose.yml
-- **`postStartCommand`** -- runs `apply-firewall.sh` on every container start
-- **Packages**: `iptables` and `dnsutils` -- installed by `post-create.sh`
-
-## Limitations
-
-- **Wildcard `/24` approximation**: wildcard domains like `*.example.com` resolve the base domain and apply a `/24` CIDR (IPv4) or `/64` CIDR (IPv6). This is a pragmatic approximation; cloud-hosted services with many subdomains on different subnets may not be fully covered.
-- **DNS-time resolution**: domain rules are resolved to IP addresses when `apply-firewall.sh` runs. If a domain's IP addresses change after that, the firewall rules are stale until the next container restart.
-- **Root exemption**: any process running as root (uid 0) bypasses the firewall entirely. This is intentional so that system tools work, but it also means `sudo <command>` bypasses restrictions.
-
-See [Customization](customization.md) for how to modify firewall rules after generation, and [Testing and Contributing](testing.md) for the firewall test suite.

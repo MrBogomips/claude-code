@@ -56,10 +56,10 @@ mcr.microsoft.com/devcontainers/javascript-node:22
 
 | Lock File | Manager | Install Command | Cache Volume |
 |-----------|---------|-----------------|--------------|
-| `package-lock.json` | npm | `npm ci` | `devcontainer-{{PROJECT_NAME}}-npm` mounted at `/home/node/.npm` |
-| `pnpm-lock.yaml` | pnpm | `pnpm install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-pnpm` mounted at `/home/node/.local/share/pnpm/store` |
-| `yarn.lock` | yarn | `yarn install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-yarn` mounted at `/home/node/.yarn/cache` |
-| `bun.lockb` | bun | `bun install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-bun` mounted at `/home/node/.bun/install/cache` |
+| `package-lock.json` | npm | `npm ci` | `devcontainer-{{PROJECT_NAME}}-npm` mounted at `/home/vscode/.npm` |
+| `pnpm-lock.yaml` | pnpm | `pnpm install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-pnpm` mounted at `/home/vscode/.local/share/pnpm/store` |
+| `yarn.lock` | yarn | `yarn install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-yarn` mounted at `/home/vscode/.yarn/cache` |
+| `bun.lockb` | bun | `bun install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-bun` mounted at `/home/vscode/.bun/install/cache` |
 
 ## Dockerfile Layers
 

@@ -72,5 +72,7 @@
     // {{REMOTE_ENV}} — Insert project-specific environment variables
   },
 
+  // remoteUser: always "vscode" — guaranteed by common-utils:2 feature.
+  // Never use image-specific users (node, python, etc.) as they may not survive feature layering.
   "remoteUser": "vscode"
 }
