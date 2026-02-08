@@ -1,6 +1,6 @@
 {
   "name": "devcontainer-generator",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack",
   "author": {
     "name": "MrBogomips",

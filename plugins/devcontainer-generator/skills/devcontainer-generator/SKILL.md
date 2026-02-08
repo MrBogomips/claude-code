@@ -236,7 +236,9 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
 
 4. **IMPORTANT — remoteUser**: The `remoteUser` MUST always be `"vscode"`. The `common-utils:2` feature guarantees this user exists regardless of base image. Never use image-specific users (`node`, `python`, etc.) as `remoteUser` — they may not survive feature layering.
 
-5. **Generate these 7 files**:
+5. **CRITICAL — common-utils user settings**: NEVER add `username`, `userUid`, or `userGid` parameters to the `common-utils:2` feature. The template intentionally omits these so common-utils defaults to `"automatic"` user detection, which reuses existing non-root users (e.g., `node` at GID 1000 in Node.js images). Setting explicit UID/GID causes `groupadd` failures. Only include the four template parameters: `installZsh`, `configureZshAsDefaultShell`, `installOhMyZsh`, `upgradePackages`.
+
+6. **Generate these 7 files**:
 
    **a. `.devcontainer/devcontainer.json`**
    - Replace `{{PROJECT_NAME}}` with CWD directory name (kebab-case)
@@ -291,7 +293,7 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
    - If MCP servers selected: add MCP configuration section with install commands, `.mcp.json` example, required API keys
    - Fill in customization instructions
 
-6. After generation, display a summary of what was created and suggest next steps:
+7. After generation, display a summary of what was created and suggest next steps:
    - Open in VS Code / Rebuild container
    - Review firewall rules
    - Check DEVCONTAINER.md for service credentials and host binding
@@ -315,6 +317,7 @@ No commented-out placeholder blocks in generated output — templates produce re
 - Use Ubuntu Noble (24.04) package naming conventions (e.g., `libasound2t64`)
 - Always generate Dockerfile even for simple stacks (ensures customization point)
 - For multi-stack projects, use primary stack as base image and layer additional runtimes
+- Never override `common-utils:2` user identity fields (`username`, `userUid`, `userGid`) — automatic detection prevents UID/GID conflicts across all base images
 
 ## References
 

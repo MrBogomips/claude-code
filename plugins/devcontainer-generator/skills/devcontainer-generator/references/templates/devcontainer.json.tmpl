@@ -15,6 +15,8 @@
 
   // Devcontainer features
   "features": {
+    // IMPORTANT: Do NOT add username, userUid, or userGid here.
+    // Automatic detection avoids GID conflicts with base image users (e.g., node:1000).
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": true,
       "configureZshAsDefaultShell": true,
