@@ -47,17 +47,16 @@ Generate a production-ready `.devcontainer` setup for any repository through a m
 
 ### Step 1: Tech Stack
 
-`AskUserQuestion(multiSelect: true)`
-
 Present detected stacks as pre-selected options. If nothing detected, present all options unselected.
 
-**Options** (pre-select based on detection):
-- Node.js 22 (+ detected framework if any, e.g., "Node.js 22 + Next.js")
-- Python 3.12 (+ detected framework)
-- .NET 10 (+ detected framework)
-- Go 1.23
-- Rust
-- Java 21 (+ detected framework)
+**Options** `AskUserQuestion(multiSelect: true)` (pre-select based on detection):
+[ ] Node.js {latest or detected version} (+ detected framework if any, e.g., "Node.js 22 + Next.js")
+[ ] Python {latest or detected version} (+ detected framework)
+[ ] .NET {latest or detected version} (+ detected framework)
+[ ] Go {latest or detected version}
+[ ] Rust {latest or detected version}
+[ ] Java {latest or detected version} (+ detected framework)
+[ ] Other: ________ (free text input)
 
 User can type additional technologies via "Other".
 
@@ -67,34 +66,30 @@ If multiple stacks selected, use the first one as the primary (determines base i
 
 ### Step 2: Infrastructure Services
 
-`AskUserQuestion(multiSelect: true)`
+
 
 Present detected services as pre-selected. Suggest relevant services based on stack.
 
-**Options**:
-- PostgreSQL (with PostGIS) — pre-select if detected or if .NET/.Python selected
-- MySQL 8
-- MongoDB 7 — pre-select if Node.js selected and detected
-- Redis 7 — suggest if any backend stack selected
-- RabbitMQ (with Management UI)
-- Kafka (with Zookeeper)
-- Azurite (Azure Storage Emulator) — pre-select if Azure detected
-- LocalStack (AWS Emulator) — pre-select if AWS detected
-
-User can type additional services via "Other".
+**Options** `AskUserQuestion(multiSelect: true)` (pre-select based on detection):
+[ ] PostgreSQL (with PostGIS) — pre-select if detected or if .NET/.Python selected
+[ ] MySQL 8
+[ ] MongoDB 7 — pre-select if Node.js selected and detected
+[ ] Redis 7 — suggest if any backend stack selected
+[ ] RabbitMQ (with Management UI)
+[ ] Kafka (with Zookeeper)
+[ ] Azurite (Azure Storage Emulator) — pre-select if Azure detected
+[ ] LocalStack (AWS Emulator) — pre-select if AWS detected
+[ ] Other: ________ (free text input)
 
 **After response**: For each selected service, load `@references/services/{name}.md` and extract Docker Compose block, connection strings, credentials, volumes, ports, and client tools.
 
 ### Step 3: Agentic Coding Tools
 
-`AskUserQuestion(multiSelect: true)`
-
-**Options**:
-- Claude Code (default selected) — install with ccyolo alias
-- OpenAI Codex CLI
-- Gemini Code Assist
-
-User can type additional tools via "Other".
+**Options** `AskUserQuestion(multiSelect: true)`: 
+[ ] Claude Code (default selected) — install with ccyolo alias
+[ ] OpenAI Codex CLI
+[ ] Gemini Code Assist
+[ ] Other: ________ (free text input)
 
 **After response**: For each selected tool, load `@references/agentic-tools/{name}.md` and extract installation commands, aliases, verification, and firewall domains.
 
@@ -102,9 +97,10 @@ User can type additional tools via "Other".
 
 `AskUserQuestion(multiSelect: true)`
 
-**Options**:
-- Git (default, always recommended — pre-selected)
-- Git LFS (pre-selected if LFS detected in Step 0)
+**Options** `AskUserQuestion(multiSelect: true)` (pre-select based on detection):
+[ ] Git (default, always recommended — pre-selected)
+[ ] Git LFS (pre-selected if LFS detected in Step 0)
+[ ] Other: ________ (free text input)
 
 Git config includes: credential helper, autocrlf, default branch, push.autoSetupRemote, color, rebase.
 
@@ -116,82 +112,85 @@ User can type additional version control needs via "Other".
 
 **Only present this step if an agentic coding tool was selected in Step 3.** Otherwise skip to Step 6.
 
-`AskUserQuestion(multiSelect: true)`
-
 Before presenting options, perform a `WebSearch` query like "best MCP servers for {detected stack} 2026" to check for newly popular MCP servers. Supplement the static catalog with any fresh recommendations.
 
 Present MCP servers organized by category with stack-aware pre-selections:
 
-**Documentation & Code Context:**
-- Context7 (by Upstash) — up-to-date, version-specific library docs
+**Documentation & Code Context:** `AskUserQuestion(multiSelect: true)`
+[ ] Context7 (by Upstash) — up-to-date, version-specific library docs
 
-**Source Control & Project Management:**
-- GitHub MCP (pre-selected if .git detected) — PRs, issues, code search
-- Atlassian MCP (Jira + Confluence)
-- Linear MCP
+**Source Control & Project Management:** `AskUserQuestion(multiSelect: true)`
+[ ] GitHub MCP (pre-selected if .git detected) — PRs, issues, code search
+[ ] Atlassian MCP (Jira + Confluence)
+[ ] Linear MCP
 
-**Database** (pre-select based on Step 2 services):
-- PostgreSQL MCP (pre-selected if PostgreSQL chosen in Step 2)
-- Redis MCP (pre-selected if Redis chosen in Step 2)
-- SQLite MCP
+**Database** `AskUserQuestion(multiSelect: true)` (pre-select based on Step 2 services):
+[ ] PostgreSQL MCP (pre-selected if PostgreSQL chosen in Step 2)
+[ ] Redis MCP (pre-selected if Redis chosen in Step 2)
+[ ] SQLite MCP
 
-**Design & Browser:**
-- Figma MCP
-- Puppeteer MCP
-- Playwright MCP
+**Design & Browser:** `AskUserQuestion(multiSelect: true)`
+[ ] Figma MCP
+[ ] Puppeteer MCP
+[ ] Playwright MCP
 
-**Code Quality & Monitoring:**
-- Sentry MCP
-- Serena MCP
+**Code Quality & Monitoring:** `AskUserQuestion(multiSelect: true)`
+[ ] Sentry MCP
+[ ] Serena MCP
 
-**Search & Web:**
-- Brave Search MCP
-- Fetch MCP
+**Search & Web:** `AskUserQuestion(multiSelect: true)`
+[ ] Brave Search MCP
+[ ] Fetch MCP
 
-**AI & Reasoning:**
-- Memory MCP
-- Sequential Thinking MCP
+**AI & Reasoning:** `AskUserQuestion(multiSelect: true)`
+[ ] Memory MCP
+[ ] Sequential Thinking MCP
 
 User can type additional MCP servers via "Other".
+
+[ ] Other: ________ (free text input)
+
 
 **After response**: For each selected MCP server, load `@references/mcp-servers.md` and extract its npm/pip package, configuration, API key requirements, and firewall domains to whitelist.
 
 ### Step 6: VS Code Extensions & Features
 
-`AskUserQuestion(multiSelect: true)`
-
 Propose extensions based on selected stacks (from per-stack reference files):
 
-**Common** (always pre-selected):
-- GitLens, Error Lens, EditorConfig, Path Intellisense
+**Common** `AskUserQuestion(multiSelect: true)`(always pre-selected):
+[ ] GitLens, Error Lens, EditorConfig, Path Intellisense
 
-**Stack-specific** (pre-selected based on Step 1):
-- Node.js: ESLint, Prettier, Tailwind CSS
-- .NET: C# Dev Kit, C#, .NET Runtime
-- Python: Python, Pylance
-- Go: Go
-- Rust: rust-analyzer, crates
-- Java: Java Extension Pack, Spring Boot (if detected), Quarkus (if detected)
+**Stack-specific** `AskUserQuestion(multiSelect: true)`(pre-selected based on Step 1):
+[ ] Node.js: ESLint, Prettier, Tailwind CSS
+[ ] .NET: C# Dev Kit, C#, .NET Runtime
+[ ] Python: Python, Pylance
+[ ] Go: Go
+[ ] Rust: rust-analyzer, crates
+[ ] Java: Java Extension Pack, Spring Boot (if detected), Quarkus (if detected)
+[ ] Other: ________ (free text input)
 
-**Service-specific** (pre-selected based on Step 2):
-- PostgreSQL explorer, MongoDB explorer, Redis client, Docker
+**Service-specific** `AskUserQuestion(multiSelect: true)`(pre-selected based on Step 2):
+[ ] PostgreSQL explorer
+[ ] MongoDB explorer
+[ ] Redis explorer
+[ ] RabbitMQ explorer
 
 **Testing** (pre-selected if detected):
-- Playwright
+[ ] Playwright
 
 **Devcontainer Features** to propose (always pre-selected):
-- common-utils, git, github-cli, docker-outside-of-docker
-- azure-cli (if Azure detected)
+[ ] common-utils, git, github-cli, docker-outside-of-docker
+[ ] azure-cli (if Azure detected)
 
 User can type additional extensions/features via "Other".
 
 ### Step 7: Firewall Policy
 
-`AskUserQuestion(multiSelect: false)`
 
-**Options**:
-- Deny-all (recommended) — only whitelisted domains accessible, tailored to your selected stack
-- Allow-all — no restrictions, `ALLOW *` default policy
+
+**Options** `AskUserQuestion(multiSelect: false)`:
+[x] Deny-all (recommended) — only whitelisted domains accessible, tailored to your selected stack
+[ ] Allow-all — no restrictions, `ALLOW *` default policy
 
 **Note**: Firewall scripts are **always deployed** regardless of choice. `ALLOW *` simply means no restrictions are active. User can tighten later by editing `firewall-rules.conf`.
 
