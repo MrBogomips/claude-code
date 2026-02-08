@@ -20,7 +20,7 @@ Generate a production-ready `.devcontainer` setup for any repository through a g
 
 ## Quick Start
 
-1. **Invoke the skill** — run `/devcontainer-generator` in Claude Code (or mention "devcontainer" in conversation)
+1. **Invoke the skill** — run `/devcontainer-generator` in Claude Code (the skill requires explicit invocation and cannot be triggered by the model)
 2. **Walk through the workflow** — confirm or adjust at each of the 10 interactive steps
 3. **Build the container** — open in VS Code and run **Dev Containers: Rebuild Container**
 
