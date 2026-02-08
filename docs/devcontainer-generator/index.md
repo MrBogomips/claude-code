@@ -40,6 +40,8 @@ The skill generates 7 files inside `.devcontainer/`:
 
 ## Supported Stacks
 
+The following 6 stacks have first-class support — with curated base images, framework detection, package manager integration, VS Code extensions, shell aliases, and firewall domains pre-configured:
+
 | Stack | Base Image | Frameworks | Package Managers |
 |-------|-----------|------------|------------------|
 | **Node.js** | `mcr.microsoft.com/devcontainers/javascript-node:22` | Next.js, Angular, Vite, Nuxt, Remix, Docusaurus, Storybook | npm, pnpm, Yarn, Bun |
@@ -49,7 +51,13 @@ The skill generates 7 files inside `.devcontainer/`:
 | **Rust** | `mcr.microsoft.com/devcontainers/rust:latest` | Actix Web, Axum, Rocket | Cargo |
 | **Java** | `mcr.microsoft.com/devcontainers/java:21` | Spring Boot, Quarkus, Micronaut | Maven, Gradle |
 
+:::tip Not limited to these stacks
+Every step in the workflow includes an **"Other"** free-text option. You can request any stack, framework, or tool not listed above — the skill will generate a working configuration and let you customize every aspect (base image, Dockerfile layers, extensions, aliases, firewall domains, etc.). The 6 stacks above simply get the richest out-of-the-box defaults.
+:::
+
 ## Supported Services
+
+The following 8 services have first-class support — with pre-built Docker Compose blocks, health checks, named volumes, connection strings for all 6 stacks, and client tools:
 
 | Service | Image | Port(s) | Default Credentials |
 |---------|-------|---------|-------------------|
@@ -62,13 +70,23 @@ The skill generates 7 files inside `.devcontainer/`:
 | **Azurite** | `mcr.microsoft.com/azure-storage/azurite` | 10000, 10001, 10002 | Well-known dev credentials |
 | **LocalStack** | `localstack/localstack:latest` | 4566 | `test` / `test` |
 
+:::tip Need a different service?
+Use the **"Other"** option in Step 2 to request any service not listed above (e.g., SQL Server, Elasticsearch, MinIO). The skill will add it to your Docker Compose configuration with appropriate settings, and you can fine-tune every detail.
+:::
+
 ## Agentic Coding Tools
+
+The following 3 tools have first-class support — with automated installation, shell aliases, verification checks, and firewall domain whitelisting:
 
 | Tool | Installation | Key Alias |
 |------|-------------|-----------|
 | **Claude Code** | `curl -fsSL https://claude.ai/install.sh \| bash` | `ccyolo` — skip permissions |
 | **OpenAI Codex CLI** | `npm install -g @openai/codex` | `codex-full` — full auto mode |
 | **Gemini Code Assist** | VS Code extension `google.geminicodeassist` | — |
+
+:::tip Bring your own tools
+Use the **"Other"** option in Step 3 to add any agentic coding tool. The skill will incorporate your custom tool into the post-create setup and firewall configuration.
+:::
 
 ## Documentation
 

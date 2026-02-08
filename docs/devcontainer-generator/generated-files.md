@@ -5,7 +5,7 @@ title: Generated Files
 
 # Generated Files
 
-The devcontainer generator produces 7 files inside `.devcontainer/`. Each file is built from a template skeleton (`references/templates/*.tmpl`) with `{{PLACEHOLDER}}` markers replaced by content assembled from your selected stack, service, and tool reference files.
+The `devcontainer-generator` skill produces 7 files inside `.devcontainer/`. Each file is built from a template skeleton (`references/templates/*.tmpl`) with `{{PLACEHOLDER}}` markers replaced by content assembled from your selected stack, service, and tool reference files.
 
 ```
 .devcontainer/

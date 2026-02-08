@@ -5,7 +5,7 @@ title: Agentic Tools & MCP Servers
 
 # Agentic Tools & MCP Servers
 
-The devcontainer generator supports 3 agentic coding tools and a catalog of 16 MCP (Model Context Protocol) servers across 7 categories. MCP servers are only offered when at least one agentic tool is selected.
+The `devcontainer-generator` skill supports 3 agentic coding tools and a catalog of 16 MCP (Model Context Protocol) servers across 7 categories. MCP servers are only offered when at least one agentic tool is selected.
 
 ## Agentic Coding Tools
 
@@ -72,7 +72,7 @@ MCP servers extend agentic coding tools with external integrations — databases
 ### How MCP Selection Works
 
 1. MCP servers are **only offered if an agentic tool was selected** in Step 3
-2. Before presenting options, the plugin runs a **live web search** to supplement the built-in catalog with fresh recommendations
+2. Before presenting options, the skill runs a **live web search** to supplement the built-in catalog with fresh recommendations
 3. Servers are **pre-selected based on context**: GitHub MCP if `.git` is detected, PostgreSQL MCP if PostgreSQL was chosen as a service, etc.
 4. Selected servers are configured in `.mcp.json` and documented in `DEVCONTAINER.md`
 

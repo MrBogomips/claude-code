@@ -5,7 +5,7 @@ title: Network Firewall
 
 # Network Firewall
 
-The devcontainer generator **always deploys** a firewall — `apply-firewall.sh` and `firewall-rules.conf` are generated regardless of policy choice. The policy determines whether traffic is blocked by default (deny-all) or allowed by default (allow-all).
+The `devcontainer-generator` skill **always deploys** a firewall — `apply-firewall.sh` and `firewall-rules.conf` are generated regardless of policy choice. The policy determines whether traffic is blocked by default (deny-all) or allowed by default (allow-all).
 
 ## Architecture
 
@@ -17,10 +17,10 @@ The devcontainer generator **always deploys** a firewall — `apply-firewall.sh`
 │   ┌───────────────────────────────────┐     │
 │   │ DEVCONTAINER_FW chain             │     │
 │   │ 1. Root (uid 0) → RETURN (exempt) │     │
-│   │ 2. Loopback → ACCEPT             │     │
+│   │ 2. Loopback → ACCEPT              │     │
 │   │ 3. Established/Related → ACCEPT   │     │
-│   │ 4. DNS (53) → ACCEPT             │     │
-│   │ 5. DHCP (67-68) → ACCEPT         │     │
+│   │ 4. DNS (53) → ACCEPT              │     │
+│   │ 5. DHCP (67-68) → ACCEPT          │     │
 │   │ 6. User rules (first match wins)  │     │
 │   │ 7. Default policy: DENY/ALLOW *   │     │
 │   └───────────────────────────────────┘     │

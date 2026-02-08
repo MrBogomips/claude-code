@@ -5,13 +5,13 @@ title: Interactive Workflow
 
 # Interactive Workflow
 
-The devcontainer generator uses a 10-step interactive workflow (Steps 0–9). Each step presents multi-select options with smart defaults pre-selected based on project detection. You confirm or adjust at every step.
+The `devcontainer-generator` skill uses a 10-step interactive workflow (Steps 0–9). Each step presents multi-select options with smart defaults pre-selected based on project detection. You confirm or adjust at every step.
 
 ## Step 0: Preflight Discovery
 
 **Automatic — no user interaction.**
 
-The plugin silently scans your project before presenting any choices:
+The skill silently scans your project before presenting any choices:
 
 1. **Parse CLI arguments** for explicit requests (e.g., "Next.js with PostgreSQL", "no firewall", "Claude Code only"). These pre-select options in subsequent steps.
 
@@ -52,7 +52,7 @@ If nothing is detected and no CLI arguments were given, the workflow proceeds wi
 
 ## Step 1: Tech Stack
 
-Multi-select prompt with detected stacks pre-selected:
+Multi-select prompt with detected stacks pre-selected. These 6 stacks have first-class support with curated base images, framework detection, and pre-configured tooling:
 
 ```
 [ ] Node.js 22 (+ Next.js)        ← pre-selected if detected
@@ -65,14 +65,14 @@ Multi-select prompt with detected stacks pre-selected:
 
 - Detected version is shown (e.g., "Node.js 22" from `engines.node`)
 - Detected framework is appended (e.g., "Node.js 22 + Next.js")
-- "Other" free-text input is always available
+- **"Other" free-text input is always available** — request any stack not listed (e.g., PHP, Elixir, Scala) and the skill will build a configuration for it, letting you customize base image, extensions, and all other details
 - The **first selected stack** becomes the primary — its base image is used for the Dockerfile
 
-After selection, the plugin loads the corresponding [stack reference files](./stacks) to extract base images, extensions, aliases, firewall domains, and host binding guidance.
+After selection, the skill loads the corresponding [stack reference files](./stacks) to extract base images, extensions, aliases, firewall domains, and host binding guidance.
 
 ## Step 2: Infrastructure Services
 
-Multi-select prompt with stack-aware and detection-based pre-selections:
+Multi-select prompt with stack-aware and detection-based pre-selections. These 8 services have first-class support with pre-built Docker Compose blocks, health checks, and connection strings:
 
 ```
 [ ] PostgreSQL (with PostGIS)      ← pre-select if detected, or if .NET/Python selected
@@ -85,11 +85,13 @@ Multi-select prompt with stack-aware and detection-based pre-selections:
 [ ] LocalStack (AWS Emulator)      ← pre-select if AWS detected
 ```
 
-After selection, the plugin loads [service reference files](./services) to extract Docker Compose blocks, connection strings, credentials, volumes, ports, and client tools.
+Use **"Other"** to request any service not listed (e.g., SQL Server, Elasticsearch, MinIO, Meilisearch). The skill will add it to your Docker Compose with appropriate configuration.
+
+After selection, the skill loads [service reference files](./services) to extract Docker Compose blocks, connection strings, credentials, volumes, ports, and client tools.
 
 ## Step 3: Agentic Coding Tools
 
-Multi-select prompt:
+Multi-select prompt. These 3 tools have first-class support with automated installation, aliases, and firewall domains:
 
 ```
 [x] Claude Code                    ← selected by default
@@ -97,7 +99,9 @@ Multi-select prompt:
 [ ] Gemini Code Assist
 ```
 
-After selection, the plugin loads [agentic tool reference files](./ai-tools) for installation commands, aliases, verification steps, and firewall domains.
+Use **"Other"** to add any agentic tool not listed. The skill will incorporate it into the post-create setup and firewall configuration.
+
+After selection, the skill loads [agentic tool reference files](./ai-tools) for installation commands, aliases, verification steps, and firewall domains.
 
 ## Step 4: Git Configuration
 
@@ -107,6 +111,8 @@ Multi-select prompt:
 [x] Git                            ← always pre-selected
 [ ] Git LFS                        ← pre-selected if LFS detected in Step 0
 ```
+
+Use **"Other"** to specify additional version control needs or custom Git configuration.
 
 Git configuration includes: credential helper, autocrlf, default branch (`main`), push.autoSetupRemote, color, rebase settings.
 
@@ -118,9 +124,9 @@ If Git LFS is selected: `git-lfs` is added to Dockerfile apt install, and `git l
 This step is **only presented if an agentic coding tool was selected in Step 3**. Otherwise, it is skipped entirely.
 :::
 
-Before presenting options, the plugin performs a **live web search** (e.g., "best MCP servers for Node.js 2026") to supplement the built-in catalog with fresh recommendations.
+Before presenting options, the skill performs a **live web search** (e.g., "best MCP servers for Node.js 2026") to supplement the built-in catalog with fresh recommendations.
 
-Options are organized by category with stack-aware pre-selections:
+The following 16 servers across 7 categories have first-class support with pre-built configuration and firewall domains. Options are organized by category with stack-aware pre-selections:
 
 **Documentation & Code Context:**
 ```
@@ -166,11 +172,13 @@ Options are organized by category with stack-aware pre-selections:
 [ ] Sequential Thinking MCP
 ```
 
+Use **"Other"** to add any MCP server not in the catalog. The skill will configure it in `.mcp.json` and add its firewall domains.
+
 See [Agentic Tools & MCP Servers](./ai-tools) for full details on each server's configuration and API key requirements.
 
 ## Step 6: VS Code Extensions & Features
 
-Multi-select prompts with stack- and service-aware pre-selections:
+Multi-select prompts with stack- and service-aware pre-selections. Use **"Other"** at any prompt to add custom extensions or devcontainer features not listed:
 
 **Common** (always pre-selected):
 ```
@@ -254,16 +262,16 @@ You then choose:
 
 ## Step 9: Generate Files
 
-The plugin generates 7 files by reading template skeletons and replacing `{{PLACEHOLDER}}` markers with content assembled from the selected stack/service/tool reference files.
+The skill generates 7 files by reading template skeletons and replacing `{{PLACEHOLDER}}` markers with content assembled from the selected stack/service/tool reference files.
 
 1. **Fetch base image** — `WebFetch` to `https://containers.dev/templates` to find the best official devcontainer image for the primary stack
-2. **Read templates** from the plugin's `references/templates/` directory
+2. **Read templates** from the skill's `references/templates/` directory
 3. **Compose final content** by replacing each placeholder with assembled blocks from the loaded reference files
 4. **Write 7 files** to `.devcontainer/`
 
 See [Generated Files](./generated-files) for a detailed breakdown of each file.
 
-After generation, the plugin displays a summary with next steps:
+After generation, the skill displays a summary with next steps:
 - Open in VS Code → **Dev Containers: Rebuild Container**
 - Review `firewall-rules.conf` for your network policy
 - Check `DEVCONTAINER.md` for service credentials and host binding
