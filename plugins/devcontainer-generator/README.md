@@ -1,190 +1,99 @@
 # Devcontainer Generator
 
-A Claude Code plugin that generates production-ready devcontainer configurations by analyzing your repository's tech stack.
-
-## What It Does
-
-This skill automatically:
-
-1. **Analyzes your repository** to detect:
-   - Language runtimes (Node.js, .NET, Python, Go, Rust, Java)
-   - Package managers (pnpm, yarn, npm, bun)
-   - Frameworks (Angular, Next.js, Nuxt, Vite, etc.)
-   - Services (PostgreSQL, MySQL, MongoDB, Redis, RabbitMQ, Kafka)
-   - Cloud providers (Azure, AWS, GCP)
-   - Monorepo structures
-
-2. **Selects official templates** from containers.dev:
-   - Fetches current template list dynamically
-   - Matches detected stack to official Microsoft templates
-   - Supports combo templates (e.g., python-3-postgres)
-   - Falls back to Universal template when no match
-
-3. **Asks about your preferences**:
-   - Agentic coding assistant (Claude Code or other)
-   - Developer tools (GitHub CLI, fzf, httpie)
-   - Shell preference (Zsh with Oh My Zsh, Fish, Bash)
-   - Which detected services to include
-
-4. **Generates a complete `.devcontainer` setup**:
-   - `devcontainer.json` with features and VS Code extensions
-   - `Dockerfile` with multi-runtime support (always generated)
-   - `docker-compose.yml` with services and health checks
-   - `post-create.sh` setup script
-   - Shell configurations (Zsh/Fish)
-   - Firewall rules for network whitelisting
+A Claude Code plugin that generates production-ready `.devcontainer` configurations through an interactive multi-step workflow. It scans your repository, detects your tech stack, and proposes smart defaults you can accept or customize.
 
 ## Usage
 
 ```bash
-# Invoke the skill from within your project
 claude /devcontainer-generator
 ```
 
-Or simply ask:
+Or use natural language:
 
 > "Generate a devcontainer for this project"
+> "Set up a devcontainer with Next.js and PostgreSQL"
+> "Create a development container with Claude Code"
 
-## Claude-Only Mode
+## What Gets Generated
 
-For empty folders or when you just need Claude Code execution without a full development environment:
-
-1. Run `/devcontainer-generator` in an empty folder
-2. Select "Claude Code execution only (minimal container)"
-3. A lightweight container is generated with just Claude Code
-
-**Attaching to the container:**
-
-```bash
-# Build and start the devcontainer
-devcontainer up --workspace-folder .
-
-# Attach to the running container
-devcontainer exec --workspace-folder . /bin/zsh
-
-# Or use VS Code: Command Palette → "Dev Containers: Attach to Running Container"
+```
+.devcontainer/
+├── devcontainer.json          # Features, extensions, ports, lifecycle commands
+├── Dockerfile                 # Base image, system deps, runtime layers
+├── docker-compose.yml         # Container + infrastructure services
+├── firewall-rules.conf        # Domain allowlist/denylist (always deployed)
+├── DEVCONTAINER.md            # Configuration summary and customization guide
+└── scripts/
+    ├── post-create.sh         # Git config, tool install, aliases, packages
+    └── apply-firewall.sh      # iptables/ip6tables runtime enforcement
 ```
 
-## Agentic Coding Integration
+## Supported Stacks
 
-### Claude Code
+| Stack | Base Image | Frameworks |
+|-------|------------|------------|
+| Node.js | `javascript-node:22` | Next.js, Angular, Vite, Nuxt, Remix, Docusaurus |
+| Python | `python:3.12` | Flask, Django, FastAPI |
+| .NET | `dotnet:10.0` | ASP.NET Core, Blazor, Aspire |
+| Go | `go:1.23` | Gin, Echo, Fiber |
+| Rust | `rust:latest` | Actix, Axum, Rocket |
+| Java | `java:21` | Spring Boot, Quarkus, Micronaut |
 
-Installs Claude Code via the official installer script and adds the `ccyolo` alias.
+Multi-stack projects are supported — the primary stack determines the base image, additional stacks are layered in the Dockerfile.
 
-### Other Agentic Coders
+## Supported Services
 
-Generate a customization-ready post-create.sh with examples for:
+PostgreSQL (with PostGIS), MySQL 8, MongoDB 7, Redis 7, RabbitMQ (with Management UI), Kafka (with Zookeeper), Azurite (Azure Storage), LocalStack (AWS).
 
-- **Aider**: `pip install aider-chat`
-- **Continue**: VS Code extension
-- **Cline/Roo Code**: VS Code extension
+All services include health checks, named volumes, and connection strings.
 
-## Official Template Selection
+## Agentic Coding Tools
 
-The skill fetches templates from https://containers.dev/templates and selects the best match:
+- **Claude Code** — installed with `ccyolo` alias (`claude --dangerously-skip-permissions`)
+- **OpenAI Codex CLI** — installed with `codex-full` alias
+- **Gemini Code Assist** — installed as VS Code extension
 
-| Detected Stack        | Selected Template       |
-| --------------------- | ----------------------- |
-| Python                | `python`                |
-| Python + PostgreSQL   | `python-3-postgres`     |
-| Node.js               | `javascript-node`       |
-| Node.js + MongoDB     | `javascript-node-mongo` |
-| TypeScript            | `typescript-node`       |
-| .NET                  | `dotnet`                |
-| Go                    | `go`                    |
-| Rust                  | `rust`                  |
-| Java                  | `java`                  |
-| Multi-stack / Unknown | `universal`             |
+## MCP Servers
 
-## Supported Tech Stacks
+The workflow proposes MCP servers based on your stack:
+- GitHub, Atlassian, Linear (project management)
+- PostgreSQL, Redis, SQLite (database)
+- Context7, Sentry, Figma, Playwright (specialized tools)
+- Brave Search, Fetch, Memory, Sequential Thinking (AI utilities)
 
-### Languages & Runtimes
+## Firewall
 
-| Detection File                       | Runtime |
-| ------------------------------------ | ------- |
-| `package.json`                       | Node.js |
-| `*.csproj`, `*.sln`                  | .NET    |
-| `requirements.txt`, `pyproject.toml` | Python  |
-| `go.mod`                             | Go      |
-| `Cargo.toml`                         | Rust    |
-| `pom.xml`, `build.gradle`            | Java    |
+The network firewall is **always deployed**. You choose the policy:
 
-### Package Managers
+- **Deny-all** (recommended) — only whitelisted domains are accessible, tailored to your stack
+- **Allow-all** — no restrictions, can be tightened later
 
-| Lock File           | Manager |
-| ------------------- | ------- |
-| `pnpm-lock.yaml`    | pnpm    |
-| `yarn.lock`         | Yarn    |
-| `package-lock.json` | npm     |
-| `bun.lockb`         | Bun     |
+Switch policy anytime by editing one line in `firewall-rules.conf`:
+```
+DENY *    # restrictive (block everything not whitelisted)
+ALLOW *   # permissive (allow all traffic)
+```
 
-### Frameworks
+## Quickstart
 
-| Config File            | Framework  |
-| ---------------------- | ---------- |
-| `angular.json`         | Angular    |
-| `next.config.*`        | Next.js    |
-| `nuxt.config.*`        | Nuxt       |
-| `vite.config.*`        | Vite       |
-| `docusaurus.config.js` | Docusaurus |
-| `.storybook/`          | Storybook  |
-
-### Services
-
-- PostgreSQL (with PostGIS)
-- MySQL
-- MongoDB
-- Redis
-- RabbitMQ (with Management UI)
-- Kafka (with Zookeeper)
-- Azurite (Azure Storage Emulator)
-- LocalStack (AWS Emulator)
-
-### Monorepo Support
-
-Detects monorepo structures via:
-
-- `pnpm-workspace.yaml`
-- `lerna.json`
-- `nx.json`
-- `turbo.json`
-- `apps/`, `packages/`, `services/` directories
-
-## Best Practices Applied
-
-The generated configurations follow these best practices:
-
-- **Official templates** - Prefers Microsoft official templates from containers.dev
-- **Official features only** - Uses `ghcr.io/devcontainers/features/`
-- **Named volumes** - Project-prefixed to avoid conflicts
-- **Health checks** - All services include proper health checks
-- **Telemetry opt-out** - Disabled by default for privacy
-- **Ubuntu Noble compatibility** - Uses correct package names (e.g., `libasound2t64`)
-- **Always generates Dockerfile** - Ensures customization point even for simple stacks
-
-## Customization
-
-After generation, you can customize the files:
-
-1. **Add more VS Code extensions** in `devcontainer.json`
-2. **Modify Dockerfile** to add additional tools
-3. **Configure services** in `docker-compose.yml`
-4. **Add shell aliases** in `config/.zshrc` or `config/fish/config.fish`
-5. **Add agentic coder** by editing the customization section in `post-create.sh`
+1. Navigate to your project directory
+2. Run `claude /devcontainer-generator`
+3. Answer the interactive prompts (smart defaults pre-selected)
+4. Open in VS Code → "Reopen in Container"
 
 ## Installation
 
 Add to your Claude Code plugins directory:
 
 ```bash
-# Clone the marketplace
 git clone https://github.com/MrBogomips/claude-code.git
-
-# Or copy just this plugin
-cp -r plugins/devcontainer-generator ~/.claude/plugins/
 ```
 
-Then configure in your Claude Code settings.
+Or copy just this plugin:
+
+```bash
+cp -r plugins/devcontainer-generator ~/.claude/plugins/
+```
 
 ## License
 

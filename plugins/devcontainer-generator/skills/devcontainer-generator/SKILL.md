@@ -1,388 +1,344 @@
 ---
 name: devcontainer-generator
-description: Generate or configure .devcontainer setups by analyzing repository tech stack. Triggers on devcontainer, dev container, devcontainer.json, development container, containerized development environment, VS Code Remote Containers, GitHub Codespaces, Docker-based development setup, reproducible development environment. Produces Dockerfile, Docker Compose, post-create scripts, shell configs, firewall rules, and Claude Code integration. Not for production Docker, CI/CD pipelines, or general Docker questions.
+description: Generate devcontainer setups by scanning CWD for tech stack and infra services. Triggers on devcontainer, dev container, devcontainer.json, development container, containerized development, VS Code Remote Containers, GitHub Codespaces. Produces devcontainer.json, Dockerfile, Docker Compose, post-create scripts, firewall rules, and DEVCONTAINER.md summary.
 user-invokable: true
 context: fork
 disable-model-invocation: true
-allowed-tools: Read, Write, Glob, Grep, WebFetch, AskUserQuestion
+allowed-tools: Read, Write, Glob, Grep, WebFetch, WebSearch, AskUserQuestion
 ---
 
 # Devcontainer Generator
 
-Generate a production-ready `.devcontainer` setup for any repository by analyzing its tech stack and asking about optional integrations.
+Generate a production-ready `.devcontainer` setup for any repository through a multi-step interactive workflow. The skill scans the CWD, proposes smart defaults, and lets the user confirm or adjust at each step.
+
+## Design Principles
+
+- **Firewall always deployed**: `apply-firewall.sh` and `firewall-rules.conf` are always generated. When user doesn't want restrictions, the default policy is `ALLOW *`.
+- **Prepopulated choices**: Each step comes with reasonable defaults pre-selected based on detection.
+- **Every step = multiple choices + open option**: All steps use `AskUserQuestion(multiSelect: true)` with pre-selected defaults. The built-in "Other" escape allows user additions.
+- **Host reachability**: Dev servers must bind to `0.0.0.0` not `localhost`/`127.0.0.1`. Generated configs and DEVCONTAINER.md include per-framework guidance.
+- **Lean interaction**: Propose smart defaults, let user confirm or adjust, never ask for information you can detect.
 
 ## Workflow
 
-This skill operates in three phases:
+### Step 0: Preflight Discovery
 
-### Phase 1: Repository Analysis
+**Automatic — no user interaction.**
 
-**Empty Folder Detection:**
-First, check if the directory is empty or contains only hidden files (like `.git`):
+1. Parse `$ARGUMENTS` for explicit requests (e.g., "Next.js with PostgreSQL", "no firewall", "Claude Code only"). Use any explicit requests to pre-select options in subsequent steps.
 
-- If empty/minimal: Skip tech detection and go directly to Phase 1b for interactive setup
-- Ask if user wants a "Claude-safe-only" environment or wants to describe their project
+2. Scan CWD for tech stack:
+   - **Languages**: `package.json` → Node.js, `*.csproj`/`*.sln`/`global.json` → .NET, `requirements.txt`/`pyproject.toml`/`setup.py`/`Pipfile` → Python, `go.mod` → Go, `Cargo.toml` → Rust, `pom.xml`/`build.gradle`/`build.gradle.kts` → Java
+   - **Frameworks**: `angular.json` → Angular, `next.config.*` → Next.js, `nuxt.config.*` → Nuxt, `vite.config.*` → Vite, `docusaurus.config.js` → Docusaurus, `.storybook/` → Storybook, `remix.config.*` → Remix
+   - **Package managers**: `pnpm-lock.yaml` → pnpm, `yarn.lock` → Yarn, `package-lock.json` → npm, `bun.lockb` → Bun
+   - **Monorepo indicators**: `pnpm-workspace.yaml`, `nx.json`, `turbo.json`, `lerna.json`, `apps/`, `packages/`, `services/`
+   - **Versions**: Check `engines.node` in package.json, `sdk.version` in global.json, Python version in pyproject.toml
 
-**Official Template Fetching:**
-Before template selection, fetch the current list of available templates:
+3. Scan for services:
+   - Existing `docker-compose.yml` — parse service names and images
+   - Environment variables or connection strings referencing databases/brokers
+   - Cloud provider files: `azure-pipelines.yml`, `azuredeploy.json`, Bicep → Azure; `serverless.yml`, `aws-cdk.*` → AWS
 
-1. WebFetch from <https://containers.dev/templates>
-2. Parse official templates (Dev Container Spec Maintainers)
-3. Parse community templates (Microsoft Azure, research tools, etc.)
-4. Cache results for the session
+4. Detect Git LFS: check `.gitattributes` for `filter=lfs` patterns
 
-Analyze the repository to detect the tech stack. Check both the root directory and subdirectories (for monorepo support).
+5. Check for existing `.devcontainer/` directory
 
-**Monorepo Indicators:**
-Look for these files at the root:
+6. If nothing detected and no arguments: proceed with empty state (all options unselected in subsequent steps)
 
-- `pnpm-workspace.yaml` - pnpm workspaces
-- `lerna.json` - Lerna monorepo
-- `nx.json` - Nx workspace
-- `turbo.json` - Turborepo
+### Step 1: Tech Stack
 
-And these directories:
+`AskUserQuestion(multiSelect: true)`
 
-- `apps/` - Application packages
-- `packages/` - Library packages
-- `services/` - Service packages
+Present detected stacks as pre-selected options. If nothing detected, present all options unselected.
 
-**Language Runtimes:**
-Detect by presence of:
+**Options** (pre-select based on detection):
+- Node.js 22 (+ detected framework if any, e.g., "Node.js 22 + Next.js")
+- Python 3.12 (+ detected framework)
+- .NET 10 (+ detected framework)
+- Go 1.23
+- Rust
+- Java 21 (+ detected framework)
 
-- `package.json` → Node.js (check `engines.node` for version)
-- `*.csproj`, `*.sln`, `global.json` → .NET (check `global.json` for SDK version)
-- `requirements.txt`, `pyproject.toml`, `setup.py` → Python
-- `go.mod` → Go
-- `Cargo.toml` → Rust
-- `pom.xml`, `build.gradle`, `build.gradle.kts` → Java
+User can type additional technologies via "Other".
 
-**Package Managers:**
+**After response**: For each selected stack, load `@references/stacks/{name}.md` and extract base image, extensions, features, aliases, firewall domains, and host binding guidance.
 
-- `pnpm-lock.yaml` → pnpm
-- `yarn.lock` → Yarn
-- `package-lock.json` → npm
-- `bun.lockb` → Bun
+If multiple stacks selected, use the first one as the primary (determines base image). Additional stacks are layered in the Dockerfile.
 
-**Frameworks:**
+### Step 2: Infrastructure Services
 
-- `angular.json` → Angular (check version in package.json)
-- `next.config.js`, `next.config.mjs`, `next.config.ts` → Next.js
-- `nuxt.config.js`, `nuxt.config.ts` → Nuxt
-- `vite.config.*` → Vite
-- `docusaurus.config.js` → Docusaurus
-- `.storybook/` → Storybook
+`AskUserQuestion(multiSelect: true)`
 
-**Services (from docker-compose.yml, environment variables, or connection strings):**
+Present detected services as pre-selected. Suggest relevant services based on stack.
 
-- PostgreSQL (port 5432)
-- MySQL (port 3306)
-- MongoDB (port 27017)
-- Redis (port 6379)
-- RabbitMQ (ports 5672, 15672)
-- Kafka (port 9092)
+**Options**:
+- PostgreSQL (with PostGIS) — pre-select if detected or if .NET/.Python selected
+- MySQL 8
+- MongoDB 7 — pre-select if Node.js selected and detected
+- Redis 7 — suggest if any backend stack selected
+- RabbitMQ (with Management UI)
+- Kafka (with Zookeeper)
+- Azurite (Azure Storage Emulator) — pre-select if Azure detected
+- LocalStack (AWS Emulator) — pre-select if AWS detected
 
-**Cloud Providers:**
+User can type additional services via "Other".
 
-- `azure-pipelines.yml`, `azuredeploy.json`, Bicep files → Azure
-- `serverless.yml` with AWS, `aws-cdk.*` → AWS
-- `app.yaml` (GCP), `cloudbuild.yaml` → GCP
+**After response**: For each selected service, load `@references/services/{name}.md` and extract Docker Compose block, connection strings, credentials, volumes, ports, and client tools.
 
-**Base Template Selection:**
-After detecting tech stack, match to official templates using `references/template-selection-guide.md`:
+### Step 3: Agentic Coding Tools
 
-- Single match → use that template
-- Multiple matches → ask user to choose (Microsoft templates first)
-- Combo match (language + database) → prefer combo template
-- No match → use Universal template
+`AskUserQuestion(multiSelect: true)`
 
-**Existing Configuration:**
-If `.devcontainer/` directory already exists, ask the user:
+**Options**:
+- Claude Code (default selected) — install with ccyolo alias
+- OpenAI Codex CLI
+- Gemini Code Assist
 
-- Overwrite existing configuration (replace all files)
-- Merge with existing (preserve customizations where possible)
-- Cancel generation
+User can type additional tools via "Other".
 
-### Phase 1b: Interactive Stack Discovery (Empty/Unknown Projects)
+**After response**: For each selected tool, load `@references/agentic-tools/{name}.md` and extract installation commands, aliases, verification, and firewall domains.
 
-If the repository is empty or no tech stack is detected, engage the user in an interactive discovery process:
+### Step 4: Git Configuration
 
-**Step 0: Usage Intent**
-Ask: "What do you want to use this devcontainer for?"
+`AskUserQuestion(multiSelect: true)`
 
-- Full development environment (Recommended)
-- Claude Code execution only (minimal container)
+**Options**:
+- Git (default, always recommended — pre-selected)
+- Git LFS (pre-selected if LFS detected in Step 0)
 
-If "Claude Code execution only" selected:
+Git config includes: credential helper, autocrlf, default branch, push.autoSetupRemote, color, rebase.
 
-- Use the same templates as full mode (`devcontainer.json.tmpl`, `Dockerfile.tmpl`, `docker-compose.yml.tmpl`, `post-create.sh.tmpl`) with these settings:
-  - **Base image**: keep default `mcr.microsoft.com/devcontainers/base:ubuntu`
-  - **Dockerfile**: activate only `{{APT_FIREWALL}}` and `{{COPY_FIREWALL}}`
-  - **docker-compose.yml**: devcontainer service only, no database services
-  - **devcontainer.json**: activate `{{FIREWALL_POST_START}}`, `{{CAP_NET_ADMIN}}`, basic features (common-utils, git, node)
-  - **post-create.sh**: activate `{{INSTALL_FIREWALL}}`, `{{INSTALL_CLAUDE}}`, `{{ALIAS_CCYOLO}}`, `{{VERIFY_CLAUDE}}`, `{{CLAUDE_USAGE_HINT}}`
-- **Firewall**: enabled by default with deny-all policy
-- Generate `firewall-rules.conf` (ALLOW/DENY format) and `scripts/apply-firewall.sh`
-- Container gets `CAP_NET_ADMIN` and `postStartCommand` for firewall enforcement
-- Provide shell commands to attach:
+If LFS selected: add `git-lfs` to Dockerfile apt install, run `git lfs install` in post-create.sh.
 
-  ```bash
-  # Build and start the devcontainer
-  devcontainer up --workspace-folder .
+User can type additional version control needs via "Other".
 
-  # Attach to the running container
-  devcontainer exec --workspace-folder . /bin/zsh
+### Step 5: MCP Servers
 
-  # Or use VS Code: Command Palette → "Dev Containers: Attach to Running Container"
-  ```
+**Only present this step if an agentic coding tool was selected in Step 3.** Otherwise skip to Step 6.
 
-- Skip remaining questions and proceed to file generation
+`AskUserQuestion(multiSelect: true)`
 
-**Step 1: Application Type**
-Ask: "What kind of application are you building?"
+Before presenting options, perform a `WebSearch` query like "best MCP servers for {detected stack} 2026" to check for newly popular MCP servers. Supplement the static catalog with any fresh recommendations.
 
-- Web application (frontend)
-- Web API (backend)
-- Full-stack application
-- CLI tool
-- Library/Package
-- Other (describe)
+Present MCP servers organized by category with stack-aware pre-selections:
 
-**Step 2: Primary Language**
-Based on application type, ask: "What primary language will you use?"
+**Documentation & Code Context:**
+- Context7 (by Upstash) — up-to-date, version-specific library docs
 
-- Present relevant options (e.g., for web: TypeScript/JavaScript, Python, Go, .NET, etc.)
+**Source Control & Project Management:**
+- GitHub MCP (pre-selected if .git detected) — PRs, issues, code search
+- Atlassian MCP (Jira + Confluence)
+- Linear MCP
 
-**Step 3: Framework Selection**
-Based on language, ask: "Which framework do you want to use?"
+**Database** (pre-select based on Step 2 services):
+- PostgreSQL MCP (pre-selected if PostgreSQL chosen in Step 2)
+- Redis MCP (pre-selected if Redis chosen in Step 2)
+- SQLite MCP
 
-- Present framework options for the selected language
-- Example for TypeScript web: Next.js, Angular, Nuxt, Vite + React, etc.
+**Design & Browser:**
+- Figma MCP
+- Puppeteer MCP
+- Playwright MCP
 
-**Step 4: Package Manager** (if applicable)
-Ask: "Which package manager do you prefer?"
+**Code Quality & Monitoring:**
+- Sentry MCP
+- Serena MCP
 
-- pnpm (Recommended)
-- yarn
-- npm
-- bun
+**Search & Web:**
+- Brave Search MCP
+- Fetch MCP
 
-**Step 5: Services**
-Ask: "Do you need any backend services?"
+**AI & Reasoning:**
+- Memory MCP
+- Sequential Thinking MCP
 
-- Database (PostgreSQL, MySQL, MongoDB)
-- Cache (Redis)
-- Message Queue (RabbitMQ, Kafka)
-- Storage Emulator (Azurite, LocalStack)
-- None
+User can type additional MCP servers via "Other".
 
-**Step 6: Confirmation**
-Present a summary of the configured stack:
+**After response**: For each selected MCP server, load `@references/mcp-servers.md` and extract its npm/pip package, configuration, API key requirements, and firewall domains to whitelist.
+
+### Step 6: VS Code Extensions & Features
+
+`AskUserQuestion(multiSelect: true)`
+
+Propose extensions based on selected stacks (from per-stack reference files):
+
+**Common** (always pre-selected):
+- GitLens, Error Lens, EditorConfig, Path Intellisense
+
+**Stack-specific** (pre-selected based on Step 1):
+- Node.js: ESLint, Prettier, Tailwind CSS
+- .NET: C# Dev Kit, C#, .NET Runtime
+- Python: Python, Pylance
+- Go: Go
+- Rust: rust-analyzer, crates
+- Java: Java Extension Pack, Spring Boot (if detected), Quarkus (if detected)
+
+**Service-specific** (pre-selected based on Step 2):
+- PostgreSQL explorer, MongoDB explorer, Redis client, Docker
+
+**Testing** (pre-selected if detected):
+- Playwright
+
+**Devcontainer Features** to propose (always pre-selected):
+- common-utils, git, github-cli, docker-outside-of-docker
+- azure-cli (if Azure detected)
+
+User can type additional extensions/features via "Other".
+
+### Step 7: Firewall Policy
+
+`AskUserQuestion(multiSelect: false)`
+
+**Options**:
+- Deny-all (recommended) — only whitelisted domains accessible, tailored to your selected stack
+- Allow-all — no restrictions, `ALLOW *` default policy
+
+**Note**: Firewall scripts are **always deployed** regardless of choice. `ALLOW *` simply means no restrictions are active. User can tighten later by editing `firewall-rules.conf`.
+
+### Step 8: Final Recap & Confirmation
+
+Present a formatted summary of ALL selections:
 
 ```
-Configured Stack:
-- Application: Full-stack web application
-- Language: TypeScript
-- Framework: Next.js
-- Package Manager: pnpm
-- Services: PostgreSQL, Redis
+=== Devcontainer Configuration Recap ===
+
+Tech Stack:      {stacks with versions and frameworks}
+Services:        {services with ports}
+Agentic Tools:   {tools}
+MCP Servers:     {servers or "None"}
+Git:             {Standard / Standard + LFS}
+VS Code:         {N extensions, N features}
+Firewall:        {Deny-all / Allow-all}
+Base Image:      {image:tag}
+
+Host Reachability: Dev servers must bind 0.0.0.0 (not localhost)
 ```
 
-Ask: "Does this configuration look correct? Proceed with generation?"
+If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
 
-Continue iterating if user requests changes. Once confirmed, proceed to Phase 2.
+`AskUserQuestion(multiSelect: false)`:
+- Generate files — proceed to generation
+- Let me adjust something — ask which step to revisit, re-run that step, return to recap
+- Start over — restart from Step 1
 
-### Phase 2: User Questions
+### Step 9: Generate Files
 
-After analysis, ask the user about their preferences using the AskUserQuestion tool.
+1. **WebFetch `https://containers.dev/templates`** to find the best official base image for the primary stack. Prefer Microsoft official templates (e.g., `mcr.microsoft.com/devcontainers/javascript-node:22`). If combo template exists for stack+service, use it.
 
-**Q1: Agentic Coding Assistant** (multiSelect: false)
+2. **Read templates** from `@references/templates/`:
+   - `devcontainer.json.tmpl`
+   - `Dockerfile.tmpl`
+   - `docker-compose.yml.tmpl`
+   - `post-create.sh.tmpl`
+   - `apply-firewall.sh.tmpl` (copy as-is)
+   - `DEVCONTAINER.md.tmpl`
 
-- Claude Code (Recommended) - Install with ccyolo alias
-- None - I'll configure my own agentic coder
-- Other agentic coder - Provide customization guidance
+3. **Read reference data** from loaded stack/service/tool files and **compose** the final content by replacing template placeholders with assembled content blocks.
 
-If "Claude Code" selected:
+4. **Generate these 7 files**:
 
-- Add ccyolo alias automatically
-- Show what will be installed
+   **a. `.devcontainer/devcontainer.json`**
+   - Replace `{{PROJECT_NAME}}` with CWD directory name (kebab-case)
+   - Insert stack-specific extensions into `{{EXTENSIONS}}`
+   - Insert stack-specific settings into `{{SETTINGS}}`
+   - Insert framework ports into `{{PORTS}}` and `{{PORT_ATTRS}}`
+   - Insert telemetry opt-out vars into `{{CONTAINER_ENV}}`
+   - Insert additional features into `{{FEATURES}}` (e.g., azure-cli)
+   - `postStartCommand` and `capAdd: ["NET_ADMIN"]` are always present in the template
 
-If "Other agentic coder" selected:
+   **b. `.devcontainer/Dockerfile`**
+   - Set `{{BASE_IMAGE}}` to the selected official image
+   - Insert service client packages into `{{APT_EXTRA}}` (e.g., postgresql-client)
+   - Insert runtime layers into `{{RUNTIME_LAYERS}}` for secondary stacks
+   - If Git LFS selected: add `git-lfs` to apt install
+   - Firewall prerequisites (iptables, dnsutils) are always in the template
 
-- Generate post-create.sh with clear customization section for their preferred tool
+   **c. `.devcontainer/docker-compose.yml`**
+   - Replace `{{PROJECT_NAME}}` everywhere
+   - Insert cache volume mounts into `{{CACHE_VOLUMES}}`
+   - Insert service connection strings into `{{ENV_VARS}}`
+   - Insert `depends_on` block into `{{DEPENDS_ON}}`
+   - Insert service blocks from service reference files into `{{SERVICES}}`
+   - Insert named volumes into `{{NAMED_VOLUMES}}`
+   - `cap_add: NET_ADMIN` is always present in the template
+   - Remove `placeholder:` from volumes if real volumes were added
 
-**Q2: Developer Tools** (multiSelect: true)
-Present optional tools. Default selections marked with checkmarks:
+   **d. `.devcontainer/scripts/post-create.sh`**
+   - Replace `{{PROJECT_NAME}}`
+   - Insert `git lfs install` into `{{GIT_LFS}}` if selected
+   - Insert additional PATH entries into `{{PATH_EXTRA}}`
+   - Insert tool installation from agentic-tools references into `{{INSTALL_TOOLS}}`
+   - Insert stack post-create steps into `{{STACK_SETUP}}`
+   - Insert stack-specific and tool aliases into `{{ALIASES_EXTRA}}`
+   - Insert version verification checks into `{{VERIFY}}`
+   - Insert service summary into `{{SERVICES_SUMMARY}}`
 
-- GitHub CLI (gh) - Selected by default
-- fzf (fuzzy finder)
-- httpie (HTTP client)
-- rg (ripgrep for fast searching)
+   **e. `.devcontainer/scripts/apply-firewall.sh`**
+   - Copy directly from `@references/templates/apply-firewall.sh.tmpl` — no modifications
 
-**Q3: Shell Preference** (multiSelect: false)
+   **f. `.devcontainer/firewall-rules.conf`**
+   - Start from `@references/configs/firewall-rules.conf` as base
+   - Add stack-specific firewall domains from each selected stack's reference file
+   - Add tool-specific firewall domains from each selected tool's reference file
+   - Add MCP server firewall domains from `@references/mcp-servers.md` for each selected server
+   - Set default policy: `DENY *` (if deny-all selected) or `ALLOW *` (if allow-all selected)
 
-- Zsh with Oh My Zsh - Recommended
-- Fish
-- Bash
+   **g. `.devcontainer/DEVCONTAINER.md`**
+   - Fill in configuration summary table
+   - Fill in services table with ports and credentials
+   - Fill in host binding guidance per detected framework
+   - If MCP servers selected: add MCP configuration section with install commands, `.mcp.json` example, required API keys
+   - Fill in customization instructions
 
-**Q4: Detected Services** (only if services were detected, multiSelect: true)
-Show detected services and ask which to include:
+5. After generation, display a summary of what was created and suggest next steps:
+   - Open in VS Code / Rebuild container
+   - Review firewall rules
+   - Check DEVCONTAINER.md for service credentials and host binding
 
-- [Each detected database]
-- [Each detected message queue]
-- Storage emulators (Azurite for Azure, LocalStack for AWS) - if cloud provider detected
+## Template Processing
 
-**Q5: Version Confirmation** (only if versions were detected)
-Present detected versions and allow override:
+Templates are clean skeletons with `{{PLACEHOLDER}}` markers. The skill:
+1. Reads the template
+2. Collects content blocks from per-stack and per-service reference files
+3. Replaces each placeholder with the assembled content
+4. Writes the final file
 
-- Node.js: {{detected or latest}}
-- .NET: {{detected or latest}}
-- Python: {{detected or latest}}
-
-Ask: "I detected these runtime versions. Would you like to use them or specify different versions?"
-
-**Q6: Network Firewall** (multiSelect: false)
-
-- Enabled with deny-all policy (Recommended) - Only whitelisted domains accessible, blocks all other traffic
-- Enabled with allow-all policy - All traffic allowed, specific domains can be blocked
-- Disabled - No network restrictions
-
-If firewall enabled:
-
-- Add `CAP_NET_ADMIN` capability to container
-- Generate `firewall-rules.conf` with ALLOW/DENY rules from `references/configs/firewall-rules.conf`
-- Generate `scripts/apply-firewall.sh` from `references/templates/apply-firewall.sh.tmpl`
-- Add `postStartCommand` to run firewall on every container start
-- Uncomment `{{INSTALL_FIREWALL}}`, `{{APT_FIREWALL}}`, `{{COPY_FIREWALL}}`, `{{CAP_ADD_FIREWALL}}`, `{{FIREWALL_POST_START}}`, `{{CAP_NET_ADMIN}}` placeholders
-- If deny-all: last rule is `DENY *`
-- If allow-all: last rule is `ALLOW *`
-
-Firewall rules format (first match wins):
-```
-ACTION TARGET
-# ACTION: ALLOW or DENY
-# TARGET: domain | *.domain | CIDR | IPv4 | IPv6 | * (all)
-# Root (uid 0) always exempt. DNS (port 53) always allowed.
-```
-
-### Phase 3: Generate Files
-
-Use the templates in `references/templates/` and configurations in `references/configs/` to generate the devcontainer files.
-
-**Files to Generate:**
-
-1. `.devcontainer/devcontainer.json`
-   - Use template: `references/templates/devcontainer.json.tmpl`
-   - Replace `{{PROJECT_NAME}}` with directory name (kebab-case)
-   - Replace `{{WORKSPACE_FOLDER}}` with `/workspaces/{{PROJECT_NAME}}`
-   - Add/remove features based on detected stack
-   - Configure VS Code extensions for detected languages/frameworks
-   - Set up port forwarding based on detected frameworks and services
-   - Add telemetry opt-out environment variables
-   - If firewall enabled: add `postStartCommand`, `capAdd: ["NET_ADMIN"]`
-
-2. `.devcontainer/Dockerfile`
-   - Use template: `references/templates/Dockerfile.tmpl`
-   - **Always generate Dockerfile** even for simple scenarios (ensures customization point)
-   - Select appropriate base image for primary language
-   - Include runtime installations for detected languages
-   - For multi-stack projects, layer additional runtimes
-   - Add framework-specific tooling (Angular CLI, etc.)
-   - Use Ubuntu Noble package names (e.g., `libasound2t64`)
-
-3. `.devcontainer/docker-compose.yml`
-   - Use template: `references/templates/docker-compose.yml.tmpl`
-   - Replace volume names with `devcontainer-{{PROJECT_NAME}}-*` prefix
-   - Add service definitions for each selected service
-   - Include health checks for all services
-   - Configure proper environment variables
-
-4. `.devcontainer/scripts/post-create.sh`
-   - Use template: `references/templates/post-create.sh.tmpl`
-   - Include Claude Code installation based on Q1 selection:
-     - If Claude Code: Install Claude Code
-     - If Other: Add customization section with examples
-   - Add ccyolo alias if Claude Code selected
-   - Configure selected shell
-   - Install language-specific tools
-
-5. `.devcontainer/firewall-rules.conf` (if firewall enabled, or Claude-only mode)
-   - Use config: `references/configs/firewall-rules.conf`
-   - Format: `ACTION TARGET` (ALLOW/DENY syntax, first match wins)
-   - Include domain patterns for detected package registries
-   - Add cloud provider endpoints if detected
-   - Set default policy based on Q6 selection (`DENY *` or `ALLOW *`)
-
-6. `.devcontainer/scripts/apply-firewall.sh` (if firewall enabled, or Claude-only mode)
-   - Use template: `references/templates/apply-firewall.sh.tmpl`
-   - Runtime enforcement via iptables/ip6tables
-   - Root (uid 0) always exempt — system tools (apt-get, systemd) work normally
-   - System essentials hardcoded: loopback, established, DNS (port 53), DHCP
-   - Runs on every container start via `postStartCommand` (idempotent: flush + recreate)
-
-7. Shell configuration (based on selection):
-   - Zsh: `.devcontainer/config/.zshrc` from `references/configs/zshrc.tmpl`
-   - Fish: `.devcontainer/config/fish/config.fish` from `references/configs/config.fish.tmpl`
-
-**Template Placeholders:**
-
-- `{{PROJECT_NAME}}` - Project directory name in kebab-case
-- `{{WORKSPACE_FOLDER}}` - Full workspace path
-- `{{NODE_VERSION}}` - Detected or default Node.js version (22)
-- `{{DOTNET_VERSION}}` - Detected or default .NET version (10.0)
-- `{{PYTHON_VERSION}}` - Detected or default Python version (3.12)
-- `{{PNPM_VERSION}}` - Detected or default pnpm version (9)
-
-**Claude Code Installation Block:**
-If Claude Code selected:
-
-1. Install Claude Code via official script
-2. Add ccyolo alias to shell config
-3. Verify installation in summary output
-
-For Claude-only mode, use the same templates with fewer placeholders activated (see Phase 1b).
-
-**Other Agentic Coder Customization:**
-If "Other agentic coder" selected, add this section to post-create.sh:
-
-```bash
-# -----------------------------------------------------------------------------
-# Agentic Coder Customization
-# -----------------------------------------------------------------------------
-# Uncomment and modify for your preferred agentic coder:
-#
-# Aider (https://aider.chat):
-# pip install aider-chat
-#
-# Continue (VS Code extension):
-# Code will prompt to install the Continue extension
-#
-# Cline/Roo Code (VS Code extension):
-# Code will prompt to install the Cline extension
-#
-# Add your custom installation commands here:
-#
-```
+No commented-out placeholder blocks in generated output — templates produce readable, active code.
 
 ## Best Practices
 
-Follow the patterns documented in `references/devcontainer-patterns.md`:
-
-- Use official devcontainer features only
-- Name volumes with project prefix to avoid conflicts
-- Include health checks for all services
+- Use official devcontainer features from `ghcr.io/devcontainers/features/` only
+- Name volumes with `devcontainer-{{PROJECT_NAME}}-*` prefix to avoid conflicts
+- Include health checks for all services (from service reference files)
 - Opt out of telemetry by default
-- Use Ubuntu Noble (24.04) package naming conventions
+- Use Ubuntu Noble (24.04) package naming conventions (e.g., `libasound2t64`)
+- Always generate Dockerfile even for simple stacks (ensures customization point)
+- For multi-stack projects, use primary stack as base image and layer additional runtimes
 
 ## References
 
-@references/devcontainer-patterns.md
-@references/template-selection-guide.md
+@references/stacks/nodejs.md
+@references/stacks/python.md
+@references/stacks/dotnet.md
+@references/stacks/go.md
+@references/stacks/rust.md
+@references/stacks/java.md
+@references/services/postgresql.md
+@references/services/mysql.md
+@references/services/mongodb.md
+@references/services/redis.md
+@references/services/rabbitmq.md
+@references/services/kafka.md
+@references/services/azurite.md
+@references/services/localstack.md
+@references/agentic-tools/claude-code.md
+@references/agentic-tools/openai-codex.md
+@references/agentic-tools/gemini-code-assist.md
+@references/mcp-servers.md
 @references/templates/devcontainer.json.tmpl
 @references/templates/Dockerfile.tmpl
 @references/templates/docker-compose.yml.tmpl
 @references/templates/post-create.sh.tmpl
 @references/templates/apply-firewall.sh.tmpl
+@references/templates/DEVCONTAINER.md.tmpl
 @references/configs/firewall-rules.conf
-@references/configs/zshrc.tmpl
-@references/configs/config.fish.tmpl
