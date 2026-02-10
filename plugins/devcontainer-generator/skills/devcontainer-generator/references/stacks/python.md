@@ -1,7 +1,7 @@
 # Python
 
 ## Base Image
-mcr.microsoft.com/devcontainers/python:3.12
+mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 ## Detection
 - `requirements.txt` — pip dependencies
@@ -42,7 +42,7 @@ mcr.microsoft.com/devcontainers/python:3.12
 
 ## Dockerfile Layers
 
-When layered on a non-native base image:
+When added as a secondary stack in a multi-stack project:
 
 ```dockerfile
 RUN apt-get update && apt-get install -y \
@@ -121,6 +121,3 @@ ALLOW *.pypi.org
 ALLOW files.pythonhosted.org
 ```
 
-## Combo Templates
-
-- `python-3-postgres` — Python + PostgreSQL

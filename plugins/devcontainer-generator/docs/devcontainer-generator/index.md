@@ -4,6 +4,8 @@ The Devcontainer Generator creates production-ready `.devcontainer` setups for a
 
 The result is a complete set of container configuration files that work with VS Code Dev Containers, GitHub Codespaces, and any tool that supports the devcontainer specification.
 
+All generated containers are based on Ubuntu 24.04 LTS for long-term stability. Language runtimes are installed via [devcontainer features](https://containers.dev/features), giving you explicit control over versions without depending on upstream image maintainers.
+
 ## How to invoke
 
 Run the skill directly:

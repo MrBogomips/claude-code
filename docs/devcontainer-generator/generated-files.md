@@ -91,9 +91,9 @@ RUN chmod +x /devcontainer/scripts/*.sh
 
 | Placeholder | Source |
 |-------------|--------|
-| `{{BASE_IMAGE}}` | Official devcontainer image for the primary stack |
+| `{{BASE_IMAGE}}` | `mcr.microsoft.com/devcontainers/base:ubuntu-24.04` (shared across all stacks) |
 | `{{APT_EXTRA}}` | Service client packages (`postgresql-client`, `mysql-client`, `mongosh`, `redis-tools`, `awscli`) and `git-lfs` if selected |
-| `{{RUNTIME_LAYERS}}` | Installation commands for secondary stacks (e.g., Node.js layer on a .NET base) |
+| `{{RUNTIME_LAYERS}}` | Installation commands for secondary stacks (e.g., Python layer when Node.js is the primary stack) |
 
 ### Customization
 

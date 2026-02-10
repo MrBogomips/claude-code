@@ -40,16 +40,16 @@ The skill generates 7 files inside `.devcontainer/`:
 
 ## Supported Stacks
 
-The following 6 stacks have first-class support — with curated base images, framework detection, package manager integration, VS Code extensions, shell aliases, and firewall domains pre-configured:
+The following 6 stacks have first-class support — with framework detection, package manager integration, VS Code extensions, shell aliases, and firewall domains pre-configured:
 
-| Stack | Base Image | Frameworks | Package Managers |
-|-------|-----------|------------|------------------|
-| **Node.js** | `mcr.microsoft.com/devcontainers/javascript-node:22` | Next.js, Angular, Vite, Nuxt, Remix, Docusaurus, Storybook | npm, pnpm, Yarn, Bun |
-| **Python** | `mcr.microsoft.com/devcontainers/python:3.12` | Flask, Django, FastAPI | pip, Poetry, Pipenv, uv |
-| **.NET** | `mcr.microsoft.com/devcontainers/dotnet:10.0` | ASP.NET Core, Blazor, .NET Aspire | NuGet |
-| **Go** | `mcr.microsoft.com/devcontainers/go:1.23` | Gin, Echo, Fiber | Go modules |
-| **Rust** | `mcr.microsoft.com/devcontainers/rust:latest` | Actix Web, Axum, Rocket | Cargo |
-| **Java** | `mcr.microsoft.com/devcontainers/java:21` | Spring Boot, Quarkus, Micronaut | Maven, Gradle |
+| Stack | Language Feature | Frameworks | Package Managers |
+|-------|-----------------|------------|------------------|
+| **Node.js** | `node:1` v22 | Next.js, Angular, Vite, Nuxt, Remix, Docusaurus, Storybook | npm, pnpm, Yarn, Bun |
+| **Python** | `python:1` v3.12 | Flask, Django, FastAPI | pip, Poetry, Pipenv, uv |
+| **.NET** | `dotnet:2` v10.0 | ASP.NET Core, Blazor, .NET Aspire | NuGet |
+| **Go** | `go:1` v1.23 | Gin, Echo, Fiber | Go modules |
+| **Rust** | `rust:1` latest | Actix Web, Axum, Rocket | Cargo |
+| **Java** | `java:1` v21 | Spring Boot, Quarkus, Micronaut | Maven, Gradle |
 
 :::tip Not limited to these stacks
 Every step in the workflow includes an **"Other"** free-text option. You can request any stack, framework, or tool not listed above — the skill will generate a working configuration and let you customize every aspect (base image, Dockerfile layers, extensions, aliases, firewall domains, etc.). The 6 stacks above simply get the richest out-of-the-box defaults.

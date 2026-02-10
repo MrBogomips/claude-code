@@ -1,7 +1,7 @@
 # Go
 
 ## Base Image
-mcr.microsoft.com/devcontainers/go:1.23
+mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 ## Detection
 - `go.mod` — primary indicator; contains module path and Go version
@@ -29,7 +29,7 @@ mcr.microsoft.com/devcontainers/go:1.23
 
 ## Dockerfile Layers
 
-When layered on a non-native base image:
+When added as a secondary stack in a multi-stack project:
 
 ```dockerfile
 RUN wget https://go.dev/dl/go1.23.0.linux-amd64.tar.gz \
@@ -108,6 +108,3 @@ ALLOW storage.googleapis.com
 ALLOW go.dev
 ```
 
-## Combo Templates
-
-- `go-postgres` — Go + PostgreSQL

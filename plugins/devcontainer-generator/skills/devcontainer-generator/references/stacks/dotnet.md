@@ -1,7 +1,7 @@
 # .NET
 
 ## Base Image
-mcr.microsoft.com/devcontainers/dotnet:10.0
+mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 ## Detection
 - `*.csproj` — C# project file
@@ -38,7 +38,7 @@ mcr.microsoft.com/devcontainers/dotnet:10.0
 
 ## Dockerfile Layers
 
-When layered on a non-native base image:
+When added as a secondary stack in a multi-stack project:
 
 ```dockerfile
 RUN wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh \
@@ -129,7 +129,3 @@ ALLOW dotnetcli.azureedge.net
 ALLOW *.microsoft.com
 ```
 
-## Combo Templates
-
-- `dotnet-postgres` — .NET + PostgreSQL
-- `dotnet-mssql` — .NET + SQL Server

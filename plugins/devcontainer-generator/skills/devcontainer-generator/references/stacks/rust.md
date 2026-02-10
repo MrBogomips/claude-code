@@ -1,7 +1,7 @@
 # Rust
 
 ## Base Image
-mcr.microsoft.com/devcontainers/rust:latest
+mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 ## Detection
 - `Cargo.toml` — primary indicator; contains package metadata and dependencies
@@ -31,7 +31,7 @@ mcr.microsoft.com/devcontainers/rust:latest
 
 ## Dockerfile Layers
 
-When layered on a non-native base image:
+When added as a secondary stack in a multi-stack project:
 
 ```dockerfile
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
@@ -113,6 +113,3 @@ ALLOW doc.rust-lang.org
 ALLOW static.rust-lang.org
 ```
 
-## Combo Templates
-
-- `rust-postgres` — Rust + PostgreSQL

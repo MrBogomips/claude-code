@@ -1,7 +1,7 @@
 # Node.js
 
 ## Base Image
-mcr.microsoft.com/devcontainers/javascript-node:22
+mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 ## Detection
 - `package.json` — primary indicator; check `engines.node` for version constraint
@@ -63,7 +63,7 @@ mcr.microsoft.com/devcontainers/javascript-node:22
 
 ## Dockerfile Layers
 
-When layered on a non-native base image:
+When added as a secondary stack in a multi-stack project:
 
 ```dockerfile
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
@@ -173,7 +173,3 @@ ALLOW unpkg.com
 ALLOW cdn.jsdelivr.net
 ```
 
-## Combo Templates
-
-- `javascript-node-postgres` — Node.js + PostgreSQL
-- `javascript-node-mongo` — Node.js + MongoDB

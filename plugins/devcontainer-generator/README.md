@@ -28,18 +28,27 @@ Or use natural language:
     └── apply-firewall.sh      # iptables/ip6tables runtime enforcement
 ```
 
+## Base Image Strategy
+
+All generated containers use **`mcr.microsoft.com/devcontainers/base:ubuntu-24.04`** as their base image. Languages are installed via [devcontainer features](https://containers.dev/features), not via language-specific images.
+
+This approach provides:
+- **Stability** — Ubuntu 24.04 LTS has a 5-year support window. No surprise OS changes.
+- **Control** — Language versions are explicitly set via features, not implicitly tied to image tags.
+- **Consistency** — Every stack shares the same OS layer, simplifying multi-stack projects and reducing compatibility issues.
+
 ## Supported Stacks
 
-| Stack | Base Image | Frameworks |
-|-------|------------|------------|
-| Node.js | `javascript-node:22` | Next.js, Angular, Vite, Nuxt, Remix, Docusaurus |
-| Python | `python:3.12` | Flask, Django, FastAPI |
-| .NET | `dotnet:10.0` | ASP.NET Core, Blazor, Aspire |
-| Go | `go:1.23` | Gin, Echo, Fiber |
-| Rust | `rust:latest` | Actix, Axum, Rocket |
-| Java | `java:21` | Spring Boot, Quarkus, Micronaut |
+| Stack | Language Feature | Frameworks |
+|-------|-----------------|------------|
+| Node.js | `node:1` v22 | Next.js, Angular, Vite, Nuxt, Remix, Docusaurus |
+| Python | `python:1` v3.12 | Flask, Django, FastAPI |
+| .NET | `dotnet:2` v10.0 | ASP.NET Core, Blazor, Aspire |
+| Go | `go:1` v1.23 | Gin, Echo, Fiber |
+| Rust | `rust:1` latest | Actix, Axum, Rocket |
+| Java | `java:1` v21 | Spring Boot, Quarkus, Micronaut |
 
-Multi-stack projects are supported — the primary stack determines the base image, additional stacks are layered in the Dockerfile.
+Multi-stack projects use devcontainer features for the primary stack and Dockerfile runtime layers for secondary stacks, all on the same Ubuntu base.
 
 ## Supported Services
 

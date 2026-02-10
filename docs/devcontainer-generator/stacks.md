@@ -7,7 +7,7 @@ title: Language Stacks
 
 Reference for the 6 supported language stacks. Each stack defines a base image, detection patterns, frameworks, package managers, VS Code extensions, shell aliases, environment variables, firewall domains, and host binding guidance.
 
-When multiple stacks are selected, the **first one** is the primary (determines the base image). Additional stacks are layered in the Dockerfile via their runtime installation commands.
+All stacks share a single base image: `mcr.microsoft.com/devcontainers/base:ubuntu-24.04`. Languages are installed via [devcontainer features](https://containers.dev/features) (primary stack) or Dockerfile runtime layers (secondary stacks).
 
 ---
 
@@ -15,7 +15,17 @@ When multiple stacks are selected, the **first one** is the primary (determines 
 
 ### Base Image
 
-`mcr.microsoft.com/devcontainers/javascript-node:22`
+`mcr.microsoft.com/devcontainers/base:ubuntu-24.04`
+
+### Devcontainer Feature
+
+```json
+{
+  "ghcr.io/devcontainers/features/node:1": {
+    "version": "22"
+  }
+}
+```
 
 ### Detection
 
@@ -109,7 +119,17 @@ ALLOW cdn.jsdelivr.net
 
 ### Base Image
 
-`mcr.microsoft.com/devcontainers/python:3.12`
+`mcr.microsoft.com/devcontainers/base:ubuntu-24.04`
+
+### Devcontainer Feature
+
+```json
+{
+  "ghcr.io/devcontainers/features/python:1": {
+    "version": "3.12"
+  }
+}
+```
 
 ### Detection
 
@@ -182,7 +202,17 @@ ALLOW files.pythonhosted.org
 
 ### Base Image
 
-`mcr.microsoft.com/devcontainers/dotnet:10.0`
+`mcr.microsoft.com/devcontainers/base:ubuntu-24.04`
+
+### Devcontainer Feature
+
+```json
+{
+  "ghcr.io/devcontainers/features/dotnet:2": {
+    "version": "10.0"
+  }
+}
+```
 
 ### Detection
 
@@ -253,7 +283,17 @@ ALLOW *.microsoft.com
 
 ### Base Image
 
-`mcr.microsoft.com/devcontainers/go:1.23`
+`mcr.microsoft.com/devcontainers/base:ubuntu-24.04`
+
+### Devcontainer Feature
+
+```json
+{
+  "ghcr.io/devcontainers/features/go:1": {
+    "version": "1.23"
+  }
+}
+```
 
 ### Detection
 
@@ -319,7 +359,17 @@ ALLOW storage.googleapis.com ALLOW go.dev
 
 ### Base Image
 
-`mcr.microsoft.com/devcontainers/rust:latest`
+`mcr.microsoft.com/devcontainers/base:ubuntu-24.04`
+
+### Devcontainer Feature
+
+```json
+{
+  "ghcr.io/devcontainers/features/rust:1": {
+    "version": "latest"
+  }
+}
+```
 
 ### Detection
 
@@ -388,7 +438,19 @@ ALLOW static.rust-lang.org
 
 ### Base Image
 
-`mcr.microsoft.com/devcontainers/java:21`
+`mcr.microsoft.com/devcontainers/base:ubuntu-24.04`
+
+### Devcontainer Feature
+
+```json
+{
+  "ghcr.io/devcontainers/features/java:1": {
+    "version": "21",
+    "installMaven": "true",
+    "installGradle": "true"
+  }
+}
+```
 
 ### Detection
 

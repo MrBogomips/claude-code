@@ -2,24 +2,35 @@
 
 The Devcontainer Generator supports six language stacks. During setup, it scans your repository for detection files and proposes the matching stacks with sensible defaults.
 
+## Base image strategy
+
+All stacks share a single base image: **`mcr.microsoft.com/devcontainers/base:ubuntu-24.04`**. Languages are installed via [devcontainer features](https://containers.dev/features) rather than language-specific container images.
+
+Why this approach:
+
+- **Stability** — Ubuntu 24.04 LTS is supported until 2029. The underlying OS cannot be silently changed by upstream image maintainers, unlike language-specific images whose OS layer is a rolling target.
+- **Control** — Language versions are explicitly declared as feature parameters (e.g., `"version": "22"` for Node.js). The version is never implicitly tied to an opaque image tag.
+- **Consistency** — Every generated container starts from the same OS. System packages, paths, user accounts, and capabilities are identical regardless of the language stack, eliminating cross-stack compatibility surprises.
+
 ## Stack reference
 
-| Stack | Detection files | Default version | Base image | Common frameworks | Default extensions |
-|-------|----------------|-----------------|------------|-------------------|-------------------|
-| Node.js | `package.json`, `tsconfig.json`, `.nvmrc` | 22 | `mcr.microsoft.com/devcontainers/javascript-node:22` | Next.js, Angular, Vite, Nuxt, Remix, Docusaurus, Storybook | ESLint, Prettier, Tailwind CSS |
-| Python | `requirements.txt`, `pyproject.toml`, `setup.py`, `Pipfile`, `uv.lock` | 3.12 | `mcr.microsoft.com/devcontainers/python:3.12` | Flask, Django, FastAPI | Python, Pylance |
-| .NET | `*.csproj`, `*.fsproj`, `*.sln`, `global.json` | 10.0 | `mcr.microsoft.com/devcontainers/dotnet:10.0` | ASP.NET Core, Blazor, .NET Aspire | C# Dev Kit, C#, .NET Runtime |
-| Go | `go.mod`, `go.sum` | 1.23 | `mcr.microsoft.com/devcontainers/go:1.23` | Gin, Echo, Fiber | Go |
-| Rust | `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml` | latest | `mcr.microsoft.com/devcontainers/rust:latest` | Actix Web, Axum, Rocket | rust-analyzer, crates |
-| Java | `pom.xml`, `build.gradle`, `build.gradle.kts` | 21 | `mcr.microsoft.com/devcontainers/java:21` | Spring Boot, Quarkus, Micronaut | Java Extension Pack, Spring Boot Tools |
+| Stack | Detection files | Default version | Language feature | Common frameworks | Default extensions |
+|-------|----------------|-----------------|-----------------|-------------------|-------------------|
+| Node.js | `package.json`, `tsconfig.json`, `.nvmrc` | 22 | `ghcr.io/devcontainers/features/node:1` | Next.js, Angular, Vite, Nuxt, Remix, Docusaurus, Storybook | ESLint, Prettier, Tailwind CSS |
+| Python | `requirements.txt`, `pyproject.toml`, `setup.py`, `Pipfile`, `uv.lock` | 3.12 | `ghcr.io/devcontainers/features/python:1` | Flask, Django, FastAPI | Python, Pylance |
+| .NET | `*.csproj`, `*.fsproj`, `*.sln`, `global.json` | 10.0 | `ghcr.io/devcontainers/features/dotnet:2` | ASP.NET Core, Blazor, .NET Aspire | C# Dev Kit, C#, .NET Runtime |
+| Go | `go.mod`, `go.sum` | 1.23 | `ghcr.io/devcontainers/features/go:1` | Gin, Echo, Fiber | Go |
+| Rust | `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml` | latest | `ghcr.io/devcontainers/features/rust:1` | Actix Web, Axum, Rocket | rust-analyzer, crates |
+| Java | `pom.xml`, `build.gradle`, `build.gradle.kts` | 21 | `ghcr.io/devcontainers/features/java:1` | Spring Boot, Quarkus, Micronaut | Java Extension Pack, Spring Boot Tools |
 
 ## Multi-stack projects
 
 When your repository uses more than one language, the generator handles it as follows:
 
-- **Primary stack selection** -- the first stack you select in the guided workflow becomes the primary. Its official Microsoft base image is used for the container.
-- **Layering in Dockerfile** -- additional stacks are installed as layers on top of the primary base image. For example, if you select Node.js as primary and Python as secondary, the Dockerfile starts from the Node.js image and adds Python via `apt-get` and runtime setup.
-- **Extensions and features** -- VS Code extensions and devcontainer features from all selected stacks are merged into the final configuration.
+- **Shared base image** — all stacks use `mcr.microsoft.com/devcontainers/base:ubuntu-24.04`. The base image does not change based on which stack is primary.
+- **Primary stack** — the first selected language is installed via its devcontainer feature in `devcontainer.json` (e.g., `node:1` for Node.js).
+- **Secondary stacks** — additional languages are installed via runtime layers in the Dockerfile. Each stack's reference file includes the Dockerfile commands used for this purpose.
+- **Merged configuration** — VS Code extensions, editor settings, forwarded ports, and environment variables from all selected stacks are combined into the final configuration.
 
 ## Monorepo support
 

@@ -30,7 +30,7 @@ The main configuration file for the dev container. It specifies:
 
 ### Dockerfile
 
-A custom Dockerfile based on an official Microsoft devcontainer image for your primary stack. It includes:
+A custom Dockerfile based on `mcr.microsoft.com/devcontainers/base:ubuntu-24.04`. Languages are installed via devcontainer features rather than language-specific base images — this gives you a stable Ubuntu LTS foundation with explicit control over language versions. The Dockerfile includes:
 
 - System packages for service client tools (e.g., `postgresql-client`, `redis-tools`)
 - Firewall prerequisites (`iptables`, `ip6tables`, `dnsutils`)

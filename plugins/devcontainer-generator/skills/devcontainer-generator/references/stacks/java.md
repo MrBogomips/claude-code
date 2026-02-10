@@ -1,7 +1,7 @@
 # Java
 
 ## Base Image
-mcr.microsoft.com/devcontainers/java:21
+mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 ## Detection
 - `pom.xml` — Maven project
@@ -39,7 +39,7 @@ mcr.microsoft.com/devcontainers/java:21
 
 ## Dockerfile Layers
 
-When layered on a non-native base image:
+When added as a secondary stack in a multi-stack project:
 
 ```dockerfile
 RUN apt-get update && apt-get install -y openjdk-21-jdk \
@@ -123,6 +123,3 @@ ALLOW services.gradle.org
 ALLOW jcenter.bintray.com
 ```
 
-## Combo Templates
-
-- `java-postgres` — Java + PostgreSQL

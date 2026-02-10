@@ -62,7 +62,7 @@ User can type additional technologies via "Other".
 
 **After response**: For each selected stack, load `@references/stacks/{name}.md` and extract base image, extensions, features, aliases, firewall domains, and host binding guidance.
 
-If multiple stacks selected, use the first one as the primary (determines base image). Additional stacks are layered in the Dockerfile.
+If multiple stacks selected, use the first one as the primary (its devcontainer feature is installed first). Additional stacks are layered in the Dockerfile.
 
 ### Step 2: Infrastructure Services
 
@@ -222,7 +222,7 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
 
 ### Step 9: Generate Files
 
-1. **WebFetch `https://containers.dev/templates`** to find the best official base image for the primary stack. Prefer Microsoft official templates (e.g., `mcr.microsoft.com/devcontainers/javascript-node:22`). If combo template exists for stack+service, use it.
+1. Use `mcr.microsoft.com/devcontainers/base:ubuntu-24.04` as the base image for all stacks. Languages are installed via devcontainer features (defined in each stack reference file), not via language-specific base images. This ensures a stable Ubuntu LTS base that cannot be silently rebased by upstream image maintainers. Do NOT use language-specific images (e.g., `javascript-node:22`, `python:3.12`) — they may be rebased on unsupported distributions without notice.
 
 2. **Read templates** from `@references/templates/`:
    - `devcontainer.json.tmpl`
@@ -236,7 +236,7 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
 
 4. **IMPORTANT — remoteUser**: The `remoteUser` MUST always be `"vscode"`. The `common-utils:2` feature guarantees this user exists regardless of base image. Never use image-specific users (`node`, `python`, etc.) as `remoteUser` — they may not survive feature layering.
 
-5. **CRITICAL — common-utils user settings**: NEVER add `username`, `userUid`, or `userGid` parameters to the `common-utils:2` feature. The template intentionally omits these so common-utils defaults to `"automatic"` user detection, which reuses existing non-root users (e.g., `node` at GID 1000 in Node.js images). Setting explicit UID/GID causes `groupadd` failures. Only include the four template parameters: `installZsh`, `configureZshAsDefaultShell`, `installOhMyZsh`, `upgradePackages`.
+5. **CRITICAL — common-utils user settings**: NEVER add `username`, `userUid`, or `userGid` parameters to the `common-utils:2` feature. The template intentionally omits these so common-utils defaults to `"automatic"` user detection, which reuses existing non-root users. Setting explicit UID/GID causes `groupadd` failures. Only include the four template parameters: `installZsh`, `configureZshAsDefaultShell`, `installOhMyZsh`, `upgradePackages`.
 
 6. **Generate these 7 files**:
 
@@ -316,7 +316,8 @@ No commented-out placeholder blocks in generated output — templates produce re
 - Opt out of telemetry by default
 - Use Ubuntu Noble (24.04) package naming conventions (e.g., `libasound2t64`)
 - Always generate Dockerfile even for simple stacks (ensures customization point)
-- For multi-stack projects, use primary stack as base image and layer additional runtimes
+- Always use `mcr.microsoft.com/devcontainers/base:ubuntu-24.04` as base image; install languages via devcontainer features
+- For multi-stack projects, install the primary stack's feature first, then layer additional features
 - Never override `common-utils:2` user identity fields (`username`, `userUid`, `userGid`) — automatic detection prevents UID/GID conflicts across all base images
 
 ## References

@@ -247,7 +247,7 @@ MCP Servers:     GitHub, Context7, PostgreSQL
 Git:             Standard + LFS
 VS Code:         12 extensions, 4 features
 Firewall:        Deny-all
-Base Image:      mcr.microsoft.com/devcontainers/javascript-node:22
+Base Image:      mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 Host Reachability: Dev servers must bind 0.0.0.0 (not localhost)
 ```
