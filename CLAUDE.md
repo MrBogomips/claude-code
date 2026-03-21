@@ -1,29 +1,30 @@
 # CLAUDE.md
 
-Guidance for working in this Claude Code plugin marketplace repository.
+Guidance for working in the claude-code marketplace repository.
+
+## Repository structure
+
+This is a flat-at-root plugin marketplace following the convention used by Anthropic's domain-specific marketplaces. Each top-level directory is a plugin:
+
+- `developer-tools/` — developer environment tooling
+- `human-resources/` — HR workflow support
+- `project-management/` — project management workflows
+- `tech-writing/` — technical writing support
+
+## Plugin conventions
+
+Every plugin must contain `.claude-plugin/plugin.json`. Components are discovered by convention:
+
+- **Skills** — `skills/*/SKILL.md`
+- **Agents** — `agents/*/AGENT.md`
+- **Hooks** — `hooks/hooks.json`
+- **Commands** — `commands/*.md`
 
 ## Editing marketplace.json
 
-`.claude-plugin/marketplace.json` is the marketplace manifest. Edit it directly when adding, removing, or modifying plugins. Each entry must be an object with these required fields:
-
-```json
-{
-  "name": "plugin-name",
-  "source": "./plugins/plugin-name",
-  "description": "What the plugin does"
-}
-```
+`.claude-plugin/marketplace.json` is the marketplace manifest. Each plugin entry must be an object with at least `name`, `source`, and `description`. Use `category` and `tags` for classification.
 
 String-only entries (bare paths) are not valid — always use the object format.
-
-## Plugin structure conventions
-
-Every plugin lives under `plugins/<name>/` and must contain `.claude-plugin/plugin.json`. Components are discovered by convention:
-
-- **Agents** — subdirectories of `agents/`, each containing an `AGENT.md`
-- **Skills** — subdirectories of `skills/`, each containing a `SKILL.md`
-- **Hooks** — a `hooks/hooks.json` file
-- **Commands** — `*.md` files in `commands/`
 
 ## Validation
 
@@ -37,18 +38,4 @@ This is a strict requirement. No change is complete until validation passes.
 
 ## Architecture
 
-This is a static marketplace — no build steps, no CI, no test runner. Plugins are collections of markdown, JSON, and templates managed by hand. When adding or changing a plugin, update both the plugin's own files and the marketplace manifest.
-
-## Docusaurus documentation site
-
-The repository includes a Docusaurus documentation site under `docsite/` that serves content from `docs/`. When modifying a plugin, check whether corresponding documentation exists in `docs/` and update it to stay in sync.
-
-After any documentation change, verify the Docusaurus site renders correctly:
-
-```bash
-cd docsite && npm run build
-```
-
-Key documentation locations:
-- `docs/devcontainer-generator/` — user-facing documentation served at `/claude-code/devcontainer-generator/`
-- `plugins/devcontainer-generator/docs/` — plugin-internal documentation (may overlap with the above; keep both in sync)
+This is a static marketplace — no build steps, no CI runner, no test framework. Plugins are collections of markdown, JSON, and templates. When adding or changing a plugin, update both the plugin's own files and the marketplace manifest.

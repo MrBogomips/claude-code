@@ -1,0 +1,11 @@
+{
+  "name": "tech-writing",
+  "version": "0.1.0",
+  "description": "Technical writing support — documentation structure, style guides, content review",
+  "author": {
+    "name": "MrBogomips",
+    "url": "https://github.com/MrBogomips"
+  },
+  "license": "MIT",
+  "keywords": ["writing", "documentation", "style-guide", "tech-writing"]
+}

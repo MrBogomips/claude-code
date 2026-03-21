@@ -1,0 +1,70 @@
+name: Validate Marketplace
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate marketplace.json syntax
+        run: jq . .claude-plugin/marketplace.json > /dev/null
+
+      - name: Validate plugin entries
+        run: |
+          ERRORS=0
+          NAMES=""
+
+          for entry in $(jq -c '.plugins[]' .claude-plugin/marketplace.json); do
+            name=$(echo "$entry" | jq -r '.name')
+            source=$(echo "$entry" | jq -r '.source')
+            description=$(echo "$entry" | jq -r '.description')
+
+            # Check required fields
+            if [ "$name" = "null" ] || [ -z "$name" ]; then
+              echo "ERROR: Plugin entry missing 'name'"
+              ERRORS=$((ERRORS + 1))
+            fi
+
+            if [ "$source" = "null" ] || [ -z "$source" ]; then
+              echo "ERROR: Plugin '$name' missing 'source'"
+              ERRORS=$((ERRORS + 1))
+            fi
+
+            if [ "$description" = "null" ] || [ -z "$description" ]; then
+              echo "ERROR: Plugin '$name' missing 'description'"
+              ERRORS=$((ERRORS + 1))
+            fi
+
+            # Check source path exists
+            if [ ! -d "$source" ]; then
+              echo "ERROR: Plugin '$name' source path '$source' does not exist"
+              ERRORS=$((ERRORS + 1))
+            fi
+
+            # Check plugin.json exists
+            if [ ! -f "$source/.claude-plugin/plugin.json" ]; then
+              echo "ERROR: Plugin '$name' missing .claude-plugin/plugin.json"
+              ERRORS=$((ERRORS + 1))
+            fi
+
+            # Check for duplicate names
+            if echo "$NAMES" | grep -q "^${name}$"; then
+              echo "ERROR: Duplicate plugin name '$name'"
+              ERRORS=$((ERRORS + 1))
+            fi
+            NAMES=$(printf '%s\n%s' "$NAMES" "$name")
+          done
+
+          if [ $ERRORS -gt 0 ]; then
+            echo ""
+            echo "Found $ERRORS error(s)"
+            exit 1
+          fi
+
+          echo "All plugin entries valid"

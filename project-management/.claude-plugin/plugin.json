@@ -1,0 +1,11 @@
+{
+  "name": "project-management",
+  "version": "0.1.0",
+  "description": "Project management workflows — PERT estimation, WBS, risk analysis, status reporting",
+  "author": {
+    "name": "MrBogomips",
+    "url": "https://github.com/MrBogomips"
+  },
+  "license": "MIT",
+  "keywords": ["pmo", "estimation", "planning", "risk", "project-management"]
+}

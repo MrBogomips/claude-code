@@ -30,10 +30,7 @@ Thumbs.db
 *.temp
 .cache/
 
-# Serena
-.serena/
-
-# Docusaurus
-docsite/node_modules/
-docsite/.docusaurus/
-docsite/build/
+# Local configuration (not committed)
+.claude/
+.mcp.json
+*.local.md

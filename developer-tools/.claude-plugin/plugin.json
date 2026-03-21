@@ -1,0 +1,11 @@
+{
+  "name": "developer-tools",
+  "version": "2.4.0",
+  "description": "Developer environment tooling — devcontainer generation, stack detection, infrastructure config",
+  "author": {
+    "name": "MrBogomips",
+    "url": "https://github.com/MrBogomips"
+  },
+  "license": "MIT",
+  "keywords": ["devcontainer", "docker", "infrastructure", "developer-experience", "developer-tools"]
+}

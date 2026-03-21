@@ -1,159 +1,59 @@
-# Contributing to MrBogomips Claude Code Marketplace
+# Contributing
 
-Thank you for your interest in contributing! This document provides guidelines for contributing plugins and improvements to this marketplace.
-
-## Code of Conduct
-
-Please be respectful and constructive in all interactions. We're all here to make Claude Code better.
-
-## How to Contribute
-
-### Reporting Issues
-
-If you find a bug or have a feature request:
-
-1. Check if an issue already exists
-2. Create a new issue with a clear description
-3. Include steps to reproduce (for bugs)
-4. Suggest a solution if you have one
-
-### Contributing a Plugin
-
-We welcome new plugins that add useful functionality to Claude Code.
-
-#### Before You Start
-
-1. **Check for duplicates** - Make sure a similar plugin doesn't already exist
-2. **Plan your plugin** - Consider what components (commands, agents, skills, hooks) you need
-3. **Keep it focused** - Plugins should do one thing well
-
-#### Creating Your Plugin
-
-1. **Fork this repository**
-
-2. **Create your plugin**
-   ```bash
-   npm run new-plugin
-   ```
-
-3. **Implement your functionality**
-   - Follow the existing patterns in `plugins/example-*`
-   - Add clear documentation in your README.md
-   - Include helpful examples
-
-4. **Validate your plugin**
-   ```bash
-   npm run validate
-   npm test
-   ```
-
-5. **Test with Claude Code**
-   ```bash
-   claude --plugin-dir ./plugins/your-plugin
-   ```
-
-#### Plugin Guidelines
-
-**Do:**
-- Keep plugins focused on a single purpose
-- Write clear, helpful documentation
-- Include examples of usage
-- Follow existing code patterns
-- Test thoroughly before submitting
-
-**Don't:**
-- Create plugins that duplicate existing functionality
-- Include sensitive data or credentials
-- Create plugins that could be harmful or deceptive
-- Ignore validation errors
-
-### Improving Existing Plugins
-
-1. Fork the repository
-2. Make your changes
-3. Run tests: `npm test`
-4. Validate: `npm run validate`
-5. Submit a pull request with a clear description
-
-### Improving Infrastructure
-
-For changes to scripts, CI/CD, or marketplace configuration:
-
-1. Discuss major changes in an issue first
-2. Make your changes
-3. Ensure all tests pass
-4. Update documentation if needed
-
-## Pull Request Process
-
-1. **Create a descriptive PR title**
-   - `feat: Add code-formatter plugin`
-   - `fix: Correct validation for hooks`
-   - `docs: Improve README installation section`
-
-2. **Include a clear description**
-   - What does this change do?
-   - Why is it needed?
-   - How was it tested?
-
-3. **Ensure CI passes**
-   - All tests must pass
-   - Validation must succeed
-   - Linting must pass
-
-4. **Respond to feedback**
-   - Address review comments
-   - Make requested changes
+Thank you for your interest in contributing to the Claude Code plugins marketplace.
 
 ## Plugin Categories
 
-When creating plugins, consider these categories:
+| Category | Directory | Description |
+|----------|-----------|-------------|
+| Engineering | `developer-tools/` | Developer tooling, infrastructure, build systems |
+| Human Resources | `human-resources/` | HR workflows, recruiting, evaluation |
+| Operations | `project-management/` | Project management, estimation, reporting |
+| Documentation | `tech-writing/` | Technical writing, style guides, content review |
 
-| Category | Description |
-|----------|-------------|
-| Development | Code writing, review, refactoring |
-| Documentation | Doc generation, comments, READMEs |
-| Testing | Test generation, coverage, validation |
-| DevOps | CI/CD, deployment, infrastructure |
-| Productivity | Workflow automation, shortcuts |
-| Learning | Tutorials, explanations, best practices |
+## Repository Structure
 
-## Component Guidelines
+This is a flat-at-root marketplace. Each top-level directory is a plugin:
 
-### Commands
+```
+claude-code/
+├── .claude-plugin/marketplace.json   # Marketplace manifest
+├── developer-tools/                  # Plugin directory
+│   ├── .claude-plugin/plugin.json    # Plugin manifest (required)
+│   ├── README.md                     # Plugin documentation
+│   ├── skills/                       # Skills (optional)
+│   ├── agents/                       # Agents (optional)
+│   ├── hooks/                        # Hooks (optional)
+│   └── commands/                     # Commands (optional)
+└── ...
+```
 
-- Use clear, descriptive names
-- Support optional arguments where sensible
-- Provide helpful error messages
-- Document all arguments
+## Adding a New Plugin
 
-### Agents
+1. Create a top-level directory with a kebab-case name
+2. Add `.claude-plugin/plugin.json` with `name`, `version`, `description`, `author`, `license`, and `keywords`
+3. Add a `README.md` describing the plugin
+4. Add components (`skills/`, `agents/`, `hooks/`, `commands/`) as needed
+5. Register the plugin in `.claude-plugin/marketplace.json` with `name`, `source`, `description`, `category`, and `tags`
+6. Validate: `/plugin validate .`
 
-- Define a clear purpose
-- Limit tool access to what's needed
-- Include detailed system prompts
-- Specify the appropriate model
+## Improving Existing Plugins
 
-### Skills
+1. Fork the repository
+2. Create a branch: `git checkout -b feature/your-change`
+3. Make your changes
+4. Validate: `/plugin validate .`
+5. Submit a pull request
 
-- Focus on reusable knowledge
-- Organize with references for detailed content
-- Make them user-invocable when appropriate
-- Include practical examples
+## Pull Request Guidelines
 
-### Hooks
+- Use conventional commit format: `feat:`, `fix:`, `docs:`, `refactor:`
+- Include a clear description of what and why
+- Ensure validation passes before submitting
 
-- Use appropriate events
-- Keep prompts concise and focused
-- Test thoroughly to avoid blocking legitimate actions
-- Document any side effects
+## Component Conventions
 
-## Questions?
-
-If you have questions about contributing:
-
-1. Check existing documentation
-2. Look at example plugins
-3. Open an issue for discussion
-
-Thank you for contributing!
+- **Skills** — `skills/<name>/SKILL.md` with optional `references/` subdirectory
+- **Agents** — `agents/<name>/AGENT.md` with frontmatter specifying model and tools
+- **Hooks** — `hooks/hooks.json` with event matchers
+- **Commands** — `commands/<name>.md` with YAML frontmatter

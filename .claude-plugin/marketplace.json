@@ -1,38 +1,46 @@
 {
-  "name": "mrbogomips-tools",
+  "name": "claude-code",
   "owner": {
     "name": "Mr Bogomips",
     "email": "giovanni.costagliola@gmail.com"
   },
   "metadata": {
-    "description": "A collection of developer tools and plugins for Claude Code",
-    "version": "1.4.0",
+    "description": "A curated collection of Claude Code plugins for professional workflows",
+    "version": "2.0.0",
     "license": "MIT"
   },
   "plugins": [
     {
-      "name": "devcontainer-generator",
-      "source": "./plugins/devcontainer-generator",
-      "description": "Generate production-ready devcontainer configurations by analyzing repository tech stack",
-      "version": "2.3.0"
+      "name": "developer-tools",
+      "source": "./developer-tools",
+      "description": "Developer environment tooling — devcontainer generation, stack detection, infrastructure config",
+      "version": "2.4.0",
+      "category": "engineering",
+      "tags": ["devcontainer", "docker", "infrastructure", "developer-experience"]
     },
     {
-      "name": "example-agents",
-      "source": "./example-agents",
-      "description": "Example custom agents demonstrating agent patterns for Claude Code",
-      "version": "1.0.0"
+      "name": "human-resources",
+      "source": "./human-resources",
+      "description": "HR workflow support — interview preparation, candidate evaluation, job descriptions",
+      "version": "0.1.0",
+      "category": "human-resources",
+      "tags": ["hr", "recruiting", "interviews"]
     },
     {
-      "name": "example-hooks",
-      "source": "./example-hooks",
-      "description": "Example hooks demonstrating event-driven patterns for Claude Code",
-      "version": "1.0.0"
+      "name": "project-management",
+      "source": "./project-management",
+      "description": "Project management workflows — PERT estimation, WBS, risk analysis, status reporting",
+      "version": "0.1.0",
+      "category": "operations",
+      "tags": ["pmo", "estimation", "planning", "risk"]
     },
     {
-      "name": "example-skills",
-      "source": "./plugins/example-skills",
-      "description": "Example skills demonstrating skill patterns for Claude Code",
-      "version": "1.0.0"
+      "name": "tech-writing",
+      "source": "./tech-writing",
+      "description": "Technical writing support — documentation structure, style guides, content review",
+      "version": "0.1.0",
+      "category": "documentation",
+      "tags": ["writing", "documentation", "style-guide"]
     }
   ]
 }
