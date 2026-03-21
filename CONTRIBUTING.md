@@ -16,7 +16,7 @@ Thank you for your interest in contributing to the Claude Code plugins marketpla
 This is a flat-at-root marketplace. Each top-level directory is a plugin:
 
 ```
-claude-code/
+mrbogomips/
 ├── .claude-plugin/marketplace.json   # Marketplace manifest
 ├── developer-tools/                  # Plugin directory
 │   ├── .claude-plugin/plugin.json    # Plugin manifest (required)

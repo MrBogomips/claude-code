@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for working in the claude-code marketplace repository.
+Guidance for working in the mrbogomips plugins marketplace repository.
 
 ## Repository structure
 
