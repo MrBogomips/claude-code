@@ -19,15 +19,6 @@ Add this marketplace to Claude Code:
 claude plugin add MrBogomips/claude-code
 ```
 
-## Migrating from v1
-
-If you previously installed this marketplace, note the following structural changes in v2.0.0:
-
-- Plugins now live at the repository root (not under `plugins/`)
-- The `devcontainer-generator` plugin is now part of `developer-tools`
-- Example plugins (`example-agents`, `example-hooks`, `example-skills`) have been removed
-- The Docusaurus documentation site has been removed; each plugin has its own docs
-
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on adding or improving plugins.
