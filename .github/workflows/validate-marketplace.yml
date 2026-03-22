@@ -68,3 +68,6 @@ jobs:
           fi
 
           echo "All plugin entries valid"
+
+      - name: Run structural validation
+        run: bash tests/ci/run-structural-tests.sh

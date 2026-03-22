@@ -1,0 +1,1065 @@
+{
+  "config": {
+    "lang": "en",
+    "effort_unit": "pd",
+    "duration_unit": "d",
+    "primary_color": "457B9D",
+    "currency": "EUR",
+    "period_type": "biweekly",
+    "start_date": "2026-09-01",
+    "management_reserve_pct": 0.20,
+    "avg_rate": 650
+  },
+  "roles": [
+    {"code": "CA",  "name": "Cloud Architect",    "team": "Technical",   "billable": true},
+    {"code": "DE",  "name": "DevOps Engineer",     "team": "Technical",   "billable": true},
+    {"code": "SE",  "name": "Security Engineer",   "team": "Technical",   "billable": true},
+    {"code": "DEV", "name": "Developer",           "team": "Technical",   "billable": true},
+    {"code": "PM",  "name": "Project Manager",     "team": "Management",  "billable": true}
+  ],
+  "phases": [
+    {
+      "id": "1",
+      "name": "Assessment & Discovery",
+      "description": "Inventory and assess current-state infrastructure and application portfolio",
+      "best_duration": 12,
+      "likely_duration": 18,
+      "worst_duration": 26,
+      "work_packages": [
+        {
+          "id": "1.1",
+          "name": "Infrastructure Inventory",
+          "activities": [
+            {
+              "id": "1.1.1",
+              "name": "Server and network inventory catalogue",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["CA", "DE"],
+              "dependencies": [],
+              "risks": ["R02"],
+              "billable": true,
+              "notes": "Includes physical, virtual and cloud-native assets"
+            },
+            {
+              "id": "1.1.2",
+              "name": "Application dependency mapping",
+              "best_effort": 4,
+              "likely_effort": 7,
+              "worst_effort": 12,
+              "best_duration": 4,
+              "likely_duration": 7,
+              "worst_duration": 12,
+              "resources": ["CA", "DEV"],
+              "dependencies": ["1.1.1"],
+              "risks": ["R02", "R04"],
+              "billable": true,
+              "notes": "Dependency graph across all 12 applications"
+            },
+            {
+              "id": "1.1.3",
+              "name": "Licensing and compliance audit",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["PM", "SE"],
+              "dependencies": ["1.1.1"],
+              "risks": ["R12", "R14"],
+              "billable": true,
+              "notes": "Software licences and regulatory obligations"
+            }
+          ]
+        },
+        {
+          "id": "1.2",
+          "name": "Workload Assessment",
+          "activities": [
+            {
+              "id": "1.2.1",
+              "name": "Application portfolio classification (6-R model)",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 9,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 9,
+              "resources": ["CA", "DEV"],
+              "dependencies": ["1.1.2"],
+              "risks": ["R06"],
+              "billable": true,
+              "notes": "Rehost, Replatform, Refactor, Repurchase, Retire, Retain"
+            },
+            {
+              "id": "1.2.2",
+              "name": "TCO and ROI cloud analysis",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["PM"],
+              "dependencies": ["1.2.1"],
+              "risks": ["R12"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "1.2.3",
+              "name": "Risk and constraint identification",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["PM", "CA"],
+              "dependencies": ["1.1.3", "1.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": "Feeds into risk register"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Cloud Architecture & Planning",
+      "description": "Design the target cloud architecture and produce the detailed migration plan",
+      "best_duration": 18,
+      "likely_duration": 26,
+      "worst_duration": 38,
+      "work_packages": [
+        {
+          "id": "2.1",
+          "name": "Architecture Design",
+          "activities": [
+            {
+              "id": "2.1.1",
+              "name": "Landing zone and network topology design",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["CA", "DE"],
+              "dependencies": ["1.2.1"],
+              "risks": ["R05", "R08"],
+              "billable": true,
+              "notes": "Multi-region architecture with hub-and-spoke topology"
+            },
+            {
+              "id": "2.1.2",
+              "name": "Identity and access management architecture",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["SE", "CA"],
+              "dependencies": ["2.1.1"],
+              "risks": ["R07"],
+              "billable": true,
+              "notes": "SSO, RBAC, zero-trust principles"
+            },
+            {
+              "id": "2.1.3",
+              "name": "Security controls and compliance framework",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 10,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 10,
+              "resources": ["SE"],
+              "dependencies": ["2.1.2"],
+              "risks": ["R07", "R14"],
+              "billable": true,
+              "notes": "Aligned to CIS, NIST, GDPR controls"
+            },
+            {
+              "id": "2.1.4",
+              "name": "Disaster recovery and backup strategy",
+              "best_effort": 3,
+              "likely_effort": 4,
+              "worst_effort": 6,
+              "best_duration": 3,
+              "likely_duration": 4,
+              "worst_duration": 6,
+              "resources": ["CA", "DE"],
+              "dependencies": ["2.1.1"],
+              "risks": ["R13"],
+              "billable": true,
+              "notes": "RTO/RPO targets to be agreed with client"
+            }
+          ]
+        },
+        {
+          "id": "2.2",
+          "name": "Migration Planning",
+          "activities": [
+            {
+              "id": "2.2.1",
+              "name": "Wave planning and sequence definition",
+              "best_effort": 3,
+              "likely_effort": 4,
+              "worst_effort": 6,
+              "best_duration": 3,
+              "likely_duration": 4,
+              "worst_duration": 6,
+              "resources": ["CA", "PM"],
+              "dependencies": ["1.2.1", "2.1.1"],
+              "risks": ["R06"],
+              "billable": true,
+              "notes": "Dependency on 6-R classification output"
+            },
+            {
+              "id": "2.2.2",
+              "name": "Migration runbook per application (12 apps)",
+              "best_effort": 8,
+              "likely_effort": 12,
+              "worst_effort": 18,
+              "best_duration": 8,
+              "likely_duration": 12,
+              "worst_duration": 18,
+              "resources": ["CA", "DEV", "DE"],
+              "dependencies": ["2.2.1"],
+              "risks": ["R02", "R04"],
+              "billable": true,
+              "notes": "One runbook per application, covering cutover steps and rollback"
+            },
+            {
+              "id": "2.2.3",
+              "name": "Rollback plan definition",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["DE", "PM"],
+              "dependencies": ["2.2.2"],
+              "risks": ["R13"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Infrastructure Setup",
+      "description": "Provision and configure the target cloud landing zone and platform services",
+      "best_duration": 22,
+      "likely_duration": 33,
+      "worst_duration": 48,
+      "work_packages": [
+        {
+          "id": "3.1",
+          "name": "Landing Zone Provisioning",
+          "activities": [
+            {
+              "id": "3.1.1",
+              "name": "Core account structure, policies and IAM bootstrap",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 9,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 9,
+              "resources": ["DE", "SE"],
+              "dependencies": ["2.1.2", "2.1.3"],
+              "risks": ["R05", "R07"],
+              "billable": true,
+              "notes": "IaC in Terraform"
+            },
+            {
+              "id": "3.1.2",
+              "name": "VPC/VNet configuration, peering and transit gateway",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["DE", "CA"],
+              "dependencies": ["3.1.1"],
+              "risks": ["R08"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "3.1.3",
+              "name": "DNS, load balancers and CDN configuration",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["DE"],
+              "dependencies": ["3.1.2"],
+              "risks": ["R11"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "3.2",
+          "name": "Platform Services Configuration",
+          "activities": [
+            {
+              "id": "3.2.1",
+              "name": "Kubernetes cluster setup and hardening",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["DE", "SE"],
+              "dependencies": ["3.1.2"],
+              "risks": ["R04", "R09"],
+              "billable": true,
+              "notes": "EKS/AKS with node auto-scaling and PodSecurityPolicies"
+            },
+            {
+              "id": "3.2.2",
+              "name": "CI/CD pipeline infrastructure (GitOps with ArgoCD)",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 9,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 9,
+              "resources": ["DE"],
+              "dependencies": ["3.2.1"],
+              "risks": ["R09"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "3.2.3",
+              "name": "Monitoring, logging and alerting stack (Prometheus/Grafana/ELK)",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["DE", "SE"],
+              "dependencies": ["3.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "3.2.4",
+              "name": "Secret management and certificate automation (Vault / ACM)",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["SE"],
+              "dependencies": ["3.1.1"],
+              "risks": ["R07"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Migration Wave 1",
+      "description": "Migrate 4 lower-complexity applications to the cloud environment",
+      "best_duration": 25,
+      "likely_duration": 38,
+      "worst_duration": 55,
+      "work_packages": [
+        {
+          "id": "4.1",
+          "name": "Wave 1 Execution",
+          "activities": [
+            {
+              "id": "4.1.1",
+              "name": "Containerisation and refactoring — Wave 1 apps (4)",
+              "best_effort": 10,
+              "likely_effort": 16,
+              "worst_effort": 24,
+              "best_duration": 10,
+              "likely_duration": 16,
+              "worst_duration": 24,
+              "resources": ["DEV", "DE"],
+              "dependencies": ["3.2.1", "3.2.2"],
+              "risks": ["R04"],
+              "billable": true,
+              "notes": "Dockerfile, Helm charts, environment configuration"
+            },
+            {
+              "id": "4.1.2",
+              "name": "Data migration — Wave 1 databases",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 14,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 14,
+              "resources": ["DE", "DEV"],
+              "dependencies": ["4.1.1"],
+              "risks": ["R03"],
+              "billable": true,
+              "notes": "Schema migration and data sync scripts"
+            },
+            {
+              "id": "4.1.3",
+              "name": "Integration re-wiring and smoke tests — Wave 1",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["DEV", "DE"],
+              "dependencies": ["4.1.2"],
+              "risks": ["R11"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "4.2",
+          "name": "Wave 1 Validation",
+          "activities": [
+            {
+              "id": "4.2.1",
+              "name": "Functional regression tests — Wave 1",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 10,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 10,
+              "resources": ["DEV", "PM"],
+              "dependencies": ["4.1.3"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "4.2.2",
+              "name": "Performance baseline comparison — Wave 1",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["DE", "SE"],
+              "dependencies": ["4.2.1"],
+              "risks": ["R08"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "4.2.3",
+              "name": "Security scan and remediation — Wave 1",
+              "best_effort": 2,
+              "likely_effort": 4,
+              "worst_effort": 7,
+              "best_duration": 2,
+              "likely_duration": 4,
+              "worst_duration": 7,
+              "resources": ["SE"],
+              "dependencies": ["4.2.1"],
+              "risks": ["R07"],
+              "billable": true,
+              "notes": "DAST/SAST scan + remediation cycle"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Migration Wave 2",
+      "description": "Migrate 4 medium-complexity applications to the cloud environment",
+      "best_duration": 28,
+      "likely_duration": 44,
+      "worst_duration": 62,
+      "work_packages": [
+        {
+          "id": "5.1",
+          "name": "Wave 2 Execution",
+          "activities": [
+            {
+              "id": "5.1.1",
+              "name": "Containerisation and refactoring — Wave 2 apps (4)",
+              "best_effort": 14,
+              "likely_effort": 20,
+              "worst_effort": 30,
+              "best_duration": 14,
+              "likely_duration": 20,
+              "worst_duration": 30,
+              "resources": ["DEV", "DE"],
+              "dependencies": ["4.2.3", "3.2.2"],
+              "risks": ["R04", "R10"],
+              "billable": true,
+              "notes": "Higher complexity apps with more dependencies"
+            },
+            {
+              "id": "5.1.2",
+              "name": "Data migration — Wave 2 databases",
+              "best_effort": 6,
+              "likely_effort": 10,
+              "worst_effort": 16,
+              "best_duration": 6,
+              "likely_duration": 10,
+              "worst_duration": 16,
+              "resources": ["DE", "DEV"],
+              "dependencies": ["5.1.1"],
+              "risks": ["R03"],
+              "billable": true,
+              "notes": "Larger data volumes than Wave 1"
+            },
+            {
+              "id": "5.1.3",
+              "name": "Integration re-wiring and smoke tests — Wave 2",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 10,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 10,
+              "resources": ["DEV", "DE"],
+              "dependencies": ["5.1.2"],
+              "risks": ["R11"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "5.2",
+          "name": "Wave 2 Validation",
+          "activities": [
+            {
+              "id": "5.2.1",
+              "name": "Functional regression tests — Wave 2",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["DEV", "PM"],
+              "dependencies": ["5.1.3"],
+              "risks": ["R15"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "5.2.2",
+              "name": "Performance and load testing — Wave 2",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["DE", "SE"],
+              "dependencies": ["5.2.1"],
+              "risks": ["R08"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "5.2.3",
+              "name": "Security hardening review — Wave 2",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["SE"],
+              "dependencies": ["5.2.1"],
+              "risks": ["R07"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Migration Wave 3",
+      "description": "Migrate 4 high-complexity, business-critical applications to cloud",
+      "best_duration": 32,
+      "likely_duration": 50,
+      "worst_duration": 72,
+      "work_packages": [
+        {
+          "id": "6.1",
+          "name": "Wave 3 Execution",
+          "activities": [
+            {
+              "id": "6.1.1",
+              "name": "Legacy modernisation and containerisation — Wave 3 apps (4)",
+              "best_effort": 18,
+              "likely_effort": 28,
+              "worst_effort": 42,
+              "best_duration": 18,
+              "likely_duration": 28,
+              "worst_duration": 42,
+              "resources": ["DEV", "CA", "DE"],
+              "dependencies": ["5.2.3", "3.2.2"],
+              "risks": ["R04", "R10"],
+              "billable": true,
+              "notes": "Includes rewriting legacy monolith components as microservices"
+            },
+            {
+              "id": "6.1.2",
+              "name": "Data migration — Wave 3 (large volumes, replication lag management)",
+              "best_effort": 8,
+              "likely_effort": 14,
+              "worst_effort": 22,
+              "best_duration": 8,
+              "likely_duration": 14,
+              "worst_duration": 22,
+              "resources": ["DE", "DEV"],
+              "dependencies": ["6.1.1"],
+              "risks": ["R03", "R13"],
+              "billable": true,
+              "notes": "Near-zero-downtime migration using CDC / log shipping"
+            },
+            {
+              "id": "6.1.3",
+              "name": "Integration re-wiring, API gateway config and smoke tests — Wave 3",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 13,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 13,
+              "resources": ["DEV", "CA", "DE"],
+              "dependencies": ["6.1.2"],
+              "risks": ["R11"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "6.2",
+          "name": "Wave 3 Validation",
+          "activities": [
+            {
+              "id": "6.2.1",
+              "name": "Full regression suite — Wave 3",
+              "best_effort": 6,
+              "likely_effort": 10,
+              "worst_effort": 16,
+              "best_duration": 6,
+              "likely_duration": 10,
+              "worst_duration": 16,
+              "resources": ["DEV", "PM"],
+              "dependencies": ["6.1.3"],
+              "risks": ["R15"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "6.2.2",
+              "name": "End-to-end cross-wave integration testing",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 14,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 14,
+              "resources": ["CA", "DEV", "DE"],
+              "dependencies": ["6.2.1"],
+              "risks": ["R11"],
+              "billable": true,
+              "notes": "Verifies all 12 migrated apps interact correctly"
+            },
+            {
+              "id": "6.2.3",
+              "name": "Security penetration testing",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 10,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 10,
+              "resources": ["SE"],
+              "dependencies": ["6.2.1"],
+              "risks": ["R07"],
+              "billable": true,
+              "notes": "External pen test plus internal remediation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Testing, Validation & Cutover",
+      "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation",
+      "best_duration": 18,
+      "likely_duration": 26,
+      "worst_duration": 38,
+      "work_packages": [
+        {
+          "id": "7.1",
+          "name": "Non-Functional Testing",
+          "activities": [
+            {
+              "id": "7.1.1",
+              "name": "Full load and stress testing — all applications",
+              "best_effort": 4,
+              "likely_effort": 7,
+              "worst_effort": 11,
+              "best_duration": 4,
+              "likely_duration": 7,
+              "worst_duration": 11,
+              "resources": ["DE", "SE"],
+              "dependencies": ["6.2.3"],
+              "risks": ["R08"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "7.1.2",
+              "name": "Chaos engineering and resilience testing",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["DE", "CA"],
+              "dependencies": ["7.1.1"],
+              "risks": ["R05"],
+              "billable": true,
+              "notes": "Simulated availability zone failure and network partition"
+            }
+          ]
+        },
+        {
+          "id": "7.2",
+          "name": "Acceptance Testing & Cutover",
+          "activities": [
+            {
+              "id": "7.2.1",
+              "name": "UAT coordination and execution support",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 10,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 10,
+              "resources": ["PM", "DEV"],
+              "dependencies": ["7.1.2"],
+              "risks": ["R15"],
+              "billable": true,
+              "notes": "Requires business key-user availability"
+            },
+            {
+              "id": "7.2.2",
+              "name": "Defect triage and remediation",
+              "best_effort": 4,
+              "likely_effort": 7,
+              "worst_effort": 12,
+              "best_duration": 4,
+              "likely_duration": 7,
+              "worst_duration": 12,
+              "resources": ["DEV", "DE"],
+              "dependencies": ["7.2.1"],
+              "risks": ["R04"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "7.2.3",
+              "name": "Go-live readiness sign-off and final cutover execution",
+              "best_effort": 3,
+              "likely_effort": 4,
+              "worst_effort": 6,
+              "best_duration": 3,
+              "likely_duration": 4,
+              "worst_duration": 6,
+              "resources": ["PM", "CA", "DE"],
+              "dependencies": ["7.2.2"],
+              "risks": ["R05", "R13"],
+              "billable": true,
+              "notes": "Includes DNS cutover and traffic switch"
+            },
+            {
+              "id": "7.2.4",
+              "name": "Hypercare support and stabilisation (2 weeks)",
+              "best_effort": 6,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 6,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["DE", "DEV", "SE"],
+              "dependencies": ["7.2.3"],
+              "risks": [],
+              "billable": true,
+              "notes": "On-call rotation, incident response and hotfix capability"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resource_allocation": [
+    {"phase_id": "1", "phase_name": "Assessment & Discovery",         "description": "Inventory and assess current-state infrastructure and application portfolio", "team": "Technical",  "role_code": "CA",  "effort": 12},
+    {"phase_id": "1", "phase_name": "Assessment & Discovery",         "description": "Inventory and assess current-state infrastructure and application portfolio", "team": "Technical",  "role_code": "DE",  "effort": 6},
+    {"phase_id": "1", "phase_name": "Assessment & Discovery",         "description": "Inventory and assess current-state infrastructure and application portfolio", "team": "Technical",  "role_code": "SE",  "effort": 4},
+    {"phase_id": "1", "phase_name": "Assessment & Discovery",         "description": "Inventory and assess current-state infrastructure and application portfolio", "team": "Technical",  "role_code": "DEV", "effort": 8},
+    {"phase_id": "1", "phase_name": "Assessment & Discovery",         "description": "Inventory and assess current-state infrastructure and application portfolio", "team": "Management", "role_code": "PM",  "effort": 5},
+
+    {"phase_id": "2", "phase_name": "Cloud Architecture & Planning",  "description": "Design the target cloud architecture and produce the detailed migration plan", "team": "Technical",  "role_code": "CA",  "effort": 20},
+    {"phase_id": "2", "phase_name": "Cloud Architecture & Planning",  "description": "Design the target cloud architecture and produce the detailed migration plan", "team": "Technical",  "role_code": "DE",  "effort": 10},
+    {"phase_id": "2", "phase_name": "Cloud Architecture & Planning",  "description": "Design the target cloud architecture and produce the detailed migration plan", "team": "Technical",  "role_code": "SE",  "effort": 12},
+    {"phase_id": "2", "phase_name": "Cloud Architecture & Planning",  "description": "Design the target cloud architecture and produce the detailed migration plan", "team": "Technical",  "role_code": "DEV", "effort": 14},
+    {"phase_id": "2", "phase_name": "Cloud Architecture & Planning",  "description": "Design the target cloud architecture and produce the detailed migration plan", "team": "Management", "role_code": "PM",  "effort": 6},
+
+    {"phase_id": "3", "phase_name": "Infrastructure Setup",           "description": "Provision and configure the target cloud landing zone and platform services", "team": "Technical",  "role_code": "CA",  "effort": 8},
+    {"phase_id": "3", "phase_name": "Infrastructure Setup",           "description": "Provision and configure the target cloud landing zone and platform services", "team": "Technical",  "role_code": "DE",  "effort": 24},
+    {"phase_id": "3", "phase_name": "Infrastructure Setup",           "description": "Provision and configure the target cloud landing zone and platform services", "team": "Technical",  "role_code": "SE",  "effort": 14},
+    {"phase_id": "3", "phase_name": "Infrastructure Setup",           "description": "Provision and configure the target cloud landing zone and platform services", "team": "Technical",  "role_code": "DEV", "effort": 5},
+    {"phase_id": "3", "phase_name": "Infrastructure Setup",           "description": "Provision and configure the target cloud landing zone and platform services", "team": "Management", "role_code": "PM",  "effort": 5},
+
+    {"phase_id": "4", "phase_name": "Migration Wave 1",               "description": "Migrate 4 lower-complexity applications to the cloud environment", "team": "Technical",  "role_code": "CA",  "effort": 5},
+    {"phase_id": "4", "phase_name": "Migration Wave 1",               "description": "Migrate 4 lower-complexity applications to the cloud environment", "team": "Technical",  "role_code": "DE",  "effort": 16},
+    {"phase_id": "4", "phase_name": "Migration Wave 1",               "description": "Migrate 4 lower-complexity applications to the cloud environment", "team": "Technical",  "role_code": "SE",  "effort": 8},
+    {"phase_id": "4", "phase_name": "Migration Wave 1",               "description": "Migrate 4 lower-complexity applications to the cloud environment", "team": "Technical",  "role_code": "DEV", "effort": 22},
+    {"phase_id": "4", "phase_name": "Migration Wave 1",               "description": "Migrate 4 lower-complexity applications to the cloud environment", "team": "Management", "role_code": "PM",  "effort": 6},
+
+    {"phase_id": "5", "phase_name": "Migration Wave 2",               "description": "Migrate 4 medium-complexity applications to the cloud environment", "team": "Technical",  "role_code": "CA",  "effort": 6},
+    {"phase_id": "5", "phase_name": "Migration Wave 2",               "description": "Migrate 4 medium-complexity applications to the cloud environment", "team": "Technical",  "role_code": "DE",  "effort": 22},
+    {"phase_id": "5", "phase_name": "Migration Wave 2",               "description": "Migrate 4 medium-complexity applications to the cloud environment", "team": "Technical",  "role_code": "SE",  "effort": 10},
+    {"phase_id": "5", "phase_name": "Migration Wave 2",               "description": "Migrate 4 medium-complexity applications to the cloud environment", "team": "Technical",  "role_code": "DEV", "effort": 30},
+    {"phase_id": "5", "phase_name": "Migration Wave 2",               "description": "Migrate 4 medium-complexity applications to the cloud environment", "team": "Management", "role_code": "PM",  "effort": 8},
+
+    {"phase_id": "6", "phase_name": "Migration Wave 3",               "description": "Migrate 4 high-complexity, business-critical applications to cloud", "team": "Technical",  "role_code": "CA",  "effort": 18},
+    {"phase_id": "6", "phase_name": "Migration Wave 3",               "description": "Migrate 4 high-complexity, business-critical applications to cloud", "team": "Technical",  "role_code": "DE",  "effort": 28},
+    {"phase_id": "6", "phase_name": "Migration Wave 3",               "description": "Migrate 4 high-complexity, business-critical applications to cloud", "team": "Technical",  "role_code": "SE",  "effort": 10},
+    {"phase_id": "6", "phase_name": "Migration Wave 3",               "description": "Migrate 4 high-complexity, business-critical applications to cloud", "team": "Technical",  "role_code": "DEV", "effort": 45},
+    {"phase_id": "6", "phase_name": "Migration Wave 3",               "description": "Migrate 4 high-complexity, business-critical applications to cloud", "team": "Management", "role_code": "PM",  "effort": 10},
+
+    {"phase_id": "7", "phase_name": "Testing, Validation & Cutover",  "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation", "team": "Technical",  "role_code": "CA",  "effort": 10},
+    {"phase_id": "7", "phase_name": "Testing, Validation & Cutover",  "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation", "team": "Technical",  "role_code": "DE",  "effort": 18},
+    {"phase_id": "7", "phase_name": "Testing, Validation & Cutover",  "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation", "team": "Technical",  "role_code": "SE",  "effort": 8},
+    {"phase_id": "7", "phase_name": "Testing, Validation & Cutover",  "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation", "team": "Technical",  "role_code": "DEV", "effort": 22},
+    {"phase_id": "7", "phase_name": "Testing, Validation & Cutover",  "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation", "team": "Management", "role_code": "PM",  "effort": 10}
+  ],
+  "risks": [
+    {
+      "id": "R01",
+      "description": "Cloud Architect resource unavailability due to market competition",
+      "category": "Organizational",
+      "affected_phases": ["1", "2", "3"],
+      "probability": 4,
+      "impact": 5,
+      "strategy": "Mitigate",
+      "mitigation": "Dual-source cloud architects; include bench resource in contract; knowledge redundancy through pair working",
+      "owner": "PM",
+      "contingency_effort": 20
+    },
+    {
+      "id": "R02",
+      "description": "Application dependency complexity exceeds initial assessment estimates",
+      "category": "Technical",
+      "affected_phases": ["1", "2"],
+      "probability": 5,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Automated dependency scanning tools; allow buffer time in assessment phase; iterative discovery",
+      "owner": "CA",
+      "contingency_effort": 18
+    },
+    {
+      "id": "R03",
+      "description": "Data migration volume or quality issues causing delays",
+      "category": "Technical",
+      "affected_phases": ["4", "5", "6"],
+      "probability": 4,
+      "impact": 5,
+      "strategy": "Mitigate",
+      "mitigation": "Early data profiling; automated data quality scripts; dry-run migrations before production cutover",
+      "owner": "DE",
+      "contingency_effort": 25
+    },
+    {
+      "id": "R04",
+      "description": "Legacy application incompatibility with containerisation approach",
+      "category": "Technical",
+      "affected_phases": ["4", "5", "6", "7"],
+      "probability": 4,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Technical spike in Phase 1; fallback to VM-based lift-and-shift for incompatible apps; 6-R reclassification",
+      "owner": "CA",
+      "contingency_effort": 30
+    },
+    {
+      "id": "R05",
+      "description": "Cloud provider service outage or degradation during active migration window",
+      "category": "External",
+      "affected_phases": ["3", "4", "7"],
+      "probability": 3,
+      "impact": 5,
+      "strategy": "Accept",
+      "mitigation": "Monitor cloud provider status page; schedule cutover windows during low-risk periods; multi-region failover design",
+      "owner": "DE",
+      "contingency_effort": 10
+    },
+    {
+      "id": "R06",
+      "description": "Scope creep from late-discovered applications not in original inventory",
+      "category": "Scope",
+      "affected_phases": ["1", "2"],
+      "probability": 4,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "Strict scope freeze after Phase 1 sign-off; formal change control board; contractual scope boundary clause",
+      "owner": "PM",
+      "contingency_effort": 15
+    },
+    {
+      "id": "R07",
+      "description": "Security compliance gap identified in hardened cloud environment",
+      "category": "Security",
+      "affected_phases": ["3", "4", "5", "6"],
+      "probability": 3,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Cloud Security Posture Management (CSPM) tool from day one; automated policy-as-code enforcement; quarterly security reviews",
+      "owner": "SE",
+      "contingency_effort": 12
+    },
+    {
+      "id": "R08",
+      "description": "Network performance degradation post-migration due to latency or bandwidth issues",
+      "category": "Technical",
+      "affected_phases": ["4", "5", "6", "7"],
+      "probability": 3,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Network baseline measurement before migration; performance SLA defined; CDN and caching optimisation",
+      "owner": "DE",
+      "contingency_effort": 8
+    },
+    {
+      "id": "R09",
+      "description": "CI/CD pipeline instability blocking deployments",
+      "category": "Technical",
+      "affected_phases": ["3", "4"],
+      "probability": 3,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "Pipeline validation gates; blue-green deployment fallback; dedicated pipeline engineer during setup",
+      "owner": "DE",
+      "contingency_effort": 6
+    },
+    {
+      "id": "R10",
+      "description": "Key personnel departure during critical migration waves",
+      "category": "Organizational",
+      "affected_phases": ["5", "6"],
+      "probability": 3,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Knowledge documentation and runbooks maintained continuously; bench resource pre-identified; retention incentives",
+      "owner": "PM",
+      "contingency_effort": 16
+    },
+    {
+      "id": "R11",
+      "description": "Third-party integrations not compatible with new cloud endpoints",
+      "category": "External",
+      "affected_phases": ["4", "5", "6"],
+      "probability": 4,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "API contract testing in parallel with migration; stub servers for dependent systems; early vendor engagement",
+      "owner": "CA",
+      "contingency_effort": 12
+    },
+    {
+      "id": "R12",
+      "description": "Unexpected licensing costs from cloud services exceeding budget",
+      "category": "Financial",
+      "affected_phases": ["1", "3"],
+      "probability": 3,
+      "impact": 3,
+      "strategy": "Accept",
+      "mitigation": "Reserved instance pricing; tagging strategy for cost allocation; monthly FinOps review; budget alerts",
+      "owner": "PM",
+      "contingency_effort": 5
+    },
+    {
+      "id": "R13",
+      "description": "Inadequate rollback capability for Wave 3 critical applications",
+      "category": "Technical",
+      "affected_phases": ["6", "7"],
+      "probability": 3,
+      "impact": 5,
+      "strategy": "Mitigate",
+      "mitigation": "Full rollback plan tested in rehearsal; parallel-run mode for critical apps before DNS cutover; data replication maintained",
+      "owner": "CA",
+      "contingency_effort": 20
+    },
+    {
+      "id": "R14",
+      "description": "Regulatory or compliance audit triggered mid-migration",
+      "category": "External",
+      "affected_phases": ["2", "3"],
+      "probability": 2,
+      "impact": 4,
+      "strategy": "Accept",
+      "mitigation": "Proactive compliance documentation; maintain audit trail of all infrastructure changes; pre-engage compliance officer",
+      "owner": "PM",
+      "contingency_effort": 8
+    },
+    {
+      "id": "R15",
+      "description": "Client stakeholder unavailability for UAT sign-off causing schedule slippage",
+      "category": "Organizational",
+      "affected_phases": ["5", "6", "7"],
+      "probability": 3,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "Formal UAT participation agreement; dedicated UAT coordination resource; asynchronous review tooling",
+      "owner": "PM",
+      "contingency_effort": 8
+    }
+  ],
+  "targets": {
+    "expected_effort": 100,
+    "expected_duration": 40
+  }
+}

@@ -1,0 +1,533 @@
+{
+  "config": {
+    "lang": "en",
+    "effort_unit": "hours",
+    "duration_unit": "weeks",
+    "primary_color": "264653",
+    "period_type": "monthly",
+    "start_date": "2026-10-01",
+    "management_reserve_pct": 0.10,
+    "avg_rate": 250,
+    "currency": "EUR"
+  },
+  "roles": [
+    {
+      "code": "PRT",
+      "name": "Partner",
+      "team": "Consulting",
+      "billable": true
+    },
+    {
+      "code": "SC",
+      "name": "Senior Consultant",
+      "team": "Consulting",
+      "billable": true
+    },
+    {
+      "code": "JC",
+      "name": "Junior Consultant",
+      "team": "Consulting",
+      "billable": true
+    }
+  ],
+  "phases": [
+    {
+      "id": "1",
+      "name": "Diagnostic",
+      "description": "Assess current state of the three legacy organisations and identify gaps",
+      "best_duration": 3,
+      "likely_duration": 4,
+      "worst_duration": 6,
+      "work_packages": [
+        {
+          "id": "1.1",
+          "name": "Current State Assessment",
+          "activities": [
+            {
+              "id": "1.1.1",
+              "name": "Stakeholder Interviews",
+              "best_effort": 32,
+              "likely_effort": 40,
+              "worst_effort": 56,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["PRT", "SC"],
+              "dependencies": [],
+              "risks": ["R1", "R2"],
+              "billable": true,
+              "notes": "20 structured interviews across 3 entities"
+            },
+            {
+              "id": "1.1.2",
+              "name": "Document & Process Review",
+              "best_effort": 16,
+              "likely_effort": 24,
+              "worst_effort": 40,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 2,
+              "resources": ["SC", "JC"],
+              "dependencies": ["1.1.1"],
+              "risks": ["R4"],
+              "billable": true,
+              "notes": "Org charts, process maps, governance documents"
+            },
+            {
+              "id": "1.1.3",
+              "name": "Cultural & Change-Readiness Survey",
+              "best_effort": 12,
+              "likely_effort": 16,
+              "worst_effort": 24,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 2,
+              "resources": ["SC"],
+              "dependencies": [],
+              "risks": [],
+              "billable": true,
+              "notes": "Design, administer and analyse 60-question survey"
+            }
+          ]
+        },
+        {
+          "id": "1.2",
+          "name": "Gap Analysis",
+          "activities": [
+            {
+              "id": "1.2.1",
+              "name": "Functional Redundancy Mapping",
+              "best_effort": 16,
+              "likely_effort": 24,
+              "worst_effort": 40,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 2,
+              "resources": ["SC", "JC"],
+              "dependencies": ["1.1.2"],
+              "risks": [],
+              "billable": true,
+              "notes": "Cross-map roles and functions across 3 entities"
+            },
+            {
+              "id": "1.2.2",
+              "name": "Diagnostic Report",
+              "best_effort": 12,
+              "likely_effort": 16,
+              "worst_effort": 24,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 2,
+              "resources": ["PRT", "SC"],
+              "dependencies": ["1.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": "Executive-ready consolidated findings report"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Strategy Design",
+      "description": "Co-design the future operating model with senior leadership",
+      "best_duration": 4,
+      "likely_duration": 6,
+      "worst_duration": 8,
+      "work_packages": [
+        {
+          "id": "2.1",
+          "name": "Target Operating Model",
+          "activities": [
+            {
+              "id": "2.1.1",
+              "name": "Design Workshops",
+              "best_effort": 32,
+              "likely_effort": 40,
+              "worst_effort": 56,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["PRT", "SC"],
+              "dependencies": ["1.2.2"],
+              "risks": ["R1", "R2"],
+              "billable": true,
+              "notes": "3 × full-day facilitated sessions with senior leadership"
+            },
+            {
+              "id": "2.1.2",
+              "name": "Org Structure Design",
+              "best_effort": 32,
+              "likely_effort": 40,
+              "worst_effort": 64,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["SC"],
+              "dependencies": ["2.1.1"],
+              "risks": ["R5"],
+              "billable": true,
+              "notes": "Reporting lines, spans of control, role profiles"
+            },
+            {
+              "id": "2.1.3",
+              "name": "Governance & Decision Framework",
+              "best_effort": 16,
+              "likely_effort": 24,
+              "worst_effort": 40,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 2,
+              "resources": ["SC", "JC"],
+              "dependencies": ["2.1.2"],
+              "risks": [],
+              "billable": true,
+              "notes": "RACI matrix, committee charters, escalation paths"
+            }
+          ]
+        },
+        {
+          "id": "2.2",
+          "name": "Roadmap & Business Case",
+          "activities": [
+            {
+              "id": "2.2.1",
+              "name": "Transformation Roadmap",
+              "best_effort": 16,
+              "likely_effort": 24,
+              "worst_effort": 40,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 2,
+              "resources": ["SC", "JC"],
+              "dependencies": ["2.1.3"],
+              "risks": ["R3"],
+              "billable": true,
+              "notes": "Phased implementation plan, milestones, KPIs"
+            },
+            {
+              "id": "2.2.2",
+              "name": "Business Case & ROI Model",
+              "best_effort": 16,
+              "likely_effort": 24,
+              "worst_effort": 40,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 2,
+              "resources": ["PRT", "SC"],
+              "dependencies": ["2.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": "Quantify savings, FTE impact, strategic value"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Implementation Support",
+      "description": "Hands-on advisory support during first wave of transformation",
+      "best_duration": 5,
+      "likely_duration": 8,
+      "worst_duration": 12,
+      "work_packages": [
+        {
+          "id": "3.1",
+          "name": "Change Management",
+          "activities": [
+            {
+              "id": "3.1.1",
+              "name": "Change Management Plan",
+              "best_effort": 16,
+              "likely_effort": 24,
+              "worst_effort": 40,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["SC", "JC"],
+              "dependencies": ["2.2.2"],
+              "risks": ["R2"],
+              "billable": true,
+              "notes": "Communications plan, training needs analysis, resistance management"
+            },
+            {
+              "id": "3.1.2",
+              "name": "Leadership Coaching Sessions",
+              "best_effort": 12,
+              "likely_effort": 16,
+              "worst_effort": 24,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["PRT"],
+              "dependencies": ["3.1.1"],
+              "risks": ["R1"],
+              "billable": true,
+              "notes": "6 sessions × 2 h with senior leaders"
+            }
+          ]
+        },
+        {
+          "id": "3.2",
+          "name": "Process Re-engineering",
+          "activities": [
+            {
+              "id": "3.2.1",
+              "name": "Priority Process Redesign",
+              "best_effort": 32,
+              "likely_effort": 40,
+              "worst_effort": 64,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["SC", "JC"],
+              "dependencies": ["2.2.2"],
+              "risks": ["R3", "R5"],
+              "billable": true,
+              "notes": "Redesign 3 end-to-end cross-entity processes"
+            },
+            {
+              "id": "3.2.2",
+              "name": "Interim Performance Dashboard",
+              "best_effort": 16,
+              "likely_effort": 24,
+              "worst_effort": 40,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["SC", "JC"],
+              "dependencies": ["3.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": "Define and prototype management KPI dashboard"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Knowledge Transfer",
+      "description": "Embed the new operating model and build internal capability",
+      "best_duration": 2,
+      "likely_duration": 4,
+      "worst_duration": 6,
+      "work_packages": [
+        {
+          "id": "4.1",
+          "name": "Capability Building",
+          "activities": [
+            {
+              "id": "4.1.1",
+              "name": "Playbook & Toolkit Delivery",
+              "best_effort": 16,
+              "likely_effort": 24,
+              "worst_effort": 40,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["SC", "JC"],
+              "dependencies": ["3.2.2"],
+              "risks": [],
+              "billable": true,
+              "notes": "Operating model playbook and toolkits for internal use"
+            },
+            {
+              "id": "4.1.2",
+              "name": "Train-the-Trainer Workshop",
+              "best_effort": 12,
+              "likely_effort": 16,
+              "worst_effort": 24,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 2,
+              "resources": ["PRT", "SC"],
+              "dependencies": ["4.1.1"],
+              "risks": [],
+              "billable": true,
+              "notes": "2-day internal facilitator training programme"
+            },
+            {
+              "id": "4.1.3",
+              "name": "Final Review & Sign-off Meeting",
+              "best_effort": 6,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 1,
+              "resources": ["PRT", "SC"],
+              "dependencies": ["4.1.2"],
+              "risks": ["R1"],
+              "billable": true,
+              "notes": "Present final deliverables, capture lessons learned"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resource_allocation": [
+    {
+      "phase_id": "1",
+      "phase_name": "Diagnostic",
+      "description": "Stakeholder interviews, document review, gap analysis",
+      "team": "Consulting",
+      "role_code": "PRT",
+      "effort": 56
+    },
+    {
+      "phase_id": "1",
+      "phase_name": "Diagnostic",
+      "description": "Current state assessment and gap analysis",
+      "team": "Consulting",
+      "role_code": "SC",
+      "effort": 120
+    },
+    {
+      "phase_id": "1",
+      "phase_name": "Diagnostic",
+      "description": "Document review and redundancy mapping support",
+      "team": "Consulting",
+      "role_code": "JC",
+      "effort": 64
+    },
+    {
+      "phase_id": "2",
+      "phase_name": "Strategy Design",
+      "description": "TOM design workshops and business case",
+      "team": "Consulting",
+      "role_code": "PRT",
+      "effort": 80
+    },
+    {
+      "phase_id": "2",
+      "phase_name": "Strategy Design",
+      "description": "Org design, governance framework, roadmap",
+      "team": "Consulting",
+      "role_code": "SC",
+      "effort": 152
+    },
+    {
+      "phase_id": "2",
+      "phase_name": "Strategy Design",
+      "description": "Roadmap and governance documentation support",
+      "team": "Consulting",
+      "role_code": "JC",
+      "effort": 80
+    },
+    {
+      "phase_id": "3",
+      "phase_name": "Implementation Support",
+      "description": "Leadership coaching and oversight",
+      "team": "Consulting",
+      "role_code": "PRT",
+      "effort": 40
+    },
+    {
+      "phase_id": "3",
+      "phase_name": "Implementation Support",
+      "description": "Change management and process redesign",
+      "team": "Consulting",
+      "role_code": "SC",
+      "effort": 128
+    },
+    {
+      "phase_id": "3",
+      "phase_name": "Implementation Support",
+      "description": "Process analysis, dashboard prototyping",
+      "team": "Consulting",
+      "role_code": "JC",
+      "effort": 104
+    },
+    {
+      "phase_id": "4",
+      "phase_name": "Knowledge Transfer",
+      "description": "Playbook review, train-the-trainer, sign-off",
+      "team": "Consulting",
+      "role_code": "PRT",
+      "effort": 34
+    },
+    {
+      "phase_id": "4",
+      "phase_name": "Knowledge Transfer",
+      "description": "Playbook authoring, workshops, final review",
+      "team": "Consulting",
+      "role_code": "SC",
+      "effort": 56
+    },
+    {
+      "phase_id": "4",
+      "phase_name": "Knowledge Transfer",
+      "description": "Documentation and toolkit preparation",
+      "team": "Consulting",
+      "role_code": "JC",
+      "effort": 40
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Key client sponsor changes mid-engagement, disrupting strategic alignment",
+      "category": "Organisational",
+      "affected_phases": ["1", "2", "3", "4"],
+      "probability": 3,
+      "impact": 5,
+      "strategy": "Mitigate",
+      "mitigation": "Establish multi-stakeholder governance; ensure project charter is signed at board level",
+      "owner": "PRT",
+      "contingency_effort": 40
+    },
+    {
+      "id": "R2",
+      "description": "Resistance from legacy-org middle management delays workshop outcomes",
+      "category": "Change",
+      "affected_phases": ["1", "2"],
+      "probability": 4,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Early engagement sessions with middle management; dedicated change champion network",
+      "owner": "SC",
+      "contingency_effort": 32
+    },
+    {
+      "id": "R3",
+      "description": "Scope creep from additional integration requests not in original SoW",
+      "category": "Commercial",
+      "affected_phases": ["2", "3"],
+      "probability": 4,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "Strict change control process; weekly scope review with project sponsor",
+      "owner": "PRT",
+      "contingency_effort": 24
+    },
+    {
+      "id": "R4",
+      "description": "Confidential data access restrictions slow diagnostic phase",
+      "category": "Regulatory",
+      "affected_phases": ["1"],
+      "probability": 3,
+      "impact": 3,
+      "strategy": "Accept",
+      "mitigation": "Obtain NDA and data sharing agreements upfront; plan for desk-based alternatives",
+      "owner": "SC",
+      "contingency_effort": 16
+    },
+    {
+      "id": "R5",
+      "description": "Key consultant unavailable during critical design workshops",
+      "category": "Resource",
+      "affected_phases": ["2", "3"],
+      "probability": 2,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Maintain backup consultant briefed on engagement context; shadow shadowing programme",
+      "owner": "PRT",
+      "contingency_effort": 24
+    }
+  ],
+  "targets": null
+}

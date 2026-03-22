@@ -1,0 +1,1006 @@
+{
+  "config": {
+    "lang": "en",
+    "effort_unit": "pd",
+    "duration_unit": "d",
+    "primary_color": "1B4FA5",
+    "currency": "EUR",
+    "period_type": "monthly",
+    "start_date": "2026-06-01",
+    "management_reserve_pct": 0.15,
+    "avg_rate": 600
+  },
+  "roles": [
+    {"code": "PMO", "name": "Project Management Officer", "team": "Management", "billable": true},
+    {"code": "BDM", "name": "Business Design Manager",    "team": "Management", "billable": true},
+    {"code": "SAP", "name": "SAP Consultant",             "team": "Development", "billable": true},
+    {"code": "DA",  "name": "Data Architect",             "team": "Development", "billable": true},
+    {"code": "SRE", "name": "Site Reliability Engineer",  "team": "Operations",  "billable": true},
+    {"code": "TRN", "name": "Training Specialist",        "team": "Operations",  "billable": true}
+  ],
+  "phases": [
+    {
+      "id": "1",
+      "name": "Discovery & Project Setup",
+      "description": "Establish project governance, tooling and baseline understanding",
+      "best_duration": 14,
+      "likely_duration": 20,
+      "worst_duration": 28,
+      "work_packages": [
+        {
+          "id": "1.1",
+          "name": "Project Initiation",
+          "activities": [
+            {
+              "id": "1.1.1",
+              "name": "Kickoff meeting and stakeholder alignment",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 4,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 4,
+              "resources": ["PMO", "BDM"],
+              "dependencies": [],
+              "risks": ["R06"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "1.1.2",
+              "name": "Project charter and governance model definition",
+              "best_effort": 3,
+              "likely_effort": 4,
+              "worst_effort": 6,
+              "best_duration": 3,
+              "likely_duration": 4,
+              "worst_duration": 6,
+              "resources": ["PMO"],
+              "dependencies": ["1.1.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "1.1.3",
+              "name": "Tool and environment setup (Jira, Confluence, VPN, dev sandbox)",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["SRE"],
+              "dependencies": [],
+              "risks": ["R11"],
+              "billable": true,
+              "notes": "Cloud provisioning dependent on vendor SLA"
+            }
+          ]
+        },
+        {
+          "id": "1.2",
+          "name": "Current Landscape Assessment",
+          "activities": [
+            {
+              "id": "1.2.1",
+              "name": "Inventory of existing ERP modules and custom objects",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 9,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 9,
+              "resources": ["SAP", "BDM"],
+              "dependencies": ["1.1.2"],
+              "risks": ["R07"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "1.2.2",
+              "name": "Technical infrastructure assessment (servers, DB, integrations)",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 7,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 7,
+              "resources": ["SRE", "DA"],
+              "dependencies": ["1.1.2"],
+              "risks": ["R04"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "As-Is Analysis",
+      "description": "Deep-dive documentation of current business processes and technical landscape",
+      "best_duration": 20,
+      "likely_duration": 28,
+      "worst_duration": 40,
+      "work_packages": [
+        {
+          "id": "2.1",
+          "name": "Business Process Documentation",
+          "activities": [
+            {
+              "id": "2.1.1",
+              "name": "Finance process mapping (FI/CO)",
+              "best_effort": 6,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 6,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["BDM", "SAP"],
+              "dependencies": ["1.2.1"],
+              "risks": ["R03"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "2.1.2",
+              "name": "Logistics and warehouse process mapping (MM/WM/PP)",
+              "best_effort": 5,
+              "likely_effort": 7,
+              "worst_effort": 10,
+              "best_duration": 5,
+              "likely_duration": 7,
+              "worst_duration": 10,
+              "resources": ["BDM", "SAP"],
+              "dependencies": ["1.2.1"],
+              "risks": ["R03"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "2.1.3",
+              "name": "HR process documentation (HCM)",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 7,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 7,
+              "resources": ["BDM"],
+              "dependencies": ["1.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "2.2",
+          "name": "Technical Gap Analysis",
+          "activities": [
+            {
+              "id": "2.2.1",
+              "name": "Custom ABAP code inventory and complexity scoring",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 14,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 14,
+              "resources": ["SAP"],
+              "dependencies": ["1.2.1"],
+              "risks": ["R07"],
+              "billable": true,
+              "notes": "Complexity depends on number of custom Z-objects found"
+            },
+            {
+              "id": "2.2.2",
+              "name": "Integration interfaces catalogue (EDI, port systems, customs)",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 9,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 9,
+              "resources": ["SAP", "DA"],
+              "dependencies": ["1.2.2"],
+              "risks": ["R05"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "To-Be Design",
+      "description": "Architectural and functional design of the target S/4HANA environment",
+      "best_duration": 20,
+      "likely_duration": 30,
+      "worst_duration": 44,
+      "work_packages": [
+        {
+          "id": "3.1",
+          "name": "Solution Architecture",
+          "activities": [
+            {
+              "id": "3.1.1",
+              "name": "Target architecture blueprint (cloud topology, tenancy model)",
+              "best_effort": 5,
+              "likely_effort": 7,
+              "worst_effort": 10,
+              "best_duration": 5,
+              "likely_duration": 7,
+              "worst_duration": 10,
+              "resources": ["SRE", "SAP"],
+              "dependencies": ["2.2.1", "2.2.2"],
+              "risks": ["R04", "R11"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "3.1.2",
+              "name": "Integration design — BTP middleware and API gateway",
+              "best_effort": 6,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 6,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["SAP", "DA"],
+              "dependencies": ["3.1.1"],
+              "risks": ["R05"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "3.1.3",
+              "name": "Security and authorisation model design",
+              "best_effort": 3,
+              "likely_effort": 4,
+              "worst_effort": 6,
+              "best_duration": 3,
+              "likely_duration": 4,
+              "worst_duration": 6,
+              "resources": ["SRE"],
+              "dependencies": ["3.1.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "3.2",
+          "name": "Functional Design",
+          "activities": [
+            {
+              "id": "3.2.1",
+              "name": "Process redesign workshops (Finance, Logistics, HR)",
+              "best_effort": 8,
+              "likely_effort": 12,
+              "worst_effort": 18,
+              "best_duration": 8,
+              "likely_duration": 12,
+              "worst_duration": 18,
+              "resources": ["BDM", "SAP"],
+              "dependencies": ["2.1.1", "2.1.2", "2.1.3"],
+              "risks": ["R03", "R06"],
+              "billable": true,
+              "notes": "Requires full stakeholder availability"
+            },
+            {
+              "id": "3.2.2",
+              "name": "Configuration workbook and delta design document",
+              "best_effort": 5,
+              "likely_effort": 7,
+              "worst_effort": 10,
+              "best_duration": 5,
+              "likely_duration": 7,
+              "worst_duration": 10,
+              "resources": ["BDM", "SAP"],
+              "dependencies": ["3.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Data Migration",
+      "description": "Design, build and execute data extraction, transformation and load activities",
+      "best_duration": 30,
+      "likely_duration": 44,
+      "worst_duration": 60,
+      "work_packages": [
+        {
+          "id": "4.1",
+          "name": "Data Migration Strategy",
+          "activities": [
+            {
+              "id": "4.1.1",
+              "name": "Data objects catalogue and migration approach per object",
+              "best_effort": 5,
+              "likely_effort": 7,
+              "worst_effort": 10,
+              "best_duration": 5,
+              "likely_duration": 7,
+              "worst_duration": 10,
+              "resources": ["DA", "SAP"],
+              "dependencies": ["2.2.1"],
+              "risks": ["R02"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "4.1.2",
+              "name": "Data quality assessment and cleansing rules definition",
+              "best_effort": 6,
+              "likely_effort": 10,
+              "worst_effort": 18,
+              "best_duration": 6,
+              "likely_duration": 10,
+              "worst_duration": 18,
+              "resources": ["DA"],
+              "dependencies": ["4.1.1"],
+              "risks": ["R02"],
+              "billable": true,
+              "notes": "Legacy data quality is the primary risk driver"
+            }
+          ]
+        },
+        {
+          "id": "4.2",
+          "name": "ETL Build & Dry-Run",
+          "activities": [
+            {
+              "id": "4.2.1",
+              "name": "Extraction scripts and LTMC/BODS mapping",
+              "best_effort": 8,
+              "likely_effort": 12,
+              "worst_effort": 18,
+              "best_duration": 8,
+              "likely_duration": 12,
+              "worst_duration": 18,
+              "resources": ["DA", "SAP"],
+              "dependencies": ["4.1.2"],
+              "risks": ["R02", "R07"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "4.2.2",
+              "name": "Data cleansing and transformation routines",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 14,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 14,
+              "resources": ["DA"],
+              "dependencies": ["4.2.1"],
+              "risks": ["R02"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "4.2.3",
+              "name": "Dry-run execution and reconciliation report",
+              "best_effort": 4,
+              "likely_effort": 6,
+              "worst_effort": 10,
+              "best_duration": 4,
+              "likely_duration": 6,
+              "worst_duration": 10,
+              "resources": ["DA", "SAP"],
+              "dependencies": ["4.2.2"],
+              "risks": ["R09"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Development",
+      "description": "Build of configuration, custom extensions and integration components",
+      "best_duration": 40,
+      "likely_duration": 55,
+      "worst_duration": 75,
+      "work_packages": [
+        {
+          "id": "5.1",
+          "name": "System Configuration",
+          "activities": [
+            {
+              "id": "5.1.1",
+              "name": "S/4HANA system configuration (Finance module)",
+              "best_effort": 10,
+              "likely_effort": 14,
+              "worst_effort": 20,
+              "best_duration": 10,
+              "likely_duration": 14,
+              "worst_duration": 20,
+              "resources": ["SAP"],
+              "dependencies": ["3.2.2"],
+              "risks": ["R04"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "5.1.2",
+              "name": "S/4HANA system configuration (Logistics and Operations modules)",
+              "best_effort": 10,
+              "likely_effort": 14,
+              "worst_effort": 20,
+              "best_duration": 10,
+              "likely_duration": 14,
+              "worst_duration": 20,
+              "resources": ["SAP"],
+              "dependencies": ["3.2.2"],
+              "risks": ["R04"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "5.2",
+          "name": "Custom Development",
+          "activities": [
+            {
+              "id": "5.2.1",
+              "name": "Custom RICEF objects (Reports, Interfaces, Conversions, Enhancements, Forms)",
+              "best_effort": 14,
+              "likely_effort": 20,
+              "worst_effort": 30,
+              "best_duration": 14,
+              "likely_duration": 20,
+              "worst_duration": 30,
+              "resources": ["SAP"],
+              "dependencies": ["5.1.1", "5.1.2"],
+              "risks": ["R07", "R01"],
+              "billable": true,
+              "notes": "Volume depends on custom code inventory findings"
+            },
+            {
+              "id": "5.2.2",
+              "name": "BTP integration flows and API adaptors",
+              "best_effort": 8,
+              "likely_effort": 12,
+              "worst_effort": 18,
+              "best_duration": 8,
+              "likely_duration": 12,
+              "worst_duration": 18,
+              "resources": ["SAP", "DA"],
+              "dependencies": ["3.1.2"],
+              "risks": ["R05"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "5.2.3",
+              "name": "Port authority-specific extensions and PCS connector",
+              "best_effort": 6,
+              "likely_effort": 9,
+              "worst_effort": 14,
+              "best_duration": 6,
+              "likely_duration": 9,
+              "worst_duration": 14,
+              "resources": ["SAP"],
+              "dependencies": ["5.2.2"],
+              "risks": ["R05"],
+              "billable": true,
+              "notes": "Dependent on PCS vendor API documentation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Testing",
+      "description": "Structured testing cycle from unit through to User Acceptance Testing",
+      "best_duration": 30,
+      "likely_duration": 44,
+      "worst_duration": 60,
+      "work_packages": [
+        {
+          "id": "6.1",
+          "name": "System & Integration Testing",
+          "activities": [
+            {
+              "id": "6.1.1",
+              "name": "Unit and configuration testing",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["SAP"],
+              "dependencies": ["5.1.1", "5.1.2", "5.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "6.1.2",
+              "name": "Integration testing (end-to-end process chains)",
+              "best_effort": 8,
+              "likely_effort": 12,
+              "worst_effort": 18,
+              "best_duration": 8,
+              "likely_duration": 12,
+              "worst_duration": 18,
+              "resources": ["SAP", "BDM"],
+              "dependencies": ["6.1.1", "5.2.2", "5.2.3"],
+              "risks": ["R05", "R07"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "6.1.3",
+              "name": "Performance and load testing",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["SRE"],
+              "dependencies": ["6.1.1"],
+              "risks": ["R11"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "6.2",
+          "name": "User Acceptance Testing",
+          "activities": [
+            {
+              "id": "6.2.1",
+              "name": "UAT planning and scenario preparation",
+              "best_effort": 4,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 4,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["BDM", "PMO"],
+              "dependencies": ["6.1.2"],
+              "risks": ["R08"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "6.2.2",
+              "name": "UAT execution with key users",
+              "best_effort": 6,
+              "likely_effort": 10,
+              "worst_effort": 16,
+              "best_duration": 6,
+              "likely_duration": 10,
+              "worst_duration": 16,
+              "resources": ["BDM", "SAP"],
+              "dependencies": ["6.2.1"],
+              "risks": ["R08", "R06"],
+              "billable": true,
+              "notes": "Business key users must be available full time"
+            },
+            {
+              "id": "6.2.3",
+              "name": "Defect resolution and re-testing",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 14,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 14,
+              "resources": ["SAP", "BDM"],
+              "dependencies": ["6.2.2"],
+              "risks": ["R07"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Training",
+      "description": "Knowledge transfer and end-user enablement programme",
+      "best_duration": 20,
+      "likely_duration": 28,
+      "worst_duration": 38,
+      "work_packages": [
+        {
+          "id": "7.1",
+          "name": "Training Material Development",
+          "activities": [
+            {
+              "id": "7.1.1",
+              "name": "Training curriculum design and role-based learning paths",
+              "best_effort": 4,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 4,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["TRN", "BDM"],
+              "dependencies": ["3.2.1"],
+              "risks": ["R12"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "7.1.2",
+              "name": "eLearning modules and process simulations",
+              "best_effort": 6,
+              "likely_effort": 9,
+              "worst_effort": 13,
+              "best_duration": 6,
+              "likely_duration": 9,
+              "worst_duration": 13,
+              "resources": ["TRN"],
+              "dependencies": ["7.1.1"],
+              "risks": ["R12"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "7.2",
+          "name": "Training Delivery",
+          "activities": [
+            {
+              "id": "7.2.1",
+              "name": "Train-the-trainer sessions (super-users)",
+              "best_effort": 4,
+              "likely_effort": 5,
+              "worst_effort": 7,
+              "best_duration": 4,
+              "likely_duration": 5,
+              "worst_duration": 7,
+              "resources": ["TRN", "SAP"],
+              "dependencies": ["7.1.2"],
+              "risks": ["R06"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "7.2.2",
+              "name": "End-user classroom and virtual training sessions",
+              "best_effort": 6,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 6,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["TRN"],
+              "dependencies": ["7.2.1"],
+              "risks": ["R06"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "name": "Go-Live & Stabilisation",
+      "description": "Production cutover and post-go-live hypercare support",
+      "best_duration": 14,
+      "likely_duration": 20,
+      "worst_duration": 28,
+      "work_packages": [
+        {
+          "id": "8.1",
+          "name": "Cutover Execution",
+          "activities": [
+            {
+              "id": "8.1.1",
+              "name": "Final data migration (production cutover load)",
+              "best_effort": 5,
+              "likely_effort": 7,
+              "worst_effort": 12,
+              "best_duration": 5,
+              "likely_duration": 7,
+              "worst_duration": 12,
+              "resources": ["DA", "SAP"],
+              "dependencies": ["4.2.3", "6.2.3"],
+              "risks": ["R09", "R02"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "8.1.2",
+              "name": "Go-live readiness checklist and sign-off",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["PMO", "BDM"],
+              "dependencies": ["8.1.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "8.1.3",
+              "name": "Production system activation and hypercare",
+              "best_effort": 6,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 6,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["SAP", "SRE"],
+              "dependencies": ["8.1.2"],
+              "risks": ["R04", "R10"],
+              "billable": true,
+              "notes": "Two-week on-site hypercare team"
+            }
+          ]
+        },
+        {
+          "id": "8.2",
+          "name": "Post Go-Live Support",
+          "activities": [
+            {
+              "id": "8.2.1",
+              "name": "Hypercare support (2 weeks on-site)",
+              "best_effort": 6,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 6,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["SAP", "SRE"],
+              "dependencies": ["8.1.3"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "8.2.2",
+              "name": "Knowledge handover and operational documentation",
+              "best_effort": 3,
+              "likely_effort": 4,
+              "worst_effort": 6,
+              "best_duration": 3,
+              "likely_duration": 4,
+              "worst_duration": 6,
+              "resources": ["PMO", "SRE"],
+              "dependencies": ["8.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resource_allocation": [
+    {"phase_id": "1", "phase_name": "Discovery & Project Setup",   "description": "Establish project governance, tooling and baseline understanding", "team": "Management",  "role_code": "PMO", "effort": 10},
+    {"phase_id": "1", "phase_name": "Discovery & Project Setup",   "description": "Establish project governance, tooling and baseline understanding", "team": "Management",  "role_code": "BDM", "effort": 8},
+    {"phase_id": "1", "phase_name": "Discovery & Project Setup",   "description": "Establish project governance, tooling and baseline understanding", "team": "Development", "role_code": "SAP", "effort": 12},
+    {"phase_id": "1", "phase_name": "Discovery & Project Setup",   "description": "Establish project governance, tooling and baseline understanding", "team": "Development", "role_code": "DA",  "effort": 5},
+    {"phase_id": "1", "phase_name": "Discovery & Project Setup",   "description": "Establish project governance, tooling and baseline understanding", "team": "Operations",  "role_code": "SRE", "effort": 7},
+    {"phase_id": "1", "phase_name": "Discovery & Project Setup",   "description": "Establish project governance, tooling and baseline understanding", "team": "Operations",  "role_code": "TRN", "effort": 0},
+
+    {"phase_id": "2", "phase_name": "As-Is Analysis",              "description": "Deep-dive documentation of current business processes and technical landscape", "team": "Management",  "role_code": "PMO", "effort": 8},
+    {"phase_id": "2", "phase_name": "As-Is Analysis",              "description": "Deep-dive documentation of current business processes and technical landscape", "team": "Management",  "role_code": "BDM", "effort": 18},
+    {"phase_id": "2", "phase_name": "As-Is Analysis",              "description": "Deep-dive documentation of current business processes and technical landscape", "team": "Development", "role_code": "SAP", "effort": 20},
+    {"phase_id": "2", "phase_name": "As-Is Analysis",              "description": "Deep-dive documentation of current business processes and technical landscape", "team": "Development", "role_code": "DA",  "effort": 8},
+    {"phase_id": "2", "phase_name": "As-Is Analysis",              "description": "Deep-dive documentation of current business processes and technical landscape", "team": "Operations",  "role_code": "SRE", "effort": 0},
+    {"phase_id": "2", "phase_name": "As-Is Analysis",              "description": "Deep-dive documentation of current business processes and technical landscape", "team": "Operations",  "role_code": "TRN", "effort": 0},
+
+    {"phase_id": "3", "phase_name": "To-Be Design",                "description": "Architectural and functional design of the target S/4HANA environment", "team": "Management",  "role_code": "PMO", "effort": 6},
+    {"phase_id": "3", "phase_name": "To-Be Design",                "description": "Architectural and functional design of the target S/4HANA environment", "team": "Management",  "role_code": "BDM", "effort": 22},
+    {"phase_id": "3", "phase_name": "To-Be Design",                "description": "Architectural and functional design of the target S/4HANA environment", "team": "Development", "role_code": "SAP", "effort": 24},
+    {"phase_id": "3", "phase_name": "To-Be Design",                "description": "Architectural and functional design of the target S/4HANA environment", "team": "Development", "role_code": "DA",  "effort": 10},
+    {"phase_id": "3", "phase_name": "To-Be Design",                "description": "Architectural and functional design of the target S/4HANA environment", "team": "Operations",  "role_code": "SRE", "effort": 10},
+    {"phase_id": "3", "phase_name": "To-Be Design",                "description": "Architectural and functional design of the target S/4HANA environment", "team": "Operations",  "role_code": "TRN", "effort": 0},
+
+    {"phase_id": "4", "phase_name": "Data Migration",              "description": "Design, build and execute data extraction, transformation and load activities", "team": "Management",  "role_code": "PMO", "effort": 6},
+    {"phase_id": "4", "phase_name": "Data Migration",              "description": "Design, build and execute data extraction, transformation and load activities", "team": "Management",  "role_code": "BDM", "effort": 5},
+    {"phase_id": "4", "phase_name": "Data Migration",              "description": "Design, build and execute data extraction, transformation and load activities", "team": "Development", "role_code": "SAP", "effort": 20},
+    {"phase_id": "4", "phase_name": "Data Migration",              "description": "Design, build and execute data extraction, transformation and load activities", "team": "Development", "role_code": "DA",  "effort": 34},
+    {"phase_id": "4", "phase_name": "Data Migration",              "description": "Design, build and execute data extraction, transformation and load activities", "team": "Operations",  "role_code": "SRE", "effort": 0},
+    {"phase_id": "4", "phase_name": "Data Migration",              "description": "Design, build and execute data extraction, transformation and load activities", "team": "Operations",  "role_code": "TRN", "effort": 0},
+
+    {"phase_id": "5", "phase_name": "Development",                 "description": "Build of configuration, custom extensions and integration components", "team": "Management",  "role_code": "PMO", "effort": 10},
+    {"phase_id": "5", "phase_name": "Development",                 "description": "Build of configuration, custom extensions and integration components", "team": "Management",  "role_code": "BDM", "effort": 8},
+    {"phase_id": "5", "phase_name": "Development",                 "description": "Build of configuration, custom extensions and integration components", "team": "Development", "role_code": "SAP", "effort": 62},
+    {"phase_id": "5", "phase_name": "Development",                 "description": "Build of configuration, custom extensions and integration components", "team": "Development", "role_code": "DA",  "effort": 15},
+    {"phase_id": "5", "phase_name": "Development",                 "description": "Build of configuration, custom extensions and integration components", "team": "Operations",  "role_code": "SRE", "effort": 5},
+    {"phase_id": "5", "phase_name": "Development",                 "description": "Build of configuration, custom extensions and integration components", "team": "Operations",  "role_code": "TRN", "effort": 0},
+
+    {"phase_id": "6", "phase_name": "Testing",                     "description": "Structured testing cycle from unit through to User Acceptance Testing", "team": "Management",  "role_code": "PMO", "effort": 8},
+    {"phase_id": "6", "phase_name": "Testing",                     "description": "Structured testing cycle from unit through to User Acceptance Testing", "team": "Management",  "role_code": "BDM", "effort": 22},
+    {"phase_id": "6", "phase_name": "Testing",                     "description": "Structured testing cycle from unit through to User Acceptance Testing", "team": "Development", "role_code": "SAP", "effort": 40},
+    {"phase_id": "6", "phase_name": "Testing",                     "description": "Structured testing cycle from unit through to User Acceptance Testing", "team": "Development", "role_code": "DA",  "effort": 5},
+    {"phase_id": "6", "phase_name": "Testing",                     "description": "Structured testing cycle from unit through to User Acceptance Testing", "team": "Operations",  "role_code": "SRE", "effort": 8},
+    {"phase_id": "6", "phase_name": "Testing",                     "description": "Structured testing cycle from unit through to User Acceptance Testing", "team": "Operations",  "role_code": "TRN", "effort": 0},
+
+    {"phase_id": "7", "phase_name": "Training",                    "description": "Knowledge transfer and end-user enablement programme", "team": "Management",  "role_code": "PMO", "effort": 4},
+    {"phase_id": "7", "phase_name": "Training",                    "description": "Knowledge transfer and end-user enablement programme", "team": "Management",  "role_code": "BDM", "effort": 10},
+    {"phase_id": "7", "phase_name": "Training",                    "description": "Knowledge transfer and end-user enablement programme", "team": "Development", "role_code": "SAP", "effort": 8},
+    {"phase_id": "7", "phase_name": "Training",                    "description": "Knowledge transfer and end-user enablement programme", "team": "Development", "role_code": "DA",  "effort": 0},
+    {"phase_id": "7", "phase_name": "Training",                    "description": "Knowledge transfer and end-user enablement programme", "team": "Operations",  "role_code": "SRE", "effort": 0},
+    {"phase_id": "7", "phase_name": "Training",                    "description": "Knowledge transfer and end-user enablement programme", "team": "Operations",  "role_code": "TRN", "effort": 28},
+
+    {"phase_id": "8", "phase_name": "Go-Live & Stabilisation",     "description": "Production cutover and post-go-live hypercare support", "team": "Management",  "role_code": "PMO", "effort": 8},
+    {"phase_id": "8", "phase_name": "Go-Live & Stabilisation",     "description": "Production cutover and post-go-live hypercare support", "team": "Management",  "role_code": "BDM", "effort": 6},
+    {"phase_id": "8", "phase_name": "Go-Live & Stabilisation",     "description": "Production cutover and post-go-live hypercare support", "team": "Development", "role_code": "SAP", "effort": 22},
+    {"phase_id": "8", "phase_name": "Go-Live & Stabilisation",     "description": "Production cutover and post-go-live hypercare support", "team": "Development", "role_code": "DA",  "effort": 10},
+    {"phase_id": "8", "phase_name": "Go-Live & Stabilisation",     "description": "Production cutover and post-go-live hypercare support", "team": "Operations",  "role_code": "SRE", "effort": 14},
+    {"phase_id": "8", "phase_name": "Go-Live & Stabilisation",     "description": "Production cutover and post-go-live hypercare support", "team": "Operations",  "role_code": "TRN", "effort": 4}
+  ],
+  "risks": [
+    {
+      "id": "R01",
+      "description": "Key SAP consultant unavailable due to market competition",
+      "category": "Organizational",
+      "affected_phases": ["5", "6"],
+      "probability": 4,
+      "impact": 5,
+      "strategy": "Mitigate",
+      "mitigation": "Dual-source SAP consultants; include bench resource in contract",
+      "owner": "PMO",
+      "contingency_effort": 20
+    },
+    {
+      "id": "R02",
+      "description": "Legacy data quality worse than expected (duplicate/corrupt records)",
+      "category": "Technical",
+      "affected_phases": ["4", "8"],
+      "probability": 5,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Early data profiling in phase 2; automated data quality rules",
+      "owner": "DA",
+      "contingency_effort": 25
+    },
+    {
+      "id": "R03",
+      "description": "Business process scope creep from stakeholder workshops",
+      "category": "Scope",
+      "affected_phases": ["2", "3"],
+      "probability": 4,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Change control board; strict scope freeze after Phase 3 sign-off",
+      "owner": "PMO",
+      "contingency_effort": 18
+    },
+    {
+      "id": "R04",
+      "description": "S/4HANA cloud release breaking existing configuration",
+      "category": "Technical",
+      "affected_phases": ["5", "8"],
+      "probability": 3,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Subscribe to SAP release notes; enforce non-productive system upgrade testing",
+      "owner": "SAP",
+      "contingency_effort": 8
+    },
+    {
+      "id": "R05",
+      "description": "Integration with Port Community System delayed by third party",
+      "category": "External",
+      "affected_phases": ["3", "5", "6"],
+      "probability": 4,
+      "impact": 3,
+      "strategy": "Accept",
+      "mitigation": "Maintain interface stub for testing; escalate to contract management if delayed beyond threshold",
+      "owner": "PMO",
+      "contingency_effort": 10
+    },
+    {
+      "id": "R06",
+      "description": "End-user resistance to new processes (change management failure)",
+      "category": "Organizational",
+      "affected_phases": ["3", "6", "7"],
+      "probability": 3,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Dedicated change management stream; early super-user programme; communications plan",
+      "owner": "BDM",
+      "contingency_effort": 12
+    },
+    {
+      "id": "R07",
+      "description": "ABAP custom code incompatibility with S/4HANA (deprecated APIs)",
+      "category": "Technical",
+      "affected_phases": ["2", "5", "6"],
+      "probability": 4,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "SAP Readiness Check early execution; remediation budget reserved",
+      "owner": "SAP",
+      "contingency_effort": 14
+    },
+    {
+      "id": "R08",
+      "description": "Inadequate UAT participation from business key users",
+      "category": "Organizational",
+      "affected_phases": ["6"],
+      "probability": 3,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "Formal UAT participation agreement signed by business owners; flexible scheduling",
+      "owner": "BDM",
+      "contingency_effort": 6
+    },
+    {
+      "id": "R09",
+      "description": "Data migration dry-run failures causing timeline slippage",
+      "category": "Technical",
+      "affected_phases": ["4", "8"],
+      "probability": 3,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "Two dress rehearsal migrations planned; automated reconciliation scripts",
+      "owner": "DA",
+      "contingency_effort": 8
+    },
+    {
+      "id": "R10",
+      "description": "Regulatory or customs authority system changes affecting interfaces",
+      "category": "External",
+      "affected_phases": ["8"],
+      "probability": 2,
+      "impact": 4,
+      "strategy": "Accept",
+      "mitigation": "Monitor regulatory calendar; include contingency days in cutover plan",
+      "owner": "PMO",
+      "contingency_effort": 5
+    },
+    {
+      "id": "R11",
+      "description": "Cloud infrastructure provisioning delays",
+      "category": "Technical",
+      "affected_phases": ["1", "3"],
+      "probability": 2,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "Place provisioning order at contract signature; SLA tracked weekly",
+      "owner": "SRE",
+      "contingency_effort": 4
+    },
+    {
+      "id": "R12",
+      "description": "Training material not ready in time for UAT phase",
+      "category": "Schedule",
+      "affected_phases": ["7"],
+      "probability": 2,
+      "impact": 2,
+      "strategy": "Accept",
+      "mitigation": "Parallel development of training materials starting in Phase 3",
+      "owner": "TRN",
+      "contingency_effort": 3
+    }
+  ],
+  "targets": {
+    "expected_effort": 800,
+    "expected_duration": 240
+  }
+}

@@ -1,11 +1,22 @@
 {
   "name": "project-management",
-  "version": "0.1.0",
-  "description": "Project management workflows — PERT estimation, WBS, risk analysis, status reporting",
+  "version": "1.0.0",
+  "description": "SOW writing, review, estimation, and PMI-compliant PERT analysis — an integrated project management pipeline",
   "author": {
     "name": "MrBogomips",
     "url": "https://github.com/MrBogomips"
   },
   "license": "MIT",
-  "keywords": ["pmo", "estimation", "planning", "risk", "project-management"]
+  "keywords": [
+    "pmo",
+    "sow",
+    "statement-of-work",
+    "pert",
+    "estimation",
+    "wbs",
+    "risk",
+    "planning",
+    "project-management",
+    "review"
+  ]
 }

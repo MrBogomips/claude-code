@@ -1,0 +1,363 @@
+{
+  "config": {
+    "lang": "en",
+    "effort_unit": "pd",
+    "duration_unit": "d",
+    "primary_color": "2E86AB",
+    "period_type": "biweekly",
+    "start_date": "2026-05-04",
+    "management_reserve_pct": 0.10,
+    "avg_rate": 450,
+    "currency": "EUR"
+  },
+  "roles": [
+    {
+      "code": "DSG",
+      "name": "Designer",
+      "team": "Agency",
+      "billable": true
+    },
+    {
+      "code": "DEV",
+      "name": "Developer",
+      "team": "Agency",
+      "billable": true
+    }
+  ],
+  "phases": [
+    {
+      "id": "1",
+      "name": "Discovery & Design",
+      "description": "Understand pain points, define visual identity, produce wireframes and mockups",
+      "best_duration": 8,
+      "likely_duration": 12,
+      "worst_duration": 18,
+      "work_packages": [
+        {
+          "id": "1.1",
+          "name": "Discovery",
+          "activities": [
+            {
+              "id": "1.1.1",
+              "name": "Stakeholder Workshops",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 4,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 4,
+              "resources": ["DSG"],
+              "dependencies": [],
+              "risks": ["R1"],
+              "billable": true,
+              "notes": "Two half-day workshops"
+            },
+            {
+              "id": "1.1.2",
+              "name": "Heuristic Evaluation",
+              "best_effort": 1,
+              "likely_effort": 2,
+              "worst_effort": 3,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["DSG"],
+              "dependencies": [],
+              "risks": [],
+              "billable": true,
+              "notes": "Usability, accessibility, SEO baseline"
+            },
+            {
+              "id": "1.1.3",
+              "name": "Information Architecture",
+              "best_effort": 1,
+              "likely_effort": 2,
+              "worst_effort": 3,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["DSG"],
+              "dependencies": ["1.1.1", "1.1.2"],
+              "risks": [],
+              "billable": true,
+              "notes": "Site map, navigation, URL structure"
+            }
+          ]
+        },
+        {
+          "id": "1.2",
+          "name": "Design",
+          "activities": [
+            {
+              "id": "1.2.1",
+              "name": "Wireframes",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["DSG"],
+              "dependencies": ["1.1.3"],
+              "risks": [],
+              "billable": true,
+              "notes": "8 page templates"
+            },
+            {
+              "id": "1.2.2",
+              "name": "High-Fidelity Mockups",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["DSG"],
+              "dependencies": ["1.2.1"],
+              "risks": ["R1"],
+              "billable": true,
+              "notes": "Desktop and mobile breakpoints"
+            },
+            {
+              "id": "1.2.3",
+              "name": "Design Review & Sign-off",
+              "best_effort": 1,
+              "likely_effort": 2,
+              "worst_effort": 4,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 4,
+              "resources": ["DSG"],
+              "dependencies": ["1.2.2"],
+              "risks": ["R1"],
+              "billable": true,
+              "notes": "Two rounds of feedback"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Development",
+      "description": "Build CMS-driven website on WordPress + Elementor Pro",
+      "best_duration": 10,
+      "likely_duration": 15,
+      "worst_duration": 22,
+      "work_packages": [
+        {
+          "id": "2.1",
+          "name": "CMS & Templates",
+          "activities": [
+            {
+              "id": "2.1.1",
+              "name": "CMS Setup & Theme Bootstrap",
+              "best_effort": 1,
+              "likely_effort": 2,
+              "worst_effort": 3,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["DEV"],
+              "dependencies": ["1.2.3"],
+              "risks": [],
+              "billable": true,
+              "notes": "WordPress, Elementor Pro, base theme"
+            },
+            {
+              "id": "2.1.2",
+              "name": "Template Development",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["DEV"],
+              "dependencies": ["2.1.1"],
+              "risks": [],
+              "billable": true,
+              "notes": "8 reusable Elementor page layouts"
+            }
+          ]
+        },
+        {
+          "id": "2.2",
+          "name": "Migration & Integrations",
+          "activities": [
+            {
+              "id": "2.2.1",
+              "name": "Content Migration",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 9,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 9,
+              "resources": ["DEV"],
+              "dependencies": ["2.1.2"],
+              "risks": ["R2"],
+              "billable": true,
+              "notes": "40 pages, 301 redirects"
+            },
+            {
+              "id": "2.2.2",
+              "name": "Integrations",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["DEV"],
+              "dependencies": ["2.1.2"],
+              "risks": ["R3"],
+              "billable": true,
+              "notes": "CRM, GA4, cookie consent"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Testing & Launch",
+      "description": "Validate quality, train client, execute DNS cutover",
+      "best_duration": 4,
+      "likely_duration": 6,
+      "worst_duration": 10,
+      "work_packages": [
+        {
+          "id": "3.1",
+          "name": "Quality Assurance",
+          "activities": [
+            {
+              "id": "3.1.1",
+              "name": "QA & Accessibility Audit",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["DEV", "DSG"],
+              "dependencies": ["2.2.1", "2.2.2"],
+              "risks": [],
+              "billable": true,
+              "notes": "Cross-browser + WCAG 2.1 AA"
+            },
+            {
+              "id": "3.1.2",
+              "name": "Client UAT",
+              "best_effort": 1,
+              "likely_effort": 2,
+              "worst_effort": 3,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["DSG"],
+              "dependencies": ["3.1.1"],
+              "risks": ["R1"],
+              "billable": true,
+              "notes": "Guided session + defect resolution"
+            }
+          ]
+        },
+        {
+          "id": "3.2",
+          "name": "Launch",
+          "activities": [
+            {
+              "id": "3.2.1",
+              "name": "Launch & Cutover",
+              "best_effort": 1,
+              "likely_effort": 1,
+              "worst_effort": 2,
+              "best_duration": 1,
+              "likely_duration": 1,
+              "worst_duration": 2,
+              "resources": ["DEV"],
+              "dependencies": ["3.1.2"],
+              "risks": [],
+              "billable": true,
+              "notes": "DNS cutover, SSL, smoke test, 48h monitoring"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resource_allocation": [
+    {
+      "phase_id": "1",
+      "phase_name": "Discovery & Design",
+      "description": "UX research, IA, wireframes, mockups",
+      "team": "Agency",
+      "role_code": "DSG",
+      "effort": 17
+    },
+    {
+      "phase_id": "2",
+      "phase_name": "Development",
+      "description": "CMS setup, template dev, migration, integrations",
+      "team": "Agency",
+      "role_code": "DEV",
+      "effort": 18
+    },
+    {
+      "phase_id": "3",
+      "phase_name": "Testing & Launch",
+      "description": "QA, UAT support, launch",
+      "team": "Agency",
+      "role_code": "DSG",
+      "effort": 3
+    },
+    {
+      "phase_id": "3",
+      "phase_name": "Testing & Launch",
+      "description": "QA, launch execution",
+      "team": "Agency",
+      "role_code": "DEV",
+      "effort": 3
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Client delays sign-off on mockups, blocking development start",
+      "category": "Organisational",
+      "affected_phases": ["1", "2"],
+      "probability": 3,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Define clear sign-off deadlines in contract; escalate after 3 business days",
+      "owner": "DSG",
+      "contingency_effort": 4
+    },
+    {
+      "id": "R2",
+      "description": "Content migration takes longer due to inconsistent legacy data formats",
+      "category": "Technical",
+      "affected_phases": ["2"],
+      "probability": 4,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "Audit legacy content before migration; prepare transformation scripts",
+      "owner": "DEV",
+      "contingency_effort": 3
+    },
+    {
+      "id": "R3",
+      "description": "Third-party CRM API changes require rework of contact form integration",
+      "category": "External",
+      "affected_phases": ["2"],
+      "probability": 2,
+      "impact": 3,
+      "strategy": "Accept",
+      "mitigation": "Monitor CRM changelog; budget 1pd for emergency rework",
+      "owner": "DEV",
+      "contingency_effort": 1
+    }
+  ],
+  "targets": null
+}

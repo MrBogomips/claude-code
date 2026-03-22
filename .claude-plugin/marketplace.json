@@ -29,10 +29,10 @@
     {
       "name": "project-management",
       "source": "./project-management",
-      "description": "Project management workflows — PERT estimation, WBS, risk analysis, status reporting",
-      "version": "0.1.0",
+      "description": "SOW writing, review, estimation, and PMI-compliant PERT analysis — an integrated project management pipeline",
+      "version": "1.0.0",
       "category": "operations",
-      "tags": ["pmo", "estimation", "planning", "risk"]
+      "tags": ["pmo", "sow", "pert", "estimation", "wbs", "risk", "planning", "review"]
     },
     {
       "name": "tech-writing",

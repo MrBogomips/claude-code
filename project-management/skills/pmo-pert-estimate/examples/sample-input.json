@@ -1,0 +1,329 @@
+{
+  "config": {
+    "lang": "en",
+    "effort_unit": "pd",
+    "duration_unit": "d",
+    "primary_color": "1B4FA5",
+    "currency": "EUR",
+    "period_type": "biweekly",
+    "start_date": "2026-04-06",
+    "management_reserve_pct": 0.10,
+    "avg_rate": 500
+  },
+  "roles": [
+    {"code": "PM", "name": "Project Manager", "team": "Management", "billable": true},
+    {"code": "SD", "name": "Senior Developer", "team": "Development", "billable": true},
+    {"code": "QA", "name": "QA Engineer", "team": "Development", "billable": true}
+  ],
+  "phases": [
+    {
+      "id": "1",
+      "name": "Analysis",
+      "description": "Requirements analysis and planning",
+      "best_duration": 8,
+      "likely_duration": 10,
+      "worst_duration": 15,
+      "work_packages": [
+        {
+          "id": "1.1",
+          "name": "Requirements",
+          "activities": [
+            {
+              "id": "1.1.1",
+              "name": "Stakeholder interviews",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["PM", "SD"],
+              "dependencies": [],
+              "risks": ["R1"],
+              "billable": true,
+              "notes": "Key stakeholder availability required"
+            },
+            {
+              "id": "1.1.2",
+              "name": "Requirements documentation",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["SD"],
+              "dependencies": ["1.1.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "1.2",
+          "name": "Technical Assessment",
+          "activities": [
+            {
+              "id": "1.2.1",
+              "name": "Architecture review",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 4,
+              "resources": ["SD"],
+              "dependencies": ["1.1.1"],
+              "risks": ["R2"],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "1.2.2",
+              "name": "Risk assessment",
+              "best_effort": 1,
+              "likely_effort": 2,
+              "worst_effort": 3,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 3,
+              "resources": ["PM"],
+              "dependencies": ["1.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Design & Development",
+      "description": "System design and implementation",
+      "best_duration": 20,
+      "likely_duration": 28,
+      "worst_duration": 40,
+      "work_packages": [
+        {
+          "id": "2.1",
+          "name": "Design",
+          "activities": [
+            {
+              "id": "2.1.1",
+              "name": "System design",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["SD"],
+              "dependencies": ["1.1.2", "1.2.1"],
+              "risks": ["R2"],
+              "billable": true,
+              "notes": "Architecture decisions impact all downstream work"
+            },
+            {
+              "id": "2.1.2",
+              "name": "Database schema design",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 5,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 5,
+              "resources": ["SD"],
+              "dependencies": ["2.1.1"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        },
+        {
+          "id": "2.2",
+          "name": "Implementation",
+          "activities": [
+            {
+              "id": "2.2.1",
+              "name": "Backend development",
+              "best_effort": 8,
+              "likely_effort": 12,
+              "worst_effort": 18,
+              "best_duration": 8,
+              "likely_duration": 12,
+              "worst_duration": 18,
+              "resources": ["SD"],
+              "dependencies": ["2.1.2"],
+              "risks": ["R1", "R3"],
+              "billable": true,
+              "notes": "Core API and business logic implementation"
+            },
+            {
+              "id": "2.2.2",
+              "name": "Frontend development",
+              "best_effort": 5,
+              "likely_effort": 8,
+              "worst_effort": 12,
+              "best_duration": 5,
+              "likely_duration": 8,
+              "worst_duration": 12,
+              "resources": ["SD"],
+              "dependencies": ["2.1.1"],
+              "risks": ["R3"],
+              "billable": true,
+              "notes": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Testing & Deployment",
+      "description": "Quality assurance and production rollout",
+      "best_duration": 10,
+      "likely_duration": 14,
+      "worst_duration": 20,
+      "work_packages": [
+        {
+          "id": "3.1",
+          "name": "Testing",
+          "activities": [
+            {
+              "id": "3.1.1",
+              "name": "Unit testing",
+              "best_effort": 3,
+              "likely_effort": 5,
+              "worst_effort": 8,
+              "best_duration": 3,
+              "likely_duration": 5,
+              "worst_duration": 8,
+              "resources": ["QA", "SD"],
+              "dependencies": ["2.2.1", "2.2.2"],
+              "risks": [],
+              "billable": true,
+              "notes": ""
+            },
+            {
+              "id": "3.1.2",
+              "name": "Integration testing",
+              "best_effort": 3,
+              "likely_effort": 4,
+              "worst_effort": 7,
+              "best_duration": 3,
+              "likely_duration": 4,
+              "worst_duration": 7,
+              "resources": ["QA"],
+              "dependencies": ["3.1.1"],
+              "risks": ["R4"],
+              "billable": true,
+              "notes": "External service dependencies may slow this"
+            }
+          ]
+        },
+        {
+          "id": "3.2",
+          "name": "Release",
+          "activities": [
+            {
+              "id": "3.2.1",
+              "name": "UAT",
+              "best_effort": 2,
+              "likely_effort": 3,
+              "worst_effort": 6,
+              "best_duration": 2,
+              "likely_duration": 3,
+              "worst_duration": 6,
+              "resources": ["PM", "QA"],
+              "dependencies": ["3.1.2"],
+              "risks": ["R1", "R4"],
+              "billable": true,
+              "notes": "Client sign-off required before deployment"
+            },
+            {
+              "id": "3.2.2",
+              "name": "Deployment",
+              "best_effort": 1,
+              "likely_effort": 2,
+              "worst_effort": 4,
+              "best_duration": 1,
+              "likely_duration": 2,
+              "worst_duration": 4,
+              "resources": ["SD"],
+              "dependencies": ["3.2.1"],
+              "risks": [],
+              "billable": true,
+              "notes": "Deployment window must be coordinated with ops team"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "resource_allocation": [
+    {"phase_id": "1", "phase_name": "Analysis", "description": "Requirements analysis and planning", "team": "Management", "role_code": "PM", "effort": 8},
+    {"phase_id": "1", "phase_name": "Analysis", "description": "Requirements analysis and planning", "team": "Development", "role_code": "SD", "effort": 13},
+    {"phase_id": "2", "phase_name": "Design & Development", "description": "System design and implementation", "team": "Management", "role_code": "PM", "effort": 5},
+    {"phase_id": "2", "phase_name": "Design & Development", "description": "System design and implementation", "team": "Development", "role_code": "SD", "effort": 28},
+    {"phase_id": "3", "phase_name": "Testing & Deployment", "description": "Quality assurance and production rollout", "team": "Management", "role_code": "PM", "effort": 5},
+    {"phase_id": "3", "phase_name": "Testing & Deployment", "description": "Quality assurance and production rollout", "team": "Development", "role_code": "SD", "effort": 9},
+    {"phase_id": "3", "phase_name": "Testing & Deployment", "description": "Quality assurance and production rollout", "team": "Development", "role_code": "QA", "effort": 12}
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Key resource unavailable due to illness or turnover",
+      "category": "Organizational",
+      "affected_phases": ["1", "2", "3"],
+      "probability": 3,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Cross-train team members and maintain knowledge base",
+      "owner": "PM",
+      "contingency_effort": 5
+    },
+    {
+      "id": "R2",
+      "description": "Requirements change mid-project due to regulatory updates",
+      "category": "External",
+      "affected_phases": ["1", "2"],
+      "probability": 4,
+      "impact": 3,
+      "strategy": "Accept",
+      "mitigation": "Budget for change requests and maintain flexible architecture",
+      "owner": "PM",
+      "contingency_effort": 8
+    },
+    {
+      "id": "R3",
+      "description": "Third-party API integration complexity underestimated",
+      "category": "Technical",
+      "affected_phases": ["2"],
+      "probability": 3,
+      "impact": 3,
+      "strategy": "Mitigate",
+      "mitigation": "Prototype integration early and allocate spike time",
+      "owner": "SD",
+      "contingency_effort": 4
+    },
+    {
+      "id": "R4",
+      "description": "UAT delayed due to client availability or environment issues",
+      "category": "External",
+      "affected_phases": ["3"],
+      "probability": 4,
+      "impact": 4,
+      "strategy": "Mitigate",
+      "mitigation": "Agree on UAT schedule and environment setup checklist upfront",
+      "owner": "PM",
+      "contingency_effort": 6
+    }
+  ],
+  "targets": {
+    "expected_effort": 80,
+    "expected_duration": 60
+  }
+}
