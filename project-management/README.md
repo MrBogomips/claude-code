@@ -17,9 +17,9 @@ SOW writing, review, estimation, and PMI-compliant PERT analysis for Claude Code
  Project Brief
       │
       ▼
- ┌───────────┐     ┌────────────┐     ┌──────────────────┐
+ ┌───────────┐     ┌────────────┐     ┌───────────────────┐
  │ sow-write │────▶│ sow-review │     │ pmo-pert-estimate │
- └───────────┘     └────────────┘     └──────────────────┘
+ └───────────┘     └────────────┘     └───────────────────┘
       │                                        ▲
       ▼                                        │
  ┌──────────────┐                              │
