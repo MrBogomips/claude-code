@@ -1,11 +1,11 @@
 {
   "name": "human-resources",
-  "version": "0.1.0",
-  "description": "HR workflow support — interview preparation, candidate evaluation, job descriptions",
+  "version": "0.2.0",
+  "description": "HR interview workflow — job descriptions, candidate pre-screening, interview preparation, evaluation, compliance checking, and methodology guidance",
   "author": {
     "name": "MrBogomips",
     "url": "https://github.com/MrBogomips"
   },
   "license": "MIT",
-  "keywords": ["hr", "recruiting", "interviews", "human-resources"]
+  "keywords": ["hr", "recruiting", "interviews", "compliance", "evaluation", "job-description"]
 }

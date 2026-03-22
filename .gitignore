@@ -30,6 +30,9 @@ Thumbs.db
 *.temp
 .cache/
 
+# Working documents (specs, drafts, intermediate artifacts)
+.docs/
+
 # Local configuration (not committed)
 .claude/
 .mcp.json

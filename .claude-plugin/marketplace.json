@@ -21,10 +21,10 @@
     {
       "name": "human-resources",
       "source": "./human-resources",
-      "description": "HR workflow support — interview preparation, candidate evaluation, job descriptions",
-      "version": "0.1.0",
+      "description": "HR interview workflow — job descriptions, candidate pre-screening, interview preparation, evaluation, compliance checking, and methodology guidance",
+      "version": "0.2.0",
       "category": "human-resources",
-      "tags": ["hr", "recruiting", "interviews"]
+      "tags": ["hr", "recruiting", "interviews", "compliance", "evaluation", "job-description"]
     },
     {
       "name": "project-management",
