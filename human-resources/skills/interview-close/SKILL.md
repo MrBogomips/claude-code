@@ -50,7 +50,7 @@ If **~~knowledge base** is connected: search for corporate evaluation templates.
 
 Resolve the seniority matrix to be used for classification, following this priority:
 
-1. **Corporate matrix** — if a corporate seniority matrix was found via ~~knowledge base or provided by the user, use it.
+1. **Corporate matrix** — if a corporate seniority matrix was found via **~~knowledge base** or provided by the user, use it.
 2. **Interview-prep matrix (consistency rule)** — if a seniority matrix was created or used during interview-prep for this same role, reuse it. Check conversation memory. Present to user: "I found the seniority matrix used during interview preparation for [Role Title]. Should I use the same matrix for evaluation?"
 3. **Generate from JD** — if neither of the above is available, load `references/seniority-matrix-template.md` and generate a proposed matrix from the JD competencies. Present the draft to the user for confirmation/editing.
 
@@ -109,7 +109,7 @@ Generate a hiring recommendation based on the weighted total, seniority classifi
 1. **Determine recommendation category** — Strong Hire / Hire / No Hire / Strong No Hire using the thresholds from the evaluation template.
 2. **Apply override rules** — check for single-competency failures, integrity concerns, or interviewer overrides.
 3. **Write justification** — a concise, evidence-backed paragraph summarizing why this recommendation is made. Reference specific competency scores and observations.
-4. **Compensation guidance** (if applicable) — if compensation bands are available (from ~~HRIS, ~~knowledge base, or user input), note the candidate's positioning relative to the band for their classified level.
+4. **Compensation guidance** (if applicable) — if compensation bands are available (from **~~HRIS**, **~~knowledge base**, or user input), note the candidate's positioning relative to the band for their classified level.
 
 ### Step 7 — Compliance Validation
 

@@ -70,7 +70,7 @@ Perform a structured competency mapping of the candidate's CV against the JD req
    - **Gap** — CV does not address this competency, or evidence suggests a level significantly below expectations
    - **To Investigate** — CV suggests relevant experience but evidence is ambiguous, insufficient, or at an unclear level
 3. **Risk identification** — flag patterns that warrant attention: CV gaps, short tenures, career trajectory inconsistencies, over-claimed titles, missing progression in stated expertise areas
-4. **Seniority calibration** — if a seniority matrix is available (from memory or ~~knowledge base), calibrate expectations to the specific grade/level
+4. **Seniority calibration** — if a seniority matrix is available (from memory or **~~knowledge base**), calibrate expectations to the specific grade/level
 
 Present the competency mapping to the user before proceeding.
 

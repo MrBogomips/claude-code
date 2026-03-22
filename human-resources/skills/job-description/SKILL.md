@@ -1,6 +1,6 @@
 ---
 name: job-description
-description: "Write professional job descriptions for both technical and non-technical positions. Uses competency-based framework for technical roles (identifying 4-6 core competencies with proficiency levels) and outcome-based framework for non-technical roles (action + object + purpose). Checks inclusive language, flags requirements inflation (>8 requirements), and invokes compliance-check validation before final output. Auto-detects conversation language for Italian/English output. Integrates with ~~knowledge base for existing JD templates. Use when the user says 'write a job description', 'create a JD', 'job posting for', 'descrizione del lavoro', 'annuncio di lavoro', 'scrivi annuncio', or mentions creating a position listing."
+description: "Write professional job descriptions for both technical and non-technical positions. Uses competency-based framework for technical roles (identifying 4-6 core competencies with proficiency levels) and outcome-based framework for non-technical roles (action + object + purpose). Checks inclusive language, flags requirements inflation (>8 requirements), and invokes compliance-check validation before final output. Auto-detects conversation language for Italian/English output. Integrates with **~~knowledge base** for existing JD templates. Use when the user says 'write a job description', 'create a JD', 'job posting for', 'descrizione del lavoro', 'annuncio di lavoro', 'scrivi annuncio', or mentions creating a position listing."
 ---
 
 # Job Description — Professional JD Generator

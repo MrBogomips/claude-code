@@ -177,7 +177,7 @@ Monitor for common bias patterns and intervene:
 
 ## 8. Corporate Template Adaptation
 
-When a corporate evaluation template exists (from ~~knowledge base or provided by the user):
+When a corporate evaluation template exists (from **~~knowledge base** or provided by the user):
 
 ### Mapping Process
 
