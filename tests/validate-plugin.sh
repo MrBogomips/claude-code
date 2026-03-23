@@ -127,6 +127,72 @@ validate_plugin() {
         done
     fi
 
+    # Check profiles
+    if [[ -d "$plugin_dir/profiles" ]]; then
+        for profile_dir in "$plugin_dir"/profiles/*/; do
+            [[ -d "$profile_dir" ]] || continue
+            local profile_name
+            profile_name="$(basename "$profile_dir")"
+            local profile_md="$profile_dir/PROFILE.md"
+
+            if [[ ! -f "$profile_md" ]]; then
+                error "$plugin_name/profiles/$profile_name: missing PROFILE.md"
+                continue
+            fi
+
+            if ! head -1 "$profile_md" | grep -q '^---$'; then
+                error "$plugin_name/profiles/$profile_name: PROFILE.md missing YAML frontmatter"
+                continue
+            fi
+
+            local frontmatter
+            frontmatter="$(awk 'NR==1{next} /^---$/{exit} {print}' "$profile_md")"
+
+            # Check required frontmatter fields
+            if ! echo "$frontmatter" | grep -q '^name:'; then
+                error "$plugin_name/profiles/$profile_name: PROFILE.md frontmatter missing 'name'"
+            fi
+            if ! echo "$frontmatter" | grep -q '^description:'; then
+                error "$plugin_name/profiles/$profile_name: PROFILE.md frontmatter missing 'description'"
+            fi
+            if ! echo "$frontmatter" | grep -q '^version:'; then
+                error "$plugin_name/profiles/$profile_name: PROFILE.md frontmatter missing 'version'"
+            fi
+            if ! echo "$frontmatter" | grep -q '^strategy:'; then
+                error "$plugin_name/profiles/$profile_name: PROFILE.md frontmatter missing 'strategy'"
+            fi
+            if ! echo "$frontmatter" | grep -q '^autonomy:'; then
+                error "$plugin_name/profiles/$profile_name: PROFILE.md frontmatter missing 'autonomy'"
+            fi
+
+            # Check KPI definitions exist
+            if ! echo "$frontmatter" | grep -q '^kpis:'; then
+                error "$plugin_name/profiles/$profile_name: PROFILE.md frontmatter missing 'kpis'"
+            else
+                # Check each KPI has required subfields
+                local kpi_count
+                kpi_count="$(echo "$frontmatter" | grep -c '^ *- name:' || true)"
+                if [[ "$kpi_count" -eq 0 ]]; then
+                    error "$plugin_name/profiles/$profile_name: PROFILE.md has 'kpis' but no KPI entries"
+                else
+                    # Check direction is present for each KPI
+                    local dir_count
+                    dir_count="$(echo "$frontmatter" | grep -c '^ *direction:' || true)"
+                    if [[ "$dir_count" -lt "$kpi_count" ]]; then
+                        warn "$plugin_name/profiles/$profile_name: some KPIs missing 'direction' field"
+                    fi
+                    local unit_count
+                    unit_count="$(echo "$frontmatter" | grep -c '^ *unit:' || true)"
+                    if [[ "$unit_count" -lt "$kpi_count" ]]; then
+                        warn "$plugin_name/profiles/$profile_name: some KPIs missing 'unit' field"
+                    fi
+                fi
+            fi
+
+            ok "$plugin_name/profiles/$profile_name: PROFILE.md frontmatter valid"
+        done
+    fi
+
     # Check hooks
     local hooks_json="$plugin_dir/hooks/hooks.json"
     if [[ -f "$hooks_json" ]]; then
