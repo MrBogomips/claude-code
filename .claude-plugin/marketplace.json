@@ -27,6 +27,14 @@
       "tags": ["hr", "recruiting", "interviews", "compliance", "evaluation", "job-description"]
     },
     {
+      "name": "kaizen",
+      "source": "./kaizen",
+      "description": "Continuous improvement loops — a generic recursive optimization engine with bundled profiles for Claude Code usage, code refactoring, and process improvement",
+      "version": "1.0.0",
+      "category": "engineering",
+      "tags": ["kaizen", "improvement", "optimization", "automation", "autoresearch", "kpi", "refactoring"]
+    },
+    {
       "name": "project-management",
       "source": "./project-management",
       "description": "SOW writing, review, estimation, and PMI-compliant PERT analysis — an integrated project management pipeline",

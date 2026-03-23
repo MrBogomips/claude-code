@@ -1,0 +1,11 @@
+{
+  "name": "kaizen",
+  "version": "1.0.0",
+  "description": "Continuous improvement loops — a generic recursive optimization engine inspired by autoresearch, with bundled profiles for Claude Code usage, code refactoring, and process improvement",
+  "author": {
+    "name": "MrBogomips",
+    "url": "https://github.com/MrBogomips"
+  },
+  "license": "MIT",
+  "keywords": ["kaizen", "improvement", "optimization", "automation", "autoresearch", "kpi", "refactoring"]
+}

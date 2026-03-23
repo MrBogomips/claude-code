@@ -69,6 +69,30 @@ for plugin_dir in "$REPO_ROOT"/*/; do
         done < <(grep -oE '(assets|scripts)/[a-zA-Z0-9_./-]+\.[a-z]+' "$skill_md" | sort -u || true)
     done
 
+    # Check profile references (profiles follow the same reference pattern as skills)
+    if [[ -d "$plugin_dir/profiles" ]]; then
+        for profile_dir in "$plugin_dir"/profiles/*/; do
+            [[ -d "$profile_dir" ]] || continue
+            prof_name="$(basename "$profile_dir")"
+            prof_md="$profile_dir/PROFILE.md"
+
+            [[ -f "$prof_md" ]] || continue
+
+            while IFS= read -r ref_path; do
+                clean_path="$(echo "$ref_path" | sed 's/[`"'"'"']//g; s/[),;]$//')"
+                [[ "$clean_path" == *"{lang}"* ]] && continue
+                [[ "$clean_path" == *"{LANG}"* ]] && continue
+
+                full_path="$profile_dir/$clean_path"
+                if [[ -f "$full_path" ]]; then
+                    ok "$plugin_name/profiles/$prof_name: $clean_path exists"
+                else
+                    error "$plugin_name/profiles/$prof_name: broken reference '$clean_path' (resolved to $full_path)"
+                fi
+            done < <(grep -oE 'references/[a-zA-Z0-9_./-]+\.[a-z]+' "$prof_md" | sort -u || true)
+        done
+    fi
+
     # Check markdown links in plugin-level files (README.md, CONNECTORS.md)
     for md_file in "$plugin_dir"/*.md; do
         [[ -f "$md_file" ]] || continue
