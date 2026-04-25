@@ -1,0 +1,11 @@
+@startuml Archimate_OrderManagement
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+!include <archimate/Archimate>
+
+Business_Actor(customer, "Customer")
+Business_Process(place_order, "Place Order")
+
+Rel_Triggering(customer, place_order)
+@enduml

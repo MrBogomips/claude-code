@@ -1,0 +1,59 @@
+@startuml UseCase_Shop
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+left to right direction
+actor Customer
+actor "Guest"             as Guest
+actor "Customer Support"  as CS
+actor "Merchandiser"      as Merch
+actor "Payment Gateway"   as Pay <<external>>
+
+rectangle "Online Shop" {
+  (Browse catalog)    as UC1
+  (Search products)   as UC1a
+  (Place order)       as UC2
+  (Authenticate)      as UCAuth
+  (Pay)               as UCPay
+  (Apply coupon)      as UCCoup
+  (Track shipment)    as UC3
+  (Return item)       as UC4
+  (Process refund)    as UC5
+  (Curate catalog)    as UCCur
+  (Resolve dispute)   as UCDisp
+}
+
+Guest    --> UC1
+Guest    --> UC1a
+Customer --> UC1
+Customer --> UC1a
+Customer --> UC2
+Customer --> UC3
+Customer --> UC4
+CS       --> UC5
+CS       --> UCDisp
+Merch    --> UCCur
+UCPay    --> Pay
+
+UC2 ..> UCAuth : <<include>>
+UC2 ..> UCPay  : <<include>>
+UC2 <.. UCCoup : <<extend>>
+UC4 ..> UC5    : <<include>>
+UCDisp <.. UC4 : <<extend>>
+
+note right of UC2
+  Critical happy path; performance
+  budget: under 2s p95.
+end note
+
+note bottom of UCAuth
+  Step-up MFA required for
+  amounts above 500 EUR.
+end note
+
+note left of UC4
+  RMA window: 30 days from
+  delivery confirmation.
+end note
+@enduml

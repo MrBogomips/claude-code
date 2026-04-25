@@ -1,0 +1,70 @@
+@startuml Class_Order_Domain
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+package "Order Domain" {
+  class Order {
+    +id: OrderId
+    +status: OrderStatus
+    +total: Money
+    +placedAt: DateTime
+    +submit(): void
+    +cancel(reason: string): void
+  }
+  class OrderLine {
+    +sku: SKU
+    +quantity: int
+    +unitPrice: Money
+    +subtotal(): Money
+  }
+  class Customer {
+    +id: CustomerId
+    +name: string
+    +email: Email
+    +tier: CustomerTier
+  }
+  class Address {
+    +street: string
+    +city: string
+    +zip: string
+    +country: string
+  }
+  enum OrderStatus {
+    DRAFT
+    SUBMITTED
+    PAID
+    SHIPPED
+    DELIVERED
+    CANCELLED
+  }
+  interface PricingPolicy {
+    +price(line: OrderLine): Money
+  }
+  class Money <<value object>> {
+    +amount: decimal
+    +currency: Currency
+  }
+}
+
+Customer "1" --> "*" Order : places
+Customer "1" --> "*" Address : owns
+Order "1" *-- "*" OrderLine : contains
+Order --> OrderStatus
+Order ..> PricingPolicy : uses
+OrderLine --> Money
+
+note right of Order
+  Aggregate root for the
+  order lifecycle.
+end note
+
+note bottom of PricingPolicy
+  Strategy: tier-based or
+  promo-driven pricing.
+end note
+
+note left of Money
+  Immutable value object.
+end note
+@enduml

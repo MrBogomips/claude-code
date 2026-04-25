@@ -1,0 +1,87 @@
+@startuml ER_OrderModel
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+entity "Customer" as c {
+  *id : uuid <<PK>>
+  --
+  name : text
+  email : text
+  tier : text
+  created_at : timestamptz
+}
+entity "Address" as a {
+  *id : uuid <<PK>>
+  --
+  *customer_id : uuid <<FK>>
+  street : text
+  city : text
+  zip : text
+  country : char(2)
+}
+entity "Order" as o {
+  *id : uuid <<PK>>
+  --
+  *customer_id : uuid <<FK>>
+  *shipping_address_id : uuid <<FK>>
+  status : text
+  total : numeric
+  placed_at : timestamptz
+}
+entity "OrderLine" as ol {
+  *id : uuid <<PK>>
+  --
+  *order_id : uuid <<FK>>
+  *product_id : uuid <<FK>>
+  qty : int
+  unit_price : numeric
+}
+entity "Product" as p {
+  *id : uuid <<PK>>
+  --
+  sku : text <<UQ>>
+  name : text
+  active : boolean
+}
+entity "Payment" as pay {
+  *id : uuid <<PK>>
+  --
+  *order_id : uuid <<FK>>
+  status : text
+  amount : numeric
+  authorized_at : timestamptz
+}
+entity "Shipment" as s {
+  *id : uuid <<PK>>
+  --
+  *order_id : uuid <<FK>>
+  carrier : text
+  tracking : text
+  status : text
+}
+
+c   ||--o{ o
+c   ||--o{ a
+a   ||--o{ o   : ships to
+o   ||--o{ ol
+p   ||--o{ ol
+o   ||--o| pay
+o   ||--o{ s
+
+note right of o
+  status in
+  (DRAFT, SUBMITTED, PAID,
+   SHIPPED, DELIVERED, CANCELLED)
+end note
+
+note bottom of p
+  Soft-deleted via active=false;
+  historic order lines preserved.
+end note
+
+note left of pay
+  At most one successful
+  payment per order.
+end note
+@enduml

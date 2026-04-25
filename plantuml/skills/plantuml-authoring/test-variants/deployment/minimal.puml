@@ -1,0 +1,12 @@
+@startuml Deployment_Prod
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+actor User
+node "API" as API
+database "DB" as DB
+
+User --> API
+API  --> DB
+@enduml

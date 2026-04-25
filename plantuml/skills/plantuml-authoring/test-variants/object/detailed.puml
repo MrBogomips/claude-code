@@ -1,0 +1,65 @@
+@startuml Object_Checkout_State
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+object "anne:Customer" as anne {
+  id = 42
+  tier = GOLD
+  email = "anne@example.com"
+}
+object "addr:Address" as addr {
+  street = "Via Roma 1"
+  city = "Milano"
+  zip = "20100"
+}
+object "o_771:Order" as o771 {
+  id = 771
+  status = SUBMITTED
+  total = 128.90
+  placedAt = "2026-04-24T10:00Z"
+}
+object "ol_1:OrderLine" as ol1 {
+  sku = "SKU-A"
+  qty = 2
+  unitPrice = 39.95
+}
+object "ol_2:OrderLine" as ol2 {
+  sku = "SKU-B"
+  qty = 1
+  unitPrice = 49.00
+}
+object "p_1:Payment" as p1 {
+  id = "pay_001"
+  status = AUTHORIZED
+  amount = 128.90
+}
+object "ship_1:Shipment" as sh1 {
+  carrier = "UPS"
+  tracking = "1Z999..."
+  status = "PENDING"
+}
+
+anne --> addr  : ships to
+anne --> o771  : places
+o771 --> ol1
+o771 --> ol2
+o771 --> p1    : paid by
+o771 --> sh1   : delivered via
+sh1  --> addr  : to
+
+note right of o771
+  Snapshot taken right after
+  payment authorization.
+end note
+
+note top of anne
+  GOLD customers get free
+  shipping on this order.
+end note
+
+note bottom of p1
+  3DS challenge passed; the
+  capture is pending.
+end note
+@enduml

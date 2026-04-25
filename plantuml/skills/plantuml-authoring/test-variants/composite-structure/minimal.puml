@@ -1,0 +1,16 @@
+@startuml CompositeStructure_PaymentGateway_Minimal
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Payment Gateway — minimal composition"
+
+component "Payment Gateway" {
+  port "pay-in"  as PI
+  [Authorizer] as A
+  port "pay-out" as PO
+
+  PI --> A
+  A  --> PO
+}
+@enduml

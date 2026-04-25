@@ -1,0 +1,15 @@
+@startsalt Salt_LoginDialog_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Login dialog wireframe"
+
+{
+  Sign in to the Shop
+  --
+  Email | "you@example.com           "
+  Password | "***************         "
+  [  ] Remember me
+  [Sign in] | [Forgot password]
+}
+@endsalt

@@ -1,0 +1,23 @@
+@startgantt Gantt_Release_Q3_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Q3 release timeline"
+
+Project starts 2026-07-01
+
+-- Discovery --
+[Stakeholders]    lasts 10 days
+[Research]        lasts 10 days and starts at [Stakeholders]'s end
+
+-- Build --
+[Backend]         lasts 20 days and starts at [Research]'s end
+[Frontend]        lasts 15 days and starts 5 days after [Backend]'s start
+[Integration]     lasts 10 days and starts at [Frontend]'s end
+
+-- Release --
+[QA]              lasts 7 days and starts at [Integration]'s end
+[Rollout]         lasts 3 days and starts at [QA]'s end
+
+[Launch] happens at [Rollout]'s end
+@endgantt

@@ -1,0 +1,35 @@
+@startuml InteractionOverview_Onboarding_Detailed
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Onboarding — Interaction Overview (detailed)"
+
+actor       Customer
+participant "Web App"      as Web
+participant "Identity API" as Identity
+participant "Billing API"  as Billing
+participant "Email Service" as Email
+
+== Acquisition ==
+ref over Customer, Web, Identity : Sequence_LandingPage
+ref over Customer, Web, Identity : Sequence_SignUp
+
+alt email verified within 24h
+  == Activation ==
+  ref over Customer, Web, Identity : Sequence_ProfileSetup
+
+  par concurrent welcome flow
+    ref over Web, Email : Sequence_WelcomeEmail
+  end
+  ref over Customer, Web, Billing : Sequence_FirstPurchase
+else verified late
+  ref over Customer, Identity, Email : Sequence_ResendVerification
+  ref over Customer, Web, Identity   : Sequence_ProfileSetup
+else not verified at all
+  ref over Customer, Email : Sequence_AbandonReminder
+end
+
+== Retention ==
+ref over Customer, Web, Billing : Sequence_LoyaltyEnrollment
+@enduml

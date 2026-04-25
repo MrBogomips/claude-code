@@ -1,0 +1,39 @@
+@startwbs WBS_NewFeature
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+* 1. New Feature\n[80 d]
+** 1.1 Discovery\n[10 d]
+*** 1.1.1 Stakeholder interviews\n[3 d]
+*** 1.1.2 Competitive analysis\n[3 d]
+*** 1.1.3 Problem framing\n[2 d]
+*** 1.1.4 Success metrics\n[2 d]
+** 1.2 Design\n[15 d]
+*** 1.2.1 UX wireframes\n[5 d]
+**** 1.2.1.1 Low-fi
+**** 1.2.1.2 Hi-fi
+*** 1.2.2 Technical design\n[5 d]
+**** 1.2.2.1 Data model
+**** 1.2.2.2 API contract
+*** 1.2.3 Design review\n[2 d]
+** 1.3 Build\n[40 d]
+*** 1.3.1 Backend\n[20 d]
+**** 1.3.1.1 API
+**** 1.3.1.2 Persistence
+**** 1.3.1.3 Migrations
+*** 1.3.2 Frontend\n[15 d]
+**** 1.3.2.1 Components
+**** 1.3.2.2 Pages
+*** 1.3.3 Integration\n[10 d]
+**** 1.3.3.1 E2E happy path
+**** 1.3.3.2 E2E edge cases
+** 1.4 Release\n[10 d]
+*** 1.4.1 QA\n[5 d]
+**** 1.4.1.1 Regression
+**** 1.4.1.2 Performance
+*** 1.4.2 Rollout\n[3 d]
+**** 1.4.2.1 Canary 5%
+**** 1.4.2.2 Full rollout
+*** 1.4.3 Post-launch monitoring\n[2 d]
+@endwbs

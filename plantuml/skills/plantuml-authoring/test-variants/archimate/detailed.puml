@@ -1,0 +1,56 @@
+@startuml Archimate_OrderManagement
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+!include <archimate/Archimate>
+
+Business_Actor(customer, "Customer")
+Business_Actor(support, "Support Agent")
+Business_Process(place_order, "Place Order")
+Business_Process(handle_return, "Handle Return")
+Business_Service(checkout_svc, "Checkout (Business)")
+
+Application_Service(order_svc, "Order Service")
+Application_Service(pay_svc, "Payment Service")
+Application_Service(ship_svc, "Shipping Service")
+Application_Component(order_app, "Order App")
+Application_Component(pay_app, "Payment App")
+Application_Component(ship_app, "Shipping App")
+Application_DataObject(order_data, "Order")
+
+Technology_Service(k8s_svc, "Container Hosting")
+Technology_Node(k8s, "Kubernetes Cluster")
+Technology_Node(rds, "RDS PostgreSQL")
+
+Rel_Triggering(customer, place_order)
+Rel_Triggering(customer, handle_return)
+Rel_Assignment(support, handle_return)
+Rel_Serving(checkout_svc, place_order)
+Rel_Serving(order_svc, place_order)
+Rel_Serving(pay_svc, place_order)
+Rel_Serving(ship_svc, place_order)
+Rel_Realization(order_app, order_svc)
+Rel_Realization(pay_app, pay_svc)
+Rel_Realization(ship_app, ship_svc)
+Rel_Access(order_app, order_data)
+Rel_Serving(k8s_svc, order_app)
+Rel_Assignment(k8s, order_app)
+Rel_Assignment(k8s, pay_app)
+Rel_Assignment(k8s, ship_app)
+Rel_Assignment(rds, order_data)
+
+note right of order_svc
+  Aligned with the Order
+  bounded context.
+end note
+
+note bottom of k8s
+  3 worker nodes per AZ;
+  HPA on CPU and queue depth.
+end note
+
+note left of customer
+  External business actor;
+  may also use the mobile app.
+end note
+@enduml

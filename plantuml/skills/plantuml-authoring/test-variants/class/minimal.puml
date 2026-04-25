@@ -1,0 +1,10 @@
+@startuml Class_Order_Domain
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+class Order
+class Customer
+
+Customer --> Order : places
+@enduml

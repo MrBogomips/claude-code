@@ -1,0 +1,55 @@
+@startuml Deployment_Prod
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+actor User
+
+cloud "AWS eu-west-1" {
+  node "Route 53"        as DNS
+  node "CloudFront CDN"  as CDN
+  node "ALB"             as ALB
+  node "ECS Fargate api" as ECS_API {
+    artifact "api:1.4.2" as API
+  }
+  node "ECS Fargate worker" as ECS_W {
+    artifact "worker:1.4.2" as Worker
+  }
+  database "RDS PostgreSQL"   as DB
+  database "ElastiCache Redis" as Cache
+  queue    "SQS orders"        as Q
+  node "S3 assets"             as S3
+  node "Secrets Manager"       as Secrets
+}
+
+cloud "AWS eu-west-1 (DR)" {
+  database "RDS Replica" as DBR
+}
+
+User --> DNS    : DNS lookup
+DNS  --> CDN    : ALIAS
+CDN  --> ALB    : HTTPS origin
+CDN  --> S3     : static assets
+ALB  --> API    : HTTP/2
+API  --> DB     : TCP/5432
+API  --> Cache  : TCP/6379
+API  --> Q      : HTTPS (publish)
+API  --> Secrets : HTTPS (read)
+Q    --> Worker : HTTPS (consume)
+Worker --> DB   : TCP/5432
+DB   ..> DBR    : streaming replication
+
+note right of API
+  Auto-scales 2-20 tasks
+  on CPU/queue depth.
+end note
+
+note bottom of DB
+  Multi-AZ, daily snapshots,
+  PITR retained 14 days.
+end note
+
+note left of Secrets
+  Rotated every 30 days.
+end note
+@enduml

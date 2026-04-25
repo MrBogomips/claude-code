@@ -1,0 +1,13 @@
+@startsalt Salt_LoginDialog
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+{
+  Sign in
+  --
+  Email    | "                       "
+  Password | "                       "
+  [Sign in]
+}
+@endsalt

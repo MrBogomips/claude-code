@@ -1,0 +1,22 @@
+@startuml Activity_Return_Process_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Returns process"
+
+start
+:Receive return request;
+partition "Warehouse" {
+  :Inspect item;
+  if (Item sellable?) then (yes)
+    :Restock;
+  else (no)
+    :Scrap;
+  endif
+}
+partition "Finance" {
+  :Issue refund;
+}
+:Notify customer;
+stop
+@enduml

@@ -1,0 +1,21 @@
+@startuml Deployment_Prod_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Production deployment topology"
+
+cloud "AWS eu-west-1" {
+  node "ALB" as ALB
+  node "ECS Fargate" as ECS {
+    artifact "api:1.4.2" as API
+  }
+  database "RDS PostgreSQL" as DB
+  queue "SQS orders" as Q
+}
+
+actor User
+User --> ALB : HTTPS
+ALB --> API  : HTTP/2
+API --> DB   : TCP/5432
+API --> Q    : HTTPS (publish)
+@enduml

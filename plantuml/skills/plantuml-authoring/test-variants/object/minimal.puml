@@ -1,0 +1,10 @@
+@startuml Object_Checkout_State
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+object "anne:Customer" as anne
+object "o_771:Order"   as o771
+
+anne --> o771
+@enduml

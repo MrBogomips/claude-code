@@ -1,0 +1,4 @@
+' Target: web (SVG, interactive).
+skinparam shadowing true
+skinparam defaultFontSize 14
+' Hyperlinks are honored by SVG viewers; no additional toggle needed.

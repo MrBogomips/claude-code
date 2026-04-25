@@ -1,0 +1,13 @@
+@startuml InteractionOverview_Onboarding_Minimal
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Onboarding — Interaction Overview (minimal)"
+
+actor       Customer
+participant "Web App" as Web
+
+ref over Customer, Web : Sequence_SignUp
+ref over Customer, Web : Sequence_FirstPurchase
+@enduml

@@ -1,0 +1,27 @@
+@startuml Class_Order_Domain_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Order domain model"
+
+package "Order Domain" {
+  class Order {
+    +id: OrderId
+    +status: OrderStatus
+    +total: Money
+    +submit(): void
+  }
+  class OrderLine {
+    +sku: SKU
+    +quantity: int
+    +subtotal(): Money
+  }
+  class Customer {
+    +id: CustomerId
+    +name: string
+  }
+}
+
+Customer "1" --> "*" Order : places
+Order "1" *-- "*" OrderLine : contains
+@enduml

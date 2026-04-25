@@ -1,0 +1,18 @@
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+@startjson JSON_OrderResponse_Standard
+{
+  "id": "o_771",
+  "status": "PAID",
+  "customer": {
+    "id": "c_42",
+    "tier": "GOLD"
+  },
+  "lines": [
+    {"sku": "SKU-A", "qty": 2},
+    {"sku": "SKU-B", "qty": 1}
+  ],
+  "total": 128.90
+}
+@endjson

@@ -1,0 +1,3 @@
+!theme plain
+skinparam backgroundColor $surface
+skinparam ArrowColor $neutral

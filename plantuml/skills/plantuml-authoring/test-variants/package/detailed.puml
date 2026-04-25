@@ -1,0 +1,60 @@
+@startuml Package_Layers
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+package "presentation" <<layer>> {
+  package "web"      as web
+  package "api"      as api
+  package "graphql"  as gql
+}
+package "application" <<layer>> {
+  package "commands" as cmd
+  package "queries"  as qry
+  package "sagas"    as sag
+}
+package "domain" <<layer>> {
+  package "order"    as ord
+  package "pricing"  as prc
+  package "shipping" as shp
+  package "shared"   as shr
+}
+package "infrastructure" <<layer>> {
+  package "persistence" as per
+  package "messaging"   as msg
+  package "external"    as ext
+}
+
+web --> api
+gql --> api
+api --> cmd
+api --> qry
+cmd --> ord
+qry --> ord
+cmd --> sag
+sag --> ord
+sag --> shp
+ord --> prc
+ord --> shr
+prc --> shr
+shp --> shr
+cmd --> per
+qry --> per
+sag --> msg
+ext --> msg
+
+note right of ord
+  Domain layer must not
+  depend on infrastructure.
+end note
+
+note bottom of per
+  Adapters only; concrete
+  drivers live here.
+end note
+
+note left of web
+  Multiple inbound channels
+  share the same app layer.
+end note
+@enduml

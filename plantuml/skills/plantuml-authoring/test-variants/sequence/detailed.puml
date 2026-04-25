@@ -1,0 +1,73 @@
+@startuml Sequence_Checkout
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+actor Customer
+participant "Web App"     as Web
+participant "Orders API"  as API
+participant "Pricing"     as Pricing
+participant "Payments"    as Pay
+database   "Orders DB"    as DB
+queue      "Events"       as MQ
+
+Customer -> Web : Place order
+activate Web
+Web -> API : POST /orders
+activate API
+
+ref over API, Pricing : Quote_Cart
+API -> Pricing : quote(items)
+activate Pricing
+Pricing --> API : total
+deactivate Pricing
+
+API -> DB : INSERT order (PENDING)
+API -> MQ : order.created
+API --> Web : 201 Created
+deactivate API
+
+opt customer logged in
+  Web -> API : GET /loyalty
+  API --> Web : points balance
+end
+
+alt payment authorised
+  MQ -> Pay : authorize
+  activate Pay
+  Pay --> MQ : payment.ok
+  deactivate Pay
+  MQ -> API : payment.ok
+  activate API
+  API -> DB : UPDATE status=PAID
+  deactivate API
+else payment failed
+  MQ -> API : payment.ko
+  activate API
+  API -> DB : UPDATE status=CANCELLED
+  deactivate API
+else timeout
+  MQ -> API : payment.timeout
+  activate API
+  API -> DB : UPDATE status=PENDING_RETRY
+  deactivate API
+end
+
+note right of API
+  Idempotent on order id;
+  retries are safe.
+end note
+
+note over DB
+  Status changes are append-only
+  in the audit log table.
+end note
+
+note left of Customer
+  Confirmation page also serves
+  as receipt (printable).
+end note
+
+Web --> Customer : Confirmation page
+deactivate Web
+@enduml

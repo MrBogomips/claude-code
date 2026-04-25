@@ -1,0 +1,10 @@
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+@startjson JSON_OrderResponse_Minimal
+{
+  "id": "o_771",
+  "status": "PAID",
+  "total": 128.90
+}
+@endjson

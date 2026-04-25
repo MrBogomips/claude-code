@@ -1,0 +1,24 @@
+@startuml Communication_Checkout_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Communication — Checkout (standard preset)"
+
+' Emulated communication diagram: object nodes + numbered labels.
+' `hide empty members` strips the empty attribute compartments so
+' the result reads as a graph of participants, not as data objects.
+hide empty members
+
+object ":Cart"     as cart
+object ":Pricing"  as pricing
+object ":Orders"   as orders
+object ":Payments" as pay
+
+cart    --> pricing : "1: quote(items)"
+pricing ..> cart    : "1.1: total"
+cart    --> orders  : "2: submit(cart)"
+orders  --> pay     : "2.1: authorize(total)"
+pay     ..> orders  : "2.2: authCode"
+orders  ..> cart    : "3: confirmation"
+@enduml

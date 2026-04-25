@@ -1,0 +1,39 @@
+@startgantt Gantt_Release_Q3
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+Project starts 2026-07-01
+saturday are closed
+sunday are closed
+
+today is 30 days after start
+
+-- Discovery --
+[Stakeholders]    lasts 10 days
+[Research]        lasts 10 days and starts at [Stakeholders]'s end
+[Discovery sign-off] happens at [Research]'s end
+
+-- Design --
+[UX wireframes]   lasts 8 days and starts at [Research]'s end
+[Tech design]     lasts 8 days and starts at [Research]'s end
+[Design review]   lasts 2 days and starts at [UX wireframes]'s end
+[Design sign-off] happens at [Design review]'s end
+
+-- Build --
+[Backend]         lasts 20 days and starts at [Design sign-off]'s end
+[Frontend]        lasts 15 days and starts 5 days after [Backend]'s start
+[Integration]     lasts 10 days and starts at [Frontend]'s end
+[Code freeze]     happens at [Integration]'s end
+
+-- Release --
+[QA]              lasts 7 days and starts at [Code freeze]'s end
+[Security review] lasts 3 days and starts at [Code freeze]'s end
+[Rollout]         lasts 3 days and starts at [QA]'s end
+[Launch]          happens at [Rollout]'s end
+[Post-launch]     lasts 5 days and starts at [Launch]'s end
+
+[QA] is colored in LightCoral/Coral
+[Backend] is colored in LightBlue/SteelBlue
+[Frontend] is colored in LightGreen/SeaGreen
+@endgantt

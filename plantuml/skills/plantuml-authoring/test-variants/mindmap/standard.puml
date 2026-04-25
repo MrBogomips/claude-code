@@ -1,0 +1,22 @@
+@startmindmap Mindmap_PlatformObjectives_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Platform objectives"
+
+* Platform Objectives
+** Reliability
+*** SLO 99.9%
+*** Disaster recovery
+** Performance
+*** Latency p95 < 200 ms
+*** Throughput +30%
+** Security
+*** OWASP compliance
+*** Audit trail
+-- Cost
+--- Cloud spend -15%
+-- Team
+--- Hiring plan
+--- Training
+@endmindmap

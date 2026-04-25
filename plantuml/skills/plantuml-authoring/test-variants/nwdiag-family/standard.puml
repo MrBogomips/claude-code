@@ -1,0 +1,18 @@
+@startnwdiag Nwdiag_Topology_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Network topology"
+network dmz {
+  address = "192.168.10.0/24"
+  web01 [address = "192.168.10.11"]
+  web02 [address = "192.168.10.12"]
+}
+network internal {
+  address = "10.0.0.0/16"
+  web01 [address = "10.0.1.11"]
+  web02 [address = "10.0.1.12"]
+  app01 [address = "10.0.2.21"]
+  db01  [address = "10.0.3.31"]
+}
+@endnwdiag

@@ -1,0 +1,28 @@
+@startuml Object_Checkout_State_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Checkout state snapshot"
+
+object "anne:Customer" as anne {
+  id = 42
+  tier = GOLD
+}
+object "o_771:Order" as o771 {
+  id = 771
+  status = SUBMITTED
+  total = 128.90
+}
+object "ol_1:OrderLine" as ol1 {
+  sku = "SKU-A"
+  qty = 2
+}
+object "ol_2:OrderLine" as ol2 {
+  sku = "SKU-B"
+  qty = 1
+}
+
+anne --> o771
+o771 --> ol1
+o771 --> ol2
+@enduml
