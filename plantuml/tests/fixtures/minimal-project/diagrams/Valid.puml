@@ -1,0 +1,6 @@
+@startuml Valid
+!include ../.plantuml/_base.puml
+class Foo
+class Bar
+Foo --> Bar
+@enduml

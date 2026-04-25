@@ -1,0 +1,4 @@
+@startuml WrongTitle
+skinparam defaultFontSize 12
+class Quux #FF00FF
+@enduml
