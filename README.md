@@ -7,8 +7,10 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 | Plugin | Description | Category | Version |
 |--------|-------------|----------|---------|
 | [developer-tools](./developer-tools) | Developer environment tooling — devcontainer generation, stack detection, infrastructure config | Engineering | 2.4.0 |
-| [human-resources](./human-resources) | HR workflow support — interview preparation, candidate evaluation, job descriptions | Human Resources | 0.1.0 |
-| [project-management](./project-management) | Project management workflows — PERT estimation, WBS, risk analysis, status reporting | Operations | 0.1.0 |
+| [human-resources](./human-resources) | HR interview workflow — job descriptions, pre-screening, interview prep, evaluation, compliance | Human Resources | 0.2.0 |
+| [kaizen](./kaizen) | Continuous improvement loops — recursive optimization engine with profiles for Claude Code usage, refactoring, and process improvement | Engineering | 1.0.0 |
+| [plantuml](./plantuml) | PlantUML diagrams — policy-driven authoring, rendering, lint, validate, review, advisor, and migrate | Documentation | 1.0.0 |
+| [project-management](./project-management) | SOW writing, review, estimation, and PMI-compliant PERT analysis — integrated project management pipeline | Operations | 1.0.0 |
 | [tech-writing](./tech-writing) | Technical writing support — documentation structure, style guides, content review | Documentation | 0.1.0 |
 
 ## Installation
