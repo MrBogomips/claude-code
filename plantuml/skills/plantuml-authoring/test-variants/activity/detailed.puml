@@ -1,0 +1,46 @@
+@startuml Activity_Return_Process
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+start
+:Receive return request;
+
+partition "Customer Care" {
+  :Validate RMA token;
+  if (Token valid?) then (yes)
+  else (no)
+    :Reject and notify;
+    stop
+  endif
+}
+
+partition "Warehouse" {
+  :Schedule pickup;
+  :Receive package;
+  :Inspect item;
+  switch (Item condition?)
+  case (resellable)
+    :Restock;
+  case (refurbishable)
+    :Send to refurb;
+  case (damaged)
+    :Scrap;
+  endswitch
+}
+
+partition "Finance" {
+  fork
+    :Issue refund;
+  fork again
+    :Update accounting;
+  fork again
+    :Reverse loyalty points;
+  end fork
+}
+
+partition "Customer Care" {
+  :Notify customer;
+}
+stop
+@enduml

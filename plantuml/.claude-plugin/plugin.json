@@ -1,0 +1,11 @@
+{
+  "name": "plantuml",
+  "version": "1.0.0",
+  "description": "Authoring, rendering, and maintenance of PlantUML diagrams — policy-driven projects with multi-target rendering, lint, validate, review, advisor, and migrate",
+  "author": {
+    "name": "MrBogomips",
+    "url": "https://github.com/MrBogomips"
+  },
+  "license": "MIT",
+  "keywords": ["plantuml", "diagrams", "uml", "c4", "documentation", "rendering", "lint"]
+}

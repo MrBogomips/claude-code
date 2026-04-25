@@ -1,0 +1,4 @@
+' Target: pdf (vector, print-safe).
+skinparam shadowing true
+skinparam defaultFontSize 12
+skinparam dpi 300

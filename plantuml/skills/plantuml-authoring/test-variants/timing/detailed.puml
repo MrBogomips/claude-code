@@ -1,0 +1,39 @@
+@startuml Timing_BatteryCharging
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+robust "Battery"     as B
+concise "Charger"    as C
+concise "Thermistor" as T
+
+@0
+B is Empty
+C is Idle
+T is Cool
+
+@2
+C is Detected
+B is Charging
+T is Warm
+
+@5
+B is Charging
+T is Hot
+C is Throttled
+
+@10
+B is Charging
+T is Warm
+C is Detected
+
+@15
+B is Full
+C is Trickle
+T is Cool
+
+@17
+C is Idle
+
+highlight 2 to 15 #LightYellow : Active charge window
+@enduml

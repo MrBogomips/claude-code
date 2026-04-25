@@ -1,0 +1,16 @@
+@startuml UseCase_Shop
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+left to right direction
+actor Customer
+
+(Browse catalog) as UC1
+(Place order)    as UC2
+(Track shipment) as UC3
+
+Customer --> UC1
+Customer --> UC2
+Customer --> UC3
+@enduml

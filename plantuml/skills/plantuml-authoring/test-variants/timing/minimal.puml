@@ -1,0 +1,14 @@
+@startuml Timing_BatteryCharging
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+robust "Battery" as B
+
+@0
+B is Empty
+@+1
+B is Charging
+@+10
+B is Full
+@enduml

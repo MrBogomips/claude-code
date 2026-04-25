@@ -1,0 +1,25 @@
+@startuml UseCase_Shop_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Shop actor goals"
+
+left to right direction
+actor Customer
+actor "Customer Support" as CS
+
+rectangle "Online Shop" {
+  (Browse catalog)    as UC1
+  (Place order)       as UC2
+  (Track shipment)    as UC3
+  (Return item)       as UC4
+  (Process refund)    as UC5
+}
+
+Customer --> UC1
+Customer --> UC2
+Customer --> UC3
+Customer --> UC4
+CS       --> UC5
+UC4 ..> UC5 : <<include>>
+@enduml

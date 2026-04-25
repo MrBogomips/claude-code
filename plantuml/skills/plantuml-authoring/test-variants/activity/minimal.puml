@@ -1,0 +1,12 @@
+@startuml Activity_Return_Process
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+start
+:Receive return request;
+:Inspect item;
+:Issue refund;
+:Notify customer;
+stop
+@enduml

@@ -1,0 +1,13 @@
+@startuml C4_Context_Shop
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+!include <C4/C4_Context>
+
+title Online Shop - Context (minimal)
+
+Person(customer, "Customer")
+System(shop, "Online Shop")
+
+Rel(customer, shop, "Browses & orders")
+@enduml

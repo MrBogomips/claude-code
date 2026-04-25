@@ -1,0 +1,8 @@
+' Brand colors — auto-generated from CLAUDE.md "PlantUML Policy".
+' Do not edit by hand. Re-run plantuml-init to regenerate.
+
+!$primary = "#0B5FFF"
+!$accent  = "#F59E0B"
+!$neutral = "#475569"
+!$surface = "#F8FAFC"
+!$danger  = "#DC2626"

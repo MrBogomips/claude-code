@@ -1,0 +1,172 @@
+' Theme — auto-generated from CLAUDE.md "PlantUML Policy".
+' This is the `custom` variant; when Policy names a built-in theme the
+' init script replaces this file with a one-liner `!theme <name>` plus
+' a background color override.
+
+skinparam backgroundColor $surface
+skinparam ArrowColor $neutral
+skinparam DefaultTextAlignment center
+
+skinparam class {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  HeaderBackgroundColor $primary
+  AttributeFontColor $neutral
+  ArrowColor         $neutral
+}
+
+skinparam object {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  HeaderBackgroundColor $primary
+  AttributeFontColor $neutral
+  ArrowColor         $neutral
+}
+
+skinparam entity {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  HeaderBackgroundColor $primary
+  AttributeFontColor $neutral
+}
+
+' PlantUML 1.2026.2 ignores skinparam *HeaderBackgroundColor / *FontColor
+' for class/object/entity headers — they are governed by the new <style>
+' mechanism. We override here so class/object/entity names render in
+' white on the branded header band.
+<style>
+classDiagram {
+  class {
+    header {
+      FontColor #FFFFFF
+    }
+  }
+  entity {
+    header {
+      FontColor #FFFFFF
+    }
+  }
+}
+objectDiagram {
+  object {
+    BackgroundColor $surface
+    LineColor       $neutral
+    header {
+      BackgroundColor $primary
+      FontColor       #FFFFFF
+    }
+  }
+}
+</style>
+
+skinparam component {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}
+
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor     $accent
+}
+
+skinparam stereotype {
+  CBackgroundColor $accent
+  CBorderColor     $neutral
+}
+
+' Sequence-diagram and actor-bearing elements (sequence, communication,
+' usecase) — without these the brand surface/neutral fall back to
+' PlantUML defaults (off-white / gray) and the diagrams look
+' unbranded compared to class/component.
+
+skinparam actor {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}
+
+skinparam participant {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}
+
+skinparam sequence {
+  ArrowColor                 $neutral
+  LifeLineBorderColor        $neutral
+  LifeLineBackgroundColor    $surface
+  ParticipantBackgroundColor $surface
+  ParticipantBorderColor     $neutral
+  ParticipantFontColor       $neutral
+  ActorBackgroundColor       $surface
+  ActorBorderColor           $neutral
+  ActorFontColor             $neutral
+  GroupBackgroundColor       $surface
+  GroupBorderColor           $neutral
+  BoxBorderColor             $neutral
+}
+
+skinparam database {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}
+
+skinparam queue {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}
+
+skinparam usecase {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}
+
+skinparam state {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+  ArrowColor      $neutral
+  StartColor      $primary
+  EndColor        $neutral
+}
+
+skinparam activity {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+  StartColor      $primary
+  EndColor        $neutral
+  DiamondBackgroundColor $surface
+  DiamondBorderColor     $neutral
+  DiamondFontColor       $neutral
+  ArrowColor      $neutral
+  BarColor        $accent
+}
+
+skinparam package {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}
+
+skinparam node {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}
+
+skinparam cloud {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}
+
+skinparam artifact {
+  BackgroundColor $surface
+  BorderColor     $neutral
+  FontColor       $neutral
+}

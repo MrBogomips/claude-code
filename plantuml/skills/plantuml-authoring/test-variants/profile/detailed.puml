@@ -1,0 +1,31 @@
+@startuml Profile_BankingExtensions_Detailed
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Banking Profile — detailed (UML 2 Profile Extensions)"
+
+package "Banking Profile" <<profile>> {
+  class Account     <<stereotype>>
+  class LedgerEntry <<stereotype>>
+  class Settlement  <<stereotype>>
+  class IBAN        <<stereotype>>
+  class Currency    <<dataType>>
+}
+
+package "UML" {
+  class Class       <<metaclass>>
+  class Association <<metaclass>>
+  class Property    <<metaclass>>
+}
+
+Account     --|> Class       : <<extend>>
+LedgerEntry --|> Class       : <<extend>>
+LedgerEntry --|> Association : <<extend>>
+Settlement  --|> Class       : <<extend>>
+IBAN        --|> Property    : <<extend>>
+
+note right of Account : Tagged values:\n  - currency: Currency\n  - openedOn: Date
+note right of LedgerEntry : Constraint (OCL):\n  inv: amount.currency = account.currency
+note bottom of IBAN : Validates against ISO 13616.\nProperties enriched with this stereotype\nare automatically format-checked.
+@enduml

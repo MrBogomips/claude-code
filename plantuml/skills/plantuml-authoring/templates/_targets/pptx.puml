@@ -1,0 +1,5 @@
+' Target: pptx (PNG on 16:9 slides).
+skinparam shadowing false
+skinparam defaultFontSize 18
+skinparam dpi 150
+left to right direction

@@ -1,0 +1,30 @@
+@startuml ER_OrderModel_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Order data model"
+
+entity "Customer" as c {
+  *id : uuid <<PK>>
+  --
+  name : text
+  email : text
+}
+entity "Order" as o {
+  *id : uuid <<PK>>
+  --
+  *customer_id : uuid <<FK>>
+  status : text
+  total : numeric
+}
+entity "OrderLine" as ol {
+  *id : uuid <<PK>>
+  --
+  *order_id : uuid <<FK>>
+  *sku : text
+  qty : int
+}
+
+c ||--o{ o
+o ||--o{ ol
+@enduml

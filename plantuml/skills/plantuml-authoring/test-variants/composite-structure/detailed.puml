@@ -1,0 +1,31 @@
+@startuml CompositeStructure_PaymentGateway_Detailed
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Payment Gateway — detailed composition"
+
+component "Payment Gateway" {
+  port "pay-in"     as PI
+  port "pay-out"    as PO
+  port "events-out" as EO
+
+  [Router]      as R
+  [Authorizer]  as A
+  [Anti-Fraud]  as F
+  [Settlement]  as S
+  [Audit Log]   as AL
+
+  PI --> R
+  R  --> A
+  A  --> F : checks
+  A  --> S : on success
+  A  --> PO : denied
+  S  --> PO : approved
+  S  --> AL : audit trail
+  AL --> EO : settlement.posted
+}
+
+note bottom of F : Anti-fraud is colocated with the gateway in this deployment;\nin a federated model it would sit outside the boundary.
+note right of S : PCI-DSS scope ends here; audit log is post-settlement.
+@enduml

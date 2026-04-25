@@ -1,0 +1,28 @@
+@startuml Communication_Checkout_Detailed
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Communication — Checkout (detailed)"
+
+hide empty members
+
+object ":Cart"      as cart
+object ":Pricing"   as pricing
+object ":Tax"       as tax
+object ":Orders"    as orders
+object ":Payments"  as pay
+object ":Inventory" as inv
+
+cart    --> pricing : "1: quote(items)"
+pricing --> tax     : "1.1: applyTax(subtotal)"
+tax     ..> pricing : "1.1.1: total"
+pricing ..> cart    : "1.2: priced"
+cart    --> inv     : "2: reserve(skus)"
+inv     ..> cart    : "2.1: reservationId"
+cart    --> orders  : "3: submit(cart, reservationId)"
+orders  --> pay     : "3.1: authorize(total)"
+pay     ..> orders  : "3.2: authCode"
+orders  --> inv     : "3.3: commit(reservationId)"
+orders  ..> cart    : "4: confirmation"
+@enduml

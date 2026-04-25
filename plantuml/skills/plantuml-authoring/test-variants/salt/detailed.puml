@@ -1,0 +1,41 @@
+@startsalt Salt_LoginDialog
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+{
+  Sign in to the Shop
+  --
+  {/ <b>Login | Register | SSO }
+  --
+  Email    | "you@example.com           "
+  Password | "***************            "
+  [  ] Remember me
+  --
+  {SI
+    Region:^Europe^
+  }
+  --
+  [Sign in] | [Forgot password] | [Cancel]
+  --
+  Need help? | <link>Contact support</link>
+}
+newpage
+{
+  MFA verification
+  --
+  Enter the 6-digit code sent to your phone
+  --
+  Code | "______"
+  --
+  [Verify] | [Resend code]
+}
+newpage
+{
+  Welcome
+  --
+  You are now signed in.
+  --
+  [Continue to dashboard]
+}
+@endsalt

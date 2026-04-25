@@ -1,0 +1,49 @@
+@startuml C4_Context_Shop
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+!include <C4/C4_Context>
+
+title System Context diagram for the Online Shop
+
+Person(customer, "Customer", "Buys products")
+Person(support,  "Customer Support", "Resolves customer issues")
+Person(merch,    "Merchandiser", "Curates the catalog")
+Person(admin,    "System Admin", "Operates the platform")
+
+System(shop, "Online Shop", "Sells things online.")
+
+System_Ext(email,    "Email Service",      "Transactional email")
+System_Ext(pay,      "Payment Gateway",    "Authorizes & captures")
+System_Ext(ship,     "Shipping Carrier",   "Delivers parcels")
+System_Ext(tax,      "Tax Service",        "Computes VAT/sales tax")
+System_Ext(analytics,"Analytics Platform", "Web & event analytics")
+System_Ext(idp,      "Identity Provider",  "OIDC SSO")
+
+Rel(customer, shop,  "Browses & orders", "HTTPS")
+Rel(support,  shop,  "Resolves issues",  "HTTPS")
+Rel(merch,    shop,  "Curates catalog",  "HTTPS")
+Rel(admin,    shop,  "Operates",         "HTTPS")
+
+Rel(shop, email,     "Sends notifications", "SMTP/HTTPS")
+Rel(shop, pay,       "Authorizes payments", "HTTPS")
+Rel(shop, ship,      "Requests shipments",  "HTTPS")
+Rel(shop, tax,       "Computes taxes",      "HTTPS")
+Rel(shop, analytics, "Streams events",      "HTTPS")
+Rel(shop, idp,       "Authenticates users", "OIDC")
+
+note right of shop
+  Bounded by the e-commerce
+  business capability map.
+end note
+
+note bottom of pay
+  PCI-DSS scope offloaded to
+  this provider.
+end note
+
+note left of customer
+  Anonymous browsing allowed;
+  checkout requires login.
+end note
+@enduml

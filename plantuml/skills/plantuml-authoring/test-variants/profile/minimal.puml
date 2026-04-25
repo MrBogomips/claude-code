@@ -1,0 +1,12 @@
+@startuml Profile_BankingExtensions_Minimal
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Banking Profile — minimal"
+
+class Account <<stereotype>>
+class Class   <<metaclass>>
+
+Account --|> Class : <<extend>>
+@enduml

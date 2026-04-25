@@ -1,0 +1,16 @@
+' Base — auto-generated from CLAUDE.md "PlantUML Policy".
+' Single include entry-point. Do NOT add target-specific overrides here;
+' those live in _targets/<target>.puml and are included per-diagram via
+' the PLANTUML_TARGET env var.
+
+' Fallback for $target if PLANTUML_TARGET env var is unset, so the diagram
+' still renders (web-target defaults) instead of failing on a missing
+' _targets/.puml include.
+!if (%not(%variable_exists("$target")) || $target == "")
+  !$target = "web"
+!endif
+
+!include _brand.puml
+!include _fonts.puml
+!include _theme.puml
+!include _layout.puml

@@ -1,0 +1,22 @@
+@startuml C4_Context_Shop_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+!include <C4/C4_Context>
+
+title System Context diagram for the Online Shop
+
+Person(customer, "Customer")
+Person(support, "Customer Support")
+System(shop, "Online Shop", "Sells things online.")
+
+System_Ext(email, "Email Service")
+System_Ext(pay,   "Payment Gateway")
+System_Ext(ship,  "Shipping Carrier")
+
+Rel(customer, shop, "Browses & orders")
+Rel(support, shop, "Resolves issues")
+Rel(shop, email, "Sends notifications")
+Rel(shop, pay,   "Authorizes payments")
+Rel(shop, ship,  "Requests shipments")
+@enduml

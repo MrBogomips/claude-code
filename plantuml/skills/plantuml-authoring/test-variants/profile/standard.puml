@@ -1,0 +1,20 @@
+@startuml Profile_BankingExtensions_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Banking Profile — UML 2 Profile Extensions (standard)"
+
+package "Banking Profile" <<profile>> {
+  class Account     <<stereotype>>
+  class LedgerEntry <<stereotype>>
+}
+package "UML" {
+  class Class       <<metaclass>>
+  class Association <<metaclass>>
+}
+
+Account     --|> Class       : <<extend>>
+LedgerEntry --|> Class       : <<extend>>
+LedgerEntry --|> Association : <<extend>>
+@enduml

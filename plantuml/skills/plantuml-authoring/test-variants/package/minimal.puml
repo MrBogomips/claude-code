@@ -1,0 +1,12 @@
+@startuml Package_Layers
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+package "presentation"   as pres
+package "application"    as app
+package "domain"         as dom
+
+pres --> app
+app  --> dom
+@enduml

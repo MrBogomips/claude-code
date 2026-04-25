@@ -1,0 +1,10 @@
+@startuml State_Order_Lifecycle
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+[*] --> Draft
+Draft     --> Submitted : submit()
+Submitted --> Paid      : paymentOk
+Paid      --> [*]
+@enduml

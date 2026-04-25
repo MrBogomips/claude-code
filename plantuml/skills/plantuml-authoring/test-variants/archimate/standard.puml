@@ -1,0 +1,18 @@
+@startuml Archimate_OrderManagement_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Order management capability map"
+!include <archimate/Archimate>
+
+Business_Actor(customer, "Customer")
+Business_Process(place_order, "Place Order")
+Application_Service(order_svc, "Order Service")
+Application_Component(order_app, "Order App")
+Technology_Node(k8s, "Kubernetes Cluster")
+
+Rel_Triggering(customer, place_order)
+Rel_Serving(order_svc, place_order)
+Rel_Realization(order_app, order_svc)
+Rel_Assignment(k8s, order_app)
+@enduml

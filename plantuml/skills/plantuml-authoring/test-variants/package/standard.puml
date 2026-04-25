@@ -1,0 +1,29 @@
+@startuml Package_Layers_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Layer dependencies"
+
+package "presentation" <<layer>> {
+  package "web"  as web
+  package "api"  as api
+}
+package "application" <<layer>> {
+  package "commands" as cmd
+  package "queries"  as qry
+}
+package "domain" <<layer>> {
+  package "order" as ord
+  package "pricing" as prc
+}
+package "infrastructure" <<layer>>
+
+web --> api
+api --> cmd
+api --> qry
+cmd --> ord
+qry --> ord
+ord --> prc
+cmd --> "infrastructure"
+qry --> "infrastructure"
+@enduml

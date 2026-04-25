@@ -1,0 +1,11 @@
+@startgantt Gantt_Release_Q3
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+Project starts 2026-07-01
+
+[Discovery] lasts 10 days
+[Build]     lasts 30 days
+[Release]   lasts 7 days
+@endgantt

@@ -1,0 +1,10 @@
+@startuml Component_Checkout
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+[Cart]   as Cart
+[Orders] as Orders
+
+Cart --> Orders : submits
+@enduml

@@ -1,0 +1,22 @@
+@startuml InteractionOverview_Onboarding_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Onboarding — Interaction Overview (standard)"
+
+actor       Customer
+participant "Web App"      as Web
+participant "Identity API" as Identity
+
+== Sign-up ==
+ref over Customer, Web, Identity : Sequence_SignUp
+
+alt email verified
+  == Activation ==
+  ref over Customer, Web, Identity : Sequence_ProfileSetup
+  ref over Customer, Web           : Sequence_FirstPurchase
+else email not verified
+  ref over Customer, Identity      : Sequence_ResendVerification
+end
+@enduml

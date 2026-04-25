@@ -1,0 +1,15 @@
+@startuml Communication_Checkout_Minimal
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+title "Communication — Checkout (minimal)"
+
+hide empty members
+
+object ":Cart"     as cart
+object ":Orders"   as orders
+
+cart   --> orders : "1: submit(cart)"
+orders ..> cart   : "2: confirmation"
+@enduml

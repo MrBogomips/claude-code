@@ -1,0 +1,31 @@
+@startuml Sequence_Checkout_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Checkout interaction"
+
+actor Customer
+participant "Web App"    as Web
+participant "Orders API" as API
+database   "Orders DB"   as DB
+queue      "Events"      as MQ
+
+Customer -> Web : Place order
+activate Web
+Web -> API : POST /orders
+activate API
+API -> DB : INSERT order (PENDING)
+API -> MQ : order.created
+API --> Web : 201 Created
+deactivate API
+
+alt payment authorised
+  MQ -> API : payment.ok
+  API -> DB : UPDATE status=PAID
+else payment failed
+  MQ -> API : payment.ko
+  API -> DB : UPDATE status=CANCELLED
+end
+Web --> Customer : Confirmation page
+deactivate Web
+@enduml

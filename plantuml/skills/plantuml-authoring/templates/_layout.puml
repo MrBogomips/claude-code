@@ -1,0 +1,13 @@
+' Layout — auto-generated from CLAUDE.md "PlantUML Policy".
+
+' smetana is faster but breaks on concurrent state regions and complex
+' compositions. Diagram types that need richer layout (state with
+' parallel regions, deeply-nested classes) should override per file
+' with `!pragma layout dot` after this include.
+!pragma layout smetana
+skinparam linetype ortho
+skinparam shadowing true
+skinparam minClassWidth 90
+skinparam nodesep 60
+skinparam ranksep 80
+skinparam padding 8

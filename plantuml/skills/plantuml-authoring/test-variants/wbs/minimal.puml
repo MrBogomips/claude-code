@@ -1,0 +1,10 @@
+@startwbs WBS_NewFeature
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+* 1. New Feature
+** 1.1 Discovery
+** 1.2 Build
+** 1.3 Release
+@endwbs

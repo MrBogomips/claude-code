@@ -1,0 +1,19 @@
+@startuml Component_Checkout_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Checkout component graph"
+
+package "Checkout" {
+  [Cart]     as Cart
+  [Pricing]  as Pricing
+  [Orders]   as Orders
+  () "Catalog API"  as CatalogAPI
+  () "Payments API" as PayAPI
+}
+
+Cart -down-> Pricing      : queries
+Pricing -right-> CatalogAPI : reads
+Cart -down-> Orders       : submits
+Orders -right-> PayAPI    : authorizes
+@enduml

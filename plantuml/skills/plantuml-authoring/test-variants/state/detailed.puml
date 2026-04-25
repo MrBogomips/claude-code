@@ -1,0 +1,54 @@
+@startuml State_Order_Lifecycle_Detailed
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+!pragma layout dot
+
+title "Order lifecycle — detailed (composite + concurrent regions)"
+
+[*] --> Draft
+
+state Draft {
+  Draft : entry / lockCart()
+  Draft : exit  / freezeTotals()
+}
+
+Draft     --> Submitted : submit() [cart not empty]
+
+state Submitted {
+  Submitted : entry / publishOrderCreated()
+  Submitted : exit  / cancelTimers()
+}
+
+Submitted --> Paid       : paymentOk
+Submitted --> Cancelled  : paymentKo
+Submitted --> Cancelled  : timeout [age > 30m]
+
+state Fulfilment {
+  [*] --> Picking
+  Picking  --> Packing : picked
+  Packing  --> Shipped : packed
+
+  --
+
+  [*] --> Reserved
+  Reserved --> Allocated : stockOk
+  Allocated --> Released : stockKo
+}
+
+Paid       --> Fulfilment : ship()
+Fulfilment --> Delivered  : carrierEvent
+Delivered  --> [*]
+Cancelled  --> [*]
+
+note right of Submitted
+  Auto-cancel if no payment
+  in 30 minutes.
+end note
+
+note bottom of Fulfilment
+  Composite state: physical
+  fulfilment and stock
+  allocation run in parallel.
+end note
+@enduml

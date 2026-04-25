@@ -1,0 +1,50 @@
+@startmindmap Mindmap_PlatformObjectives
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+caption Strategic objectives 2026 - rolling 12 months
+
+* Platform Objectives
+** Reliability
+*** SLO 99.9%
+**** Multi-region failover
+**** Chaos drills
+*** Disaster recovery
+**** RPO 5m
+**** RTO 30m
+** Performance
+*** Latency p95 < 200 ms
+**** CDN edge tuning
+**** Query budgets
+*** Throughput +30%
+**** Async pipelines
+*** Capacity
+**** Auto-scaling
+** Security
+*** OWASP compliance
+**** SAST in CI
+**** DAST nightly
+*** Audit trail
+**** Append-only log
+*** Identity
+**** OIDC SSO
+**** MFA enforced
+-- Cost
+--- Cloud spend -15%
+---- FinOps tagging
+---- Reserved capacity
+--- Vendor consolidation
+-- Team
+--- Hiring plan
+---- 4 SREs
+---- 2 Sec engineers
+--- Training
+---- Internal academy
+---- Conferences
+-- Roadmap
+--- Q1 reliability
+--- Q2 performance
+--- Q3 security
+--- Q4 cost
+@endmindmap

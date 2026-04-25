@@ -35,6 +35,14 @@
       "tags": ["kaizen", "improvement", "optimization", "automation", "autoresearch", "kpi", "refactoring"]
     },
     {
+      "name": "plantuml",
+      "source": "./plantuml",
+      "description": "Authoring, rendering, and maintenance of PlantUML diagrams — policy-driven projects with multi-target rendering, lint, validate, review, advisor, and migrate",
+      "version": "1.0.0",
+      "category": "documentation",
+      "tags": ["plantuml", "diagrams", "uml", "c4", "documentation", "rendering", "lint"]
+    },
+    {
       "name": "project-management",
       "source": "./project-management",
       "description": "SOW writing, review, estimation, and PMI-compliant PERT analysis — an integrated project management pipeline",

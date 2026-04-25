@@ -1,0 +1,66 @@
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+@startjson JSON_OrderResponse_Detailed
+{
+  "id": "o_771",
+  "status": "PAID",
+  "placedAt": "2026-04-24T10:00:00Z",
+  "customer": {
+    "id": "c_42",
+    "tier": "GOLD",
+    "contact": {
+      "email": "anne@example.com",
+      "phone": "+39 02 1234567"
+    },
+    "addresses": [
+      {
+        "type": "shipping",
+        "street": "Via Roma 1",
+        "city": "Milano",
+        "zip": "20100",
+        "country": "IT"
+      },
+      {
+        "type": "billing",
+        "street": "Via Verdi 3",
+        "city": "Milano",
+        "zip": "20121",
+        "country": "IT"
+      }
+    ]
+  },
+  "lines": [
+    {
+      "sku": "SKU-A",
+      "qty": 2,
+      "unitPrice": 39.95,
+      "discounts": [
+        {"code": "SUMMER10", "amount": 4.00}
+      ]
+    },
+    {
+      "sku": "SKU-B",
+      "qty": 1,
+      "unitPrice": 49.00,
+      "discounts": []
+    }
+  ],
+  "payment": {
+    "id": "pay_001",
+    "method": "card",
+    "status": "AUTHORIZED",
+    "captured": false
+  },
+  "shipment": {
+    "carrier": "UPS",
+    "tracking": "1Z999AA10123456784",
+    "events": [
+      {"at": "2026-04-24T11:00Z", "status": "LABEL_CREATED"},
+      {"at": "2026-04-24T15:00Z", "status": "PICKED_UP"}
+    ]
+  },
+  "total": 128.90,
+  "currency": "EUR"
+}
+@endjson

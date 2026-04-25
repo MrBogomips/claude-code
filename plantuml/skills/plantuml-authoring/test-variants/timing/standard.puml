@@ -1,0 +1,24 @@
+@startuml Timing_BatteryCharging_Standard
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+title "Battery charging cycle"
+
+robust "Battery" as B
+concise "Charger" as C
+
+@0
+B is Empty
+C is Idle
+
+@+1
+C is Detected
+B is Charging
+
+@+10
+B is Full
+C is Trickle
+
+@+11
+C is Idle
+@enduml

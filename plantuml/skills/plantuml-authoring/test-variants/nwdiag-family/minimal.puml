@@ -1,0 +1,9 @@
+@startnwdiag Nwdiag_Topology
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+network dmz {
+  address = "192.168.10.0/24"
+  web01 [address = "192.168.10.11"]
+}
+@endnwdiag

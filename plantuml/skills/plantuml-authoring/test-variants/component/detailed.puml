@@ -1,0 +1,51 @@
+@startuml Component_Checkout
+!$target = %getenv("PLANTUML_TARGET")
+!include .plantuml/_base.puml
+!include .plantuml/_targets/$target.puml
+
+package "Checkout" {
+  [Cart]        as Cart
+  [Pricing]     as Pricing
+  [Orders]      as Orders
+  [Promotions]  as Promo
+  [Inventory]   as Inv
+  [Notifier]    as Notif
+  () "Catalog API"   as CatalogAPI
+  () "Payments API"  as PayAPI
+  () "Shipping API"  as ShipAPI
+  () "Email API"     as EmailAPI
+}
+
+[Customer Portal] as Portal
+database "Orders DB" as DB
+queue    "Events"    as MQ
+
+Portal  -down-> Cart        : add/remove
+Cart    -down-> Pricing     : queries
+Cart    -down-> Promo       : applies
+Pricing -right-> CatalogAPI : reads
+Promo   -right-> CatalogAPI : reads
+Cart    -down-> Orders      : submits
+Orders  -right-> PayAPI     : authorizes
+Orders  -down-> Inv         : reserves
+Orders  -down-> DB          : persists
+Orders  -down-> MQ          : publishes
+MQ      -right-> Notif      : consumes
+Notif   -right-> EmailAPI   : sends
+Orders  -right-> ShipAPI    : requests delivery
+
+note right of Cart
+  Stateful per-session
+  bounded context.
+end note
+
+note bottom of Orders
+  Aggregate root; emits domain
+  events to MQ on commit.
+end note
+
+note left of Promo
+  Read-only against the
+  catalog; eventual consistency.
+end note
+@enduml
