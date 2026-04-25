@@ -37,15 +37,22 @@ JSON status.
   ```
   Result is a single string: `"ok"` (exit 0) or the stderr (exit ≠ 0).
   - `mode=bless`: write `"ok"` (or stderr) to `baseline`. Status: `blessed`.
-  - `mode=check`: read `baseline`. If equal to current → `pass`. Else `fail`.
+  - `mode=check`: read `baseline`. If equal to current → `pass`. Else
+    `fail` — populate `diff_summary` with the first 120 chars of the
+    current run's output (the stderr that diverges from baseline).
 
 - **svg-hash**: run
   ```bash
   ( cd "$project_root" && PLANTUML_TARGET="$target" plantuml -tsvg -pipe < "$file" \
-      | sed -E 's/<\!--.*-->//g' \
+      | tr '\n' ' ' \
+      | sed -E 's/<!--[^>]*-->//g' \
       | shasum -a 256 \
       | awk '{print $1}' )
   ```
+  Note: the `tr` flattens multi-line SVG to a single line so the comment
+  strip handles cross-line PlantUML banners; the `[^>]*` non-greedy form
+  avoids over-matching when multiple comments appear on the same line.
+  `awk` is intentionally POSIX (no GNU-only constructs).
   - `mode=bless`: write the hash to `baseline`. Status: `blessed`.
   - `mode=check`: compare to baseline. Equal → `pass`. Different → `fail`.
 

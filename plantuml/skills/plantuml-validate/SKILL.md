@@ -27,18 +27,26 @@ levels of stringency.
 2. **Enumerate** `.puml` files (excluding `.plantuml/_*.puml`).
 3. **Compute matrix** `file × target`.
 4. **Compute baseline path** for each cell:
-   `tests/plantuml-baselines/<file-stem>--<target>.<level>`
+   `tests/plantuml-baselines/<flat-relpath>--<target>.<level>`
+   where `<flat-relpath>` is the file path relative to the project root with
+   `/` replaced by `__` and the `.puml` extension dropped (e.g.
+   `diagrams/auth/Foo.puml` → `diagrams__auth__Foo`). This avoids silent
+   collisions when two diagrams share a stem in different directories.
 5. **For `mode=check`**: if any baseline is missing, abort and tell the
    user `"no baselines found, run with mode=bless to capture current state"`.
    (If only some are missing, list them; do not silently skip.)
 6. **Dispatch** each cell to `puml-renderer` via `Task` in parallel batches
    of ≤8.
 7. **Aggregate** statuses. Render a table.
-8. **For `mode=bless`** at level `svg-hash` or higher (i.e. when actual
-   images exist): also dispatch `puml-visual-checker` on the freshly
-   rendered images (1 per (file, target)) and require all checks `pass`
-   or `inconclusive`. A `fail` from visual-checker downgrades the bless
-   to `warning` and asks the user to confirm.
+8. **Visual smoke (build-time only)** — applies to `mode=bless` and
+   only at `level=svg-hash` (or `png-perceptual` once implemented). The
+   svg-hash baseline itself is not viewable, so the skill must perform
+   a one-shot auxiliary PNG render per `(file, target)` (e.g.
+   `plantuml -tpng -Sscale=3 -o <tmp> <file>`) and dispatch
+   `puml-visual-checker` on each PNG. The PNGs are transient — they
+   are NOT stored as baselines. All checks must be `pass` or
+   `inconclusive`; a `fail` downgrades the bless to a warning and
+   prompts the user to confirm.
 
 ## Output
 
