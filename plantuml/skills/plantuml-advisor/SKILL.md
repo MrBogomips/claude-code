@@ -36,9 +36,10 @@ clarification would help.
 
 ### 3. Recommended type
 
-`Same` (no change needed) or `<better-type>`. Cite the relevant rule from
-`principles.md` (e.g., "principles.md §'Behavior over structure' suggests
-sequence over class for runtime interactions"). One-paragraph rationale.
+`Same` (no change needed) or `<better-type>`. Cite the relevant principle
+from `principles.md` by section number and title (e.g.,
+"`principles.md §4 Layout follows flow, not convenience` argues for a
+sequence diagram when ordering is the message"). One-paragraph rationale.
 
 ### 4. Migration sketch
 

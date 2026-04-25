@@ -15,4 +15,9 @@ for section in "Current type" "Intent reading" "Recommended type" "Migration ske
 done
 grep -q 'principles.md' "$SKILL" || fail "advisor must reference principles.md"
 
+# No agent dispatch — advisor is interactive
+if grep -qE '^allowed-tools:.*Task' "$SKILL"; then
+  fail "advisor must NOT use Task"
+fi
+
 echo "PASS: plantuml-advisor static smoke"
