@@ -30,7 +30,7 @@ grep -qE '^model:\s*haiku' "$AGENT" || fail "agent missing haiku model"
 # violations: it contains a hex literal AND a hardcoded skinparam.
 grep -qE '#[0-9A-Fa-f]{6}' "$FIXTURE/diagrams/Drift.puml" || \
   fail "fixture Drift.puml does not contain a hex literal"
-grep -qE 'skinparam defaultFontSize' "$FIXTURE/diagrams/Drift.puml" || \
-  fail "fixture Drift.puml does not contain duplicated skinparam"
+grep -qE 'skinparam (defaultFontName|defaultFontSize|backgroundColor|ArrowColor)' "$FIXTURE/diagrams/Drift.puml" || \
+  fail "fixture Drift.puml does not contain a base-set skinparam"
 
 echo "PASS: plantuml-lint static smoke"

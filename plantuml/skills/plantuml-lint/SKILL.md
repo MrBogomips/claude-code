@@ -20,8 +20,11 @@ Custom path: a single file, glob, or directory passed as argument.
 
 1. **Detect policy presence**:
    ```bash
-   grep -q '^## PlantUML Policy' CLAUDE.md 2>/dev/null && \
-     test -f .plantuml/_base.puml && policy_present=true || policy_present=false
+   if grep -q '^## PlantUML Policy' CLAUDE.md 2>/dev/null && test -f .plantuml/_base.puml; then
+     policy_present=true
+   else
+     policy_present=false
+   fi
    ```
 2. **Enumerate files** via `Glob`, excluding `.plantuml/_*.puml`.
 3. **Batch** files into chunks of ≤10.
