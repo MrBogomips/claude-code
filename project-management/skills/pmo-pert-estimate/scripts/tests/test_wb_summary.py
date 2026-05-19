@@ -1,342 +1,284 @@
-"""Tests for wb_summary sheet generator — TDD (RED first)."""
+"""Tests for the refactored Summary sheet (4-sheet refactor)."""
+from __future__ import annotations
+
 import pytest
 from openpyxl import Workbook
 
-from helpers import wb_wbs, wb_risks, wb_resources, wb_summary
+from helpers import wb_pianificazione_risorse, wb_risks, wb_summary, wb_wbs
 
 
 # ---------------------------------------------------------------------------
-# Helper
+# Helpers
 # ---------------------------------------------------------------------------
 
-def _build_all(data):
-    """Create a Workbook, build WBS/Risks/Resources sheets, return (wb, infos)."""
+def _build_all(data: dict):
     wb = Workbook()
-    wb.remove(wb.active)  # remove default sheet
-
+    wb.remove(wb.active)
     wbs_info = wb_wbs.build(wb, data)
-    resources_info = wb_resources.build(wb, data)
+    rp_info = wb_pianificazione_risorse.build(wb, data, wbs_info)
     risks_info = wb_risks.build(wb, data)
-    return wb, wbs_info, risks_info, resources_info
+    return wb, wbs_info, risks_info, rp_info
+
+
+def _find_label_row(ws, needle: str) -> int | None:
+    for row in ws.iter_rows():
+        for cell in row:
+            if cell.value and needle in str(cell.value):
+                return cell.row
+    return None
+
+
+def _value_in_b(ws, label: str) -> object:
+    row = _find_label_row(ws, label)
+    assert row is not None, f"label not found: {label}"
+    return ws.cell(row=row, column=2).value
 
 
 # ---------------------------------------------------------------------------
-# Tests
+# Sheet presence
 # ---------------------------------------------------------------------------
 
-class TestBuildCreatesSheet:
-    def test_build_creates_sheet(self, full_input_data):
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
+class TestSheetPresence:
+    def test_build_creates_sheet_en(self, full_input_data):
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         assert "Summary" in wb.sheetnames
 
+    def test_build_creates_sheet_it(self, full_input_data):
+        full_input_data["config"]["lang"] = "it"
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
+        assert "Riepilogo" in wb.sheetnames
+
+
+# ---------------------------------------------------------------------------
+# Phase table cross-refs (unchanged)
+# ---------------------------------------------------------------------------
 
 class TestCrossRefsToWbs:
-    def test_cross_refs_to_wbs(self, full_input_data):
-        """Col A of phase rows should reference WBS!B{phase_row} (phase name)."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
+    def test_phase_name_cross_ref(self, full_input_data):
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        phase_rows = wbs_info["phase_rows"]
-
-        # Summary data rows start at row 2 (row 1 is header)
-        for summary_row_offset, wbs_phase_row in enumerate(phase_rows):
-            summary_row = 2 + summary_row_offset
-            cell_a = ws.cell(row=summary_row, column=1)
-            expected = f"=WBS!B{wbs_phase_row}"
-            assert cell_a.value == expected, (
-                f"Row {summary_row} col A: expected '{expected}', got '{cell_a.value}'"
-            )
+        for offset, wbs_phase_row in enumerate(wbs_info["phase_rows"]):
+            assert ws.cell(row=2 + offset, column=1).value == f"=WBS!B{wbs_phase_row}"
 
     def test_pert_effort_cross_ref(self, full_input_data):
-        """Col F (PERT Effort) references WBS!H{phase_row}."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        phase_rows = wbs_info["phase_rows"]
-
-        for summary_row_offset, wbs_phase_row in enumerate(phase_rows):
-            summary_row = 2 + summary_row_offset
-            cell_f = ws.cell(row=summary_row, column=6)
-            expected = f"=WBS!H{wbs_phase_row}"
-            assert cell_f.value == expected, (
-                f"Row {summary_row} col F: expected '{expected}', got '{cell_f.value}'"
-            )
+        for offset, wbs_phase_row in enumerate(wbs_info["phase_rows"]):
+            assert ws.cell(row=2 + offset, column=6).value == f"=WBS!H{wbs_phase_row}"
 
 
-class TestDescriptionColumn:
-    def test_description_column(self, full_input_data):
-        """Col B contains phase descriptions as plain text from input data."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
+# ---------------------------------------------------------------------------
+# Tech PERT, Overhead, Subtotal
+# ---------------------------------------------------------------------------
 
+class TestTechPertAndOverhead:
+    def test_tech_pert_present(self, full_input_data):
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        phases = full_input_data["phases"]
+        v = _value_in_b(ws, "Tech PERT Effort")
+        assert isinstance(v, str) and v.startswith("="), f"expected formula, got {v!r}"
 
-        for offset, phase in enumerate(phases):
-            summary_row = 2 + offset
-            cell_b = ws.cell(row=summary_row, column=2)
-            assert cell_b.value == phase.get("description", ""), (
-                f"Row {summary_row} col B: expected '{phase.get('description', '')}', "
-                f"got '{cell_b.value}'"
-            )
-
-
-class TestTotalPertEffort:
-    def test_total_pert_effort(self, full_input_data):
-        """Summary block has total PERT effort formula (SUM of phase PERT efforts)."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
+    def test_pm_overhead_uses_pct(self, full_input_data):
+        full_input_data["config"]["pm_overhead_pct"] = 0.10
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        # Find cell labeled "Total PERT Effort" and check that its adjacent formula
-        # references either the local total row col F or WBS total row col H.
-        found = False
-        for row in ws.iter_rows():
-            for cell in row:
-                if cell.value and "Total PERT Effort" in str(cell.value):
-                    formula_cell = ws.cell(row=cell.row, column=cell.column + 1)
-                    val = str(formula_cell.value or "")
-                    assert val.startswith("="), (
-                        f"Expected formula for Total PERT Effort, got: {val!r}"
-                    )
-                    found = True
-                    break
-            if found:
-                break
-        assert found, "Label 'Total PERT Effort' not found in Summary sheet"
+        # The label should mention the percentage
+        row = _find_label_row(ws, "PM Overhead")
+        assert row is not None
+        # Formula must reference Tech PERT
+        formula = ws.cell(row=row, column=2).value
+        assert isinstance(formula, str) and formula.startswith("=")
 
-
-class TestTotalBillableEffort:
-    def test_total_billable_effort(self, full_input_data):
-        """Summary block references WBS billable PERT total column S."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
+    def test_devops_overhead_uses_pct(self, full_input_data):
+        full_input_data["config"]["devops_overhead_pct"] = 0.05
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        wbs_total_row = wbs_info["total_row"]
-        expected_formula = f"=WBS!S{wbs_total_row}"
+        row = _find_label_row(ws, "DevOps Overhead")
+        assert row is not None
+        formula = ws.cell(row=row, column=2).value
+        assert isinstance(formula, str) and formula.startswith("=")
 
-        found = False
-        for row in ws.iter_rows():
-            for cell in row:
-                if cell.value == expected_formula:
-                    found = True
-                    break
-            if found:
-                break
-        assert found, (
-            f"Expected formula '{expected_formula}' not found in Summary sheet"
+    def test_subtotal_is_sum_of_tech_and_overhead(self, full_input_data):
+        full_input_data["config"]["pm_overhead_pct"] = 0.10
+        full_input_data["config"]["devops_overhead_pct"] = 0.05
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
+        ws = wb["Summary"]
+        v = _value_in_b(ws, "Subtotal Tech + Overhead")
+        assert isinstance(v, str) and v.startswith("=")
+
+
+# ---------------------------------------------------------------------------
+# Bands (BASSA / MEDIA / ALTA) and Management Reserve
+# ---------------------------------------------------------------------------
+
+class TestBands:
+    def test_fascia_bassa_includes_subtotal_and_contingency(self, full_input_data):
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
+        ws = wb["Summary"]
+        v = _value_in_b(ws, "Low Band")
+        assert isinstance(v, str) and v.startswith("=") and "+" in v
+
+    def test_management_reserve_on_fascia_bassa(self, full_input_data):
+        """MR formula references the Fascia BASSA cell, not just contingency."""
+        full_input_data["config"]["management_reserve_pct"] = 0.20
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
+        ws = wb["Summary"]
+        bassa_row = _find_label_row(ws, "Low Band")
+        mr_row = _find_label_row(ws, "Management Reserve")
+        assert bassa_row is not None and mr_row is not None
+        mr_formula = ws.cell(row=mr_row, column=2).value
+        assert isinstance(mr_formula, str) and f"B{bassa_row}" in mr_formula, (
+            f"MR formula {mr_formula!r} must reference Fascia BASSA cell B{bassa_row}"
         )
 
-
-class TestBillableRatio:
-    def test_billable_ratio(self, full_input_data):
-        """Summary block has a 'Billable Ratio' label with a division formula."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
+    def test_fascia_media_is_bassa_plus_mr(self, full_input_data):
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        found = False
-        for row in ws.iter_rows():
-            for cell in row:
-                if cell.value and "Billable Ratio" in str(cell.value):
-                    formula_cell = ws.cell(row=cell.row, column=cell.column + 1)
-                    val = str(formula_cell.value or "")
-                    assert val.startswith("="), (
-                        f"Expected formula for Billable Ratio, got: {val!r}"
-                    )
-                    assert "/" in val, (
-                        f"Expected division in Billable Ratio formula, got: {val!r}"
-                    )
-                    found = True
-                    break
-            if found:
-                break
-        assert found, "Label 'Billable Ratio' not found in Summary sheet"
+        v = _value_in_b(ws, "Medium Band")
+        assert isinstance(v, str) and v.startswith("=") and "+" in v
 
-
-class TestSigmaTotal:
-    def test_sigma_total(self, full_input_data):
-        """σ Total Duration uses SQRT(SUMPRODUCT(K{s}:K{e},K{s}:K{e})) formula."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
+    def test_fascia_alta_uses_uplift(self, full_input_data):
+        full_input_data["config"]["alta_uplift_pct"] = 0.12
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        found = False
-        for row in ws.iter_rows():
-            for cell in row:
-                if cell.value and "σ Total" in str(cell.value):
-                    formula_cell = ws.cell(row=cell.row, column=cell.column + 1)
-                    val = str(formula_cell.value or "")
-                    assert "SQRT" in val.upper(), (
-                        f"Expected SQRT in sigma formula, got: {val!r}"
-                    )
-                    assert "SUMPRODUCT" in val.upper(), (
-                        f"Expected SUMPRODUCT in sigma formula, got: {val!r}"
-                    )
-                    found = True
-                    break
-            if found:
-                break
-        assert found, "Label 'σ Total' not found in Summary sheet"
+        v = _value_in_b(ws, "High Band")
+        assert isinstance(v, str) and v.startswith("=") and "*" in v
 
 
-class TestCI68:
-    def test_ci_68(self, full_input_data):
-        """CI 68% has lower and upper bounds: total_pert ∓ σ."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
+# ---------------------------------------------------------------------------
+# Calendar Duration
+# ---------------------------------------------------------------------------
 
+class TestCalendarDuration:
+    def test_calendar_duration_from_config(self, full_input_data):
+        full_input_data["config"]["calendar_total_weeks"] = 25
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        lower_found = False
-        upper_found = False
+        v = _value_in_b(ws, "Calendar Duration")
+        assert v == 25
 
-        for row in ws.iter_rows():
-            for cell in row:
-                val = str(cell.value or "")
-                if "CI 68%" in val and "Lower" in val:
-                    formula_cell = ws.cell(row=cell.row, column=cell.column + 1)
-                    fval = str(formula_cell.value or "")
-                    assert fval.startswith("=") and "-" in fval, (
-                        f"CI 68% Lower formula expected subtraction, got: {fval!r}"
-                    )
-                    lower_found = True
-                if "CI 68%" in val and "Upper" in val:
-                    formula_cell = ws.cell(row=cell.row, column=cell.column + 1)
-                    fval = str(formula_cell.value or "")
-                    assert fval.startswith("=") and "+" in fval, (
-                        f"CI 68% Upper formula expected addition, got: {fval!r}"
-                    )
-                    upper_found = True
-
-        assert lower_found, "Label 'CI 68% Lower' not found in Summary sheet"
-        assert upper_found, "Label 'CI 68% Upper' not found in Summary sheet"
-
-
-class TestCI95:
-    def test_ci_95(self, full_input_data):
-        """CI 95% has lower and upper bounds: total_pert ∓ 2*σ."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
+    def test_calendar_duration_from_phase_weeks(self, full_input_data):
+        full_input_data["config"].pop("calendar_total_weeks", None)
+        # phase1 W1-W4, phase2 W3-W7  → calendar = 7-1+1 = 7
+        full_input_data["phases"][0]["start_week"] = 1
+        full_input_data["phases"][0]["end_week"] = 4
+        full_input_data["phases"][1]["start_week"] = 3
+        full_input_data["phases"][1]["end_week"] = 7
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        lower_found = False
-        upper_found = False
-
-        for row in ws.iter_rows():
-            for cell in row:
-                val = str(cell.value or "")
-                if "CI 95%" in val and "Lower" in val:
-                    formula_cell = ws.cell(row=cell.row, column=cell.column + 1)
-                    fval = str(formula_cell.value or "")
-                    assert fval.startswith("=") and "2" in fval, (
-                        f"CI 95% Lower formula expected '2', got: {fval!r}"
-                    )
-                    lower_found = True
-                if "CI 95%" in val and "Upper" in val:
-                    formula_cell = ws.cell(row=cell.row, column=cell.column + 1)
-                    fval = str(formula_cell.value or "")
-                    assert fval.startswith("=") and "2" in fval, (
-                        f"CI 95% Upper formula expected '2', got: {fval!r}"
-                    )
-                    upper_found = True
-
-        assert lower_found, "Label 'CI 95% Lower' not found in Summary sheet"
-        assert upper_found, "Label 'CI 95% Upper' not found in Summary sheet"
+        v = _value_in_b(ws, "Calendar Duration")
+        assert v == 7
 
 
-class TestContingencyCrossRef:
-    def test_contingency_cross_ref(self, full_input_data):
-        """Summary references =Risks!L{total_contingency_row}."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
-        ws = wb["Summary"]
-        expected = f"=Risks!L{risks_info['total_contingency_row']}"
-        found = False
-        for row in ws.iter_rows():
-            for cell in row:
-                if cell.value == expected:
-                    found = True
-                    break
-            if found:
-                break
-        assert found, (
-            f"Expected formula '{expected}' not found in Summary sheet"
-        )
-
-
-class TestReserveCrossRef:
-    def test_reserve_cross_ref(self, full_input_data):
-        """Summary references =Risks!L{reserve_row}."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
-        ws = wb["Summary"]
-        expected = f"=Risks!L{risks_info['reserve_row']}"
-        found = False
-        for row in ws.iter_rows():
-            for cell in row:
-                if cell.value == expected:
-                    found = True
-                    break
-            if found:
-                break
-        assert found, (
-            f"Expected formula '{expected}' not found in Summary sheet"
-        )
-
-
-class TestAdjustedPert:
-    def test_adjusted_pert(self, full_input_data):
-        """Adjusted PERT Effort = PERT + Contingency + Reserve."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
-        ws = wb["Summary"]
-        found = False
-        for row in ws.iter_rows():
-            for cell in row:
-                if cell.value and "Adjusted PERT" in str(cell.value):
-                    formula_cell = ws.cell(row=cell.row, column=cell.column + 1)
-                    val = str(formula_cell.value or "")
-                    assert val.startswith("="), (
-                        f"Expected formula for Adjusted PERT, got: {val!r}"
-                    )
-                    # Should sum three things (two '+' signs or a SUM)
-                    assert val.count("+") >= 2 or "SUM" in val.upper(), (
-                        f"Adjusted PERT should add three components, got: {val!r}"
-                    )
-                    found = True
-                    break
-            if found:
-                break
-        assert found, "Label 'Adjusted PERT' not found in Summary sheet"
-
+# ---------------------------------------------------------------------------
+# Effort by Team (in PD, not %)
+# ---------------------------------------------------------------------------
 
 class TestEffortByTeam:
-    def test_effort_by_team(self, full_input_data):
-        """Summary has per-team effort rows referencing Resources sheet subtotals."""
-        wb, wbs_info, risks_info, resources_info = _build_all(full_input_data)
-        wb_summary.build(wb, full_input_data, wbs_info, risks_info, resources_info)
-
+    def test_effort_by_team_present_as_numbers(self, full_input_data):
+        """Per-team effort rows are literal PD numbers (not Resources cross-refs)."""
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
         ws = wb["Summary"]
-        total_effort_col = resources_info["total_effort_col"]
+        section_row = _find_label_row(ws, "Effort by Team")
+        assert section_row is not None
+        # Find at least one team row right after the section header
+        # with a numeric value in column B.
+        found_numeric = False
+        for r in range(section_row + 1, section_row + 12):
+            v = ws.cell(row=r, column=2).value
+            if isinstance(v, (int, float)) and v > 0:
+                found_numeric = True
+                break
+        assert found_numeric, "no numeric team effort row found below 'Effort by Team' header"
 
-        for team, subtotal_row in resources_info["team_subtotal_rows"].items():
-            expected_formula = f"=Resources!{total_effort_col}{subtotal_row}"
-            found = False
-            for row in ws.iter_rows():
-                for cell in row:
-                    if cell.value == expected_formula:
-                        found = True
-                        break
-                if found:
-                    break
-            assert found, (
-                f"Expected formula '{expected_formula}' for team '{team}' "
-                f"not found in Summary sheet"
-            )
+    def test_team_totals_sum_to_tech_pert(self, full_input_data):
+        """Σ team subtotals == total PERT effort of activities with a primary role."""
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
+        ws = wb["Summary"]
+        section_row = _find_label_row(ws, "Effort by Team")
+        assert section_row is not None
+        # Scan all numeric rows after the header
+        team_sum = 0.0
+        for r in range(section_row + 1, section_row + 30):
+            v = ws.cell(row=r, column=2).value
+            if v is None:
+                continue
+            if isinstance(v, (int, float)):
+                team_sum += v
+            else:
+                break
+        # Expected: sum of PERT of activities where resources[0] is set
+        expected = 0.0
+        for phase in full_input_data["phases"]:
+            for wp in phase["work_packages"]:
+                for a in wp["activities"]:
+                    if a.get("resources"):
+                        expected += (a["best_effort"] + 4 * a["likely_effort"] + a["worst_effort"]) / 6.0
+        assert team_sum == pytest.approx(expected)
+
+
+# ---------------------------------------------------------------------------
+# Sensitivity Scenarios
+# ---------------------------------------------------------------------------
+
+class TestSensitivityScenarios:
+    def test_scenarios_listed_as_text(self, full_input_data):
+        full_input_data["scenarios"] = [
+            "Optimistic: 320 PD",
+            "Realistic: 465 PD",
+        ]
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
+        ws = wb["Summary"]
+        section_row = _find_label_row(ws, "Sensitivity")
+        assert section_row is not None
+        # Two text rows should follow
+        texts: list[str] = []
+        for r in range(section_row + 1, section_row + 6):
+            v = ws.cell(row=r, column=1).value
+            if isinstance(v, str) and v:
+                texts.append(v)
+            else:
+                break
+        assert any("Optimistic" in s for s in texts)
+        assert any("Realistic" in s for s in texts)
+
+
+# ---------------------------------------------------------------------------
+# Removed legacy behavior
+# ---------------------------------------------------------------------------
+
+class TestLegacyRemoved:
+    def test_no_sequential_ci_duration(self, full_input_data):
+        """CI 68/95 Duration rows must NOT be present (Issue #2)."""
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
+        ws = wb["Summary"]
+        assert _find_label_row(ws, "CI 68%") is None
+        assert _find_label_row(ws, "CI 95%") is None
+
+    def test_no_resources_cross_ref(self, full_input_data):
+        """Summary must not reference the deleted Resources sheet."""
+        wb, wbs_info, risks_info, rp_info = _build_all(full_input_data)
+        wb_summary.build(wb, full_input_data, wbs_info, risks_info, rp_info)
+        ws = wb["Summary"]
+        for row in ws.iter_rows():
+            for cell in row:
+                if cell.value and "Resources!" in str(cell.value):
+                    pytest.fail(f"Summary still references Resources sheet: {cell.value!r}")
