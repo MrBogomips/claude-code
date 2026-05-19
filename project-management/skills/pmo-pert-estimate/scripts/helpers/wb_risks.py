@@ -44,12 +44,18 @@ _COLUMN_WIDTHS = {
 # Public API
 # ---------------------------------------------------------------------------
 
-def build(wb: Workbook, data: dict) -> dict:
+def build(wb: Workbook, data: dict, wbs_info: dict | None = None) -> dict:
     """Build the Risks sheet and append it to the workbook.
 
     Args:
-        wb:   An openpyxl Workbook instance.
-        data: Input dict with keys ``config``, ``risks``, ``roles``, ``phases``.
+        wb:       An openpyxl Workbook instance.
+        data:     Input dict with keys ``config``, ``risks``, ``roles``, ``phases``.
+        wbs_info: Optional WBS sheet_info. When provided, the Management
+                  Reserve formula uses the correct PMI-compliant base
+                  (Tech + Overhead + Contingency) cross-referenced from the
+                  WBS total row. When omitted, the legacy
+                  ``=L{total}*pct`` formula is preserved for backward
+                  compatibility with callers/tests that don't track WBS.
 
     Returns:
         A ``sheet_info`` dict with keys:
@@ -65,6 +71,8 @@ def build(wb: Workbook, data: dict) -> dict:
     effort_unit = config.get("effort_unit", "pd")
     avg_rate = config.get("avg_rate")
     reserve_pct = config.get("management_reserve_pct", 0.10)
+    pm_pct = float(config.get("pm_overhead_pct") or 0)
+    devops_pct = float(config.get("devops_overhead_pct") or 0)
 
     ws = wb.create_sheet(title=_SHEET_NAME)
 
@@ -168,19 +176,33 @@ def build(wb: Workbook, data: dict) -> dict:
         )
         apply_style(total_m, get_total_style())
 
-    # Management Reserve row
+    # Management Reserve row.
+    # When wbs_info is supplied, MR is computed on the correct PMI base:
+    #   Tech PERT (WBS!H{total}) × (1 + pm_pct + devops_pct) + Contingency
+    # — i.e. the same "Fascia BASSA" value the Summary sheet shows.
+    # Otherwise we fall back to the legacy formula for callers that did not
+    # build a WBS sheet first.
     ws.cell(row=reserve_row, column=1, value="Management Reserve")
-    ws.cell(
-        row=reserve_row,
-        column=12,
-        value=f"=L{total_row}*{reserve_pct}",
-    )
-    if avg_rate is not None:
-        ws.cell(
-            row=reserve_row,
-            column=13,
-            value=f"=M{total_row}*{reserve_pct}",
+    if wbs_info is not None:
+        wbs_total_row = wbs_info["total_row"]
+        mr_formula = (
+            f"=(WBS!H{wbs_total_row}*(1+{pm_pct}+{devops_pct})"
+            f"+L{total_row})*{reserve_pct}"
         )
+    else:
+        mr_formula = f"=L{total_row}*{reserve_pct}"
+    ws.cell(row=reserve_row, column=12, value=mr_formula)
+    if avg_rate is not None:
+        # Cost projection mirrors the effort formula scaled by avg_rate.
+        if wbs_info is not None:
+            wbs_total_row = wbs_info["total_row"]
+            mr_cost_formula = (
+                f"=(WBS!H{wbs_total_row}*(1+{pm_pct}+{devops_pct})"
+                f"+L{total_row})*{reserve_pct}*{avg_rate}"
+            )
+        else:
+            mr_cost_formula = f"=M{total_row}*{reserve_pct}"
+        ws.cell(row=reserve_row, column=13, value=mr_cost_formula)
 
     # -----------------------------------------------------------------------
     # Column widths
