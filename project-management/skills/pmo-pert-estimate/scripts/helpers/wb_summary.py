@@ -135,8 +135,10 @@ def build(
     # Contingency per-risk
     contingency_row = current
     risks_contingency_row = risks_info["total_contingency_row"]
+    risks_sheet_ref = _quote_sheet(risks_info["sheet_name"])
     ws.cell(row=contingency_row, column=1, value=t(lang, "summary_contingency"))
-    ws.cell(row=contingency_row, column=2, value=f"=Risks!L{risks_contingency_row}")
+    ws.cell(row=contingency_row, column=2,
+            value=f"={risks_sheet_ref}!L{risks_contingency_row}")
     current += 1
 
     # Fascia BASSA
@@ -220,6 +222,13 @@ def build(
 def _pct_label(pct: float) -> int | float:
     """Convert a 0..1 ratio into a human percentage for label formatting."""
     return int(round(pct * 100)) if pct else 0
+
+
+def _quote_sheet(name: str) -> str:
+    """Quote an Excel sheet reference if it contains spaces or special chars."""
+    if any(c in name for c in " '!"):
+        return "'" + name.replace("'", "''") + "'"
+    return name
 
 
 def _write_header(ws: Worksheet, effort_unit: str, duration_unit: str) -> None:

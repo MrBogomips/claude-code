@@ -156,8 +156,8 @@ def test_column_map_returned(full_input_data, tmp_path):
     assert "column_map" in result
     column_map = result["column_map"]
 
-    # Expected sheets
-    for sheet in ("WBS", "Timeline", "Resources", "Risks", "Summary"):
+    # Expected sheets (4-sheet refactor)
+    for sheet in ("WBS", "Resource Plan", "Risks", "Summary"):
         assert sheet in column_map, f"column_map missing sheet '{sheet}'"
         assert isinstance(column_map[sheet], dict), (
             f"column_map['{sheet}'] should be a dict of header->column_letter"

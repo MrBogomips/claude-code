@@ -14,14 +14,17 @@ Return value from validate():
         "valid": True | False,
         "column_map": {
             "WBS": {"ID": "A", "Phase": "B", ...},
-            "Timeline": {...},
-            "Resources": {...},
+            "Resource Plan": {...},
             "Risks": {...},
             "Summary": {...},
         },
         "errors": ["..."],
         "warnings": ["..."],
     }
+
+Sheet names follow the English defaults emitted by the generator. Italian
+deliverables are renamed by the localization layer; the validator accepts
+both English and Italian sheet names as equivalents.
 """
 from __future__ import annotations
 
@@ -37,10 +40,18 @@ from openpyxl.utils import get_column_letter
 
 
 # ---------------------------------------------------------------------------
-# Required sheet names
+# Required sheets \u2014 canonical English names + Italian aliases
 # ---------------------------------------------------------------------------
 
-REQUIRED_SHEETS = ["WBS", "Timeline", "Resources", "Risks", "Summary"]
+REQUIRED_SHEETS = ["WBS", "Resource Plan", "Risks", "Summary"]
+
+#: Italian aliases \u2014 accepted in addition to the canonical English names.
+SHEET_ALIASES: dict[str, set[str]] = {
+    "WBS": {"WBS"},
+    "Resource Plan": {"Resource Plan", "Pianificazione Risorse"},
+    "Risks": {"Risks", "Rischi"},
+    "Summary": {"Summary", "Riepilogo"},
+}
 
 
 # ---------------------------------------------------------------------------
@@ -70,18 +81,13 @@ REQUIRED_COLUMNS: dict[str, list[str]] = {
         "Billable",
         "Billable PERT Effort",
     ],
-    "Timeline": [
-        "ID",
-        "Phase/WP/Activity",
-        "PERT Duration",
-        "\u03c3",
-    ],
-    "Resources": [
-        "Phase",
-        "Description",
-        "Team",
-        "TOTAL EFFORT",
-        "BILLABLE EFFORT",
+    "Resource Plan": [
+        # Role / Code / Type, plus at least one week column and the TOTAL.
+        # Match accepts both English and Italian via partial matching below.
+        "Role",
+        "Code",
+        "Type",
+        "TOTAL",
     ],
     "Risks": [
         "ID",
@@ -103,6 +109,16 @@ REQUIRED_COLUMNS: dict[str, list[str]] = {
     ],
 }
 
+#: Italian column-name aliases for Resource Plan, used by the partial matcher.
+COLUMN_ALIASES: dict[str, dict[str, list[str]]] = {
+    "Resource Plan": {
+        "Role": ["Role", "Ruolo"],
+        "Code": ["Code", "Codice"],
+        "Type": ["Type", "Tipo"],
+        "TOTAL": ["TOTAL", "TOTALE"],
+    },
+}
+
 # ---------------------------------------------------------------------------
 # PERT formula pattern for WBS column H (PERT Effort)
 # Matches:  =(E{n}+4*F{n}+G{n})/6
@@ -117,14 +133,12 @@ _SUM_RE = re.compile(r"^\s*=\s*SUM\s*\(", re.IGNORECASE)
 
 
 # ---------------------------------------------------------------------------
-# Header row per sheet (1-based)
-# Resources has a metadata row 1 and headers in row 2.
+# Header row per canonical sheet (1-based)
 # ---------------------------------------------------------------------------
 
 _HEADER_ROW: dict[str, int] = {
     "WBS": 1,
-    "Timeline": 1,
-    "Resources": 2,
+    "Resource Plan": 1,
     "Risks": 1,
     "Summary": 1,
 }
@@ -160,12 +174,17 @@ def validate(template_path: str) -> dict[str, Any]:
         return _result(False, column_map, [f"Cannot open file: {exc}"], warnings)
 
     # ------------------------------------------------------------------
-    # Check required sheets
+    # Resolve canonical sheets — accept English defaults and Italian aliases.
     # ------------------------------------------------------------------
     present_sheets = set(wb.sheetnames)
-    for sheet_name in REQUIRED_SHEETS:
-        if sheet_name not in present_sheets:
-            errors.append(f"Missing sheet: {sheet_name}")
+    sheet_resolution: dict[str, str] = {}  # canonical -> actual name in workbook
+    for canonical in REQUIRED_SHEETS:
+        aliases = SHEET_ALIASES.get(canonical, {canonical})
+        match = next((name for name in aliases if name in present_sheets), None)
+        if match is None:
+            errors.append(f"Missing sheet: {canonical}")
+        else:
+            sheet_resolution[canonical] = match
 
     if errors:
         wb.close()
@@ -174,13 +193,18 @@ def validate(template_path: str) -> dict[str, Any]:
     # ------------------------------------------------------------------
     # For each required sheet: scan headers, build column_map
     # ------------------------------------------------------------------
-    for sheet_name in REQUIRED_SHEETS:
-        ws = wb[sheet_name]
-        header_row = _HEADER_ROW.get(sheet_name, 1)
+    for canonical in REQUIRED_SHEETS:
+        actual = sheet_resolution[canonical]
+        ws = wb[actual]
+        header_row = _HEADER_ROW.get(canonical, 1)
         sheet_col_map, sheet_errors, sheet_warnings = _validate_sheet_columns(
-            ws, sheet_name, header_row, REQUIRED_COLUMNS.get(sheet_name, [])
+            ws,
+            actual,
+            header_row,
+            REQUIRED_COLUMNS.get(canonical, []),
+            aliases=COLUMN_ALIASES.get(canonical, {}),
         )
-        column_map[sheet_name] = sheet_col_map
+        column_map[canonical] = sheet_col_map
         errors.extend(sheet_errors)
         warnings.extend(sheet_warnings)
 
@@ -188,7 +212,7 @@ def validate(template_path: str) -> dict[str, Any]:
     # Validate PERT formula pattern in WBS column H
     # ------------------------------------------------------------------
     if "WBS" not in [e.split(":")[1].strip() if ":" in e else "" for e in errors]:
-        wbs_errors = _validate_wbs_pert_formulas(wb["WBS"])
+        wbs_errors = _validate_wbs_pert_formulas(wb[sheet_resolution["WBS"]])
         errors.extend(wbs_errors)
 
     wb.close()
@@ -220,19 +244,24 @@ def _validate_sheet_columns(
     sheet_name: str,
     header_row: int,
     required: list[str],
+    aliases: dict[str, list[str]] | None = None,
 ) -> tuple[dict[str, str], list[str], list[str]]:
     """Scan the header row of *ws* and return (col_map, errors, warnings).
 
     Matching strategy: each required fragment is matched to at most one header,
-    and each header is consumed by at most one requirement.  Requirements are
+    and each header is consumed by at most one requirement. Requirements are
     matched in descending order of specificity (longest fragment first) so that
     "Billable PERT Effort" is satisfied before the shorter "Billable" fragment.
+
+    If a fragment has aliases (e.g. English/Italian translations), any alias
+    can satisfy it.
 
     Args:
         ws:         Worksheet to inspect.
         sheet_name: Sheet name (for error messages).
         header_row: Row number (1-based) containing column headers.
         required:   List of required column name fragments.
+        aliases:    Optional ``{canonical_fragment: [alternates...]}``.
 
     Returns:
         col_map:  {header_text: column_letter} for all headers found.
@@ -242,8 +271,8 @@ def _validate_sheet_columns(
     errors: list[str] = []
     warnings: list[str] = []
     col_map: dict[str, str] = {}
+    aliases = aliases or {}
 
-    # Collect all non-empty headers from the header row
     row_cells = list(ws.iter_rows(min_row=header_row, max_row=header_row, values_only=False))[0]
     for cell in row_cells:
         value = cell.value
@@ -251,23 +280,24 @@ def _validate_sheet_columns(
             col_letter = get_column_letter(cell.column)
             col_map[str(value).strip()] = col_letter
 
-    # Build one-to-one assignment: required fragment → matched header.
-    # Process requirements from most specific (longest) to least specific.
     available_headers = set(col_map.keys())
-    assigned: dict[str, str] = {}  # fragment → matched header
+    assigned: dict[str, str] = {}
 
     for req in sorted(required, key=len, reverse=True):
-        matched = _find_partial_match(req, available_headers)
+        candidates = aliases.get(req, [req])
+        matched: str | None = None
+        for candidate in candidates:
+            matched = _find_partial_match(candidate, available_headers)
+            if matched:
+                break
         if matched:
             assigned[req] = matched
             available_headers.discard(matched)
 
-    # Report missing required columns
     for req in required:
         if req not in assigned:
             errors.append(f"Missing column '{req}' in sheet '{sheet_name}'")
 
-    # Warn about extra columns (those not consumed by any requirement)
     for header in available_headers:
         warnings.append(f"Extra column '{header}' in sheet '{sheet_name}'")
 
@@ -275,12 +305,9 @@ def _validate_sheet_columns(
 
 
 def _find_partial_match(fragment: str, headers: set[str]) -> str | None:
-    """Return the first header in *headers* that contains *fragment* (case-insensitive).
-
-    Returns the matching header string, or None if not found.
-    """
+    """Return the first header in *headers* that contains *fragment* (case-insensitive)."""
     fragment_lower = fragment.lower()
-    for header in sorted(headers):  # deterministic ordering
+    for header in sorted(headers):
         if fragment_lower in header.lower():
             return header
     return None

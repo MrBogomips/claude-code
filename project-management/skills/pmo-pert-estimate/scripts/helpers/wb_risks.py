@@ -12,12 +12,12 @@ from helpers.formatting import (
     apply_style,
     get_total_style,
 )
+from helpers.i18n import t
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-_SHEET_NAME = "Risks"
 _DATA_START_ROW = 2
 
 _RED_FONT = Font(bold=True, color="FFFF0000")
@@ -73,8 +73,10 @@ def build(wb: Workbook, data: dict, wbs_info: dict | None = None) -> dict:
     reserve_pct = config.get("management_reserve_pct", 0.10)
     pm_pct = float(config.get("pm_overhead_pct") or 0)
     devops_pct = float(config.get("devops_overhead_pct") or 0)
+    lang = config.get("lang", "en")
 
-    ws = wb.create_sheet(title=_SHEET_NAME)
+    sheet_name = t(lang, "sheet_risks")
+    ws = wb.create_sheet(title=sheet_name)
 
     # -----------------------------------------------------------------------
     # Row 1: Headers
@@ -210,7 +212,7 @@ def build(wb: Workbook, data: dict, wbs_info: dict | None = None) -> dict:
     apply_column_widths(ws, _COLUMN_WIDTHS)
 
     return {
-        "sheet_name": _SHEET_NAME,
+        "sheet_name": sheet_name,
         "data_start_row": data_start,
         "data_end_row": data_end,
         "total_contingency_row": total_row,
