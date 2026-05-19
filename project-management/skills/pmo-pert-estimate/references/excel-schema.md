@@ -1,6 +1,10 @@
 # Excel Schema Reference — pmo-pert-estimate
 
-Machine-readable reference for the Excel Generator agent. All formula templates use `{r}` for current row number.
+Machine-readable reference for the Excel Generator agent. All formula
+templates use `{r}` for the current row number. The workbook contains
+exactly **4 sheets** in this order: **WBS**, **Resource Plan** /
+**Pianificazione Risorse**, **Risks** / **Rischi**, **Summary** /
+**Riepilogo**. Sheet titles are localized via `config.lang`.
 
 ---
 
@@ -8,243 +12,332 @@ Machine-readable reference for the Excel Generator agent. All formula templates 
 
 | Rule | Value |
 |------|-------|
-| Header row | Row 1 (exception: Resources uses Row 1 for metadata, Row 2 for headers) |
-| Data start row | Row 2 (exception: Resources uses Row 3) |
-| TOTAL row | Last data row + 1 |
+| Effort unit | Person-days (PD) everywhere. Never percentages. |
+| Calendar unit | Weeks. The unit appears in column headers as `(weeks)`. |
+| Header row | Row 1 |
+| Data start row | Row 2 (Resource Plan: row 3, after a calendar reference row at row 2) |
 | Number format | `#,##0.00` for all numeric cells |
-| Formula injection | Always as string (e.g., `f'=(E{r}+4*F{r}+G{r})/6'`), never computed values |
+| Formula injection | Always as string (e.g., `f'=(E{r}+4*F{r}+G{r})/6'`); never computed values |
 
 ---
 
-## Sheet 1: WBS
+## JSON Input Schema (v2 — 4-sheet refactor)
 
-### Columns
+### `config` block
 
-| Col | Header | Type | Leaf Row | Rollup Row (Phase/WP) | TOTAL Row |
-|-----|--------|------|----------|----------------------|-----------|
-| A | ID | input | `1.1.1` | `1` or `1.1` | `"TOTAL"` |
-| B | Phase | input | (empty) | Phase name (level 1 only) | (empty) |
-| C | Work Package | input | (empty) | WP name (level 2 only) | (empty) |
-| D | Activity | input | Activity name | (empty) | (empty) |
-| E | Best Effort ({unit}) | input | numeric | `=SUM(E{first}:E{last})` | `=SUM(E{phase_rows})` |
-| F | Likely Effort ({unit}) | input | numeric | `=SUM(F{first}:F{last})` | `=SUM(F{phase_rows})` |
-| G | Worst Effort ({unit}) | input | numeric | `=SUM(G{first}:G{last})` | `=SUM(G{phase_rows})` |
-| H | PERT Effort ({unit}) | **formula** | `=(E{r}+4*F{r}+G{r})/6` | `=(E{r}+4*F{r}+G{r})/6` | `=SUM(H{phase_rows})` |
-| I | Best Duration ({unit}) | input | numeric | `=SUM(I{first}:I{last})` | `=SUM(I{phase_rows})` |
-| J | Likely Duration ({unit}) | input | numeric | `=SUM(J{first}:J{last})` | `=SUM(J{phase_rows})` |
-| K | Worst Duration ({unit}) | input | numeric | `=SUM(K{first}:K{last})` | `=SUM(K{phase_rows})` |
-| L | PERT Duration ({unit}) | **formula** | `=(I{r}+4*J{r}+K{r})/6` | `=(I{r}+4*J{r}+K{r})/6` | `=(I{r}+4*J{r}+K{r})/6` |
-| M | sigma Duration | **formula** | `=(K{r}-I{r})/6` | `=(K{r}-I{r})/6` | `=(K{r}-I{r})/6` |
-| N | Resources | input | Role codes (e.g., `TL, SD`) | (empty) | (empty) |
-| O | Dependencies | input | Activity IDs (e.g., `1.0.2`) | (empty) | (empty) |
-| P | Risks | input | Risk refs (e.g., `R1, R2`) | (empty) | (empty) |
-| Q | Notes | input | Free text | (empty) | (empty) |
-| R | Billable | input | `Y` or `N` | (empty) | (empty) |
-| S | Billable PERT Effort | **formula** | `=IF(R{r}="Y",H{r},0)` | `=SUM(S{first}:S{last})` | `=SUM(S{phase_rows})` |
+```jsonc
+{
+  "config": {
+    "lang": "en",                       // "en" (default) | "it"
+    "effort_unit": "pd",
+    "duration_unit": "d",
+    "primary_color": "1B4FA5",
+    "currency": "EUR",
+    "project_start_date": "2026-04-06", // W1 anchor for Resource Plan calendar row
+    "management_reserve_pct": 0.10,
+    "avg_rate": 500,                    // optional, drives Contingency Cost columns
 
-### Row Types
-
-| Level | ID Pattern | Filled Columns | E-G / I-K Behavior |
-|-------|-----------|----------------|---------------------|
-| Phase (1) | No dots: `1`, `2` | B (Phase) | `=SUM()` of children |
-| Work Package (2) | One dot: `1.1`, `2.3` | C (Work Package) | `=SUM()` of leaf children |
-| Activity (3) | Two dots: `1.1.1`, `2.3.4` | D (Activity) | Input values |
-
-### SUM Range Construction
-
-For rollup rows, `{first}` and `{last}` are the first and last child row numbers:
-
-```python
-# Phase row at row r, children from r+1 to r+n
-f'=SUM(E{r+1}:E{r+n})'
-
-# Work package row at row r, leaf children from r+1 to r+m
-f'=SUM(E{r+1}:E{r+m})'
-
-# TOTAL row: sum only phase-level rows
-f'=SUM(E{phase_row_1},E{phase_row_2},...,E{phase_row_n})'
+    // ---- New in v2 ----
+    "pm_overhead_pct": 0.0,             // ratio of Tech PERT (e.g. 0.10 = +10%)
+    "devops_overhead_pct": 0.0,         // ratio of Tech PERT
+    "alta_uplift_pct": 0.12,            // High Band uplift over Medium Band
+    "calendar_total_weeks": null        // optional explicit calendar duration override
+  }
+}
 ```
 
-### Formatting
+### `phases[].start_week` / `phases[].end_week` (new, optional)
 
-| Row Type | Font | Background | Text Color | Border |
-|----------|------|------------|------------|--------|
-| Phase | Bold | Primary color (`1B4FA5`) | White (`FFFFFF`) | Standard |
-| Work Package | Bold | Light gray (`D9E2F3`) | Black | Standard |
-| Activity (leaf) | Normal | White | Black | Standard |
-| TOTAL | Bold | Dark (`1B4FA5`) | White | Double top border |
-| Formula columns (H, L, M, S) | (per row type) | Pale yellow (`FFF2CC`) | (per row type) | Standard |
+```jsonc
+{
+  "phases": [
+    {
+      "id": "1",
+      "name": "Analysis",
+      "start_week": 1,
+      "end_week": 4,
+      "work_packages": [...]
+    }
+  ]
+}
+```
+
+When present, drive the Resource Plan calendar and the Summary
+`Calendar Duration` value. When absent, phases are stacked sequentially
+using a duration heuristic.
+
+### `scenarios[]` (new, optional)
+
+```jsonc
+{
+  "scenarios": [
+    "Optimistic: 320 PD if no integration delays",
+    "Realistic: 465 PD (Fascia MEDIA)",
+    "Pessimistic: 540 PD if external API rework"
+  ]
+}
+```
+
+Listed verbatim under the Summary "Sensitivity Scenarios" header.
+
+### Activities: `resources[]` ordering
+
+The first element of `activity.resources` is the **primary role** for that
+activity. The primary role drives:
+
+- Resource Plan PD allocation per week
+- Summary "Effort by Team" rollup
+- Implicit team membership via `roles[primary].team`
+
+Subsequent role codes in `resources[]` are informational only and appear
+in the WBS `Resources` column as a comma-joined list.
+
+### Legacy JSON (v1) backward compatibility
+
+JSON written against the v1 schema (no `pm_overhead_pct`, no calendar
+fields) is still accepted. The generator routes input through
+`helpers.config_compat.normalize_config()`, which:
+
+1. Backfills modern config defaults (overhead = 0, alta_uplift = 0.12, `calendar_total_weeks` = `None`).
+2. Emits **one stderr warning** per invocation:
+   ```
+   [pmo-pert] LEGACY JSON: missing modern fields; using defaults. See references/excel-schema.md for migration.
+   ```
+
+#### Migration example
+
+**Before (v1)**
+
+```jsonc
+{
+  "config": {
+    "effort_unit": "pd",
+    "management_reserve_pct": 0.20
+  },
+  "phases": [...],
+  "roles": [...],
+  "risks": [...]
+}
+```
+
+**After (v2 recommended)**
+
+```jsonc
+{
+  "config": {
+    "effort_unit": "pd",
+    "project_start_date": "2026-04-06",
+    "management_reserve_pct": 0.20,
+    "pm_overhead_pct": 0.10,
+    "devops_overhead_pct": 0.05,
+    "alta_uplift_pct": 0.12,
+    "calendar_total_weeks": 25
+  },
+  "phases": [
+    {"id": "1", "name": "Analysis", "start_week": 1, "end_week": 4,  "work_packages": [...]},
+    {"id": "2", "name": "Build",    "start_week": 3, "end_week": 18, "work_packages": [...]}
+  ],
+  "scenarios": [
+    "Optimistic: 320 PD",
+    "Realistic: 465 PD",
+    "Pessimistic: 540 PD"
+  ],
+  "roles": [...],
+  "risks": [...]
+}
+```
 
 ---
 
-## Sheet 2: Timeline
+## Sheet 1 — WBS
 
-### Columns
+Unchanged from v1. Columns A–S retain the same layout.
 
-| Col | Header | Type | Formula Template |
-|-----|--------|------|-----------------|
-| A | ID | **formula** | `=WBS!A{r}` |
-| B | Phase/WP/Activity | **formula** | `=WBS!B{r}&IF(WBS!C{r}<>"", " "&WBS!C{r}, "")&IF(WBS!D{r}<>"", " "&WBS!D{r}, "")` |
-| C | PERT Duration | **formula** | `=WBS!L{r}` |
-| D | σ | **formula** | `=WBS!M{r}` |
-| E..N+ | P1, P2, P3... | fill | Gantt bar cells (colored fill, no formula) |
-
-### Period Columns
-
-Generated dynamically based on `config.period_type`:
-
-| Period Type | Column Header Pattern |
-|-------------|----------------------|
-| `biweekly` | `P1`, `P2`, `P3`, ... |
-| `weekly` | `W1`, `W2`, `W3`, ... |
-| `monthly` | `M1`, `M2`, `M3`, ... |
-
-### Critical Path Determination
-
-1. Build dependency graph from WBS column O
-2. Forward pass: ES = max(EF of predecessors), EF = ES + PERT Duration
-3. Critical path = longest path (Total Float = 0)
-4. No dependencies defined: infer sequential by phase, parallel within phase
-
-### Gantt Cell Colors
-
-| Color | Hex | Meaning |
-|-------|-----|---------|
-| Red | `FF0000` | Critical path activities |
-| Blue | `4472C4` | Parallel activities |
-| Orange | `FFA500` | Continuous/cross-cutting activities |
-
-Include a legend row below the Gantt.
-
-### Summary Block (Below Gantt)
-
-| Row Label | Content |
-|-----------|---------|
-| Critical Path | Phase list |
-| Total PERT Duration | `=SUM(C{data_range})` for critical path phases |
-| CI 68% | `PERT +/- sigma_total` |
-| CI 95% | `PERT +/- 2*sigma_total` |
-| Indicative Start | Config start_date (if provided) |
-| Indicative End | Computed from start + PERT duration |
+| Col | Header | Type | Leaf row | Rollup row | TOTAL row |
+|-----|--------|------|----------|-----------|-----------|
+| A | ID | input | `1.1.1` | `1` / `1.1` | `"TOTAL"` |
+| B | Phase | input | (empty) | Phase name (level 1) | (empty) |
+| C | Work Package | input | (empty) | WP name (level 2) | (empty) |
+| D | Activity | input | Activity name | (empty) | (empty) |
+| E-G | Best / Likely / Worst Effort (pd) | input | numeric | `=SUM(...)` | `=SUM(<phases>)` |
+| H | PERT Effort (pd) | **formula** | `=(E{r}+4*F{r}+G{r})/6` | same | `=SUM(<phases>)` |
+| I-K | Best / Likely / Worst Duration (d) | input | numeric | `=SUM(...)` | `=SUM(<phases>)` |
+| L | PERT Duration (d) | **formula** | `=(I{r}+4*J{r}+K{r})/6` | same | same |
+| M | σ Duration | **formula** | `=(K{r}-I{r})/6` | same | same |
+| N | Resources | input | `<primary>, <other>, …` | (empty) | (empty) |
+| O | Dependencies | input | Activity IDs | (empty) | (empty) |
+| P | Risks | input | Risk refs | (empty) | (empty) |
+| Q | Notes | input | Free text | (empty) | (empty) |
+| R | Billable | input | `Y` / `N` | (empty) | (empty) |
+| S | Billable PERT Effort | **formula** | `=IF(R{r}="Y",H{r},0)` | `=SUM(...)` | `=SUM(<phases>)` |
 
 ---
 
-## Sheet 3: Resources
+## Sheet 2 — Resource Plan (Pianificazione Risorse)
 
-### Row Layout
+Replaces both the legacy Resources and Timeline sheets.
+
+### Layout
 
 | Row | Content |
 |-----|---------|
-| 1 | Billable metadata: `Y` or `N` in each role column |
-| 2 | Header row |
-| 3+ | Data rows (one per phase) |
-| Last+1 | TOTAL EFFORT row |
-| Last+2 | TOTAL BILLABLE row |
-| Last+3.. | Per-team subtotal rows |
+| 1 | Header: `Role / Code / Type / W1 / W2 / … / Wn / TOTAL (PD)` |
+| 2 | Calendar reference: blank for A–C, ISO date in each week column (`W1 = project_start_date`, `W2 = +7d`, …) |
+| 3..R | One row per active role (a role is *active* when ≥1 leaf activity lists it as primary) |
+| R+1 | Weekly TOTAL row (`=SUM(...)` per week column, `=SUM(...)` for the grand total) |
+| R+3+ | Optional Capacity Warnings block — one line per overcommitted cell |
 
-### Columns
+### Cell algorithm
 
-| Col | Header | Type | Formula Template |
-|-----|--------|------|-----------------|
-| A | Phase | input | Phase name |
-| B | Description | input | Brief description |
-| C | Team | input | Team name |
-| D..{N} | {Role1}, {Role2}, ... | input | Effort per role per phase |
-| {N+1} | TOTAL EFFORT | **formula** | `=SUM(D{r}:{last_role_col}{r})` |
-| {N+2} | BILLABLE EFFORT | **formula** | `=SUMPRODUCT(D{r}:{last_role_col}{r},(D$1:{last_role_col}$1="Y")*1)` |
+1. For each leaf activity: `primary_role = activity.resources[0]` (activities with empty `resources[]` are skipped and listed in the returned `skipped_activities`).
+2. `phase_role_pd[phase, role] = Σ PERT(activity)` over activities whose primary role is `role`.
+3. Phase weeks: `phase.start_week..phase.end_week` if set, else stacked sequentially using `ceil(phase_pert_duration_days / 5)`.
+4. Distribute uniformly: each cell `(role, week)` gets `phase_role_pd / weeks_in_phase`.
+5. Overlapping phases sum their contributions in shared weeks.
 
-Role columns are dynamic — generated from the RBS. The number of role columns varies per project.
+### Capacity highlighting
 
-### Footer Formulas
+| Threshold | Fill |
+|-----------|------|
+| Cell > 5.0 PD (over-saturation for one role in one week) | Light red (`FFC7CE`) |
+| Cell ≥ 4.5 PD (≥ 90% of 5.0) | Light yellow (`FFEB9C`) |
+
+A "Capacity Warnings" block below the matrix lists each cell that
+exceeded saturation, with role code, week, PD, and capacity.
+
+### Numerical invariant
+
+`Σ (all role-week cells)` equals `WBS!H{total}` within ±1 PD (rounding
+tolerance from the per-phase distribution).
+
+---
+
+## Sheet 3 — Risks (Rischi)
+
+Columns A–M unchanged from v1.
+
+| Col | Header | Type | Formula |
+|-----|--------|------|---------|
+| A | ID | input | `R1`, `R2`, … |
+| B | Risk Description | input | Text |
+| C | Category | input | Technical / External / Organizational / PM |
+| D | Affected Phases | input | Phase IDs |
+| E | Probability (1-5) | input | 1..5 |
+| F | Impact (1-5) | input | 1..5 |
+| G | Risk Score | **formula** | `=E{r}*F{r}` |
+| H | Priority | **formula** | `=IF(G{r}>=15,"CRITICAL",IF(G{r}>=10,"HIGH",IF(G{r}>=5,"MEDIUM","LOW")))` |
+| I | Strategy | input | Mitigate / Transfer / Accept / Avoid |
+| J | Mitigation Action | input | Text |
+| K | Owner | input | Role code |
+| L | Contingency (pd) | input | Numeric (PD) |
+| M | Contingency Cost | **formula** | `=L{r}*avg_rate` (when `avg_rate` is configured) |
+
+### Footer rows (v2)
 
 | Row | Column | Formula |
 |-----|--------|---------|
-| TOTAL EFFORT | TOTAL EFFORT col | `=SUM({total_effort_col}{data_start}:{total_effort_col}{data_end})` |
-| TOTAL BILLABLE | BILLABLE EFFORT col | `=SUM({billable_col}{data_start}:{billable_col}{data_end})` |
-| Team subtotal | TOTAL EFFORT col | `=SUMPRODUCT(({team_col}{data_start}:{team_col}{data_end}="{team_name}")*({total_col}{data_start}:{total_col}{data_end}))` |
+| `TOTAL CONTINGENCY` | L | `=SUM(L{data_start}:L{data_end})` |
+| `MANAGEMENT RESERVE` | L | `=(WBS!H{wbs_total}*(1+pm_overhead_pct+devops_overhead_pct)+L{total_row})*management_reserve_pct` |
+| `MANAGEMENT RESERVE` | M | same expression × `avg_rate` (only when `avg_rate` is configured) |
+
+The MR formula uses the PMI-correct base (Tech + Overhead + Contingency)
+so the Risks sheet and the Summary sheet agree on the MR value.
 
 ---
 
-## Sheet 4: Risks
+## Sheet 4 — Summary (Riepilogo)
 
-### Columns
+### Phase table (rows 1..N + TOTAL)
 
-| Col | Header | Type | Formula Template |
-|-----|--------|------|-----------------|
-| A | ID | input | `R1`, `R2`, `R3`, ... |
-| B | Risk Description | input | Text |
-| C | Category | input | `Technical` / `External` / `Organizational` / `PM` |
-| D | Affected Phases | input | Phase ID refs |
-| E | Probability (1-5) | input | Integer 1-5 |
-| F | Impact (1-5) | input | Integer 1-5 |
-| G | Risk Score | **formula** | `=E{r}*F{r}` |
-| H | Priority | **formula** | `=IF(G{r}>=15,"CRITICAL",IF(G{r}>=10,"HIGH",IF(G{r}>=5,"MEDIUM","LOW")))` |
-| I | Strategy | input | `Mitigate` / `Transfer` / `Accept` / `Avoid` |
-| J | Mitigation Action | input | Text |
-| K | Owner | input | Role code |
-| L | Contingency ({unit}) | input | Numeric |
-| M | Contingency Cost | **formula** | `=L{r}*{avg_rate}` (if avg_rate configured, else omit) |
+Columns A–K cross-reference the WBS phase rows.
 
-### Footer Rows
+| Col | Header | Formula |
+|-----|--------|---------|
+| A | Phase | `=WBS!B{wbs_phase_row}` |
+| B | Description | (plain text from input) |
+| C-E | Best / Likely / Worst Effort | `=WBS!E..G{wbs_phase_row}` |
+| F | PERT Effort | `=WBS!H{wbs_phase_row}` |
+| G-I | Best / Likely / Worst Duration | `=WBS!I..K{wbs_phase_row}` |
+| J | PERT Duration | `=WBS!L{wbs_phase_row}` |
+| K | σ Duration | `=WBS!M{wbs_phase_row}` |
+| TOTAL row | each numeric col | `=SUM(<column>{data_start}:<column>{data_end})` |
 
-| Row | Content | Formula |
-|-----|---------|---------|
-| TOTAL CONTINGENCY | Sum of contingency column | `=SUM(L{data_start}:L{data_end})` |
-| MANAGEMENT RESERVE | Percentage of total PERT | `=SUM(L{data_start}:L{data_end})*{reserve_pct}` |
+### Effort breakdown block (after phase TOTAL row + 1 blank)
 
----
+Column A holds the label, column B holds the formula.
 
-## Sheet 5: Summary
+| Label | Formula |
+|-------|---------|
+| Tech PERT Effort (PD) | `=F{total_row}` |
+| PM Overhead (+pm_pct%) (PD) | `=B{tech_row}*pm_overhead_pct` |
+| DevOps Overhead (+devops_pct%) (PD) | `=B{tech_row}*devops_overhead_pct` |
+| Subtotal Tech + Overhead (PD) | `=B{tech_row}+B{pm_row}+B{devops_row}` |
+| Contingency per-risk (PD) | `=<Risks sheet>!L{contingency_total}` |
+| **Low Band / Fascia BASSA (PD)** | `=B{subtotal_row}+B{contingency_row}` |
+| Management Reserve (mr_pct%) (PD) | `=B{bassa_row}*management_reserve_pct` |
+| **Medium Band / Fascia MEDIA (PD)** | `=B{bassa_row}+B{mr_row}` |
+| **High Band / Fascia ALTA (PD)** | `=B{media_row}*(1+alta_uplift_pct)` |
+| Total Billable Effort (PD) | `=WBS!S{wbs_total}` |
+| Billable Ratio | `=B{billable_row}/B{tech_row}` |
 
-### Columns
+### Calendar Duration (after a blank row)
 
-| Col | Header | Type | Formula Template |
-|-----|--------|------|-----------------|
-| A | Phase | **formula** | `=WBS!B{wbs_phase_row}` |
-| B | Description | input | Phase description |
-| C | Best Effort | **formula** | `=WBS!E{wbs_phase_row}` |
-| D | Likely Effort | **formula** | `=WBS!F{wbs_phase_row}` |
-| E | Worst Effort | **formula** | `=WBS!G{wbs_phase_row}` |
-| F | PERT Effort | **formula** | `=WBS!H{wbs_phase_row}` |
-| G | Best Duration | **formula** | `=WBS!I{wbs_phase_row}` |
-| H | Likely Duration | **formula** | `=WBS!J{wbs_phase_row}` |
-| I | Worst Duration | **formula** | `=WBS!K{wbs_phase_row}` |
-| J | PERT Duration | **formula** | `=WBS!L{wbs_phase_row}` |
-| K | sigma Duration | **formula** | `=WBS!M{wbs_phase_row}` |
+| Label | Value |
+|-------|-------|
+| Calendar Duration (weeks) | `config.calendar_total_weeks` if set, else `max(phase.end_week) - min(phase.start_week) + 1`, else Resource Plan `total_weeks` fallback |
 
-### Summary Block (Below Table)
+Single number. No CI 68%/95% Duration block is produced (v1's sequential
+leaf-sum was misleading — Issue #2 in the refactor changelog).
 
-| Row Label | Formula |
-|-----------|---------|
-| Total PERT Effort | `=SUM(F{data_start}:F{data_end})` |
-| Total Billable Effort | `=WBS!S{wbs_total_row}` |
-| Billable Ratio | `=WBS!S{wbs_total_row}/SUM(F{data_start}:F{data_end})` |
-| sigma Total | `=SQRT(SUMPRODUCT(K{data_start}:K{data_end},K{data_start}:K{data_end}))` |
-| CI 68% Lower | `={pert_duration_total}-{sigma_total_cell}` |
-| CI 68% Upper | `={pert_duration_total}+{sigma_total_cell}` |
-| CI 95% Lower | `={pert_duration_total}-2*{sigma_total_cell}` |
-| CI 95% Upper | `={pert_duration_total}+2*{sigma_total_cell}` |
-| Total Contingency | `=Risks!L{risks_total_row}` |
-| Management Reserve | `=Risks!L{risks_reserve_row}` |
-| Adjusted PERT | `={pert_effort_total}+{contingency_cell}+{reserve_cell}` |
+### Effort by Team (after a blank row)
 
-### Effort by Team Block
+One row per team derived from `roles[primary_role].team`. Cell B is a
+literal PD value (Σ PERT of activities where the team's roles are
+primary), **not** a cross-reference. Sum of the team rows equals the
+Tech PERT minus activities with empty `resources[]`.
 
-Cross-references from Resources sheet per-team subtotal rows:
+### Sensitivity Scenarios (optional, after a blank row)
 
-```
-Team Core:     =Resources!{total_col}{team_core_row}
-Team External: =Resources!{total_col}{team_external_row}
-```
+When `config.scenarios` is provided, the header `Sensitivity Scenarios`
+is followed by one text row per entry in column A.
 
 ---
 
 ## Design Decisions
 
-### No sigma for Effort
+### One unit for effort: PD
 
-Only sigma for Duration is computed. Rationale: confidence intervals on duration are the primary scheduling concern per PMI practice. Effort uncertainty is communicated through the three-point values (O/M/P). Keeps the WBS readable.
+All output cells representing effort are person-days. Percentages may
+only appear in input JSON under `config.*_pct` fields to declare ratios.
+The previous Resources sheet mixed % allocations with effort cells in a
+way that produced numerically meaningless rollups (Issue #1) — that
+pattern is no longer expressible.
 
-### sigma Aggregation Independence
+### Calendar duration as an explicit single number
 
-`sigma_total = SQRT(SUM(sigma_i^2))` assumes statistical independence (standard PERT/CLT assumption). Correlated risks are addressed by the Risk Register contingency and Management Reserve, which are additive buffers.
+Aggregating leaf PERT durations sequentially ignores phase parallelism
+and over-estimates the calendar duration by a factor of 2–3 in projects
+with overlapping phases (Issue #2). The new design represents calendar
+duration as a single declarative value.
+
+### MR base = Tech + Overhead + Contingency
+
+Per PMI PMBOK §4.3 and §11.7, Management Reserve covers unknown unknowns
+on the full effort baseline, not only on the modelled contingency
+(Issue #3). The new formula puts Tech + Overhead + Contingency into the
+multiplier so the displayed MR matches the project's actual baseline.
+
+### Primary role per activity
+
+Each leaf activity declares an ordered `resources[]`. The first element
+is the primary role and drives Resource Plan PD allocation. This is
+intentionally simple and stable; if Activity X is "mostly BE with PM
+oversight", `resources` must be `["BE", "PM"]`, not `["PM", "BE"]`. The
+generator does not infer the primary role from notes or other signals.
+
+### No σ-based Effort CI
+
+Only σ for Duration is computed (column M of WBS). Effort uncertainty is
+communicated through the three-point values (O/M/P) and the three bands.
+The legacy v1 σ-total / CI 68/95 block was based on a sequential leaf
+sum and is no longer produced.
