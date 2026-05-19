@@ -6,9 +6,14 @@
     "primary_color": "2E86AB",
     "period_type": "biweekly",
     "start_date": "2026-05-04",
-    "management_reserve_pct": 0.10,
+    "management_reserve_pct": 0.1,
     "avg_rate": 450,
-    "currency": "EUR"
+    "currency": "EUR",
+    "pm_overhead_pct": 0.1,
+    "devops_overhead_pct": 0.05,
+    "alta_uplift_pct": 0.12,
+    "project_start_date": "2026-05-04",
+    "calendar_total_weeks": 8
   },
   "roles": [
     {
@@ -46,9 +51,13 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 4,
-              "resources": ["DSG"],
+              "resources": [
+                "DSG"
+              ],
               "dependencies": [],
-              "risks": ["R1"],
+              "risks": [
+                "R1"
+              ],
               "billable": true,
               "notes": "Two half-day workshops"
             },
@@ -61,7 +70,9 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["DSG"],
+              "resources": [
+                "DSG"
+              ],
               "dependencies": [],
               "risks": [],
               "billable": true,
@@ -76,8 +87,13 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["DSG"],
-              "dependencies": ["1.1.1", "1.1.2"],
+              "resources": [
+                "DSG"
+              ],
+              "dependencies": [
+                "1.1.1",
+                "1.1.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Site map, navigation, URL structure"
@@ -97,8 +113,12 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["DSG"],
-              "dependencies": ["1.1.3"],
+              "resources": [
+                "DSG"
+              ],
+              "dependencies": [
+                "1.1.3"
+              ],
               "risks": [],
               "billable": true,
               "notes": "8 page templates"
@@ -112,9 +132,15 @@
               "best_duration": 3,
               "likely_duration": 5,
               "worst_duration": 8,
-              "resources": ["DSG"],
-              "dependencies": ["1.2.1"],
-              "risks": ["R1"],
+              "resources": [
+                "DSG"
+              ],
+              "dependencies": [
+                "1.2.1"
+              ],
+              "risks": [
+                "R1"
+              ],
               "billable": true,
               "notes": "Desktop and mobile breakpoints"
             },
@@ -127,15 +153,23 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 4,
-              "resources": ["DSG"],
-              "dependencies": ["1.2.2"],
-              "risks": ["R1"],
+              "resources": [
+                "DSG"
+              ],
+              "dependencies": [
+                "1.2.2"
+              ],
+              "risks": [
+                "R1"
+              ],
               "billable": true,
               "notes": "Two rounds of feedback"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 1,
+      "end_week": 3
     },
     {
       "id": "2",
@@ -158,8 +192,12 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["DEV"],
-              "dependencies": ["1.2.3"],
+              "resources": [
+                "DEV"
+              ],
+              "dependencies": [
+                "1.2.3"
+              ],
               "risks": [],
               "billable": true,
               "notes": "WordPress, Elementor Pro, base theme"
@@ -173,8 +211,12 @@
               "best_duration": 5,
               "likely_duration": 8,
               "worst_duration": 12,
-              "resources": ["DEV"],
-              "dependencies": ["2.1.1"],
+              "resources": [
+                "DEV"
+              ],
+              "dependencies": [
+                "2.1.1"
+              ],
               "risks": [],
               "billable": true,
               "notes": "8 reusable Elementor page layouts"
@@ -194,9 +236,15 @@
               "best_duration": 3,
               "likely_duration": 5,
               "worst_duration": 9,
-              "resources": ["DEV"],
-              "dependencies": ["2.1.2"],
-              "risks": ["R2"],
+              "resources": [
+                "DEV"
+              ],
+              "dependencies": [
+                "2.1.2"
+              ],
+              "risks": [
+                "R2"
+              ],
               "billable": true,
               "notes": "40 pages, 301 redirects"
             },
@@ -209,15 +257,23 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["DEV"],
-              "dependencies": ["2.1.2"],
-              "risks": ["R3"],
+              "resources": [
+                "DEV"
+              ],
+              "dependencies": [
+                "2.1.2"
+              ],
+              "risks": [
+                "R3"
+              ],
               "billable": true,
               "notes": "CRM, GA4, cookie consent"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 4,
+      "end_week": 6
     },
     {
       "id": "3",
@@ -240,8 +296,14 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["DEV", "DSG"],
-              "dependencies": ["2.2.1", "2.2.2"],
+              "resources": [
+                "DEV",
+                "DSG"
+              ],
+              "dependencies": [
+                "2.2.1",
+                "2.2.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Cross-browser + WCAG 2.1 AA"
@@ -255,9 +317,15 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["DSG"],
-              "dependencies": ["3.1.1"],
-              "risks": ["R1"],
+              "resources": [
+                "DSG"
+              ],
+              "dependencies": [
+                "3.1.1"
+              ],
+              "risks": [
+                "R1"
+              ],
               "billable": true,
               "notes": "Guided session + defect resolution"
             }
@@ -276,15 +344,21 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 2,
-              "resources": ["DEV"],
-              "dependencies": ["3.1.2"],
+              "resources": [
+                "DEV"
+              ],
+              "dependencies": [
+                "3.1.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "DNS cutover, SSL, smoke test, 48h monitoring"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 7,
+      "end_week": 8
     }
   ],
   "resource_allocation": [
@@ -326,7 +400,10 @@
       "id": "R1",
       "description": "Client delays sign-off on mockups, blocking development start",
       "category": "Organisational",
-      "affected_phases": ["1", "2"],
+      "affected_phases": [
+        "1",
+        "2"
+      ],
       "probability": 3,
       "impact": 4,
       "strategy": "Mitigate",
@@ -338,7 +415,9 @@
       "id": "R2",
       "description": "Content migration takes longer due to inconsistent legacy data formats",
       "category": "Technical",
-      "affected_phases": ["2"],
+      "affected_phases": [
+        "2"
+      ],
       "probability": 4,
       "impact": 3,
       "strategy": "Mitigate",
@@ -350,7 +429,9 @@
       "id": "R3",
       "description": "Third-party CRM API changes require rework of contact form integration",
       "category": "External",
-      "affected_phases": ["2"],
+      "affected_phases": [
+        "2"
+      ],
       "probability": 2,
       "impact": 3,
       "strategy": "Accept",
@@ -359,5 +440,10 @@
       "contingency_effort": 1
     }
   ],
-  "targets": null
+  "targets": null,
+  "scenarios": [
+    "Optimistic: ~85% of Fascia MEDIA \u2014 best-case execution for 1-website-redesign",
+    "Realistic: Fascia MEDIA \u2014 current best estimate including overhead and MR",
+    "Pessimistic: ~115% of Fascia MEDIA \u2014 material slippage on critical path"
+  ]
 }

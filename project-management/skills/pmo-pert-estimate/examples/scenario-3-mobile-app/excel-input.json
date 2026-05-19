@@ -6,15 +6,40 @@
     "primary_color": "E63946",
     "period_type": "biweekly",
     "start_date": "2026-07-01",
-    "management_reserve_pct": 0.10,
+    "management_reserve_pct": 0.1,
     "avg_rate": 550,
-    "currency": "EUR"
+    "currency": "EUR",
+    "pm_overhead_pct": 0.1,
+    "devops_overhead_pct": 0.05,
+    "alta_uplift_pct": 0.12,
+    "project_start_date": "2026-07-01",
+    "calendar_total_weeks": 16
   },
   "roles": [
-    {"code": "PO",  "name": "Product Owner", "team": "Product",     "billable": true},
-    {"code": "MOB", "name": "Mobile Dev",    "team": "Engineering", "billable": true},
-    {"code": "BED", "name": "Backend Dev",   "team": "Engineering", "billable": true},
-    {"code": "QA",  "name": "QA Engineer",   "team": "Engineering", "billable": true}
+    {
+      "code": "PO",
+      "name": "Product Owner",
+      "team": "Product",
+      "billable": true
+    },
+    {
+      "code": "MOB",
+      "name": "Mobile Dev",
+      "team": "Engineering",
+      "billable": true
+    },
+    {
+      "code": "BED",
+      "name": "Backend Dev",
+      "team": "Engineering",
+      "billable": true
+    },
+    {
+      "code": "QA",
+      "name": "QA Engineer",
+      "team": "Engineering",
+      "billable": true
+    }
   ],
   "phases": [
     {
@@ -38,9 +63,13 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["PO"],
+              "resources": [
+                "PO"
+              ],
               "dependencies": [],
-              "risks": ["R5"],
+              "risks": [
+                "R5"
+              ],
               "billable": true,
               "notes": "Kick-off with key stakeholders"
             },
@@ -53,9 +82,16 @@
               "best_duration": 3,
               "likely_duration": 5,
               "worst_duration": 8,
-              "resources": ["PO", "BED"],
-              "dependencies": ["1.1.1"],
-              "risks": ["R5"],
+              "resources": [
+                "PO",
+                "BED"
+              ],
+              "dependencies": [
+                "1.1.1"
+              ],
+              "risks": [
+                "R5"
+              ],
               "billable": true,
               "notes": "User stories and acceptance criteria"
             }
@@ -74,8 +110,13 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["MOB", "BED"],
-              "dependencies": ["1.1.2"],
+              "resources": [
+                "MOB",
+                "BED"
+              ],
+              "dependencies": [
+                "1.1.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "React Native vs Flutter evaluation"
@@ -89,15 +130,23 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["BED"],
-              "dependencies": ["1.2.1"],
-              "risks": ["R2"],
+              "resources": [
+                "BED"
+              ],
+              "dependencies": [
+                "1.2.1"
+              ],
+              "risks": [
+                "R2"
+              ],
               "billable": true,
               "notes": "High-level system architecture"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 1,
+      "end_week": 2
     },
     {
       "id": "2",
@@ -120,9 +169,15 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["PO"],
-              "dependencies": ["1.1.2"],
-              "risks": ["R5"],
+              "resources": [
+                "PO"
+              ],
+              "dependencies": [
+                "1.1.2"
+              ],
+              "risks": [
+                "R5"
+              ],
               "billable": true,
               "notes": "Journey maps for field technicians"
             },
@@ -135,8 +190,13 @@
               "best_duration": 3,
               "likely_duration": 4,
               "worst_duration": 6,
-              "resources": ["MOB", "PO"],
-              "dependencies": ["2.1.1"],
+              "resources": [
+                "MOB",
+                "PO"
+              ],
+              "dependencies": [
+                "2.1.1"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Sketch-level wireframes for all screens"
@@ -156,8 +216,12 @@
               "best_duration": 3,
               "likely_duration": 5,
               "worst_duration": 8,
-              "resources": ["MOB"],
-              "dependencies": ["2.1.2"],
+              "resources": [
+                "MOB"
+              ],
+              "dependencies": [
+                "2.1.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Clickable prototype in Figma"
@@ -171,8 +235,13 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 4,
-              "resources": ["PO", "QA"],
-              "dependencies": ["2.2.1"],
+              "resources": [
+                "PO",
+                "QA"
+              ],
+              "dependencies": [
+                "2.2.1"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Internal review of prototype flows"
@@ -186,15 +255,21 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["MOB"],
-              "dependencies": ["2.2.2"],
+              "resources": [
+                "MOB"
+              ],
+              "dependencies": [
+                "2.2.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Apply feedback from usability review"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 3,
+      "end_week": 5
     },
     {
       "id": "3",
@@ -217,8 +292,12 @@
               "best_duration": 3,
               "likely_duration": 5,
               "worst_duration": 8,
-              "resources": ["BED"],
-              "dependencies": ["1.2.2"],
+              "resources": [
+                "BED"
+              ],
+              "dependencies": [
+                "1.2.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "JWT-based auth, role management"
@@ -232,9 +311,15 @@
               "best_duration": 4,
               "likely_duration": 6,
               "worst_duration": 10,
-              "resources": ["BED"],
-              "dependencies": ["3.1.1"],
-              "risks": ["R2"],
+              "resources": [
+                "BED"
+              ],
+              "dependencies": [
+                "3.1.1"
+              ],
+              "risks": [
+                "R2"
+              ],
               "billable": true,
               "notes": "Full CRUD with offline conflict resolution"
             },
@@ -247,8 +332,12 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["BED"],
-              "dependencies": ["3.1.1"],
+              "resources": [
+                "BED"
+              ],
+              "dependencies": [
+                "3.1.1"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Photo and document upload endpoint"
@@ -268,8 +357,12 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 4,
-              "resources": ["BED"],
-              "dependencies": ["1.2.2"],
+              "resources": [
+                "BED"
+              ],
+              "dependencies": [
+                "1.2.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "AWS/GCP provisioning, CI/CD pipelines"
@@ -283,9 +376,16 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["BED", "MOB"],
-              "dependencies": ["3.2.1"],
-              "risks": ["R4"],
+              "resources": [
+                "BED",
+                "MOB"
+              ],
+              "dependencies": [
+                "3.2.1"
+              ],
+              "risks": [
+                "R4"
+              ],
               "billable": true,
               "notes": "FCM/APNs integration"
             },
@@ -298,15 +398,23 @@
               "best_duration": 3,
               "likely_duration": 4,
               "worst_duration": 7,
-              "resources": ["QA", "BED"],
-              "dependencies": ["3.1.2", "3.1.3"],
+              "resources": [
+                "QA",
+                "BED"
+              ],
+              "dependencies": [
+                "3.1.2",
+                "3.1.3"
+              ],
               "risks": [],
               "billable": true,
               "notes": "API contract testing and regression suite"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 6,
+      "end_week": 9
     },
     {
       "id": "4",
@@ -329,9 +437,15 @@
               "best_duration": 4,
               "likely_duration": 6,
               "worst_duration": 10,
-              "resources": ["MOB"],
-              "dependencies": ["3.1.2"],
-              "risks": ["R2"],
+              "resources": [
+                "MOB"
+              ],
+              "dependencies": [
+                "3.1.2"
+              ],
+              "risks": [
+                "R2"
+              ],
               "billable": true,
               "notes": "SQLite local store, sync queue"
             },
@@ -344,9 +458,16 @@
               "best_duration": 5,
               "likely_duration": 7,
               "worst_duration": 12,
-              "resources": ["MOB"],
-              "dependencies": ["2.2.3", "3.1.2"],
-              "risks": ["R6"],
+              "resources": [
+                "MOB"
+              ],
+              "dependencies": [
+                "2.2.3",
+                "3.1.2"
+              ],
+              "risks": [
+                "R6"
+              ],
               "billable": true,
               "notes": "Create, view, update work orders on device"
             },
@@ -359,9 +480,15 @@
               "best_duration": 3,
               "likely_duration": 4,
               "worst_duration": 7,
-              "resources": ["MOB"],
-              "dependencies": ["4.1.2"],
-              "risks": ["R6"],
+              "resources": [
+                "MOB"
+              ],
+              "dependencies": [
+                "4.1.2"
+              ],
+              "risks": [
+                "R6"
+              ],
               "billable": true,
               "notes": "Camera integration, signature pad"
             }
@@ -380,9 +507,17 @@
               "best_duration": 3,
               "likely_duration": 5,
               "worst_duration": 8,
-              "resources": ["MOB", "BED"],
-              "dependencies": ["4.1.1", "3.2.2"],
-              "risks": ["R2"],
+              "resources": [
+                "MOB",
+                "BED"
+              ],
+              "dependencies": [
+                "4.1.1",
+                "3.2.2"
+              ],
+              "risks": [
+                "R2"
+              ],
               "billable": true,
               "notes": "End-to-end API wiring with mobile app"
             },
@@ -395,15 +530,24 @@
               "best_duration": 4,
               "likely_duration": 5,
               "worst_duration": 8,
-              "resources": ["QA"],
-              "dependencies": ["4.1.3", "4.2.1"],
-              "risks": ["R6"],
+              "resources": [
+                "QA"
+              ],
+              "dependencies": [
+                "4.1.3",
+                "4.2.1"
+              ],
+              "risks": [
+                "R6"
+              ],
               "billable": true,
               "notes": "Device farm, iOS + Android regression"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 10,
+      "end_week": 14
     },
     {
       "id": "5",
@@ -426,9 +570,16 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["MOB", "PO"],
-              "dependencies": ["4.2.2"],
-              "risks": ["R1"],
+              "resources": [
+                "MOB",
+                "PO"
+              ],
+              "dependencies": [
+                "4.2.2"
+              ],
+              "risks": [
+                "R1"
+              ],
               "billable": true,
               "notes": "iOS App Store + Google Play submission"
             },
@@ -441,9 +592,16 @@
               "best_duration": 3,
               "likely_duration": 4,
               "worst_duration": 6,
-              "resources": ["QA", "PO"],
-              "dependencies": ["5.1.1"],
-              "risks": ["R5"],
+              "resources": [
+                "QA",
+                "PO"
+              ],
+              "dependencies": [
+                "5.1.1"
+              ],
+              "risks": [
+                "R5"
+              ],
               "billable": true,
               "notes": "Pilot group of 10 field technicians"
             },
@@ -456,41 +614,162 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["BED", "MOB"],
-              "dependencies": ["5.1.2"],
+              "resources": [
+                "BED",
+                "MOB"
+              ],
+              "dependencies": [
+                "5.1.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Production deployment, alerting dashboards"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 15,
+      "end_week": 16
     }
   ],
   "resource_allocation": [
-    {"phase_id": "1", "phase_name": "Discovery",            "description": "Stakeholder alignment and technical feasibility", "team": "Product",     "role_code": "PO",  "effort": 9},
-    {"phase_id": "1", "phase_name": "Discovery",            "description": "Stakeholder alignment and technical feasibility", "team": "Engineering", "role_code": "MOB", "effort": 2},
-    {"phase_id": "1", "phase_name": "Discovery",            "description": "Stakeholder alignment and technical feasibility", "team": "Engineering", "role_code": "BED", "effort": 8},
-    {"phase_id": "2", "phase_name": "UX Design",            "description": "Wireframing and interactive prototype",           "team": "Product",     "role_code": "PO",  "effort": 8},
-    {"phase_id": "2", "phase_name": "UX Design",            "description": "Wireframing and interactive prototype",           "team": "Engineering", "role_code": "MOB", "effort": 11},
-    {"phase_id": "2", "phase_name": "UX Design",            "description": "Wireframing and interactive prototype",           "team": "Engineering", "role_code": "QA",  "effort": 3},
-    {"phase_id": "3", "phase_name": "Backend Development",  "description": "REST API implementation and infrastructure",      "team": "Engineering", "role_code": "BED", "effort": 24},
-    {"phase_id": "3", "phase_name": "Backend Development",  "description": "REST API implementation and infrastructure",      "team": "Engineering", "role_code": "MOB", "effort": 3},
-    {"phase_id": "3", "phase_name": "Backend Development",  "description": "REST API implementation and infrastructure",      "team": "Engineering", "role_code": "QA",  "effort": 4},
-    {"phase_id": "4", "phase_name": "Mobile Development",   "description": "Cross-platform app implementation and testing",   "team": "Engineering", "role_code": "MOB", "effort": 23},
-    {"phase_id": "4", "phase_name": "Mobile Development",   "description": "Cross-platform app implementation and testing",   "team": "Engineering", "role_code": "BED", "effort": 5},
-    {"phase_id": "4", "phase_name": "Mobile Development",   "description": "Cross-platform app implementation and testing",   "team": "Engineering", "role_code": "QA",  "effort": 5},
-    {"phase_id": "5", "phase_name": "Launch",               "description": "App store submission, UAT and go-live",           "team": "Product",     "role_code": "PO",  "effort": 7},
-    {"phase_id": "5", "phase_name": "Launch",               "description": "App store submission, UAT and go-live",           "team": "Engineering", "role_code": "MOB", "effort": 6},
-    {"phase_id": "5", "phase_name": "Launch",               "description": "App store submission, UAT and go-live",           "team": "Engineering", "role_code": "BED", "effort": 3},
-    {"phase_id": "5", "phase_name": "Launch",               "description": "App store submission, UAT and go-live",           "team": "Engineering", "role_code": "QA",  "effort": 4}
+    {
+      "phase_id": "1",
+      "phase_name": "Discovery",
+      "description": "Stakeholder alignment and technical feasibility",
+      "team": "Product",
+      "role_code": "PO",
+      "effort": 9
+    },
+    {
+      "phase_id": "1",
+      "phase_name": "Discovery",
+      "description": "Stakeholder alignment and technical feasibility",
+      "team": "Engineering",
+      "role_code": "MOB",
+      "effort": 2
+    },
+    {
+      "phase_id": "1",
+      "phase_name": "Discovery",
+      "description": "Stakeholder alignment and technical feasibility",
+      "team": "Engineering",
+      "role_code": "BED",
+      "effort": 8
+    },
+    {
+      "phase_id": "2",
+      "phase_name": "UX Design",
+      "description": "Wireframing and interactive prototype",
+      "team": "Product",
+      "role_code": "PO",
+      "effort": 8
+    },
+    {
+      "phase_id": "2",
+      "phase_name": "UX Design",
+      "description": "Wireframing and interactive prototype",
+      "team": "Engineering",
+      "role_code": "MOB",
+      "effort": 11
+    },
+    {
+      "phase_id": "2",
+      "phase_name": "UX Design",
+      "description": "Wireframing and interactive prototype",
+      "team": "Engineering",
+      "role_code": "QA",
+      "effort": 3
+    },
+    {
+      "phase_id": "3",
+      "phase_name": "Backend Development",
+      "description": "REST API implementation and infrastructure",
+      "team": "Engineering",
+      "role_code": "BED",
+      "effort": 24
+    },
+    {
+      "phase_id": "3",
+      "phase_name": "Backend Development",
+      "description": "REST API implementation and infrastructure",
+      "team": "Engineering",
+      "role_code": "MOB",
+      "effort": 3
+    },
+    {
+      "phase_id": "3",
+      "phase_name": "Backend Development",
+      "description": "REST API implementation and infrastructure",
+      "team": "Engineering",
+      "role_code": "QA",
+      "effort": 4
+    },
+    {
+      "phase_id": "4",
+      "phase_name": "Mobile Development",
+      "description": "Cross-platform app implementation and testing",
+      "team": "Engineering",
+      "role_code": "MOB",
+      "effort": 23
+    },
+    {
+      "phase_id": "4",
+      "phase_name": "Mobile Development",
+      "description": "Cross-platform app implementation and testing",
+      "team": "Engineering",
+      "role_code": "BED",
+      "effort": 5
+    },
+    {
+      "phase_id": "4",
+      "phase_name": "Mobile Development",
+      "description": "Cross-platform app implementation and testing",
+      "team": "Engineering",
+      "role_code": "QA",
+      "effort": 5
+    },
+    {
+      "phase_id": "5",
+      "phase_name": "Launch",
+      "description": "App store submission, UAT and go-live",
+      "team": "Product",
+      "role_code": "PO",
+      "effort": 7
+    },
+    {
+      "phase_id": "5",
+      "phase_name": "Launch",
+      "description": "App store submission, UAT and go-live",
+      "team": "Engineering",
+      "role_code": "MOB",
+      "effort": 6
+    },
+    {
+      "phase_id": "5",
+      "phase_name": "Launch",
+      "description": "App store submission, UAT and go-live",
+      "team": "Engineering",
+      "role_code": "BED",
+      "effort": 3
+    },
+    {
+      "phase_id": "5",
+      "phase_name": "Launch",
+      "description": "App store submission, UAT and go-live",
+      "team": "Engineering",
+      "role_code": "QA",
+      "effort": 4
+    }
   ],
   "risks": [
     {
       "id": "R1",
       "description": "App store approval delays",
       "category": "External",
-      "affected_phases": ["5"],
+      "affected_phases": [
+        "5"
+      ],
       "probability": 3,
       "impact": 3,
       "strategy": "Mitigate",
@@ -502,7 +781,10 @@
       "id": "R2",
       "description": "Offline sync complexity underestimated",
       "category": "Technical",
-      "affected_phases": ["3", "4"],
+      "affected_phases": [
+        "3",
+        "4"
+      ],
       "probability": 4,
       "impact": 5,
       "strategy": "Mitigate",
@@ -514,7 +796,9 @@
       "id": "R3",
       "description": "Key mobile developer unavailability",
       "category": "Organizational",
-      "affected_phases": ["4"],
+      "affected_phases": [
+        "4"
+      ],
       "probability": 2,
       "impact": 5,
       "strategy": "Mitigate",
@@ -526,7 +810,9 @@
       "id": "R4",
       "description": "Third-party push notification service outage",
       "category": "External",
-      "affected_phases": ["3"],
+      "affected_phases": [
+        "3"
+      ],
       "probability": 2,
       "impact": 3,
       "strategy": "Accept",
@@ -538,7 +824,11 @@
       "id": "R5",
       "description": "Scope creep from stakeholder change requests",
       "category": "Organizational",
-      "affected_phases": ["1", "2", "5"],
+      "affected_phases": [
+        "1",
+        "2",
+        "5"
+      ],
       "probability": 4,
       "impact": 4,
       "strategy": "Mitigate",
@@ -550,13 +840,20 @@
       "id": "R6",
       "description": "iOS/Android compatibility fragmentation issues",
       "category": "Technical",
-      "affected_phases": ["4"],
+      "affected_phases": [
+        "4"
+      ],
       "probability": 3,
       "impact": 3,
       "strategy": "Mitigate",
-      "mitigation": "Test on device farm from Phase 4 start; target OS versions ≥ iOS 15 / Android 11",
+      "mitigation": "Test on device farm from Phase 4 start; target OS versions \u2265 iOS 15 / Android 11",
       "owner": "MOB",
       "contingency_effort": 4
     }
+  ],
+  "scenarios": [
+    "Optimistic: ~85% of Fascia MEDIA \u2014 best-case execution for 3-mobile-app",
+    "Realistic: Fascia MEDIA \u2014 current best estimate including overhead and MR",
+    "Pessimistic: ~115% of Fascia MEDIA \u2014 material slippage on critical path"
   ]
 }
