@@ -6,9 +6,14 @@
     "primary_color": "264653",
     "period_type": "monthly",
     "start_date": "2026-10-01",
-    "management_reserve_pct": 0.10,
+    "management_reserve_pct": 0.1,
     "avg_rate": 250,
-    "currency": "EUR"
+    "currency": "EUR",
+    "pm_overhead_pct": 0.1,
+    "devops_overhead_pct": 0.05,
+    "alta_uplift_pct": 0.12,
+    "project_start_date": "2026-10-01",
+    "calendar_total_weeks": 6
   },
   "roles": [
     {
@@ -52,9 +57,15 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["PRT", "SC"],
+              "resources": [
+                "PRT",
+                "SC"
+              ],
               "dependencies": [],
-              "risks": ["R1", "R2"],
+              "risks": [
+                "R1",
+                "R2"
+              ],
               "billable": true,
               "notes": "20 structured interviews across 3 entities"
             },
@@ -67,9 +78,16 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 2,
-              "resources": ["SC", "JC"],
-              "dependencies": ["1.1.1"],
-              "risks": ["R4"],
+              "resources": [
+                "SC",
+                "JC"
+              ],
+              "dependencies": [
+                "1.1.1"
+              ],
+              "risks": [
+                "R4"
+              ],
               "billable": true,
               "notes": "Org charts, process maps, governance documents"
             },
@@ -82,7 +100,9 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 2,
-              "resources": ["SC"],
+              "resources": [
+                "SC"
+              ],
               "dependencies": [],
               "risks": [],
               "billable": true,
@@ -103,8 +123,13 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 2,
-              "resources": ["SC", "JC"],
-              "dependencies": ["1.1.2"],
+              "resources": [
+                "SC",
+                "JC"
+              ],
+              "dependencies": [
+                "1.1.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Cross-map roles and functions across 3 entities"
@@ -118,15 +143,22 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 2,
-              "resources": ["PRT", "SC"],
-              "dependencies": ["1.2.1"],
+              "resources": [
+                "PRT",
+                "SC"
+              ],
+              "dependencies": [
+                "1.2.1"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Executive-ready consolidated findings report"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 1,
+      "end_week": 1
     },
     {
       "id": "2",
@@ -149,11 +181,19 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["PRT", "SC"],
-              "dependencies": ["1.2.2"],
-              "risks": ["R1", "R2"],
+              "resources": [
+                "PRT",
+                "SC"
+              ],
+              "dependencies": [
+                "1.2.2"
+              ],
+              "risks": [
+                "R1",
+                "R2"
+              ],
               "billable": true,
-              "notes": "3 × full-day facilitated sessions with senior leadership"
+              "notes": "3 \u00d7 full-day facilitated sessions with senior leadership"
             },
             {
               "id": "2.1.2",
@@ -164,9 +204,15 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["SC"],
-              "dependencies": ["2.1.1"],
-              "risks": ["R5"],
+              "resources": [
+                "SC"
+              ],
+              "dependencies": [
+                "2.1.1"
+              ],
+              "risks": [
+                "R5"
+              ],
               "billable": true,
               "notes": "Reporting lines, spans of control, role profiles"
             },
@@ -179,8 +225,13 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 2,
-              "resources": ["SC", "JC"],
-              "dependencies": ["2.1.2"],
+              "resources": [
+                "SC",
+                "JC"
+              ],
+              "dependencies": [
+                "2.1.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "RACI matrix, committee charters, escalation paths"
@@ -200,9 +251,16 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 2,
-              "resources": ["SC", "JC"],
-              "dependencies": ["2.1.3"],
-              "risks": ["R3"],
+              "resources": [
+                "SC",
+                "JC"
+              ],
+              "dependencies": [
+                "2.1.3"
+              ],
+              "risks": [
+                "R3"
+              ],
               "billable": true,
               "notes": "Phased implementation plan, milestones, KPIs"
             },
@@ -215,15 +273,22 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 2,
-              "resources": ["PRT", "SC"],
-              "dependencies": ["2.2.1"],
+              "resources": [
+                "PRT",
+                "SC"
+              ],
+              "dependencies": [
+                "2.2.1"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Quantify savings, FTE impact, strategic value"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 2,
+      "end_week": 3
     },
     {
       "id": "3",
@@ -246,9 +311,16 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["SC", "JC"],
-              "dependencies": ["2.2.2"],
-              "risks": ["R2"],
+              "resources": [
+                "SC",
+                "JC"
+              ],
+              "dependencies": [
+                "2.2.2"
+              ],
+              "risks": [
+                "R2"
+              ],
               "billable": true,
               "notes": "Communications plan, training needs analysis, resistance management"
             },
@@ -261,11 +333,17 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["PRT"],
-              "dependencies": ["3.1.1"],
-              "risks": ["R1"],
+              "resources": [
+                "PRT"
+              ],
+              "dependencies": [
+                "3.1.1"
+              ],
+              "risks": [
+                "R1"
+              ],
               "billable": true,
-              "notes": "6 sessions × 2 h with senior leaders"
+              "notes": "6 sessions \u00d7 2 h with senior leaders"
             }
           ]
         },
@@ -282,9 +360,17 @@
               "best_duration": 2,
               "likely_duration": 3,
               "worst_duration": 5,
-              "resources": ["SC", "JC"],
-              "dependencies": ["2.2.2"],
-              "risks": ["R3", "R5"],
+              "resources": [
+                "SC",
+                "JC"
+              ],
+              "dependencies": [
+                "2.2.2"
+              ],
+              "risks": [
+                "R3",
+                "R5"
+              ],
               "billable": true,
               "notes": "Redesign 3 end-to-end cross-entity processes"
             },
@@ -297,15 +383,22 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["SC", "JC"],
-              "dependencies": ["3.2.1"],
+              "resources": [
+                "SC",
+                "JC"
+              ],
+              "dependencies": [
+                "3.2.1"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Define and prototype management KPI dashboard"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 4,
+      "end_week": 5
     },
     {
       "id": "4",
@@ -328,8 +421,13 @@
               "best_duration": 1,
               "likely_duration": 2,
               "worst_duration": 3,
-              "resources": ["SC", "JC"],
-              "dependencies": ["3.2.2"],
+              "resources": [
+                "SC",
+                "JC"
+              ],
+              "dependencies": [
+                "3.2.2"
+              ],
               "risks": [],
               "billable": true,
               "notes": "Operating model playbook and toolkits for internal use"
@@ -343,8 +441,13 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 2,
-              "resources": ["PRT", "SC"],
-              "dependencies": ["4.1.1"],
+              "resources": [
+                "PRT",
+                "SC"
+              ],
+              "dependencies": [
+                "4.1.1"
+              ],
               "risks": [],
               "billable": true,
               "notes": "2-day internal facilitator training programme"
@@ -358,15 +461,24 @@
               "best_duration": 1,
               "likely_duration": 1,
               "worst_duration": 1,
-              "resources": ["PRT", "SC"],
-              "dependencies": ["4.1.2"],
-              "risks": ["R1"],
+              "resources": [
+                "PRT",
+                "SC"
+              ],
+              "dependencies": [
+                "4.1.2"
+              ],
+              "risks": [
+                "R1"
+              ],
               "billable": true,
               "notes": "Present final deliverables, capture lessons learned"
             }
           ]
         }
-      ]
+      ],
+      "start_week": 6,
+      "end_week": 6
     }
   ],
   "resource_allocation": [
@@ -472,7 +584,12 @@
       "id": "R1",
       "description": "Key client sponsor changes mid-engagement, disrupting strategic alignment",
       "category": "Organisational",
-      "affected_phases": ["1", "2", "3", "4"],
+      "affected_phases": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
       "probability": 3,
       "impact": 5,
       "strategy": "Mitigate",
@@ -484,7 +601,10 @@
       "id": "R2",
       "description": "Resistance from legacy-org middle management delays workshop outcomes",
       "category": "Change",
-      "affected_phases": ["1", "2"],
+      "affected_phases": [
+        "1",
+        "2"
+      ],
       "probability": 4,
       "impact": 4,
       "strategy": "Mitigate",
@@ -496,7 +616,10 @@
       "id": "R3",
       "description": "Scope creep from additional integration requests not in original SoW",
       "category": "Commercial",
-      "affected_phases": ["2", "3"],
+      "affected_phases": [
+        "2",
+        "3"
+      ],
       "probability": 4,
       "impact": 3,
       "strategy": "Mitigate",
@@ -508,7 +631,9 @@
       "id": "R4",
       "description": "Confidential data access restrictions slow diagnostic phase",
       "category": "Regulatory",
-      "affected_phases": ["1"],
+      "affected_phases": [
+        "1"
+      ],
       "probability": 3,
       "impact": 3,
       "strategy": "Accept",
@@ -520,7 +645,10 @@
       "id": "R5",
       "description": "Key consultant unavailable during critical design workshops",
       "category": "Resource",
-      "affected_phases": ["2", "3"],
+      "affected_phases": [
+        "2",
+        "3"
+      ],
       "probability": 2,
       "impact": 4,
       "strategy": "Mitigate",
@@ -529,5 +657,10 @@
       "contingency_effort": 24
     }
   ],
-  "targets": null
+  "targets": null,
+  "scenarios": [
+    "Optimistic: ~85% of Fascia MEDIA \u2014 best-case execution for 5-consulting",
+    "Realistic: Fascia MEDIA \u2014 current best estimate including overhead and MR",
+    "Pessimistic: ~115% of Fascia MEDIA \u2014 material slippage on critical path"
+  ]
 }

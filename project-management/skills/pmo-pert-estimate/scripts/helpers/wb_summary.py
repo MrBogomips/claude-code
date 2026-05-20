@@ -1,17 +1,27 @@
-"""Summary sheet generator for pmo-pert-estimate Excel output.
+"""Summary sheet generator for pmo-pert-estimate.
 
-Builds a 'Summary' worksheet that cross-references the WBS, Risks, and
-Resources sheets, providing:
-  - Phase-level PERT summary table with σ-based confidence intervals
-  - Total / billable effort and billable ratio
-  - Contingency and management reserve references
-  - Per-team effort subtotals from the Resources sheet
+Builds the Summary sheet of the 4-sheet workbook. Compared to the legacy
+Summary, this version:
+
+* Drops the sequential-sum CI Duration block (Issue #2): aggregating leaf
+  durations sequentially ignores phase parallelism and produces misleading
+  numbers. Calendar duration is now a single explicit value, derived from
+  config.calendar_total_weeks or from phase.start_week/end_week.
+* Adds PM/DevOps overhead rows applied on Tech PERT (Issue #5).
+* Calculates Management Reserve on the correct base (Tech + Overhead +
+  Contingency), realised as a formula referencing the Fascia BASSA cell
+  (Issue #3).
+* Surfaces three effort bands — Fascia BASSA, MEDIA (raccomandata), ALTA.
+* Computes Effort by Team as literal PD aggregated from the WBS primary role
+  of each leaf (Issue #1), not as a Resources!… cross-ref.
+* Optionally lists sensitivity scenarios as plain text rows.
 """
 from __future__ import annotations
 
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.worksheet import Worksheet
 
 from helpers.formatting import (
     HEADER_FONT,
@@ -19,25 +29,14 @@ from helpers.formatting import (
     apply_column_widths,
     apply_style,
     get_formula_fill,
+    get_phase_style,
     get_total_style,
 )
+from helpers.i18n import t
 
 # ---------------------------------------------------------------------------
-# Column layout for the Summary phase table
-# (1-based indices)
+# Phase table layout (unchanged)
 # ---------------------------------------------------------------------------
-
-# A  Phase name (cross-ref to WBS)
-# B  Description (plain text)
-# C  Best Effort
-# D  Likely Effort
-# E  Worst Effort
-# F  PERT Effort
-# G  Best Duration
-# H  Likely Duration
-# I  Worst Duration
-# J  PERT Duration
-# K  σ Duration
 
 _COL_PHASE = 1       # A
 _COL_DESC = 2        # B
@@ -55,8 +54,8 @@ _HEADER_ROW = 1
 _DATA_START_ROW = 2
 
 _COLUMN_WIDTHS = {
-    "A": 30,
-    "B": 35,
+    "A": 32,
+    "B": 36,
     "C": 14,
     "D": 14,
     "E": 14,
@@ -69,188 +68,170 @@ _COLUMN_WIDTHS = {
 }
 
 
-# ---------------------------------------------------------------------------
-# Public API
-# ---------------------------------------------------------------------------
-
 def build(
     wb: Workbook,
     data: dict,
     wbs_info: dict,
     risks_info: dict,
-    resources_info: dict,
+    rp_info: dict,
 ) -> None:
-    """Build the Summary sheet and insert it into *wb*.
-
-    Args:
-        wb:             An openpyxl Workbook instance.
-        data:           Full input dict (config, phases, roles, …).
-        wbs_info:       sheet_info dict returned by wb_wbs.build().
-        risks_info:     sheet_info dict returned by wb_risks.build().
-        resources_info: sheet_info dict returned by wb_resources.build().
-    """
+    """Build the Summary sheet and add it to *wb*."""
     config = data["config"]
     phases = data["phases"]
+    roles = data.get("roles", [])
+    lang = config.get("lang", "en")
     primary_color = config.get("primary_color", "1B4FA5")
     effort_unit = config.get("effort_unit", "pd")
     duration_unit = config.get("duration_unit", "d")
 
-    ws = wb.create_sheet("Summary")
+    sheet_name = t(lang, "sheet_summary")
+    ws: Worksheet = wb.create_sheet(sheet_name)
 
-    # ------------------------------------------------------------------
-    # Row 1: Headers
-    # ------------------------------------------------------------------
+    # --- 1. Phase table ---
     _write_header(ws, effort_unit, duration_unit)
-
-    # ------------------------------------------------------------------
-    # Phase data rows (one per phase)
-    # ------------------------------------------------------------------
     phase_rows = wbs_info["phase_rows"]
-    wbs_total_row = wbs_info["total_row"]
+    for offset, (phase, wbs_phase_row) in enumerate(zip(phases, phase_rows)):
+        _write_phase_row(ws, _DATA_START_ROW + offset, phase, wbs_phase_row)
 
-    for summary_offset, (phase, wbs_phase_row) in enumerate(
-        zip(phases, phase_rows)
-    ):
-        summary_row = _DATA_START_ROW + summary_offset
-        _write_phase_row(ws, summary_row, phase, wbs_phase_row)
-
-    num_phases = len(phases)
     data_start = _DATA_START_ROW
-    data_end = _DATA_START_ROW + num_phases - 1
-
-    # ------------------------------------------------------------------
-    # Total row
-    # ------------------------------------------------------------------
+    data_end = _DATA_START_ROW + len(phases) - 1
     total_row = data_end + 1
     _write_total_row(ws, total_row, data_start, data_end)
 
-    # ------------------------------------------------------------------
-    # Summary block (blank row separator, then label/formula pairs)
-    # ------------------------------------------------------------------
-    # We place labels in column A and formulas in column B.
-    # Column letters for the sigma total reference:
-    sigma_col = get_column_letter(_COL_SIGMA)    # K
-    pert_d_col = get_column_letter(_COL_PERT_D)  # J
-    pert_e_col = get_column_letter(_COL_PERT_E)  # F
+    pert_e_col = get_column_letter(_COL_PERT_E)
 
-    sigma_total_cell = None   # will be set when we write the σ total row
-    pert_effort_cell = None   # will be set when we write the PERT effort row
-    contingency_cell = None   # will be set for contingency row
-    reserve_cell = None       # will be set for reserve row
+    # --- 2. Effort breakdown block ---
+    current = total_row + 2  # blank separator
+    pm_pct = float(config.get("pm_overhead_pct") or 0)
+    devops_pct = float(config.get("devops_overhead_pct") or 0)
+    alta_pct = float(config.get("alta_uplift_pct") or 0)
+    mr_pct = float(config.get("management_reserve_pct") or 0)
 
-    block_start = total_row + 2  # +1 blank separator, +1 first block row
-    current = block_start
-
-    # --- Total PERT Effort (pd) ---
-    # References the total row's PERT Effort column (F) on this sheet
-    ws.cell(row=current, column=1, value=f"Total PERT Effort ({effort_unit})")
-    pert_effort_ref = f"={pert_e_col}{total_row}"
-    ws.cell(row=current, column=2, value=pert_effort_ref)
-    pert_effort_cell_addr = f"B{current}"
+    # Tech PERT Effort
+    tech_row = current
+    ws.cell(row=tech_row, column=1, value=t(lang, "summary_tech_pert"))
+    ws.cell(row=tech_row, column=2, value=f"={pert_e_col}{total_row}")
     current += 1
 
-    # --- Total Billable Effort (pd) ---
-    ws.cell(row=current, column=1, value=f"Total Billable Effort ({effort_unit})")
-    ws.cell(row=current, column=2, value=f"=WBS!S{wbs_total_row}")
+    # PM Overhead
+    pm_row = current
+    ws.cell(row=pm_row, column=1, value=t(lang, "summary_pm_overhead", pct=_pct_label(pm_pct)))
+    ws.cell(row=pm_row, column=2, value=f"=B{tech_row}*{pm_pct}")
     current += 1
 
-    # --- Billable Ratio ---
-    billable_row = current - 1
-    pert_row_in_block = current - 2
-    ws.cell(row=current, column=1, value="Billable Ratio")
-    ws.cell(
-        row=current,
-        column=2,
-        value=f"=B{billable_row}/B{pert_row_in_block}",
-    )
+    # DevOps Overhead
+    devops_row = current
+    ws.cell(row=devops_row, column=1,
+            value=t(lang, "summary_devops_overhead", pct=_pct_label(devops_pct)))
+    ws.cell(row=devops_row, column=2, value=f"=B{tech_row}*{devops_pct}")
     current += 1
 
-    # --- σ Total Duration ---
-    ws.cell(row=current, column=1, value="σ Total Duration")
-    sigma_formula = (
-        f"=SQRT(SUMPRODUCT({sigma_col}{data_start}:{sigma_col}{data_end},"
-        f"{sigma_col}{data_start}:{sigma_col}{data_end}))"
-    )
-    ws.cell(row=current, column=2, value=sigma_formula)
-    sigma_cell_addr = f"B{current}"
+    # Subtotal Tech + Overhead
+    subtotal_row = current
+    ws.cell(row=subtotal_row, column=1, value=t(lang, "summary_subtotal"))
+    ws.cell(row=subtotal_row, column=2, value=f"=B{tech_row}+B{pm_row}+B{devops_row}")
     current += 1
 
-    # --- CI 68% Lower / Upper ---
-    pert_d_total_ref = f"{pert_d_col}{total_row}"
-    ws.cell(row=current, column=1, value="CI 68% Lower")
-    ws.cell(row=current, column=2, value=f"={pert_d_total_ref}-{sigma_cell_addr}")
+    # Contingency per-risk
+    contingency_row = current
+    risks_contingency_row = risks_info["total_contingency_row"]
+    risks_sheet_ref = _quote_sheet(risks_info["sheet_name"])
+    ws.cell(row=contingency_row, column=1, value=t(lang, "summary_contingency"))
+    ws.cell(row=contingency_row, column=2,
+            value=f"={risks_sheet_ref}!L{risks_contingency_row}")
     current += 1
 
-    ws.cell(row=current, column=1, value="CI 68% Upper")
-    ws.cell(row=current, column=2, value=f"={pert_d_total_ref}+{sigma_cell_addr}")
+    # Fascia BASSA
+    bassa_row = current
+    ws.cell(row=bassa_row, column=1, value=t(lang, "fascia_bassa"))
+    ws.cell(row=bassa_row, column=2, value=f"=B{subtotal_row}+B{contingency_row}")
     current += 1
 
-    # --- CI 95% Lower / Upper ---
-    ws.cell(row=current, column=1, value="CI 95% Lower")
-    ws.cell(row=current, column=2, value=f"={pert_d_total_ref}-2*{sigma_cell_addr}")
+    # Management Reserve (on Fascia BASSA base)
+    mr_row = current
+    ws.cell(row=mr_row, column=1,
+            value=t(lang, "summary_management_reserve", pct=_pct_label(mr_pct)))
+    ws.cell(row=mr_row, column=2, value=f"=B{bassa_row}*{mr_pct}")
     current += 1
 
-    ws.cell(row=current, column=1, value="CI 95% Upper")
-    ws.cell(row=current, column=2, value=f"={pert_d_total_ref}+2*{sigma_cell_addr}")
+    # Fascia MEDIA = BASSA + MR
+    media_row = current
+    ws.cell(row=media_row, column=1, value=t(lang, "fascia_media"))
+    ws.cell(row=media_row, column=2, value=f"=B{bassa_row}+B{mr_row}")
     current += 1
 
-    # --- Total Contingency ---
-    total_contingency_row = risks_info["total_contingency_row"]
-    ws.cell(row=current, column=1, value="Total Contingency")
-    ws.cell(row=current, column=2, value=f"=Risks!L{total_contingency_row}")
-    contingency_row_here = current
+    # Fascia ALTA = MEDIA * (1 + alta_uplift_pct)
+    alta_row = current
+    ws.cell(row=alta_row, column=1, value=t(lang, "fascia_alta"))
+    ws.cell(row=alta_row, column=2, value=f"=B{media_row}*(1+{alta_pct})")
     current += 1
 
-    # --- Management Reserve ---
-    reserve_row = risks_info["reserve_row"]
-    ws.cell(row=current, column=1, value="Management Reserve")
-    ws.cell(row=current, column=2, value=f"=Risks!L{reserve_row}")
-    reserve_row_here = current
+    # Total Billable Effort + ratio (preserved utility from legacy)
+    wbs_total_row = wbs_info["total_row"]
+    billable_row = current
+    ws.cell(row=billable_row, column=1, value=t(lang, "summary_total_billable"))
+    ws.cell(row=billable_row, column=2, value=f"=WBS!S{wbs_total_row}")
     current += 1
 
-    # --- Adjusted PERT Effort ---
-    ws.cell(row=current, column=1, value=f"Adjusted PERT Effort ({effort_unit})")
-    ws.cell(
-        row=current,
-        column=2,
-        value=(
-            f"=B{block_start}"
-            f"+B{contingency_row_here}"
-            f"+B{reserve_row_here}"
-        ),
-    )
+    ratio_row = current
+    ws.cell(row=ratio_row, column=1, value=t(lang, "summary_billable_ratio"))
+    ws.cell(row=ratio_row, column=2, value=f"=B{billable_row}/B{tech_row}")
     current += 1
 
-    # ------------------------------------------------------------------
-    # Team effort section
-    # ------------------------------------------------------------------
+    # --- 3. Calendar Duration ---
     current += 1  # blank separator
-    ws.cell(row=current, column=1, value="Effort by Team")
-    ws.cell(row=current, column=1).font = Font(bold=True)
+    calendar_weeks = _resolve_calendar_weeks(config, phases, rp_info)
+    cal_row = current
+    ws.cell(row=cal_row, column=1, value=t(lang, "summary_calendar_duration"))
+    ws.cell(row=cal_row, column=2, value=calendar_weeks)
+    ws.cell(row=cal_row, column=2).number_format = "0"
     current += 1
 
-    total_effort_col = resources_info["total_effort_col"]
-    for team, team_subtotal_row in resources_info["team_subtotal_rows"].items():
-        ws.cell(row=current, column=1, value=team)
-        ws.cell(
-            row=current,
-            column=2,
-            value=f"=Resources!{total_effort_col}{team_subtotal_row}",
-        )
+    # --- 4. Effort by Team (literal PD from WBS primary role) ---
+    current += 1  # blank separator
+    team_header_row = current
+    ws.cell(row=team_header_row, column=1, value=t(lang, "summary_effort_by_team"))
+    ws.cell(row=team_header_row, column=1).font = Font(bold=True)
+    current += 1
+    team_pd = _team_effort_pd(phases, roles)
+    for team_name in sorted(team_pd.keys()):
+        ws.cell(row=current, column=1, value=team_name)
+        # Preserve full precision; Excel renders via number_format
+        ws.cell(row=current, column=2, value=team_pd[team_name])
+        ws.cell(row=current, column=2).number_format = NUMBER_FMT
         current += 1
 
-    # ------------------------------------------------------------------
-    # Formatting
-    # ------------------------------------------------------------------
-    _apply_formatting(ws, primary_color, data_start, data_end, total_row)
+    # --- 5. Sensitivity Scenarios ---
+    scenarios = data.get("scenarios", []) or []
+    if scenarios:
+        current += 1
+        ws.cell(row=current, column=1, value=t(lang, "summary_sensitivity")).font = Font(bold=True)
+        current += 1
+        for s in scenarios:
+            ws.cell(row=current, column=1, value=str(s))
+            current += 1
+
+    _apply_phase_table_formatting(ws, primary_color, data_start, data_end, total_row)
     apply_column_widths(ws, _COLUMN_WIDTHS)
 
 
 # ---------------------------------------------------------------------------
-# Private helpers
+# Internals
 # ---------------------------------------------------------------------------
 
-def _write_header(ws, effort_unit: str, duration_unit: str) -> None:
+def _pct_label(pct: float) -> int | float:
+    """Convert a 0..1 ratio into a human percentage for label formatting."""
+    return int(round(pct * 100)) if pct else 0
+
+
+def _quote_sheet(name: str) -> str:
+    """Quote an Excel sheet reference if it contains spaces or special chars."""
+    if any(c in name for c in " '!"):
+        return "'" + name.replace("'", "''") + "'"
+    return name
+
+
+def _write_header(ws: Worksheet, effort_unit: str, duration_unit: str) -> None:
     headers = [
         "Phase",
         "Description",
@@ -262,35 +243,28 @@ def _write_header(ws, effort_unit: str, duration_unit: str) -> None:
         f"Likely Duration ({duration_unit})",
         f"Worst Duration ({duration_unit})",
         f"PERT Duration ({duration_unit})",
-        "\u03c3 Duration",
+        "σ Duration",
     ]
     for col_idx, header in enumerate(headers, start=1):
         cell = ws.cell(row=_HEADER_ROW, column=col_idx, value=header)
         cell.font = HEADER_FONT
 
 
-def _write_phase_row(ws, summary_row: int, phase: dict, wbs_phase_row: int) -> None:
-    # Col A: cross-reference to WBS phase name
+def _write_phase_row(ws: Worksheet, summary_row: int, phase: dict, wbs_phase_row: int) -> None:
     ws.cell(row=summary_row, column=_COL_PHASE, value=f"=WBS!B{wbs_phase_row}")
-    # Col B: description (plain text)
     ws.cell(row=summary_row, column=_COL_DESC, value=phase.get("description", ""))
-    # Cols C-E: effort (Best, Likely, Worst) from WBS phase row columns E, F, G
     ws.cell(row=summary_row, column=_COL_BEST_E, value=f"=WBS!E{wbs_phase_row}")
     ws.cell(row=summary_row, column=_COL_LIKELY_E, value=f"=WBS!F{wbs_phase_row}")
     ws.cell(row=summary_row, column=_COL_WORST_E, value=f"=WBS!G{wbs_phase_row}")
-    # Col F: PERT Effort from WBS col H
     ws.cell(row=summary_row, column=_COL_PERT_E, value=f"=WBS!H{wbs_phase_row}")
-    # Cols G-I: duration (Best, Likely, Worst) from WBS cols I, J, K
     ws.cell(row=summary_row, column=_COL_BEST_D, value=f"=WBS!I{wbs_phase_row}")
     ws.cell(row=summary_row, column=_COL_LIKELY_D, value=f"=WBS!J{wbs_phase_row}")
     ws.cell(row=summary_row, column=_COL_WORST_D, value=f"=WBS!K{wbs_phase_row}")
-    # Col J: PERT Duration from WBS col L
     ws.cell(row=summary_row, column=_COL_PERT_D, value=f"=WBS!L{wbs_phase_row}")
-    # Col K: σ Duration from WBS col M
     ws.cell(row=summary_row, column=_COL_SIGMA, value=f"=WBS!M{wbs_phase_row}")
 
 
-def _write_total_row(ws, total_row: int, data_start: int, data_end: int) -> None:
+def _write_total_row(ws: Worksheet, total_row: int, data_start: int, data_end: int) -> None:
     ws.cell(row=total_row, column=_COL_PHASE, value="TOTAL")
     for col_idx in range(_COL_BEST_E, _COL_SIGMA + 1):
         col_letter = get_column_letter(col_idx)
@@ -304,30 +278,53 @@ def _write_total_row(ws, total_row: int, data_start: int, data_end: int) -> None
         apply_style(ws.cell(row=total_row, column=col_idx), style)
 
 
-def _apply_formatting(
-    ws,
+def _resolve_calendar_weeks(config: dict, phases: list[dict], rp_info: dict) -> int:
+    """Return a single weeks count for the project's calendar duration."""
+    explicit = config.get("calendar_total_weeks")
+    if explicit:
+        return int(explicit)
+    starts = [int(p["start_week"]) for p in phases if "start_week" in p]
+    ends = [int(p["end_week"]) for p in phases if "end_week" in p]
+    if starts and ends:
+        return max(ends) - min(starts) + 1
+    # Fall back to the Resource Plan total weeks (best effort)
+    if rp_info and rp_info.get("total_weeks"):
+        return int(rp_info["total_weeks"])
+    return 0
+
+
+def _team_effort_pd(phases: list[dict], roles: list[dict]) -> dict[str, float]:
+    role_team = {r["code"]: r.get("team", "Unassigned") for r in roles}
+    out: dict[str, float] = {}
+    for phase in phases:
+        for wp in phase.get("work_packages", []):
+            for a in wp.get("activities", []):
+                resources = a.get("resources") or []
+                if not resources:
+                    continue
+                primary = resources[0]
+                team = role_team.get(primary, "Unassigned")
+                pd = (a["best_effort"] + 4 * a["likely_effort"] + a["worst_effort"]) / 6.0
+                out[team] = out.get(team, 0.0) + pd
+    return out
+
+
+def _apply_phase_table_formatting(
+    ws: Worksheet,
     primary_color: str,
     data_start: int,
     data_end: int,
     total_row: int,
 ) -> None:
-    """Apply styles and number formats to the phase table area."""
-    from helpers.formatting import get_phase_style
-
     phase_style = get_phase_style(primary_color)
     formula_fill = get_formula_fill()
 
-    # Phase data rows: apply phase style
     for r in range(data_start, data_end + 1):
         for col_idx in range(1, _COL_SIGMA + 1):
             apply_style(ws.cell(row=r, column=col_idx), phase_style)
 
-    # Formula fill for computed columns (C–K, i.e. cols 3–11 except B which is text)
     for r in range(data_start, total_row + 1):
         for col_idx in range(_COL_BEST_E, _COL_SIGMA + 1):
-            ws.cell(row=r, column=col_idx).fill = formula_fill
-
-    # Number format for numeric columns
-    for r in range(data_start, total_row + 1):
-        for col_idx in range(_COL_BEST_E, _COL_SIGMA + 1):
-            ws.cell(row=r, column=col_idx).number_format = NUMBER_FMT
+            cell = ws.cell(row=r, column=col_idx)
+            cell.fill = formula_fill
+            cell.number_format = NUMBER_FMT

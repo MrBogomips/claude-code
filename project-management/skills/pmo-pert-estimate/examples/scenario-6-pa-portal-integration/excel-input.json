@@ -1,0 +1,277 @@
+{
+  "config": {
+    "lang": "it",
+    "effort_unit": "pd",
+    "duration_unit": "d",
+    "primary_color": "1B4FA5",
+    "currency": "EUR",
+    "period_type": "weekly",
+    "start_date": "2026-07-06",
+    "project_start_date": "2026-07-06",
+    "management_reserve_pct": 0.20,
+    "avg_rate": 500,
+    "pm_overhead_pct": 0.10,
+    "devops_overhead_pct": 0.05,
+    "alta_uplift_pct": 0.12,
+    "calendar_total_weeks": 25
+  },
+  "roles": [
+    {"code": "PM", "name": "Project Manager", "team": "Delivery", "billable": true},
+    {"code": "TA", "name": "Technical Architect", "team": "Delivery", "billable": true},
+    {"code": "BA", "name": "Business Analyst", "team": "Delivery", "billable": true},
+    {"code": "UX", "name": "UX Designer", "team": "Design", "billable": true},
+    {"code": "FE", "name": "Front-end Developer", "team": "Build", "billable": true},
+    {"code": "BE", "name": "Back-end Developer", "team": "Build", "billable": true},
+    {"code": "INT", "name": "Integration Specialist", "team": "Build", "billable": true},
+    {"code": "QA", "name": "Quality Assurance", "team": "Quality", "billable": true},
+    {"code": "DEVOPS", "name": "DevOps Engineer", "team": "Operations", "billable": true},
+    {"code": "DOC", "name": "Technical Writer", "team": "Delivery", "billable": true}
+  ],
+  "phases": [
+    {
+      "id": "F0",
+      "name": "Setup & Discovery",
+      "description": "Project kickoff, environment validation, requirements freeze",
+      "best_duration": 5, "likely_duration": 8, "worst_duration": 12,
+      "start_week": 1, "end_week": 2,
+      "work_packages": [
+        {"id": "F0.1", "name": "Project setup", "activities": [
+          {"id": "F0.1.1", "name": "Kickoff and governance setup",
+           "best_effort": 2, "likely_effort": 3, "worst_effort": 5,
+           "best_duration": 2, "likely_duration": 3, "worst_duration": 5,
+           "resources": ["PM", "BA"], "dependencies": [], "risks": [],
+           "billable": true, "notes": ""},
+          {"id": "F0.1.2", "name": "Environment & access checklist",
+           "best_effort": 1, "likely_effort": 2, "worst_effort": 3,
+           "best_duration": 1, "likely_duration": 2, "worst_duration": 3,
+           "resources": ["DEVOPS", "TA"], "dependencies": [], "risks": ["R1"],
+           "billable": true, "notes": ""}
+        ]},
+        {"id": "F0.2", "name": "Requirements freeze", "activities": [
+          {"id": "F0.2.1", "name": "Requirements consolidation",
+           "best_effort": 3, "likely_effort": 5, "worst_effort": 8,
+           "best_duration": 3, "likely_duration": 5, "worst_duration": 8,
+           "resources": ["BA", "PM"], "dependencies": ["F0.1.1"], "risks": ["R2"],
+           "billable": true, "notes": ""}
+        ]}
+      ]
+    },
+    {
+      "id": "F1",
+      "name": "UX & Functional Design",
+      "description": "User journeys, wireframes, accessibility-first design",
+      "best_duration": 10, "likely_duration": 15, "worst_duration": 22,
+      "start_week": 3, "end_week": 5,
+      "work_packages": [
+        {"id": "F1.1", "name": "UX", "activities": [
+          {"id": "F1.1.1", "name": "User journeys and wireframes",
+           "best_effort": 6, "likely_effort": 10, "worst_effort": 15,
+           "best_duration": 5, "likely_duration": 8, "worst_duration": 12,
+           "resources": ["UX", "BA"], "dependencies": ["F0.2.1"], "risks": ["R3"],
+           "billable": true, "notes": ""},
+          {"id": "F1.1.2", "name": "Accessibility design review",
+           "best_effort": 2, "likely_effort": 3, "worst_effort": 5,
+           "best_duration": 2, "likely_duration": 3, "worst_duration": 5,
+           "resources": ["UX", "QA"], "dependencies": ["F1.1.1"], "risks": [],
+           "billable": true, "notes": ""}
+        ]},
+        {"id": "F1.2", "name": "Functional design", "activities": [
+          {"id": "F1.2.1", "name": "API & data contract design",
+           "best_effort": 4, "likely_effort": 7, "worst_effort": 10,
+           "best_duration": 3, "likely_duration": 5, "worst_duration": 8,
+           "resources": ["TA", "BE"], "dependencies": ["F0.2.1"], "risks": ["R4"],
+           "billable": true, "notes": ""}
+        ]}
+      ]
+    },
+    {
+      "id": "F2",
+      "name": "Core Build",
+      "description": "Front-end and back-end implementation of the portal",
+      "best_duration": 30, "likely_duration": 45, "worst_duration": 60,
+      "start_week": 6, "end_week": 15,
+      "work_packages": [
+        {"id": "F2.1", "name": "Back-end", "activities": [
+          {"id": "F2.1.1", "name": "Back-end services and business logic",
+           "best_effort": 20, "likely_effort": 30, "worst_effort": 45,
+           "best_duration": 20, "likely_duration": 30, "worst_duration": 45,
+           "resources": ["BE", "TA"], "dependencies": ["F1.2.1"], "risks": ["R4", "R5"],
+           "billable": true, "notes": ""}
+        ]},
+        {"id": "F2.2", "name": "Front-end", "activities": [
+          {"id": "F2.2.1", "name": "Front-end implementation",
+           "best_effort": 18, "likely_effort": 28, "worst_effort": 40,
+           "best_duration": 18, "likely_duration": 28, "worst_duration": 40,
+           "resources": ["FE", "UX"], "dependencies": ["F1.1.2", "F1.2.1"], "risks": ["R3"],
+           "billable": true, "notes": ""}
+        ]}
+      ]
+    },
+    {
+      "id": "F3",
+      "name": "Integrations",
+      "description": "Three integrations with internal authoritative sources, parallel with F2",
+      "best_duration": 25, "likely_duration": 35, "worst_duration": 50,
+      "start_week": 8, "end_week": 15,
+      "work_packages": [
+        {"id": "F3.1", "name": "Registry integration", "activities": [
+          {"id": "F3.1.1", "name": "Registry integration",
+           "best_effort": 6, "likely_effort": 10, "worst_effort": 15,
+           "best_duration": 6, "likely_duration": 10, "worst_duration": 15,
+           "resources": ["INT", "BE"], "dependencies": ["F1.2.1"], "risks": ["R5", "R6"],
+           "billable": true, "notes": ""}
+        ]},
+        {"id": "F3.2", "name": "Payments integration", "activities": [
+          {"id": "F3.2.1", "name": "Payments integration",
+           "best_effort": 7, "likely_effort": 12, "worst_effort": 18,
+           "best_duration": 7, "likely_duration": 12, "worst_duration": 18,
+           "resources": ["INT", "BE"], "dependencies": ["F1.2.1"], "risks": ["R6", "R7"],
+           "billable": true, "notes": ""}
+        ]},
+        {"id": "F3.3", "name": "Case-management integration", "activities": [
+          {"id": "F3.3.1", "name": "Case-management integration",
+           "best_effort": 5, "likely_effort": 9, "worst_effort": 14,
+           "best_duration": 5, "likely_duration": 9, "worst_duration": 14,
+           "resources": ["INT", "BE"], "dependencies": ["F1.2.1"], "risks": ["R6"],
+           "billable": true, "notes": ""}
+        ]}
+      ]
+    },
+    {
+      "id": "F4",
+      "name": "Security & Accessibility Audit",
+      "description": "Independent audit gate before UAT",
+      "best_duration": 8, "likely_duration": 12, "worst_duration": 18,
+      "start_week": 16, "end_week": 18,
+      "work_packages": [
+        {"id": "F4.1", "name": "Audit", "activities": [
+          {"id": "F4.1.1", "name": "Security testing",
+           "best_effort": 4, "likely_effort": 6, "worst_effort": 10,
+           "best_duration": 4, "likely_duration": 6, "worst_duration": 10,
+           "resources": ["QA", "TA"], "dependencies": ["F2.1.1", "F2.2.1", "F3.1.1", "F3.2.1", "F3.3.1"], "risks": ["R8"],
+           "billable": true, "notes": ""},
+          {"id": "F4.1.2", "name": "Accessibility audit",
+           "best_effort": 3, "likely_effort": 5, "worst_effort": 8,
+           "best_duration": 3, "likely_duration": 5, "worst_duration": 8,
+           "resources": ["QA", "UX"], "dependencies": ["F2.2.1"], "risks": ["R9"],
+           "billable": true, "notes": ""}
+        ]}
+      ]
+    },
+    {
+      "id": "F5",
+      "name": "Internal Acceptance",
+      "description": "Internal QA pass before client UAT",
+      "best_duration": 6, "likely_duration": 9, "worst_duration": 14,
+      "start_week": 17, "end_week": 19,
+      "work_packages": [
+        {"id": "F5.1", "name": "Internal QA", "activities": [
+          {"id": "F5.1.1", "name": "Regression and integration test cycles",
+           "best_effort": 6, "likely_effort": 9, "worst_effort": 14,
+           "best_duration": 6, "likely_duration": 9, "worst_duration": 14,
+           "resources": ["QA", "BE"], "dependencies": ["F4.1.1", "F4.1.2"], "risks": [],
+           "billable": true, "notes": ""}
+        ]}
+      ]
+    },
+    {
+      "id": "F6",
+      "name": "UAT",
+      "description": "Client-side User Acceptance Testing window",
+      "best_duration": 10, "likely_duration": 14, "worst_duration": 20,
+      "start_week": 19, "end_week": 22,
+      "work_packages": [
+        {"id": "F6.1", "name": "UAT support", "activities": [
+          {"id": "F6.1.1", "name": "UAT execution support and defect fixing",
+           "best_effort": 8, "likely_effort": 14, "worst_effort": 22,
+           "best_duration": 8, "likely_duration": 14, "worst_duration": 22,
+           "resources": ["BE", "FE", "PM"], "dependencies": ["F5.1.1"], "risks": ["R10"],
+           "billable": true, "notes": ""}
+        ]}
+      ]
+    },
+    {
+      "id": "F7",
+      "name": "Production Deployment",
+      "description": "Production rollout and 2-week hypercare window",
+      "best_duration": 8, "likely_duration": 12, "worst_duration": 18,
+      "start_week": 22, "end_week": 25,
+      "work_packages": [
+        {"id": "F7.1", "name": "Deploy", "activities": [
+          {"id": "F7.1.1", "name": "Production deployment",
+           "best_effort": 3, "likely_effort": 5, "worst_effort": 8,
+           "best_duration": 3, "likely_duration": 5, "worst_duration": 8,
+           "resources": ["DEVOPS", "BE"], "dependencies": ["F6.1.1"], "risks": ["R11"],
+           "billable": true, "notes": ""},
+          {"id": "F7.1.2", "name": "Hypercare and documentation handover",
+           "best_effort": 4, "likely_effort": 7, "worst_effort": 10,
+           "best_duration": 4, "likely_duration": 7, "worst_duration": 10,
+           "resources": ["DOC", "PM", "BE"], "dependencies": ["F7.1.1"], "risks": [],
+           "billable": true, "notes": ""}
+        ]}
+      ]
+    }
+  ],
+  "risks": [
+    {"id": "R1",  "description": "Environment access delayed by IT bureaucracy",
+     "category": "Organizational", "affected_phases": ["F0"],
+     "probability": 3, "impact": 3, "strategy": "Mitigate",
+     "mitigation": "Submit access requests in week -2 and track weekly",
+     "owner": "PM", "contingency_effort": 2},
+    {"id": "R2",  "description": "Requirements not frozen by stakeholders in time",
+     "category": "Organizational", "affected_phases": ["F0", "F1"],
+     "probability": 3, "impact": 4, "strategy": "Mitigate",
+     "mitigation": "Use a written sign-off gate before F1 starts",
+     "owner": "PM", "contingency_effort": 4},
+    {"id": "R3",  "description": "Accessibility findings force UX rework",
+     "category": "Technical", "affected_phases": ["F1", "F2"],
+     "probability": 3, "impact": 3, "strategy": "Mitigate",
+     "mitigation": "Run accessibility review in F1 instead of waiting for audit",
+     "owner": "UX", "contingency_effort": 5},
+    {"id": "R4",  "description": "API contract instability with internal data owners",
+     "category": "Technical", "affected_phases": ["F1", "F2"],
+     "probability": 4, "impact": 3, "strategy": "Mitigate",
+     "mitigation": "Lock API contracts at end of F1 with both data owners",
+     "owner": "TA", "contingency_effort": 6},
+    {"id": "R5",  "description": "Business logic complexity underestimated",
+     "category": "Technical", "affected_phases": ["F2"],
+     "probability": 3, "impact": 4, "strategy": "Accept",
+     "mitigation": "Buffer included in pessimistic estimates of F2.1",
+     "owner": "BE", "contingency_effort": 5},
+    {"id": "R6",  "description": "Integration vendor SLAs differ — one slow to deliver",
+     "category": "External", "affected_phases": ["F3"],
+     "probability": 4, "impact": 4, "strategy": "Mitigate",
+     "mitigation": "Stub the slow integration in F2 and integrate late",
+     "owner": "INT", "contingency_effort": 8},
+    {"id": "R7",  "description": "Payments integration security review extra round",
+     "category": "Technical", "affected_phases": ["F3", "F4"],
+     "probability": 3, "impact": 4, "strategy": "Mitigate",
+     "mitigation": "Pre-review of payments flow in F1 with security team",
+     "owner": "INT", "contingency_effort": 4},
+    {"id": "R8",  "description": "Security audit findings require code rework",
+     "category": "Technical", "affected_phases": ["F4", "F5"],
+     "probability": 3, "impact": 4, "strategy": "Mitigate",
+     "mitigation": "Apply security checklist throughout F2 to reduce findings",
+     "owner": "TA", "contingency_effort": 5},
+    {"id": "R9",  "description": "Accessibility audit finds gaps requiring UI rework",
+     "category": "Technical", "affected_phases": ["F4", "F5"],
+     "probability": 3, "impact": 3, "strategy": "Mitigate",
+     "mitigation": "Continuous accessibility checks during F2 front-end work",
+     "owner": "UX", "contingency_effort": 4},
+    {"id": "R10", "description": "UAT defect rate exceeds expectations",
+     "category": "External", "affected_phases": ["F6"],
+     "probability": 3, "impact": 4, "strategy": "Mitigate",
+     "mitigation": "Pre-UAT walkthrough with the client before window opens",
+     "owner": "PM", "contingency_effort": 6},
+    {"id": "R11", "description": "Production deploy fails the release window",
+     "category": "External", "affected_phases": ["F7"],
+     "probability": 2, "impact": 5, "strategy": "Mitigate",
+     "mitigation": "Run a full dry-run deployment in pre-prod 1 week earlier",
+     "owner": "DEVOPS", "contingency_effort": 3}
+  ],
+  "scenarios": [
+    "Optimistic: ~85% of Fascia MEDIA if integration vendors deliver on schedule and audit finds no major issues",
+    "Realistic: Fascia MEDIA — current best estimate including overhead and MR",
+    "Pessimistic: ~120% of Fascia MEDIA if integration vendor delays compound and require UAT rework"
+  ]
+}

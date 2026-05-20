@@ -186,16 +186,20 @@ Backtrack arrows:
 |-----------|-------|
 | **Model** | **Sonnet** |
 | **Inputs** | All 5 validated `.md` artifacts |
-| **Outputs** | `{OutputDir}/pert-estimate.xlsx` |
+| **Outputs** | `{OutputDir}/pert-estimate.xlsx` (4 sheets: WBS, Resource Plan, Risks, Summary) |
 | **User interaction** | None (automated) |
 | **Backtrack from** | Phase 6 (if validation fails) |
 
 ### Steps
 
 1. Read all validated `.md` artifacts
-2. Construct structured JSON (`excel-input.json`)
+2. Construct structured JSON (`excel-input.json`) honouring the modern schema:
+   - `config.pm_overhead_pct`, `config.devops_overhead_pct`, `config.alta_uplift_pct`, `config.calendar_total_weeks`, `config.project_start_date`
+   - Optional `phase.start_week` / `phase.end_week` per phase
+   - Optional top-level `scenarios: [...]` for the Summary sensitivity block
+   - Each activity's `resources` array must list the **primary role first** — that role drives the Resource Plan PD allocation and the Summary "Effort by Team" rollup
 3. Invoke `python generate_excel.py --input excel-input.json --output <path>`
-4. Script generates Excel with all 5 sheets, formulas, formatting, cross-references
+4. The script auto-promotes legacy JSON via `helpers.config_compat.normalize_config()` (one stderr warning per run if modern fields are missing) and generates the 4 sheets: **WBS**, **Resource Plan** (role × week PD), **Risks**, **Summary**.
 
 ### Error Recovery
 
@@ -218,14 +222,18 @@ Backtrack arrows:
 
 ### Verification Checklist
 
+- Exactly 4 sheets in order: WBS, Resource Plan (Pianificazione Risorse), Risks (Rischi), Summary (Riepilogo)
 - All formula cells contain formulas (not hardcoded values)
 - Cross-reference inter-sheet links resolve correctly
 - Consistent formatting (font, colors, borders, number format)
 - SUM rollups match actual child ranges
-- PERT = `(O+4M+P)/6` present on every appropriate row
-- sigma = `(P-O)/6` present where expected
+- PERT = `(O+4M+P)/6` present on every appropriate WBS row
+- sigma = `(P-O)/6` present in the WBS σ Duration column
 - No empty input cells
-- Billable flags and BILLABLE EFFORT formulas correct
+- Billable flags and BILLABLE EFFORT formulas correct on WBS
+- Resource Plan: grand TOTAL (PD) matches `WBS!H{total}` within ±1 PD; no role-week cell holds a percentage
+- Risks: MR formula uses Tech+Overhead+Contingency base (cross-refs `WBS!H{total}`), not just contingency
+- Summary: Fascia BASSA / MEDIA / ALTA rows present and consistent (BASSA = Subtotal + Contingency; MEDIA = BASSA + MR; ALTA = MEDIA × (1 + alta_uplift_pct)); Calendar Duration is a single weekly number
 
 ### Error Recovery
 

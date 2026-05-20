@@ -7,8 +7,13 @@
     "currency": "EUR",
     "period_type": "biweekly",
     "start_date": "2026-04-06",
+    "project_start_date": "2026-04-06",
     "management_reserve_pct": 0.10,
-    "avg_rate": 500
+    "avg_rate": 500,
+    "pm_overhead_pct": 0.10,
+    "devops_overhead_pct": 0.05,
+    "alta_uplift_pct": 0.12,
+    "calendar_total_weeks": 12
   },
   "roles": [
     {"code": "PM", "name": "Project Manager", "team": "Management", "billable": true},
@@ -23,6 +28,8 @@
       "best_duration": 8,
       "likely_duration": 10,
       "worst_duration": 15,
+      "start_week": 1,
+      "end_week": 2,
       "work_packages": [
         {
           "id": "1.1",
@@ -105,6 +112,8 @@
       "best_duration": 20,
       "likely_duration": 28,
       "worst_duration": 40,
+      "start_week": 3,
+      "end_week": 9,
       "work_packages": [
         {
           "id": "2.1",
@@ -187,6 +196,8 @@
       "best_duration": 10,
       "likely_duration": 14,
       "worst_duration": 20,
+      "start_week": 9,
+      "end_week": 12,
       "work_packages": [
         {
           "id": "3.1",
@@ -325,5 +336,10 @@
   "targets": {
     "expected_effort": 80,
     "expected_duration": 60
-  }
+  },
+  "scenarios": [
+    "Optimistic: 75 PD if stakeholder availability is high and no requirement changes occur",
+    "Realistic: 92 PD (Fascia MEDIA) with current overhead and MR assumptions",
+    "Pessimistic: 110 PD if external API integration delays force rework"
+  ]
 }

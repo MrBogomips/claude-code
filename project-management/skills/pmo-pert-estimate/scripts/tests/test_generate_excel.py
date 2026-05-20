@@ -51,14 +51,33 @@ def test_generates_xlsx_file(gen, input_json_path, tmp_xlsx):
 
 
 # ---------------------------------------------------------------------------
-# Test 2: output workbook has exactly 5 sheets with correct names
+# Test 2: output workbook has exactly 4 sheets in the canonical order
+# (English default labels; Italian = "Pianificazione Risorse" / "Riepilogo")
 # ---------------------------------------------------------------------------
 
-def test_five_sheets_present(gen, input_json_path, tmp_xlsx):
+def test_four_sheets_present_en(gen, input_json_path, tmp_xlsx):
     gen.main(str(input_json_path), str(tmp_xlsx))
     wb = load_workbook(tmp_xlsx)
-    assert wb.sheetnames == ["WBS", "Timeline", "Resources", "Risks", "Summary"]
-    assert len(wb.sheetnames) == 5
+    assert wb.sheetnames == ["WBS", "Resource Plan", "Risks", "Summary"]
+    assert len(wb.sheetnames) == 4
+
+
+def test_four_sheets_present_it(gen, full_input_data, tmp_path):
+    full_input_data["config"]["lang"] = "it"
+    json_path = tmp_path / "it.json"
+    json_path.write_text(json.dumps(full_input_data))
+    out = tmp_path / "out.xlsx"
+    gen.main(str(json_path), str(out))
+    wb = load_workbook(out)
+    assert wb.sheetnames == ["WBS", "Pianificazione Risorse", "Rischi", "Riepilogo"]
+
+
+def test_no_legacy_sheets(gen, input_json_path, tmp_xlsx):
+    """Timeline / Resources must not appear as default sheets anymore."""
+    gen.main(str(input_json_path), str(tmp_xlsx))
+    wb = load_workbook(tmp_xlsx)
+    assert "Timeline" not in wb.sheetnames
+    assert "Resources" not in wb.sheetnames
 
 
 # ---------------------------------------------------------------------------
@@ -108,16 +127,16 @@ def test_cross_sheet_references(gen, input_json_path, tmp_xlsx):
     ]
     assert len(summary_formulas) > 0, "Summary sheet has no WBS cross-references"
 
-    # Timeline references WBS
-    timeline_ws = wb["Timeline"]
-    timeline_formulas = [
-        timeline_ws.cell(row=r, column=c).value
-        for r in range(1, timeline_ws.max_row + 1)
-        for c in range(1, timeline_ws.max_column + 1)
-        if isinstance(timeline_ws.cell(row=r, column=c).value, str)
-        and "WBS!" in timeline_ws.cell(row=r, column=c).value
+    # Risks references WBS (Management Reserve uses WBS!H{total})
+    risks_ws = wb["Risks"]
+    risks_formulas = [
+        risks_ws.cell(row=r, column=c).value
+        for r in range(1, risks_ws.max_row + 1)
+        for c in range(1, risks_ws.max_column + 1)
+        if isinstance(risks_ws.cell(row=r, column=c).value, str)
+        and "WBS!" in risks_ws.cell(row=r, column=c).value
     ]
-    assert len(timeline_formulas) > 0, "Timeline sheet has no WBS cross-references"
+    assert len(risks_formulas) > 0, "Risks sheet has no WBS cross-references"
 
 
 # ---------------------------------------------------------------------------

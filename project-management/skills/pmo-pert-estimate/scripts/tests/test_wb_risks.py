@@ -223,32 +223,64 @@ class TestTotalContingency:
 # ---------------------------------------------------------------------------
 
 class TestManagementReserve:
-    def test_management_reserve_formula(
+    def test_management_reserve_formula_uses_correct_base(
         self, sample_config, sample_risks, sample_roles, sample_phases
     ):
-        """Reserve row must have =L{total_row}*{reserve_pct} in column L."""
+        """MR formula must apply to Tech+Overhead+Contingency, not Contingency alone.
+
+        Form: =(WBS!H{wbs_total}*(1+pm_pct+devops_pct)+L{total_row})*mr_pct
+        """
+        from helpers import wb_wbs
         mod = _import_wb_risks()
         wb, data = _build_wb_and_data(sample_config, sample_risks, sample_roles, sample_phases)
-        sheet_info = mod.build(wb, data)
+        # WBS must exist for the cross-ref to land; pass wbs_info to risks.
+        wbs_info = wb_wbs.build(wb, data)
+        # Inject modern overhead pcts
+        data["config"]["pm_overhead_pct"] = 0.10
+        data["config"]["devops_overhead_pct"] = 0.05
+        sheet_info = mod.build(wb, data, wbs_info)
 
         ws = wb["Risks"]
         reserve_row = sheet_info["reserve_row"]
         total_row = sheet_info["total_contingency_row"]
-        reserve_pct = sample_config["management_reserve_pct"]  # 0.10
+        wbs_total_row = wbs_info["total_row"]
+        mr_pct = sample_config["management_reserve_pct"]
 
         cell_l = ws.cell(row=reserve_row, column=12)
-        expected_formula = f"=L{total_row}*{reserve_pct}"
-        assert cell_l.value == expected_formula, (
-            f"Reserve row L{reserve_row}: expected '{expected_formula}', got '{cell_l.value}'"
+        expected = (
+            f"=(WBS!H{wbs_total_row}*(1+0.1+0.05)+L{total_row})*{mr_pct}"
         )
+        assert cell_l.value == expected, (
+            f"MR formula must use Tech+Overhead+Contingency base. "
+            f"Got: {cell_l.value!r}, expected: {expected!r}"
+        )
+
+    def test_management_reserve_defaults_to_no_overhead(
+        self, sample_config, sample_risks, sample_roles, sample_phases
+    ):
+        """With no overhead config, formula degenerates to (Tech+Contingency)*mr_pct."""
+        from helpers import wb_wbs
+        mod = _import_wb_risks()
+        wb, data = _build_wb_and_data(sample_config, sample_risks, sample_roles, sample_phases)
+        wbs_info = wb_wbs.build(wb, data)
+        sheet_info = mod.build(wb, data, wbs_info)
+
+        ws = wb["Risks"]
+        cell_l = ws.cell(row=sheet_info["reserve_row"], column=12)
+        # No overhead -> multiplier reduces to (1+0+0) (0 or 0.0 both fine).
+        value = str(cell_l.value)
+        assert "WBS!H" in value
+        assert "*(1+0" in value and "+0" in value.split("*(1+0")[1]
 
     def test_reserve_row_comes_after_total(
         self, sample_config, sample_risks, sample_roles, sample_phases
     ):
         """reserve_row must be strictly greater than total_contingency_row."""
+        from helpers import wb_wbs
         mod = _import_wb_risks()
         wb, data = _build_wb_and_data(sample_config, sample_risks, sample_roles, sample_phases)
-        sheet_info = mod.build(wb, data)
+        wbs_info = wb_wbs.build(wb, data)
+        sheet_info = mod.build(wb, data, wbs_info)
 
         assert sheet_info["reserve_row"] > sheet_info["total_contingency_row"]
 
@@ -256,9 +288,11 @@ class TestManagementReserve:
         self, sample_config, sample_risks, sample_roles, sample_phases
     ):
         """Reserve row column A must have a non-empty label."""
+        from helpers import wb_wbs
         mod = _import_wb_risks()
         wb, data = _build_wb_and_data(sample_config, sample_risks, sample_roles, sample_phases)
-        sheet_info = mod.build(wb, data)
+        wbs_info = wb_wbs.build(wb, data)
+        sheet_info = mod.build(wb, data, wbs_info)
 
         ws = wb["Risks"]
         reserve_row = sheet_info["reserve_row"]

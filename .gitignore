@@ -32,6 +32,11 @@ Thumbs.db
 
 # Working documents (specs, drafts, intermediate artifacts)
 .docs/
+.aidocs/
+
+# Python bytecode caches
+__pycache__/
+*.pyc
 
 # Local configuration (not committed)
 .claude/

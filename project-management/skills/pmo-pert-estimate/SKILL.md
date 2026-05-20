@@ -1,30 +1,33 @@
 ---
 name: pmo-pert-estimate
-description: "Create PMI-compliant PERT three-point estimation workbooks with WBS, timeline/Gantt, resources, risks, and summary sheets. Produces fully automated Excel with live formulas. Triggers: 'create PERT estimate', 'generate WBS estimate', 'PMO estimation', 'three-point estimate', 'PERT analysis', 'project estimation', 'stima PERT', 'stima progetto'"
+description: "Create PMI-compliant PERT three-point estimation workbooks with WBS, resource plan (role × week PD), risks, and summary sheets. Produces fully automated Excel with live formulas, PD-everywhere effort, PMI-correct Management Reserve, configurable PM/DevOps overhead, and explicit calendar duration. Triggers: 'create PERT estimate', 'generate WBS estimate', 'PMO estimation', 'three-point estimate', 'PERT analysis', 'project estimation', 'stima PERT', 'stima progetto'"
 ---
 
 # PMO PERT Estimate — Three-point estimation workbooks
 
 ## 1. Overview
 
-This skill produces PMI-compliant PERT three-point estimation workbooks through a multi-phase agentic pipeline. Starting from project documents (SoW, RFP, scope descriptions), it interactively builds a WBS, resource breakdown, risk register, and three-point estimates, then generates a fully automated Excel workbook with live formulas (PERT, SUM rollups, cross-sheet references, confidence intervals). The skill follows three key principles: **progressive disclosure** of reference documents (loaded only when the relevant phase begins, never all at once), **adaptive interaction** across three levels (Formative / Collaborative / Autonomous) chosen by the user with dynamic adjustment, and **strict input/formula separation** where Excel formula cells are always injected as strings and never overwritten with computed values.
+This skill produces PMI-compliant PERT three-point estimation workbooks through a multi-phase agentic pipeline. Starting from project documents (SoW, RFP, scope descriptions), it interactively builds a WBS, resource breakdown, risk register, and three-point estimates, then generates a fully automated Excel workbook with live formulas (PERT, SUM rollups, cross-sheet references, effort bands). The skill follows three key principles: **progressive disclosure** of reference documents (loaded only when the relevant phase begins, never all at once), **adaptive interaction** across three levels (Formative / Collaborative / Autonomous) chosen by the user with dynamic adjustment, and **strict input/formula separation** where Excel formula cells are always injected as strings and never overwritten with computed values.
+
+**Output workbook composition:** exactly 4 sheets in this order — `WBS`, `Resource Plan` (`Pianificazione Risorse` in IT), `Risks` (`Rischi` in IT), `Summary` (`Riepilogo` in IT). All effort cells are person-days (PD); calendar quantities are weeks. No cell ever holds a percentage that is presented as effort. The legacy `Timeline` (sequential Gantt) and `Resources` (% allocation matrix) sheets are no longer produced — both were structurally misleading and have been replaced by the single PD-based `Resource Plan`.
 
 **Bundled assets:**
 
 ```
 assets/
-  pert-template.xlsx              <- bundled reference template
+  pert-template.xlsx              <- bundled reference template (4 sheets)
 scripts/
   generate_excel.py               <- JSON -> Excel generator (openpyxl)
   validate_template.py            <- custom template validator
   helpers/
     __init__.py
     wb_wbs.py                     <- WBS sheet logic
-    wb_timeline.py                <- Timeline/Gantt sheet logic
-    wb_resources.py               <- Resources matrix sheet logic
-    wb_risks.py                   <- Risk register sheet logic
-    wb_summary.py                 <- Summary sheet logic (cross-refs)
+    wb_pianificazione_risorse.py  <- Resource Plan (role × week PD) logic
+    wb_risks.py                   <- Risk register + PMI-correct MR
+    wb_summary.py                 <- Summary sheet logic (bands, overhead)
     formatting.py                 <- Shared styles, colors, fonts, formats
+    i18n.py                       <- en/it label tables
+    config_compat.py              <- Legacy JSON detection + default backfill
 references/
   workflow.md                     <- detailed agentic flow description
   pmi-methodology.md              <- PMI guide for formative mode
@@ -308,15 +311,18 @@ Agent(model="sonnet")
 - Instructions:
   - Open the workbook with openpyxl
   - Run the verification checklist:
-    - [ ] All 5 sheets present and correctly named (WBS, Timeline, Resources, Risks, Summary)
+    - [ ] Exactly 4 sheets present in this order: `WBS`, `Resource Plan` / `Pianificazione Risorse`, `Risks` / `Rischi`, `Summary` / `Riepilogo`
     - [ ] Formula cells contain formulas, not hardcoded values
     - [ ] Cross-reference inter-sheet links resolve correctly (no `#REF!` errors)
     - [ ] Consistent formatting (font, colors, borders, number format per row type)
     - [ ] SUM rollups match actual child ranges
     - [ ] PERT = `(O+4M+P)/6` present on every appropriate row
-    - [ ] sigma = `(P-O)/6` present where expected
+    - [ ] sigma = `(P-O)/6` present in the WBS σ Duration column
     - [ ] No empty input cells (all leaf activities have O/M/P values)
-    - [ ] Billable flags present and BILLABLE EFFORT formulas correct
+    - [ ] Resource Plan: TOTAL (PD) per role equals Σ PERT of activities where the role is primary; grand total within ±1 PD of `WBS!H{total}`
+    - [ ] Risks: Management Reserve formula uses the Tech+Overhead+Contingency base (cross-references `WBS!H{total}`), not just the contingency total
+    - [ ] Summary: Fascia BASSA = Subtotal + Contingency; MR is `Fascia BASSA × management_reserve_pct`; Fascia MEDIA = BASSA + MR; Fascia ALTA = MEDIA × (1 + alta_uplift_pct)
+    - [ ] Summary: Calendar Duration cell is a single weekly number (not a sum of leaf durations)
     - [ ] TOTAL row has global SUMs for effort and billable effort
   - If issues found: fix programmatically and re-validate (maximum 3 iterations)
   - If 3 iterations exhausted with remaining issues: present the issues to the user with recommendations
@@ -418,17 +424,17 @@ Each artifact is produced, validated by the user, and then passed as input to th
 
 Before considering the estimation complete, verify:
 
-- [ ] All 5 Excel sheets present (WBS, Timeline, Resources, Risks, Summary)
-- [ ] PERT formulas `=(O+4M+P)/6` on every appropriate row
+- [ ] All 4 Excel sheets present in order: `WBS`, `Resource Plan` (`Pianificazione Risorse`), `Risks` (`Rischi`), `Summary` (`Riepilogo`)
+- [ ] PERT formulas `=(O+4M+P)/6` on every appropriate WBS row
 - [ ] SUM rollups correct (exact child ranges)
-- [ ] sigma = `(P-O)/6` present where expected
+- [ ] sigma = `(P-O)/6` present in the WBS σ Duration column
 - [ ] Cross-sheet references resolve (no `#REF!` errors)
 - [ ] Input columns have values, formula columns have formulas (never inverted)
 - [ ] Consistent formatting (phase/WP/leaf/total row styles)
-- [ ] Billable flags correct, BILLABLE EFFORT calculated
-- [ ] Resources matrix with teams, billable metadata, SUMPRODUCT formulas
-- [ ] Risk register with P x I formula, priority IF, contingency, management reserve
-- [ ] Summary with sigma total (SQRT SUMPRODUCT), CI 68%/95%, adjusted PERT
+- [ ] Billable flags correct, BILLABLE EFFORT calculated on the WBS sheet
+- [ ] Resource Plan: PD per role × week with TOTAL (PD) column equal to Σ PERT of activities where the role is primary; cells over capacity (`>5 PD/week`) flagged red
+- [ ] Risk register with P×I formula, priority IF, contingency, and a Management Reserve cell whose formula cross-references `WBS!H{total}` (PMI-correct base)
+- [ ] Summary with Tech PERT, PM/DevOps overhead, Subtotal, Contingency, Fascia BASSA/MEDIA/ALTA, Management Reserve, Calendar Duration, Effort by Team (real PD), and Sensitivity Scenarios (if provided)
 - [ ] TOTAL row with global SUMs for effort and billable effort
 - [ ] 8/80 rule respected in WBS decomposition
 - [ ] All intermediate `.md` artifacts saved in `docs/pert-workspace/`
