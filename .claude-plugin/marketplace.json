@@ -11,6 +11,14 @@
   },
   "plugins": [
     {
+      "name": "agentic-harness",
+      "source": "./agentic-harness",
+      "description": "Stand up, assess, and maintain an agentic harness in an existing repo — generate project-specific agent teams and the skills they use, then assess how effectively they are used",
+      "version": "0.1.0",
+      "category": "engineering",
+      "tags": ["harness", "agents", "skills", "scaffolding", "orchestration", "multi-agent", "meta-skill"]
+    },
+    {
       "name": "developer-tools",
       "source": "./developer-tools",
       "description": "Developer environment tooling — devcontainer generation, stack detection, infrastructure config",
