@@ -79,7 +79,7 @@ State the data-passing method inside the orchestrator. Match it to the mode:
 
 ### File-passing convention
 
-- Keep intermediate work under a `_workspace/` directory in the working tree.
+- Keep intermediate work under a `_agents_workspace/` directory in the working tree.
 - Name files `{phase}_{agent}_{artifact}.{ext}` — e.g. `01_analyst_requirements.md`.
-- Write only the final deliverable to the user's target path; preserve `_workspace/` for
+- Write only the final deliverable to the user's target path; preserve `_agents_workspace/` for
   later inspection rather than deleting it.

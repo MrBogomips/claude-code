@@ -57,3 +57,5 @@ Every write to the harness appends a row. The columns are fixed:
 The table earns its place: it shows how the harness has evolved and why, which makes
 regressions visible and gives the next reviewer a starting point. Recording history is a
 required step of every harness write — not an optional courtesy.
+
+On periodic review this table can be pruned, preserving valuable information and keeping it readable.

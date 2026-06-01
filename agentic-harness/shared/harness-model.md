@@ -35,7 +35,8 @@ The separation is not bookkeeping. It buys three concrete things:
   a new kind of reviewer, you add an agent. When the workflow order is wrong, you edit the
   orchestrator. Each fault has one obvious place to fix it.
 - **Survival across sessions.** An agent defined only inline in a prompt vanishes when the
-  session ends. An agent defined as a file is there next time, with its protocol intact.
+  session ends. An agent defined as a file is there next time, with its protocol intact
+  and its memory.
 
 ## The file rule
 
