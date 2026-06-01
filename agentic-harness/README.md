@@ -26,3 +26,8 @@ Invoke a skill directly (`/agentic-harness:harness-setup`) or let Claude trigger
 ## Inspired by
 
 The harness concept is inspired by prior work in the community; this is an independent implementation. Credit lives in the repository README.
+
+## Changelog
+
+- **0.2.0** — `harness-setup` now always offers tool research (and, on an existing harness, tool maintenance) as part of the plan it presents, and accepts an optional user-provided starting context. Running still requires explicit acceptance, and per-tool adoption is unchanged. `harness-review` flags a missing tools registry as a finding.
+- **0.1.0** — Initial release: `harness-setup` and `harness-review`, shared concept docs, and the optional tool-discovery step.

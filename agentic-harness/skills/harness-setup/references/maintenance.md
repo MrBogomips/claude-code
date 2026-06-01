@@ -100,8 +100,12 @@ For an audit-fix-sync request on an existing harness:
 ## 7. Periodic tool review
 
 If the harness has a tools registry (`references/tools.md` under the orchestrator, produced
-by the tool-discovery step), the tools in it are not permanent. Re-evaluate them
-periodically — not on a fixed clock, but when a signal warrants it:
+by the tool-discovery step), the tools in it are not permanent — they fall out of use, stop
+being maintained, or get overtaken. So on any run against an existing harness (extend, apply
+a review context, or sync), **always offer a tool-maintenance review** as part of the plan —
+the same way `harness-setup` Step 0 offers tool discovery on a build. Offering is the
+default; run it when the user accepts. When you do, weigh each registered tool against these
+signals:
 
 - A registered tool is no longer being used by any agent or skill.
 - A tool has stopped being maintained, or a better alternative has appeared.

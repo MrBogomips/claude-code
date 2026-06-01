@@ -1,16 +1,17 @@
 # Tool discovery
 
-How the optional, on-request tool-discovery step works: how to brief the search subagent,
-how candidates are accepted, and how accepted tools are registered so agents and skills can
-use them without hard-coding a tool name. Supplements Step 1b.
+How the tool-discovery step works: how to brief the search subagent, how candidates are
+accepted, and how accepted tools are registered so agents and skills can use them without
+hard-coding a tool name. Supplements Step 1b.
 
 ## When it runs
 
-Only when the user asks ("find tools / MCPs / plugins for this project"). It is never part of
-an automatic build. It runs equally well during an initial build or standalone against an
-existing harness. This skill ships **no catalog of recommendations** — every candidate comes
-from a live search and the local configuration, and nothing is adopted without the user's
-explicit approval.
+Step 0 of `harness-setup` always offers tool research as part of the plan; this step runs
+when the user accepts. It can also be triggered on its own ("find tools / MCPs / plugins for
+this project"), and runs equally well during an initial build or standalone against an
+existing harness. Offering is automatic; running is not — and no individual tool is adopted
+without a separate explicit yes. This skill ships **no catalog of recommendations** — every
+candidate comes from a live search and the local configuration.
 
 ## Step 1: Brief the search subagent
 

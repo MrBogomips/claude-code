@@ -70,8 +70,10 @@ From these, classify each skill and agent as **used**, **unused**, **bypassed** 
 happens but around the harness), or **drifted** (present but out of sync). Apply the same lens
 to registered tools: is each one still used, and is there now a better alternative for its
 role? Flag tools that look unnecessary or superseded — as findings for `harness-setup`, not
-changes you make. The method for reading each signal and making the call is in
-`references/usage-assessment.md`. This step is strictly read-only.
+changes you make. If there is no tools registry at all, treat that as a finding too —
+recommend that `harness-setup` offer tool research — since a harness with no considered
+tooling is more often an oversight than a decision. The method for reading each signal and
+making the call is in `references/usage-assessment.md`. This step is strictly read-only.
 
 ## Step 5: Validate
 
