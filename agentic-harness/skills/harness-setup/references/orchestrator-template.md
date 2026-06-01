@@ -6,11 +6,13 @@ state the mode per phase.
 
 ## Table of contents
 
-1. [Template A — agent team (default)](#template-a--agent-team-default)
-2. [Template B — subagent (fallback / lightweight)](#template-b--subagent-fallback--lightweight)
-3. [Template C — hybrid](#template-c--hybrid)
-4. [Authoring rules](#authoring-rules)
-5. [Follow-up keywords](#follow-up-keywords)
+- [Orchestrator template](#orchestrator-template)
+  - [Table of contents](#table-of-contents)
+  - [Template A — agent team (default)](#template-a--agent-team-default)
+  - [Template B — subagent (fallback / lightweight)](#template-b--subagent-fallback--lightweight)
+  - [Template C — hybrid](#template-c--hybrid)
+  - [Authoring rules](#authoring-rules)
+  - [Follow-up keywords](#follow-up-keywords)
 
 ---
 
@@ -47,7 +49,7 @@ Branch on whether prior work exists:
 - `_agents_workspace/` present + a partial-change request → partial re-run; re-invoke only
   the affected member and overwrite only its output.
 - `_agents_workspace/` present + new input → new run; move the old `_agents_workspace/` to
-  `_agents_workspace_{YYYYMMDD_HHMMSS}/`, then go to Phase 1.
+  `_agents_workspace/archive/{YYYYMMDD_HHMMSS}/`, then go to Phase 1.
 On a partial re-run, pass the prior output path into the member's prompt so it reads the
 existing result and folds in the change.
 

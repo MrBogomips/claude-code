@@ -5,13 +5,15 @@ context cost. Supplements Step 4.
 
 ## Table of contents
 
-1. [Writing the description](#1-writing-the-description)
-2. [Body style](#2-body-style)
-3. [Output formats and examples](#3-output-formats-and-examples)
-4. [Progressive disclosure](#4-progressive-disclosure)
-5. [When to bundle a script](#5-when-to-bundle-a-script)
-6. [Data-schema standards](#6-data-schema-standards)
-7. [What to leave out](#7-what-to-leave-out)
+- [Skill writing guide](#skill-writing-guide)
+  - [Table of contents](#table-of-contents)
+  - [1. Writing the description](#1-writing-the-description)
+  - [2. Body style](#2-body-style)
+  - [3. Output formats and examples](#3-output-formats-and-examples)
+  - [4. Progressive disclosure](#4-progressive-disclosure)
+  - [5. When to bundle a script](#5-when-to-bundle-a-script)
+  - [6. Data-schema standards](#6-data-schema-standards)
+  - [7. What to leave out](#7-what-to-leave-out)
 
 ---
 
@@ -111,6 +113,7 @@ Watch the agents' transcripts during testing. Bundle when a pattern repeats:
 | The same dependency is installed every time | state the install step in the skill |
 | The same multi-step approach recurs | write it up as a standard procedure in the body |
 | The same workaround follows the same error every time | document the issue and its fix |
+| The same document or report is read or produced | write it up and define a json data schema for input/output payload to interact with it |
 
 A bundled script must pass an execution test of its own.
 

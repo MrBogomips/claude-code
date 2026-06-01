@@ -6,11 +6,15 @@ literally.
 
 ## Table of contents
 
-1. [Multi-source research (team, fan-out/fan-in)](#1-multi-source-research-team-fan-outfan-in)
-2. [Long-form authoring (team, pipeline + fan-out)](#2-long-form-authoring-team-pipeline--fan-out)
-3. [Generate-and-review (subagent, producer–reviewer)](#3-generate-and-review-subagent-producerreviewer)
-4. [Code review (team, fan-out/fan-in + debate)](#4-code-review-team-fan-outfan-in--debate)
-5. [Large migration (team, supervisor)](#5-large-migration-team-supervisor)
+- [Team examples](#team-examples)
+  - [Table of contents](#table-of-contents)
+  - [1. Multi-source research (team, fan-out/fan-in)](#1-multi-source-research-team-fan-outfan-in)
+  - [2. Long-form authoring (team, pipeline + fan-out)](#2-long-form-authoring-team-pipeline--fan-out)
+    - [A full agent file — `consistency-reviewer.md`](#a-full-agent-file--consistency-reviewermd)
+  - [3. Generate-and-review (subagent, producer–reviewer)](#3-generate-and-review-subagent-producerreviewer)
+  - [4. Code review (team, fan-out/fan-in + debate)](#4-code-review-team-fan-outfan-in--debate)
+  - [5. Large migration (team, supervisor)](#5-large-migration-team-supervisor)
+  - [What every example shares](#what-every-example-shares)
 
 ---
 
