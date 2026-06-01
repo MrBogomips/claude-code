@@ -12,6 +12,7 @@ folding in feedback. Every one of them ends by recording the change in history.
 4. [Feedback routing](#4-feedback-routing)
 5. [Evolution triggers](#5-evolution-triggers)
 6. [The operations workflow](#6-the-operations-workflow)
+7. [Periodic tool review](#7-periodic-tool-review)
 
 ---
 
@@ -95,3 +96,22 @@ For an audit-fix-sync request on an existing harness:
    triggering, re-check the descriptions; for large changes (an architecture change, or
    adding/removing several agents), re-run the relevant tests. Finally, confirm the
    `CLAUDE.md` record matches the actual files.
+
+## 7. Periodic tool review
+
+If the harness has a tools registry (`references/tools.md` under the orchestrator, produced
+by the tool-discovery step), the tools in it are not permanent. Re-evaluate them
+periodically — not on a fixed clock, but when a signal warrants it:
+
+- A registered tool is no longer being used by any agent or skill.
+- A tool has stopped being maintained, or a better alternative has appeared.
+- The preferred tool fails often enough that agents are running on its alternative in
+  practice.
+
+The split follows the rest of this plugin: assessing whether a tool is still earning its
+place is a read activity, so it belongs to `harness-review` (it reads the registry as one of
+its usage signals); swapping, adding, or retiring a tool is a write, so it comes back here.
+When you change the registry, update the affected row's `Last reviewed` date, keep every
+role's alternative current, and record the change in the `CLAUDE.md` history like any other.
+Because agents and skills reference tools by role, swapping the tool behind a role needs no
+edits to their files.

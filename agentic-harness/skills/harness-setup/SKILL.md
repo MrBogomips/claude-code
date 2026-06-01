@@ -1,6 +1,6 @@
 ---
 name: harness-setup
-description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up or build a harness, scaffold or design an agent team and the skills they use, add or change an agent or skill, update or rebuild the harness, sync it after drift, or apply a review context produced by harness-review. Also triggers on follow-ups such as 'extend the harness', 'the harness needs a new agent', 're-run setup', and 'act on the review'. For read-only assessment of how well an existing harness is used, use harness-review instead — this skill is the writer, that one is the reader."
+description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up or build a harness, scaffold or design an agent team and the skills they use, add or change an agent or skill, update or rebuild the harness, sync it after drift, or apply a review context produced by harness-review. On explicit request it can also discover and configure external tools — MCP servers and plugins — that fit the project, and register the approved ones in the harness tools registry. Also triggers on follow-ups such as 'extend the harness', 'the harness needs a new agent', 're-run setup', 'act on the review', and 'find tools or MCPs for this project'. For read-only assessment of how well an existing harness is used, use harness-review instead — this skill is the writer, that one is the reader."
 model: opus
 ---
 
@@ -46,6 +46,30 @@ plan is confirmed.
 3. Check for conflicts or overlap with any existing agents and skills from Step 0.
 4. Read the user's technical level from the conversation and match your wording to it.
    Explain a term like "assertion" or "schema" when the cues suggest it is unfamiliar.
+
+## Step 1b: Discover tools — optional, on request
+
+Run this only when the user asks for it ("find tools / MCPs / plugins for this project").
+It is never automatic. It can run inside a build or standalone against an existing harness.
+
+This skill proposes nothing of its own — the candidates come from a live search, not a
+built-in catalog:
+
+1. Hand a **search-optimized subagent** (`general-purpose`, with web search) a tight context
+   — the project's domain, stack, and task types from Step 1 — and have it find candidate
+   MCP servers and plugins that fit. Also inspect the local and session configuration for
+   tools already available, so you don't propose what is already there.
+2. Present each candidate with the **role** it would fill, what it does, and its trade-off.
+   The user **accepts or rejects each one explicitly**. Adopt only what is accepted.
+3. Register accepted tools **by role** in the tools registry under the orchestrator — a
+   `tools.md` file in `.claude/skills/{domain}-orchestrator/references/`. It is a lookup of
+   role → preferred tool → alternative (for when the preferred one is unavailable) → status.
+   Agents and skills reference a tool by its **role**, never by a hard tool name, so the
+   harness falls back to the alternative when a tool is missing.
+
+The subagent's context template, the acceptance flow, and the registry schema are in
+`references/tool-discovery.md`. Registered tools are reviewed periodically — see
+`references/maintenance.md`.
 
 ## Step 2: Choose the execution mode and the architecture pattern
 
@@ -129,6 +153,9 @@ Build into the orchestrator:
 - **Error handling** that does not assume success: retry once, then proceed without the
   missing result and note the omission; never delete conflicting data — record it with its
   source.
+- **The tools registry**, when tool discovery (Step 1b) has run: it lives in this
+  orchestrator's `references/` directory as `tools.md`, and agents and skills reference tools
+  by role from it.
 
 When extending rather than building new, modify the existing orchestrator — do not create a
 second one. Reflect a new agent in the team composition, task assignment, data flow, and
@@ -172,6 +199,8 @@ Before calling a setup or change complete:
 - [ ] The orchestrator's first phase does a context check (initial / follow-up / partial).
 - [ ] The `CLAUDE.md` pointer is registered (goal + trigger + change history).
 - [ ] The change-history table records this change.
+- [ ] If tool discovery ran: nothing was adopted without explicit approval, and accepted
+      tools are registered by role (with alternatives) in the orchestrator's `tools.md`.
 
 ## References
 
@@ -184,7 +213,9 @@ Before calling a setup or change complete:
 - `references/skill-writing-guide.md` — skill authoring: descriptions, body style,
   progressive disclosure, data-schema standards.
 - `references/maintenance.md` — extending an existing harness (the extension matrix),
-  applying a review context, syncing drift, and feedback routing.
+  applying a review context, syncing drift, feedback routing, and periodic tool review.
+- `references/tool-discovery.md` — the optional, on-request tool-discovery step: the
+  search subagent's context, the explicit-acceptance flow, and the `tools.md` registry schema.
 - `${CLAUDE_PLUGIN_ROOT}/shared/harness-model.md`,
   `${CLAUDE_PLUGIN_ROOT}/shared/execution-modes.md`,
   `${CLAUDE_PLUGIN_ROOT}/shared/claude-md-pointer.md` — shared concepts.
