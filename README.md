@@ -6,7 +6,7 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 
 | Plugin | Description | Category | Version |
 |--------|-------------|----------|---------|
-| [agentic-harness](./agentic-harness) | Stand up, assess, and maintain an agentic harness — generate project-specific agent teams and the skills they use, then assess how effectively they are used | Engineering | 0.1.0 |
+| [agentic-harness](./agentic-harness) | Stand up, assess, and maintain an agentic harness — generate project-specific agent teams and the skills they use, then assess how effectively they are used | Engineering | 0.2.0 |
 | [developer-tools](./developer-tools) | Developer environment tooling — devcontainer generation, stack detection, infrastructure config | Engineering | 2.4.0 |
 | [human-resources](./human-resources) | HR interview workflow — job descriptions, pre-screening, interview prep, evaluation, compliance | Human Resources | 0.2.0 |
 | [kaizen](./kaizen) | Continuous improvement loops — recursive optimization engine with profiles for Claude Code usage, refactoring, and process improvement | Engineering | 1.0.0 |

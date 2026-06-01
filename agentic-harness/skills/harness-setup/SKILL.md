@@ -27,8 +27,11 @@ context*, this skill is what acts on it.
 Always check the current state first, then pick the path. Do not start generating until the
 plan is confirmed.
 
-1. Read `.claude/agents/`, `.claude/skills/`, and the harness section of `CLAUDE.md`.
-2. Branch on what you find:
+1. **Take the user's starting context, if any.** This skill accepts an optional context at
+   the start — domain notes, constraints, tools already in use, or a review context from
+   `harness-review`. Read it and fold it into everything below.
+2. Read `.claude/agents/`, `.claude/skills/`, and the harness section of `CLAUDE.md`.
+3. Branch on what you find:
    - **New build** — no harness, or empty agent/skill dirs → run Steps 1–7 in full.
    - **Extend** — a harness exists and the request adds or changes an agent or skill → run
      only the needed steps, per the extension matrix in `references/maintenance.md`.
@@ -36,7 +39,15 @@ plan is confirmed.
      an interactive improvement pass (see `references/maintenance.md`).
    - **Sync** — the files and the `CLAUDE.md` record disagree → reconcile and record the
      correction.
-3. Summarize what you found and the plan you propose; get the user's confirmation.
+4. Present the plan and confirm it before generating. Tool research and tool maintenance are
+   part of a good harness, so make them part of the plan you present **every run** — don't
+   wait to be asked:
+   - **Always ask whether to run tool discovery** (Step 1b), on a new build or an extension.
+   - **On an existing harness** (extend / apply-review-context / sync), **also ask whether to
+     run a tool-maintenance review** of the registered `tools.md` (see
+     `references/maintenance.md`).
+   Record the answers. Asking is the default; a "no" is a fine answer, but a silent skip is
+   not. Running happens only on a yes — see Step 1b.
 
 ## Step 1: Analyze the domain
 
@@ -47,10 +58,13 @@ plan is confirmed.
 4. Read the user's technical level from the conversation and match your wording to it.
    Explain a term like "assertion" or "schema" when the cues suggest it is unfamiliar.
 
-## Step 1b: Discover tools — optional, on request
+## Step 1b: Discover tools — always offered, run on acceptance
 
-Run this only when the user asks for it ("find tools / MCPs / plugins for this project").
-It is never automatic. It can run inside a build or standalone against an existing harness.
+Step 0 always offers tool research as part of the plan; run this step when the user accepts.
+It can also be triggered on its own later, against an existing harness. Offering is the
+default; running is gated on that yes — and adopting any individual candidate is gated on a
+separate, explicit per-tool yes (Step 3). Those two gates are the safeguard: the user is
+always asked, and nothing is installed behind their back.
 
 This skill proposes nothing of its own — the candidates come from a live search, not a
 built-in catalog:
@@ -199,6 +213,8 @@ Before calling a setup or change complete:
 - [ ] The orchestrator's first phase does a context check (initial / follow-up / partial).
 - [ ] The `CLAUDE.md` pointer is registered (goal + trigger + change history).
 - [ ] The change-history table records this change.
+- [ ] The user was asked whether to run tool research (and, on an existing harness, tool
+      maintenance), and the answer was recorded — whatever they chose.
 - [ ] If tool discovery ran: nothing was adopted without explicit approval, and accepted
       tools are registered by role (with alternatives) in the orchestrator's `tools.md`.
 
