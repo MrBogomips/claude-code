@@ -47,3 +47,9 @@ This is a static marketplace — no build steps. Plugins are collections of mark
 ## Shell script conventions
 
 Scripts must be macOS (BSD) compatible — no `grep -P`, no `head -n -1`. Use `grep -E`/`grep -oE` and `awk` instead. Avoid `((VAR++))` with `set -e` (fails when VAR=0); use `VAR=$((VAR + 1))`.
+
+## Git / PR Working Policy
+- Worktree usage: disabled
+- Worktree location: n/a (topic branch in main checkout)
+- Base branch: main
+- Recorded on: 2026-06-01
