@@ -47,7 +47,8 @@ plan is confirmed.
      run a tool-maintenance review** of the registered `tools.md` (see
      `references/maintenance.md`).
    Record the answers. Asking is the default; a "no" is a fine answer, but a silent skip is
-   not. Running happens only on a yes — see Step 1b.
+   not. Running happens only on a yes — see Step 1b. This confirms the approach; the concrete
+   list of files and tools is approved separately at Step 2b, before anything is written.
 
 ## Step 1: Analyze the domain
 
@@ -75,7 +76,8 @@ built-in catalog:
    tools already available, so you don't propose what is already there.
 2. Present each candidate with the **role** it would fill, what it does, and its trade-off.
    The user **accepts or rejects each one explicitly**. Adopt only what is accepted.
-3. Register accepted tools **by role** in the tools registry under the orchestrator — a
+3. Accepted tools become install/register rows in the Step 2b manifest; once that is
+   approved, register them **by role** in the tools registry under the orchestrator — a
    `tools.md` file in `.claude/skills/{domain}-orchestrator/references/`. It is a lookup of
    role → preferred tool → alternative (for when the preferred one is unavailable) → status.
    Agents and skills reference a tool by its **role**, never by a hard tool name, so the
@@ -103,6 +105,33 @@ covers them.
 **Split agents** along four axes — expertise, parallelism, context, reusability. The
 criteria table is in `references/agent-design-patterns.md`. Prefer a few focused agents over
 many thin ones; coordination cost grows with team size.
+
+## Step 2b: Approve the change manifest — required before any write
+
+Before creating, updating, or deleting anything — and before installing or uninstalling any
+tool — present a single explicit **change manifest** and get the user's formal approval. This
+is mandatory on every path: new build, extend, apply-review-context, sync. Nothing is written
+to `.claude/` or `CLAUDE.md`, and no tool is installed or removed, until the user approves it.
+
+This is not the Step 0 plan confirmation. Step 0 agrees the approach before the design exists;
+the manifest is the concrete, itemized list of exactly what this run will touch, produced once
+the design is settled. Writes and installs change the user's repository and environment and are
+awkward to undo — one explicit sign-off on the exact list is what keeps the run from making a
+change the user did not expect.
+
+Present it as concrete items, each labelled with its action and target:
+
+| Action | Target |
+|--------|--------|
+| create / update / remove | `.claude/agents/{name}.md` (one row per agent) |
+| create / update / remove | `.claude/skills/{name}/` (one row per skill) |
+| create / update | `.claude/skills/{domain}-orchestrator/` |
+| update | `CLAUDE.md` (harness pointer + change-history row) |
+| install / uninstall | `{role} -> {tool}` (only if tool discovery or maintenance proposed it) |
+
+List only the rows that apply. If the user amends the list — drops an agent, declines a tool,
+renames a skill — revise and present it again; the approval is of the final list. Once
+approved, carry out exactly what was approved in Steps 3–6 — no extra files, no extra installs.
 
 ## Step 3: Generate the agent definitions
 
@@ -200,6 +229,8 @@ orchestrator) are in `references/maintenance.md`.
 
 Before calling a setup or change complete:
 
+- [ ] The full change manifest (agents / skills / orchestrator / pointer / tools to create /
+      update / remove / install / uninstall) was formally approved before any write.
 - [ ] Every agent is a file under `.claude/agents/` — including built-in types.
 - [ ] Skills exist under `.claude/skills/` with valid `name` + `description` frontmatter.
 - [ ] One orchestrator, with data flow, error handling, and test scenarios.

@@ -58,6 +58,10 @@ themselves.
 
 ## Step 4: Register accepted tools
 
+Registration and any install or uninstall is a write, so it happens only after the change
+manifest is approved (`harness-setup` Step 2b). For a standalone tool run, present a
+tools-only manifest and get approval before writing.
+
 Record accepted tools **by role** in the registry under the orchestrator:
 `.claude/skills/{domain}-orchestrator/references/tools.md`. One registry per harness; the
 orchestrator owns it. The schema:

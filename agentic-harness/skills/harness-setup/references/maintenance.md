@@ -90,7 +90,8 @@ For an audit-fix-sync request on an existing harness:
    composition; produce a discrepancy list; report it to the user. (Read-only inventory and
    usage assessment are `harness-review`'s job — call it for the deeper read.)
 2. **Change incrementally.** Add, modify, or remove one agent or skill at a time. Sync after
-   each change rather than batching.
+   each change rather than batching. Present each change in the Step 2b manifest and get
+   approval before writing — the pre-write approval is mandatory here too.
 3. **Record history.** Append the date, change, target, and reason to the `CLAUDE.md` table.
 4. **Validate.** Re-check the changed agents and skills structurally; if the change affects
    triggering, re-check the descriptions; for large changes (an architecture change, or
@@ -114,8 +115,9 @@ signals:
 
 The split follows the rest of this plugin: assessing whether a tool is still earning its
 place is a read activity, so it belongs to `harness-review` (it reads the registry as one of
-its usage signals); swapping, adding, or retiring a tool is a write, so it comes back here.
-When you change the registry, update the affected row's `Last reviewed` date, keep every
+its usage signals); swapping, adding, or retiring a tool is a write, so it comes back here —
+and a retirement is an uninstall row in the Step 2b manifest, approved before it is carried
+out. When you change the registry, update the affected row's `Last reviewed` date, keep every
 role's alternative current, and record the change in the `CLAUDE.md` history like any other.
 Because agents and skills reference tools by role, swapping the tool behind a role needs no
 edits to their files.
