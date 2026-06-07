@@ -64,7 +64,7 @@ Phase 4 is again a lone subagent.
 ---
 name: consistency-reviewer
 description: "Checks a long-form draft for internal consistency — terminology, claims, and cross-references that contradict each other."
-model: opus
+model: inherit
 ---
 
 # Consistency reviewer

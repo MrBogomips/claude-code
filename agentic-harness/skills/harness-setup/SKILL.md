@@ -1,7 +1,7 @@
 ---
 name: harness-setup
-description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up or build a harness, scaffold or design an agent team and the skills they use, add or change an agent or skill, update or rebuild the harness, sync it after drift, or apply a review context produced by harness-review. On explicit request it can also discover and configure external tools — MCP servers and plugins — that fit the project, and register the approved ones in the harness tools registry. Also triggers on follow-ups such as 'extend the harness', 'the harness needs a new agent', 're-run setup', 'act on the review', and 'find tools or MCPs for this project'. For read-only assessment of how well an existing harness is used, use harness-review instead — this skill is the writer, that one is the reader."
-model: opus
+description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up, scaffold, extend, rebuild, or sync a harness, to add or change an agent or skill, or to apply a review context from harness-review; on request it also discovers and registers fitting MCP/plugin tools. For read-only assessment of an existing harness, use harness-review — this skill is the writer, that one is the reader. Not for authoring a single standalone skill or plugin (use plugin-dev or skill-creator), or one-shot automation recommendations (use claude-code-setup)."
+model: inherit
 ---
 
 # Harness setup — build and maintain the agent team
@@ -147,9 +147,10 @@ who it messages, who messages it, and what it claims from the shared task list. 
 definition template and worked agent files are in `references/agent-design-patterns.md` and
 `references/team-examples.md`.
 
-**Model.** Set each agent's model explicitly, in both the agent file and the spawn call. A
-harness's quality tracks its agents' reasoning, so use the strongest reasoning model for
-roles that depend on judgment rather than throughput.
+**Model.** Default each agent to `model: inherit` so it follows the session's model. A
+harness's quality tracks its agents' reasoning, so for a role that depends on judgment rather
+than throughput, pin the strongest reasoning model explicitly — by its current dated id (e.g.
+`claude-opus-4-8`), not a bare `opus` alias that ages.
 
 **If the team includes a QA agent.** Use the `general-purpose` type (`Explore` is read-only
 and cannot run validation). Make its core method *cross-boundary comparison* — read both
@@ -236,7 +237,7 @@ Before calling a setup or change complete:
 - [ ] One orchestrator, with data flow, error handling, and test scenarios.
 - [ ] Execution mode is stated (team / subagent / hybrid; per-phase if hybrid), with the
       subagent fallback covered when team mode is the default.
-- [ ] Each agent's model is set explicitly.
+- [ ] Each agent's model is set deliberately (`inherit` by default; a pinned dated model id only where judgment needs it).
 - [ ] No `commands/` directory was generated.
 - [ ] No conflict with existing agents or skills.
 - [ ] Skill and orchestrator descriptions are pushy and include follow-up keywords.

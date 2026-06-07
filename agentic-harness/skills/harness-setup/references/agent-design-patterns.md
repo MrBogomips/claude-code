@@ -187,7 +187,7 @@ An agent leverages a skill in one of three ways:
 ---
 name: agent-name
 description: "One or two sentences on the role. List the trigger keywords."
-model: opus
+model: inherit
 ---
 
 # Agent Name — one-line role
@@ -219,5 +219,6 @@ You are an expert [role] in [domain].
 - relationships with the other agents
 ```
 
-Set `model` explicitly. For roles whose quality depends on judgment rather than throughput,
-use the strongest reasoning model available.
+Default `model` to `inherit` so the agent follows the session's model. For a role whose
+quality depends on judgment rather than throughput, pin the strongest reasoning model
+explicitly — by its current dated id (e.g. `claude-opus-4-8`), not a bare `opus` alias that ages.
