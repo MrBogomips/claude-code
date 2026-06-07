@@ -25,7 +25,7 @@ The first choice when two or more agents need to talk while they work. Build the
 ---
 name: {domain}-orchestrator
 description: "Coordinates the {domain} agent team to produce {deliverable}. {initial keywords}. Also use for follow-ups: re-run, update, modify, supplement, improve the previous result, and everyday {domain} requests."
-model: opus
+model: inherit
 ---
 
 # {Domain} orchestrator
@@ -112,7 +112,7 @@ with the `Agent` tool and collect return values.
 ---
 name: {domain}-orchestrator
 description: "Coordinates {domain} agents to produce {deliverable}. {initial keywords} + follow-up keywords."
-model: opus
+model: inherit
 ---
 
 ## Execution mode: subagent
@@ -136,7 +136,7 @@ Invoke the agents in a single message:
 
 | Agent | Input | Output | model | run_in_background |
 |-------|-------|--------|-------|-------------------|
-| {agent-1} | {source} | `_agents_workspace/{phase}_{agent}_{artifact}.md` | opus | true |
+| {agent-1} | {source} | `_agents_workspace/{phase}_{agent}_{artifact}.md` | {model} | true |
 
 ### Phase 3: integrate
 Collect each return value; read file outputs; apply the integration logic; write the final
@@ -160,7 +160,7 @@ phase.
 ---
 name: {domain}-orchestrator
 description: "{domain} orchestrator (hybrid). {keywords} + follow-up keywords."
-model: opus
+model: inherit
 ---
 
 ## Execution mode: hybrid

@@ -1,6 +1,6 @@
 {
   "name": "agentic-harness",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Stand up, assess, and maintain an agentic harness in an existing repo. A meta-tool that generates project-specific agent teams and the skills they use, then assesses how effectively they are used. Two skills: harness-setup (build, extend, maintain) and harness-review (read-only assessment).",
   "author": {
     "name": "MrBogomips",

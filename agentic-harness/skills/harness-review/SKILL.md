@@ -1,7 +1,8 @@
 ---
 name: harness-review
-description: "Assess an existing agentic harness — read-only. Use to review, audit, or assess a harness; to ask how well its skills and agents are actually used; to check for drift between the files and the CLAUDE.md record; or to validate that skills trigger and agents wire up correctly. It inventories .claude/agents and .claude/skills, reads the CLAUDE.md pointer and change history, judges effective usage from project memory and the inventory, and produces a prioritized review context — what works well and what to improve — that hands off to harness-setup. This skill writes nothing; it diagnoses. To build or change a harness, use harness-setup instead."
-model: opus
+description: "Assess an existing agentic harness — read-only. Use to review, audit, or assess a harness, to judge how well its skills and agents are actually used, to check drift between the files and the CLAUDE.md record, or to validate that skills trigger and agents wire up. It produces a prioritized review context that hands off to harness-setup, and writes nothing. To build or change a harness, use harness-setup. Not for reviewing ordinary code or a pull request (that is code review)."
+model: inherit
+disallowed-tools: Write, Edit, NotebookEdit
 ---
 
 # Harness review — assess an existing harness (read-only)
@@ -26,6 +27,10 @@ Make no edits — not to `.claude/agents/`, not to `.claude/skills/`, not to `CL
 to project memory. Run nothing that mutates the project. When a fix is obvious, write it into
 the review context as a recommendation for `harness-setup`; do not apply it. The value of a
 reader is that its findings are trustworthy precisely because it changed nothing.
+
+This contract is also backed mechanically: the skill sets `disallowed-tools: Write, Edit,
+NotebookEdit`, so those tools are removed from the pool while it runs. `Bash` stays available
+for read-only inventory — the prose above still governs it; run nothing that mutates the project.
 
 ## Step 1: Inventory the harness
 

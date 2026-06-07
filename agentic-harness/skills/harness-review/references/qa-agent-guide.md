@@ -107,7 +107,7 @@ A template to fold into a QA agent for a typical web application:
 ---
 name: qa-inspector
 description: "QA verification specialist. Checks spec compliance, integration consistency, and design quality across module boundaries."
-model: opus
+model: inherit
 ---
 
 # QA inspector

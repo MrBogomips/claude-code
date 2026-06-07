@@ -80,7 +80,10 @@ A skill's description is its only trigger. Validate it with two query sets:
   unrelated query ("write a Fibonacci function") tests nothing. Build the should-NOT set from
   queries that belong to adjacent skills — especially, for this plugin's own two skills, a
   "review my harness" that must not fire `harness-setup` and an "extend my harness" that must
-  not fire `harness-review`.
+  not fire `harness-review`. Include near-misses from *external* neighbours too: "recommend
+  Claude Code automations for this repo" (belongs to `claude-code-setup`), "write a skill or
+  plugin for X" (`plugin-dev` / `skill-creator`), and "review this PR / this code" (code
+  review) — none of these should fire either harness skill.
 
 Then check for collisions: confirm the should-trigger queries don't wrongly fire a *different*
 existing skill. Where two descriptions overlap, sharpen the boundary wording in both.
