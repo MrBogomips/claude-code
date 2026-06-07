@@ -36,6 +36,12 @@ bash tests/ci/run-structural-tests.sh
 
 This is a strict requirement. No change is complete until validation passes. Requires `jq`.
 
+For a plugin headed to the community marketplace, also run the check the review pipeline runs before submitting:
+
+```bash
+claude plugin validate ./<plugin> --strict
+```
+
 ## CONNECTORS pattern
 
 Plugins with optional MCP server dependencies use `CONNECTORS.md` to declare `~~placeholder` categories. Skills reference these as `~~knowledge base`, `~~email`, etc. and degrade gracefully when no server is connected. Validation scripts check that every `~~placeholder` in SKILL.md files has a matching entry in CONNECTORS.md.
