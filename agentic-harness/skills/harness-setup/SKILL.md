@@ -1,6 +1,6 @@
 ---
 name: harness-setup
-description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up, scaffold, extend, rebuild, or sync a harness, to add or change an agent or skill, or to apply a review context from harness-review; on request it also discovers and registers fitting MCP/plugin tools. For read-only assessment of an existing harness, use harness-review — this skill is the writer, that one is the reader. Not for authoring a single standalone skill or plugin (use plugin-dev or skill-creator), or one-shot automation recommendations (use claude-code-setup)."
+description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up, scaffold, extend, rebuild, or sync a harness, to add or change an agent or skill, or to apply a review context from harness-review; on request it also discovers and registers fitting MCP/plugin tools. For read-only assessment of an existing harness, use harness-review — this skill is the writer, that one is the reader. Not for authoring a single standalone skill or plugin (use plugin-dev or skill-creator), or one-shot automation recommendations (use claude-code-setup). Not for choosing a project's spec-driven development system — use spec-advisor."
 model: inherit
 ---
 
@@ -49,6 +49,13 @@ plan is confirmed.
    Record the answers. Asking is the default; a "no" is a fine answer, but a silent skip is
    not. Running happens only on a yes — see Step 1b. This confirms the approach; the concrete
    list of files and tools is approved separately at Step 2b, before anything is written.
+5. **Offer `spec-advisor` when it fits.** When the project looks like software and no
+   spec-driven development system is evident, offer to run the `spec-advisor` skill — it advises
+   which SDD system fits and delegates setup to that system's own installer. A harness is the
+   *who/how/when* of the work; a spec system is the *project process* that work follows, so the
+   two are complementary, not the same job. Make the offer here and hand off — detection lives in
+   `spec-advisor`, so do not duplicate it. Offering is the default; running is gated on a yes, and
+   nothing is installed without `spec-advisor`'s own per-system approval. Record the answer.
 
 ## Step 1: Analyze the domain
 
