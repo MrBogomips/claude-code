@@ -6,7 +6,7 @@ This plugin does not do your domain work. It builds and maintains the agents and
 
 ## The three skills
 
-- **`harness-setup`** — the writer. Analyzes the project, designs an agent team and the skills they use, generates them into `.claude/`, builds an orchestrator, and registers a pointer in `CLAUDE.md`. Also extends an existing harness, applies a review context, and records every change.
+- **`harness-setup`** — the writer. Analyzes the project, designs an agent team and the skills they use, generates them into `.claude/`, builds an orchestrator, and registers a pointer in `CLAUDE.md` that makes the orchestrator the repo's entry point — a hard gate routing every prompt through it. Also extends an existing harness, applies a review context, and records every change.
 - **`harness-review`** — read-only. Inventories the harness, detects drift, and assesses how effectively the skills and agents are actually used (from project memory, the `CLAUDE.md` pointer, and the `.claude/` inventory), then produces a prioritized *review context* that `harness-setup` can act on.
 - **`spec-advisor`** — detects whether a software project lacks a spec-driven development system and, if so, advises the best-fit option (GitHub Spec Kit, OpenSpec, BMAD-METHOD, Agent OS, Taskmaster, AWS Kiro, ADR tooling) and delegates setup to that system's own installer. Offline-first; scans first and stays out if a system is already present; never authors specs itself.
 

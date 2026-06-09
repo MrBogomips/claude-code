@@ -41,9 +41,10 @@ for read-only inventory — the prose above still governs it; run nothing that m
 
 ## Step 2: Read the record
 
-Read the harness section of `CLAUDE.md` — the goal, the trigger rule, and the change-history
-table. The convention is in `${CLAUDE_PLUGIN_ROOT}/shared/claude-md-pointer.md`. The history
-tells you how the harness has evolved and where recent changes concentrated.
+Read the harness section of `CLAUDE.md` — the goal, the entry-point directive (the hard gate
+routing every prompt through the orchestrator), and the change-history table. The convention is
+in `${CLAUDE_PLUGIN_ROOT}/shared/claude-md-pointer.md`. The history tells you how the harness has
+evolved and where recent changes concentrated.
 
 ## Step 3: Detect drift
 
@@ -65,14 +66,18 @@ fixed, deterministic signal set — read each, infer nothing you cannot ground i
 
 - **Project auto-memory** at `~/.claude/projects/<project-hash>/memory/` — what the project
   has recorded about how work actually happens.
-- **The `CLAUDE.md` pointer and change history** — whether the trigger rule is current and
-  what has been changing.
+- **The `CLAUDE.md` pointer and change history** — whether the entry-point directive is present
+  and current (a soft "use the skill for X" trigger instead of the hard gate is itself a finding),
+  and what has been changing.
 - **The `.claude/` inventory** — what the harness offers.
 - **The tools registry**, if present (a `tools.md` in the orchestrator's `references/`
   directory) — which roles are filled by which tools, and their alternatives.
 
 From these, classify each skill and agent as **used**, **unused**, **bypassed** (the work
-happens but around the harness), or **drifted** (present but out of sync). Apply the same lens
+happens but around the harness), or **drifted** (present but out of sync). When the orchestrator
+itself is bypassed — work in its domain happening without it — treat the entry-point directive as
+the first suspect: flag it for `harness-setup` to strengthen (hard gate in `CLAUDE.md`, plus an
+entry-point description), not just the skill's keywords. Apply the same lens
 to registered tools: is each one still used, and is there now a better alternative for its
 role? Flag tools that look unnecessary or superseded — as findings for `harness-setup`, not
 changes you make. If there is no tools registry at all, treat that as a finding too —

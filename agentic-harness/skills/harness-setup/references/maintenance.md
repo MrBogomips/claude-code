@@ -68,6 +68,7 @@ Different feedback lands in different places. Route by type:
 | Wrong order | the orchestrator | "validation should come first" → reorder the phases |
 | Team composition | orchestrator + agents | "merge these two" → combine the agents |
 | Missing trigger | the skill description | "it doesn't fire when I phrase it this way" → widen the description |
+| Orchestrator bypassed | the `CLAUDE.md` entry-point directive (then the description) | "I just did it by hand" → strengthen the hard gate, not only the keywords |
 
 The reason this table exists is the separation in the harness model: who, how, and when each
 have one home, so each kind of fault has one place to fix it.
@@ -78,7 +79,10 @@ Propose a change not only when the user asks, but when the signals say it is due
 
 - The same kind of feedback recurs two or more times.
 - An agent fails the same way repeatedly.
-- The user is working around the orchestrator by hand — a sign it does not fit the real task.
+- The user is working around the orchestrator by hand — a sign it does not fit the real task,
+  *or* that the `CLAUDE.md` entry-point directive is too weak to route the prompt to it. Check
+  the directive is a hard gate before assuming the fit is wrong; strengthen it (and the
+  orchestrator's entry-point description) as the first remedy.
 
 When you see these, raise it; don't wait to be told.
 
