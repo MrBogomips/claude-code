@@ -7,11 +7,14 @@ wrong place for anything the file system already holds.
 ## Register a minimal pointer
 
 After a harness is built or changed, write (or update) one short section in the target
-project's `CLAUDE.md`. It carries three things and nothing more:
+project's `CLAUDE.md`. It carries three things — plus, when the project has an installed
+spec-driven development (SDD) system, one line recording how the orchestrator coordinates with it:
 
 1. The harness's **goal**, in one line.
 2. The **trigger rule** — which orchestrator skill to use, and for which kind of request.
 3. A **change-history** table.
+4. *(only when an SDD system is present)* a **spec-process** line — which system, and the segment
+   the orchestrator hands to it.
 
 This is enough for a fresh session: the trigger rule routes domain requests to the
 orchestrator, and the orchestrator handles the rest from the files under `.claude/`.
@@ -23,6 +26,9 @@ orchestrator, and the orchestrator handles the rest from the files under `.claud
 
 **Goal:** {one line on what this harness produces}
 
+**Spec process:** {system} ({version}) — orchestrator activates it for {owned segment};
+hand-back via {contract}. *(omit this line entirely when no SDD system is present)*
+
 **Trigger:** For {domain} work, use the `{orchestrator-skill-name}` skill. Answer simple
 questions directly.
 
@@ -31,6 +37,10 @@ questions directly.
 |------|--------|--------|--------|
 | {YYYY-MM-DD} | Initial setup | All | — |
 ````
+
+The spec-process line records the **coordination relationship**, not the spec contents — the
+requirements, plan, and tasks stay in the SDD system's own files. The full coordination model is in
+`${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md`.
 
 ## What not to put here
 
@@ -41,6 +51,8 @@ Leave these out of `CLAUDE.md`:
   truth that drifts.
 - The directory structure — readable straight from the file system.
 - Detailed execution rules — they belong in the skills and the orchestrator.
+- The spec contents — the spec-process line names the system and the coordinated segment only; the
+  requirements/plan/tasks live in the SDD system's own files, the single source of truth.
 
 The pointer is a signpost, not a manifest. Keep it small enough that it stays correct.
 
