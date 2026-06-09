@@ -29,7 +29,7 @@ The first choice when two or more agents need to talk while they work. Build the
 ````markdown
 ---
 name: {domain}-orchestrator
-description: "Coordinates the {domain} agent team to produce {deliverable}. {initial keywords}. Also use for follow-ups: re-run, update, modify, supplement, improve the previous result, and everyday {domain} requests."
+description: "Entry point for all {domain} work in this repo — invoke before responding to any {domain} request. Coordinates the {domain} agent team to produce {deliverable}. {initial keywords}. Also use for follow-ups: re-run, update, modify, supplement, improve the previous result, and everyday {domain} requests."
 model: inherit
 ---
 
@@ -48,8 +48,13 @@ Coordinates the {domain} agent team to produce {final deliverable}.
 
 ## Workflow
 
-### Phase 0: context check
-Branch on whether prior work exists:
+### Phase 0: intake & triage  (always entered first — this skill is the repo entry point)
+This skill is the repo's entry point, so it runs for *every* prompt. Triage before doing anything else:
+- Trivial, conversational, or clearly outside {domain} → answer it directly (or take the obviously
+  small correct action) and stop. Do not form a team or open `_agents_workspace/`.
+- In-{domain} work → run the context check, then continue into the workflow.
+
+**Context check** (in-{domain} work only) — branch on whether prior work exists:
 - `_agents_workspace/` absent → initial run; go to Phase 1.
 - `_agents_workspace/` present + a partial-change request → partial re-run; re-invoke only
   the affected member and overwrite only its output.
@@ -119,7 +124,7 @@ with the `Agent` tool and collect return values.
 ````markdown
 ---
 name: {domain}-orchestrator
-description: "Coordinates {domain} agents to produce {deliverable}. {initial keywords} + follow-up keywords."
+description: "Entry point for all {domain} work in this repo — invoke before responding to any {domain} request. Coordinates {domain} agents to produce {deliverable}. {initial keywords} + follow-up keywords."
 model: inherit
 ---
 
@@ -133,8 +138,10 @@ model: inherit
 
 ## Workflow
 
-### Phase 0: context check
-Same branch as Template A — on whether `_agents_workspace/` exists.
+### Phase 0: intake & triage  (always entered first — this skill is the repo entry point)
+Same as Template A: triage every prompt first — trivial / conversational / out-of-{domain} → answer
+directly and stop; in-{domain} work → run the context check (branch on whether `_agents_workspace/`
+exists) and continue.
 
 ### Phase 1: prepare
 Read the input; create `_agents_workspace/` (archiving any old one on a new run).
@@ -171,7 +178,7 @@ phase.
 ````markdown
 ---
 name: {domain}-orchestrator
-description: "{domain} orchestrator (hybrid). {keywords} + follow-up keywords."
+description: "Entry point for all {domain} work in this repo — invoke before responding to any {domain} request. {domain} orchestrator (hybrid). {keywords} + follow-up keywords."
 model: inherit
 ---
 
@@ -179,9 +186,14 @@ model: inherit
 
 | Phase | Mode | Why |
 |-------|------|-----|
+| Phase 0 (intake & triage) | — | gate every prompt; short-circuit trivial / off-domain |
 | Phase 2 (parallel collection) | subagent | independent collection, no coordination needed |
 | Phase 3 (consensus integration) | agent team | reconcile conflicting inputs by discussion |
 | Phase 4 (independent verification) | subagent | one QA agent verifies objectively |
+
+### Phase 0: intake & triage  (always entered first — this skill is the repo entry point)
+Same as Template A: triage every prompt first — trivial / conversational / out-of-{domain} → answer
+directly and stop; in-{domain} work → run the context check and continue into the phases below.
 
 ### Phase 2: collect — **Execution mode:** subagent
 Invoke N agents in parallel (`run_in_background: true`); save each to
@@ -215,7 +227,8 @@ Mark every phase as either delegated (`→ SDD: {system}`) or orchestrator-owned
 twice. Reference the SDD's artifacts in place — never copy them into `_agents_workspace/`.
 
 ### Addendum 1 — phase 0 (context check): locate, then activate the spec
-Add to the context-check phase, before going to prepare:
+Add to the context-check step of phase 0 (intake & triage), reached only after triage routes the
+request in as in-{domain} work, before going to prepare:
 
 ```
 - If the active spec for this request does not yet exist under `{HANDBACK_CONTRACT}`, the SDD
@@ -251,8 +264,8 @@ Add to the integrate (team) or finish (subagent) phase:
   task checkboxes in `tasks.md`
 
 ```
-### Phase 0: context check  → SDD: GitHub Spec Kit
-... existing initial/follow-up/partial branch ...
+### Phase 0: intake & triage  → SDD: GitHub Spec Kit
+... triage (trivial/off-domain → answer and stop); then the context-check branch ...
 - If `specs/<NNN>/tasks.md` for this request is absent, hand in to Spec Kit: run its specify flow
   with a contextual prompt from the goal + constraints; proceed once spec/plan/tasks exist.
 ### Phase 1: prepare
@@ -266,8 +279,8 @@ Add to the integrate (team) or finish (subagent) phase:
   `.kiro/specs/<feature>/{requirements,design,tasks}.md`
 
 ```
-### Phase 0: context check  → SDD: AWS Kiro
-- If `.kiro/specs/<feature>/` is absent, emit a contextual prompt (goal + constraints + the EARS
+### Phase 0: intake & triage  → SDD: AWS Kiro
+- (triage first; for in-domain work:) If `.kiro/specs/<feature>/` is absent, emit a contextual prompt (goal + constraints + the EARS
   requirements to capture), tell the user to author it in Kiro, and **pause**. Resume when the
   files exist.
 ```
@@ -294,6 +307,11 @@ system, anchor requirements to the spec and route **task status** through `.task
    the system's concrete values inlined, and mark each phase as delegated or orchestrator-owned.
 
 ## Follow-up keywords
+
+The description opens by asserting the orchestrator is the repo's entry point for {domain} work —
+that framing is what makes the skill trigger broadly rather than only on a narrow initial phrasing.
+It is the description's job to back the `CLAUDE.md` entry-point directive, not just to advertise the
+initial run.
 
 Initial-run keywords alone leave the harness unused after its first run. Put follow-up
 phrasings in the description: re-run, run again, update, modify, supplement; "only the

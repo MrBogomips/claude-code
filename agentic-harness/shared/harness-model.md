@@ -50,6 +50,6 @@ the harness.
 
 One agent uses one or more skills; a skill may be shared by several agents. The
 orchestrator names the agents and points each at its skills. The pointer in the target
-project's `CLAUDE.md` names only the orchestrator and its trigger rule — see
-`claude-md-pointer.md`. Nothing in the harness duplicates what the file system already
+project's `CLAUDE.md` names only the orchestrator and its entry-point directive (the hard gate
+that routes every prompt through it) — see `claude-md-pointer.md`. Nothing in the harness duplicates what the file system already
 states: the agent and skill lists live in `.claude/`, not in `CLAUDE.md`.

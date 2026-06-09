@@ -30,9 +30,10 @@ recorded how work actually happens. What to look for:
 
 ## Signal 2: the CLAUDE.md pointer and change history
 
-Read the harness section of `CLAUDE.md`. The pointer's trigger rule tells you what *should*
-route to the orchestrator; compare it against how the project actually describes its work
-(Signal 1). The change-history table tells you the evolution:
+Read the harness section of `CLAUDE.md`. The pointer's entry-point directive is the hard gate
+routing every prompt to the orchestrator; compare what *should* route against how the project
+actually describes its work (Signal 1) — a directive softer than a hard gate, or work that
+happens around it, is itself a finding. The change-history table tells you the evolution:
 
 - A pointer that names an orchestrator the files no longer contain → drift.
 - A long history that stops abruptly → the harness may have been abandoned.

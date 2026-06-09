@@ -213,11 +213,17 @@ hybrid modes — with data-passing, error handling, and test scenarios — are i
 
 Build into the orchestrator:
 
-- **A context-check first phase** so it distinguishes an initial run from a follow-up or a
-  partial re-run (branch on whether `_agents_workspace/` already exists).
-- **Follow-up trigger keywords** in its description ("re-run", "update", "modify",
-  "supplement", "improve the previous result", and everyday domain phrasings). Without
-  these, the harness goes unused after its first run.
+- **An intake-and-triage first phase**, because the orchestrator is the repo's entry point and
+  runs for every prompt: it triages first — a trivial or out-of-domain request is answered
+  directly and stops there; in-domain work then goes through the context check (initial run vs.
+  follow-up vs. partial re-run, branching on whether `_agents_workspace/` already exists). This
+  triage is what makes the `CLAUDE.md` hard gate practical — it routes every prompt without
+  spinning up a team for trivia.
+- **An entry-point description** that opens by stating the orchestrator is the entry point for
+  the domain (invoke before responding to any domain request), then carries **follow-up trigger
+  keywords** ("re-run", "update", "modify", "supplement", "improve the previous result", and
+  everyday domain phrasings). The description backs the `CLAUDE.md` directive; without the
+  follow-up keywords the harness goes unused after its first run.
 - **Data-passing** stated explicitly, matched to the mode — see
   `${CLAUDE_PLUGIN_ROOT}/shared/execution-modes.md`.
 - **Error handling** that does not assume success: retry once, then proceed without the
@@ -237,9 +243,10 @@ When extending rather than building new, modify the existing orchestrator — do
 second one. Reflect a new agent in the team composition, task assignment, data flow, and
 trigger keywords.
 
-Then **register the pointer** in the project's `CLAUDE.md`: goal, trigger rule, and the
-change-history table — and nothing the file system already holds. The convention and the
-template are in `${CLAUDE_PLUGIN_ROOT}/shared/claude-md-pointer.md`.
+Then **register the pointer** in the project's `CLAUDE.md`: goal, the **entry-point directive**
+(the hard gate that makes the orchestrator the single entry point — every prompt routes through
+it before any response), and the change-history table — and nothing the file system already
+holds. The convention and the template are in `${CLAUDE_PLUGIN_ROOT}/shared/claude-md-pointer.md`.
 
 ## Step 6: Record the change in history
 
@@ -273,13 +280,16 @@ Before calling a setup or change complete:
 - [ ] No `commands/` directory was generated.
 - [ ] No conflict with existing agents or skills.
 - [ ] Skill and orchestrator descriptions are pushy and include follow-up keywords.
+- [ ] The orchestrator description opens by asserting it is the entry point for the domain
+      (invoke before responding to any domain request).
 - [ ] Each SKILL.md body is within ~500 lines; overflow moved to `references/`.
-- [ ] The orchestrator's first phase does a context check (initial / follow-up / partial).
+- [ ] The orchestrator's first phase is intake & triage: it short-circuits trivial / off-domain
+      requests, then runs the context check (initial / follow-up / partial) for in-domain work.
 - [ ] If an SDD system is present: the orchestrator activates it via a contextual prompt and resumes
       on hand-back, every phase has exactly one owner, and no SDD artifact is copied into
       `_agents_workspace/`.
-- [ ] The `CLAUDE.md` pointer is registered (goal + trigger + change history; plus the spec-process
-      line when an SDD system is present).
+- [ ] The `CLAUDE.md` pointer is registered (goal + entry-point directive (hard gate) + change
+      history; plus the spec-process line when an SDD system is present).
 - [ ] The change-history table records this change.
 - [ ] The user was asked whether to run tool research (and, on an existing harness, tool
       maintenance), and the answer was recorded — whatever they chose.
