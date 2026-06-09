@@ -10,6 +10,8 @@ This plugin does not do your domain work. It builds and maintains the agents and
 - **`harness-review`** — read-only. Inventories the harness, detects drift, and assesses how effectively the skills and agents are actually used (from project memory, the `CLAUDE.md` pointer, and the `.claude/` inventory), then produces a prioritized *review context* that `harness-setup` can act on.
 - **`spec-advisor`** — detects whether a software project lacks a spec-driven development system and, if so, advises the best-fit option (GitHub Spec Kit, OpenSpec, BMAD-METHOD, Agent OS, Taskmaster, AWS Kiro, ADR tooling) and delegates setup to that system's own installer. Offline-first; scans first and stays out if a system is already present; never authors specs itself.
 
+When a project **already has** a spec system, `harness-setup` makes the generated orchestrator coordinate with it rather than run beside it: the orchestrator activates the spec workflow with a contextual prompt, the spec system runs its owned segment, and the orchestrator resumes on a clean hand-back — one owner per phase, no duplicated artifacts. The detection signatures and the per-system coordination map are shared knowledge under `shared/` (`detection-signatures.md`, `sdd-coordination.md`).
+
 The harness loop: **review → setup → review again.** `spec-advisor` is offered alongside it when a software project has no spec system yet.
 
 ## Skills, not commands

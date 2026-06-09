@@ -13,8 +13,8 @@ nothing of its own except by running the chosen system's installer, and only aft
 approval.
 
 It is offline-first. Everything needed to scan, recommend, and name an install command is in the
-two curated references; the network is reached only with the user's say-so (see the online policy
-in `references/spec-systems.md`).
+curated reference and the shared detection signatures; the network is reached only with the user's
+say-so (see the online policy in `references/spec-systems.md`).
 
 ## What this skill is not — and which skill to use instead
 
@@ -51,7 +51,7 @@ data, ops config with no codebase), explain briefly that an SDD system is not th
 
 ### Step 1 — Scan first: is a spec system already present?
 
-Using `references/detection-signatures.md`, scan for any existing spec system **or** ADR registry.
+Using `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md`, scan for any existing spec system **or** ADR registry.
 **If one is found, report what is present and where, then stop.** Do not push a second system on
 top of one already in use — an existing process is the user's decision, and stacking a second SDD
 system creates exactly the duplication this skill exists to avoid. This is a read-only report; the
@@ -112,8 +112,8 @@ the user at the official source (kiro.dev), and stop. Do not run an installer or
 - **Offline, or a search stalls** — fall back to the curated data; never block on the network. The
   offline path is complete on its own.
 - **Detection ambiguity** — resolve the shared `requirements/design/tasks` triple by parent
-  directory first (per `references/detection-signatures.md`); if still ambiguous, report exactly
-  what was found and ask, rather than guessing the system.
+  directory first (per `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md`); if still ambiguous,
+  report exactly what was found and ask, rather than guessing the system.
 - **Installer failure** — report the failure and point the user at the system's official
   troubleshooting source. Do not partially hand-roll the setup; a half-installed system is worse
   than a clean failure the user can retry.
@@ -122,8 +122,9 @@ the user at the official source (kiro.dev), and stop. Do not run an installer or
 
 ## References
 
-- `references/detection-signatures.md` — the scan-first knowledge: the consolidated path→system
-  table and the disambiguation rules (triple-by-parent-dir, BMAD v4/v6, ADR signals).
+- `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md` — the scan-first knowledge: the
+  consolidated path→system table and the disambiguation rules (triple-by-parent-dir, BMAD v4/v6,
+  ADR signals). Shared with `harness-setup`, which reads it to detect an installed system.
 - `references/spec-systems.md` — the per-system profiles (official repo/docs URL, install command,
   philosophy, Claude Code affinity, maturity, best-fit), the selection decision tree, the Kiro/IDE
   caveat, and the online policy.

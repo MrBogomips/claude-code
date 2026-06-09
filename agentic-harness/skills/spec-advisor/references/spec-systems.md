@@ -8,6 +8,11 @@ load-bearing: when a system is **selected** (not before), the official-repo fetc
 is what confirms the current command — these values are the offline baseline and the source of
 the URL to fetch.
 
+For how a generated orchestrator coordinates with each of these systems once it is installed (the
+hand-in / hand-back protocol and the per-system owned segment), see
+`${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md` — that is `harness-setup`'s concern, not this
+skill's.
+
 ## Per-system profiles
 
 ### GitHub Spec Kit
@@ -34,7 +39,7 @@ the URL to fetch.
 - **On-disk artifacts:** **v6** `_bmad/` + `_bmad-output/`; **v4** `.bmad-core/` + `docs/{prd,architecture,stories}/`
 - **Philosophy / stages:** a heavy agile pipeline with named agent personas (analyst, PM, architect, scrum master, dev) producing PRD → architecture → sharded stories.
 - **Claude Code affinity:** high, but opinionated — it brings its own multi-agent process.
-- **Maturity:** mature and feature-rich; note the v4/v6 layout split (see `detection-signatures.md`).
+- **Maturity:** mature and feature-rich; note the v4/v6 layout split (see `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md`).
 - **Best-fit:** teams that want a full, ceremony-rich agile workflow; greenfield-leaning.
 
 ### Agent OS

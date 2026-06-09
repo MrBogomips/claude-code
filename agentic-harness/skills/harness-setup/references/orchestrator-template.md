@@ -11,6 +11,7 @@ state the mode per phase.
   - [Template A — agent team (default)](#template-a--agent-team-default)
   - [Template B — subagent (fallback / lightweight)](#template-b--subagent-fallback--lightweight)
   - [Template C — hybrid](#template-c--hybrid)
+  - [SDD coordination](#sdd-coordination)
   - [Authoring rules](#authoring-rules)
   - [Follow-up keywords](#follow-up-keywords)
 
@@ -20,6 +21,10 @@ state the mode per phase.
 
 The first choice when two or more agents need to talk while they work. Build the team with
 `TeamCreate`; coordinate over a shared task list and `SendMessage`.
+
+> If the project has an installed SDD system, also splice in the [SDD coordination](#sdd-coordination)
+> addenda (phase 0, prepare, integrate) so the orchestrator hands work to the spec process and
+> resumes on hand-back.
 
 ````markdown
 ---
@@ -108,6 +113,9 @@ nudges or reassigns a stuck member, and checks state with `TaskGet`.
 When team communication is unnecessary, or the team tools are unavailable. Spawn each agent
 with the `Agent` tool and collect return values.
 
+> If the project has an installed SDD system, also splice in the [SDD coordination](#sdd-coordination)
+> addenda (phase 0, prepare, integrate).
+
 ````markdown
 ---
 name: {domain}-orchestrator
@@ -156,6 +164,10 @@ Keep `_agents_workspace/`; report a summary.
 A different mode per phase. State `**Execution mode:** {team | subagent}` at the top of each
 phase.
 
+> If the project has an installed SDD system, the [SDD coordination](#sdd-coordination) addenda
+> attach to whichever phases own the context check, the prepare step, and the integrate step —
+> regardless of each phase's execution mode.
+
 ````markdown
 ---
 name: {domain}-orchestrator
@@ -188,6 +200,85 @@ One QA subagent reads `_agents_workspace/03_integrated.md` and writes a verifica
 team: pass the subagent's file outputs to members as read paths. Team → team: tear down the
 old team before the next `TeamCreate` (only one team is active per session).
 
+## SDD coordination
+
+Use this when the project has an installed spec-driven development (SDD) system. The model — the
+two-way handoff, the one-owner-per-phase rule, and the per-system coordination map — is in
+`${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md`. This section turns it into three **addenda**
+you splice into whichever template you picked (A / B / C). The generated orchestrator cannot read
+that shared file at runtime, so **inline the concrete values** from the detected system's
+coordination row: `{system}`, `{owned-segment}`, `{ACTIVATE}` (its entry point), auto-invokable or
+human-gated, `{HANDBACK_CONTRACT}` (the artifact paths that mark completion), and
+`{WRITEBACK_RULE}`.
+
+Mark every phase as either delegated (`→ SDD: {system}`) or orchestrator-owned, so no phase is done
+twice. Reference the SDD's artifacts in place — never copy them into `_agents_workspace/`.
+
+### Addendum 1 — phase 0 (context check): locate, then activate the spec
+Add to the context-check phase, before going to prepare:
+
+```
+- If the active spec for this request does not yet exist under `{HANDBACK_CONTRACT}`, the SDD
+  owns the next step. Activate it (hand-in):
+  - Auto-invokable: invoke `{ACTIVATE}` with a contextual prompt built from the goal and the
+    constraints this orchestrator already holds, so {system} starts without re-gathering.
+  - Human-gated: emit that contextual prompt to the user, state how to run {system}'s step, and
+    **pause** until the user confirms it is done.
+- If the spec already exists, go straight to prepare and treat it as the input contract.
+```
+
+### Addendum 2 — prepare: read the contract, do not restate it
+Add to the prepare phase:
+
+```
+- Read `{HANDBACK_CONTRACT}` as the authoritative input — requirements, design, tasks. Agents
+  treat it as the source of truth; they do not re-derive requirements the SDD owns.
+- Reference these artifacts by path; do not copy them into `_agents_workspace/`.
+```
+
+### Addendum 3 — integrate / finish: write status back in {system}'s conventions
+Add to the integrate (team) or finish (subagent) phase:
+
+```
+- The final deliverable goes to the user's target path as usual.
+- Write status and decisions back into {system}: {WRITEBACK_RULE}. Never overwrite human-authored
+  spec prose — the spec owns intent, the harness owns execution.
+```
+
+### Worked snippet — Spec Kit (auto-invokable)
+- **owned-segment:** spec → plan → tasks · **ACTIVATE:** the specify flow / author `specs/<NNN>/`
+- **HANDBACK_CONTRACT:** `specs/<NNN>/{spec,plan,tasks}.md` complete · **WRITEBACK_RULE:** tick the
+  task checkboxes in `tasks.md`
+
+```
+### Phase 0: context check  → SDD: GitHub Spec Kit
+... existing initial/follow-up/partial branch ...
+- If `specs/<NNN>/tasks.md` for this request is absent, hand in to Spec Kit: run its specify flow
+  with a contextual prompt from the goal + constraints; proceed once spec/plan/tasks exist.
+### Phase 1: prepare
+- Read `specs/<NNN>/{spec,plan,tasks}.md` as the contract; reference in place.
+### Phase 4: integrate
+- Write the deliverable; tick the completed checkboxes in `specs/<NNN>/tasks.md`.
+```
+
+### Worked snippet — AWS Kiro (human-gated, IDE)
+- **ACTIVATE:** the user authors in the Kiro IDE · **HANDBACK_CONTRACT:**
+  `.kiro/specs/<feature>/{requirements,design,tasks}.md`
+
+```
+### Phase 0: context check  → SDD: AWS Kiro
+- If `.kiro/specs/<feature>/` is absent, emit a contextual prompt (goal + constraints + the EARS
+  requirements to capture), tell the user to author it in Kiro, and **pause**. Resume when the
+  files exist.
+```
+
+### Defer-heavy systems (BMAD, spec-workflow-mcp, Taskmaster)
+These own a larger segment, but the protocol is identical — there is no "step aside" mode. Activate
+the SDD's own flow with a contextual prompt, let it run its owned segment (personas, approval gate,
+task loop), and have the orchestrator own only what the SDD does not: typically execution,
+integration, and a cross-boundary QA pass over the SDD's output. When Taskmaster pairs with a spec
+system, anchor requirements to the spec and route **task status** through `.taskmaster/tasks/tasks.json`.
+
 ## Authoring rules
 
 1. State the execution mode at the top. For hybrid, a per-phase mode table is required.
@@ -199,6 +290,8 @@ old team before the next `TeamCreate` (only one team is active per session).
    call out the transition points.
 6. Make error handling realistic — do not assume everything succeeds.
 7. Include at least one normal and one error test scenario.
+8. When an SDD system is present, splice in the [SDD coordination](#sdd-coordination) addenda with
+   the system's concrete values inlined, and mark each phase as delegated or orchestrator-owned.
 
 ## Follow-up keywords
 
