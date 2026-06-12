@@ -15,6 +15,7 @@ Runs on every push/PR to `main`. Requires `jq`.
 | `validate-plugin.sh` | plugin.json, SKILL.md/AGENT.md frontmatter, marketplace.json |
 | `validate-connectors.sh` | `~~placeholder` references match CONNECTORS.md entries |
 | `validate-references.sh` | `references/` paths in SKILL.md resolve to existing files |
+| `validate-versions.sh` | every plugin.json version matches its marketplace.json entry; no orphan entries |
 
 ## Layer 2: Skill Scenarios (manual)
 
