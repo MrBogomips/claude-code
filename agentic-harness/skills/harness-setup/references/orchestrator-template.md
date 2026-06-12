@@ -343,6 +343,20 @@ Add to the integrate (team) or finish (subagent) phase:
   harness owns execution.
 ```
 
+### Addendum T4 — integrate / finish: tracker-sync write-through (dual-tracker projects only)
+Splice this **only when the project has the generated `tracker-sync` skill** — a repo-native
+tracker plus a human SaaS tracker, with the sync artifacts generated per
+`${CLAUDE_PLUGIN_ROOT}/shared/tracker-sync-protocol.md`. Add immediately after Addendum T3's
+write-back:
+
+```
+- After {STATUS_WRITEBACK} completes, invoke the `tracker-sync` skill in **scoped** mode for the
+  item(s) touched this run, so the human tracker's projection reflects the new work state.
+  Scoped mode pushes only those items — it runs no intake and no reconcile.
+- If the sync run fails or its preflight stops it, note that in the run summary and continue —
+  the deliverable does not depend on the projection, and a later `full` run catches up.
+```
+
 ### Worked snippet — Beads (auto-invokable)
 - **READY_QUERY:** `bd ready --json` · **CREATE_CMD:** `bd create "title"` ·
   **STATUS_WRITEBACK:** `bd update {id} --claim` on start, `bd close {id} "summary"` on completion
