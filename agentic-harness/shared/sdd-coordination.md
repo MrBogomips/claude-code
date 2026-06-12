@@ -1,52 +1,14 @@
 # SDD coordination
 
-When a project has a spec-driven development (SDD) system installed, the harness does not run
-beside it — the two **work coordinated**. This file defines how the generated orchestrator and an
-installed SDD system compose: who owns which part of the workflow, how the orchestrator hands work
-in, and how it picks the work back up. `harness-setup` reads this to bake the coordination into the
-orchestrator it generates; the orchestrator itself cannot read this file at runtime, so the
-relevant values are **inlined** at generation time.
-
-A harness is the *who/how/when* of the work — agents, skills, order. An SDD system is the
-*project process* the work follows — requirements, design, decomposition, decision records. They
-are different layers, so they compose cleanly once the boundary is drawn. Detection of which
-system is present is a separate concern: see `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md`.
-
-## The coordination model
-
-An SDD system owns a **bounded segment** of the workflow — usually the spec/plan/decompose
-front-end, and for the heavier systems part of the build too. The orchestrator stays the driver
-and coordinates that segment through a **two-way handoff**, the same shape for every system:
-
-1. **Activate (hand-in).** At the phase boundary the SDD owns, the orchestrator composes a
-   **contextual prompt** from what it already holds — the goal, the constraints, the context it has
-   gathered — and activates the SDD's entry point so the SDD starts cleanly without re-gathering:
-   - *Auto-invokable* (a CLI or MCP entry point) → the orchestrator invokes it directly with the
-     contextual prompt.
-   - *Human-gated* (an IDE, or a workflow with an approval step) → the orchestrator emits the
-     contextual prompt for the user, **pauses**, and resumes when the user confirms the step is done.
-2. **The SDD runs its owned segment.** The orchestrator does **not** duplicate it — it never
-   re-derives the requirements or the plan the SDD owns.
-3. **Hand-back (return).** The SDD signals completion; its artifacts — the spec, plan, tasks,
-   approved design, or task graph — are the **contract**. The orchestrator detects completion (the
-   artifact is present, an approval flag is set, or the user confirms) and resumes.
-4. **The orchestrator resumes its owned segment** — parallel execution, integration, cross-boundary
-   QA — reading the SDD artifacts as its input and **writing status and decisions back** in the
-   SDD's own conventions. The final deliverable still goes to the user's target path.
-
-### Two rules that keep it clean
-
-- **One owner per phase.** Mark each orchestrator phase as either delegated (`→ SDD: {system}`) or
-  orchestrator-owned. A phase the SDD owns is not re-done by an agent, and vice versa. This is what
-  prevents the parallel-and-conflicting flow the coordination exists to avoid.
-- **One source of truth per artifact.** SDD artifacts are **referenced**, never copied into
-  `_agents_workspace/`. The orchestrator reads them in place and writes status back in place. Copying
-  a spec into the workspace creates a second copy that drifts — the same anti-pattern the `CLAUDE.md`
-  pointer avoids by not duplicating the file system.
-
-Friction is minimised by the two ends of the handoff: the **contextual prompt** on hand-in means the
-SDD does not re-ask what the orchestrator already knows, and the **artifact-as-contract** on
-hand-back means the orchestrator does not re-derive what the SDD already settled.
+The spec-process instance of the harness coordination protocol. The protocol itself — the
+two-way handoff (activate, owned segment, hand-back, write-back), auto-invokable vs human-gated
+activation, and the two rules (**one owner per phase**, **one source of truth per artifact**) —
+is in `${CLAUDE_PLUGIN_ROOT}/shared/coordination-protocol.md`; read it first. This file applies
+it to spec-driven development (SDD) systems: an SDD system owns a **bounded segment** of the
+workflow — usually the spec/plan/decompose front-end, and for the heavier systems part of the
+build too — and the per-system map below gives the concrete values `harness-setup` inlines into
+the generated orchestrator. Detection of which system is present is a separate concern: see
+`${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md`.
 
 ## Per-system coordination map
 
