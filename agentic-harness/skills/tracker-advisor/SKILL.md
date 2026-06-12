@@ -1,6 +1,6 @@
 ---
 name: tracker-advisor
-description: "Detect whether a software project lacks an issue tracker suited to agentic work and, if so, advise which one fits (Beads, Backlog.md, git-bug, git-issues, Beans, or GitHub Issues, Linear, Jira via their official access paths) and delegate setup to that system's own installer. Use when choosing or setting up a project's issue, bug, or work tracker, when asked how agents should pull ready work or record work state, or when harness-setup detects a software project with no tracker. Scans first and stays out if a tracker is already present. Does NOT author, triage, or groom issues (the installed tracker owns that), does NOT choose a spec system or spec-derived task decomposition such as Taskmaster (that is spec-advisor), does NOT build the .claude/ agent harness (that is harness-setup), and does NOT sync two trackers with each other."
+description: "Detect whether a software project lacks an issue tracker suited to agentic work and, if so, advise which one fits (Beads, Backlog.md, git-bug, git-issues, Beans, or GitHub Issues, Linear, Jira via their official access paths) and delegate setup to that system's own installer. Use when choosing or setting up a project's issue, bug, or work tracker, when asked how agents should pull ready work or record work state, or when harness-setup detects a software project with no tracker. Scans first and stays out if a tracker is already present. Does NOT author, triage, or groom issues (the installed tracker owns that), does NOT choose a spec system or spec-derived task decomposition such as Taskmaster (that is spec-advisor), does NOT build the .claude/ agent harness (that is harness-setup), and does NOT sync two trackers with each other (harness-setup generates that, via its dual-tracker sync sub-step)."
 model: inherit
 ---
 
@@ -28,7 +28,7 @@ This skill does **not**:
 | Build the `.claude/` agent harness (agents, skills, orchestrator) | **harness-setup** |
 | Assess how well a harness is used | **harness-review** |
 | Create Claude Code components (skills, agents, plugins) | **plugin-dev / skill-creator** |
-| Keep two trackers in sync (repo-native ⇄ Jira/Linear) | a planned future capability of this plugin — name it and stop |
+| Keep two trackers in sync (repo-native ⇄ Jira/Linear/GitHub Issues) | **harness-setup** — its dual-tracker sync sub-step generates the project's `tracker-sync` skill |
 | Push a tracker when one is already present | nothing — the scan reports and stops |
 | Write to `CLAUDE.md` | nothing — the chosen system's on-disk artifacts are self-evident |
 
@@ -113,9 +113,11 @@ For the selected system:
 
 **SaaS special case — GitHub Issues, Linear, Jira.** These are services, not repo packages, so
 they are **detect-and-advise only**: explain the option, name the official access path (`gh`;
-the vendor MCP servers), and stop — configuring credentials is the user's call. For Linear and
-Jira, note that keeping a repo-native tracker in sync with them is a planned future capability
-of this plugin. The SaaS/MCP caveat in `references/tracker-systems.md` has the detail.
+the vendor MCP servers), and stop — configuring credentials is the user's call. For Linear,
+Jira, and GitHub Issues, note that a repo-native tracker can be kept in sync with them:
+`harness-setup` generates that (its dual-tracker sync sub-step, model in
+`${CLAUDE_PLUGIN_ROOT}/shared/tracker-sync-protocol.md`) — name it and stop; this skill does
+not set it up. The SaaS/MCP caveat in `references/tracker-systems.md` has the detail.
 
 ## Error handling and graceful degradation
 

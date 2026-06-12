@@ -59,6 +59,25 @@ the orchestrator; something the record names that no longer exists; an orchestra
 references a member it never forms. Do not reconcile drift — report it. Reconciliation is a
 write, and belongs to `harness-setup`.
 
+**Tracker-sync drift** — when the harness includes a generated `tracker-sync` skill (a
+`.tracker-sync/` store at the repo root; model in
+`${CLAUDE_PLUGIN_ROOT}/shared/tracker-sync-protocol.md`), read its state read-only and judge
+each signal against the sync config (the `mapping.md` under the generated skill):
+
+- **Cursor age vs the configured cadence** — a cursor far older than the cadence means the
+  sync is not running.
+- **Unresolved conflict count** in `conflicts.md` — a growing log nobody reads is drift in
+  the projection.
+- **Open-proposal backlog age** in `proposals.md` — an old `open` proposal means a human
+  state decision is waiting for adoption while state push stays suspended for that item.
+- **Orphan counts** (`orphaned-remote` / `orphaned-local` in `map.jsonl`) — terminal states
+  pending a user decision that nobody has made.
+- **A stale `reports/` directory** — a schedule is registered but not producing reports
+  (or producing only "role unavailable" reports, which points at headless auth).
+
+Each is a finding for `harness-setup` — including "the sync exists but shows no sign of
+running at all".
+
 ## Step 4: Assess effective usage
 
 Drift tells you what *exists*; usage tells you what is *used*. Judge effective usage from a

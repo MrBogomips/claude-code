@@ -50,6 +50,25 @@ table; `harness-setup` scans both.
 | `.github/ISSUE_TEMPLATE/` | GitHub Issues (weak signal) | Usage signal only — see rule 5; never conclude on it silently. |
 | `.taskmaster/` | Taskmaster | **Spec-derived** task decomposition, not a general tracker — see rule 6. |
 
+## Human-tracker usage signals
+
+A human-oriented SaaS tracker (Jira, Linear, GitHub Issues) rarely leaves a config file in
+the repo, so its presence is read from **usage signals** rather than signature paths. These
+feed `harness-setup`'s dual-tracker sync sub-step (offered only when an agentic tracker
+*and* a human tracker are both present or declared). Every one of them is a signal in the
+rule-5 sense — **report what was found and ask whether the tracker is actively used; never
+conclude silently**:
+
+| Signal | Points to | How to check |
+|---|---|---|
+| Jira issue keys in recent commit messages (`PROJ-123`-style) | Jira | `git log --oneline -100 \| grep -E '[A-Z][A-Z0-9]+-[0-9]+'` |
+| `linear.app` links in the repo (README, docs, issue/PR templates) | Linear | `grep -rE 'linear\.app' --include='*.md' .` |
+| A configured Atlassian or Linear MCP server in the local/session config | Jira / Linear | inspect the MCP configuration |
+| Active `gh` auth plus `.github/ISSUE_TEMPLATE/` | GitHub Issues | `gh auth status`; stays **rule-5 weak** — templates alone prove nothing |
+
+A declared tracker counts too: when the user says the team works in Jira or Linear, that is
+presence — record it and confirm the access path, do not demand an on-disk artifact.
+
 ## Disambiguation rules
 
 Six cases need a rule because the raw signal is ambiguous.
