@@ -58,7 +58,7 @@ skill's.
 - **Philosophy / stages:** parse a PRD into a task graph, then track and expand tasks.
 - **Claude Code affinity:** high — built for agent task execution; MCP option integrates directly.
 - **Maturity:** active and popular.
-- **Best-fit:** task decomposition and tracking. It **pairs** with a spec system rather than replacing one — recommend it *alongside* a spec tool when the need is breaking an existing spec into trackable work.
+- **Best-fit:** task decomposition and tracking. It **pairs** with a spec system rather than replacing one — recommend it *alongside* a spec tool when the need is breaking an existing spec into trackable work. For general issue/bug intake (not spec-derived tasks), the tracker shortlist is `tracker-advisor`'s concern.
 
 ### spec-workflow-mcp
 - **Official repo:** github.com/Pimzino/spec-workflow-mcp

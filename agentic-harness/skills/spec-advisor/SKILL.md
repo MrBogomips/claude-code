@@ -1,6 +1,6 @@
 ---
 name: spec-advisor
-description: "Detect whether a software project lacks a spec-driven development system and, if so, advise which one fits (GitHub Spec Kit, OpenSpec, BMAD-METHOD, Agent OS, Taskmaster, AWS Kiro, ADR tooling) and delegate setup to that system's own installer. Use when setting up a project's spec or planning process, when asked which spec system or SDD framework a project should use, when adopting spec-driven development, or when harness-setup detects a software project with no spec system. Scans first for any existing spec or ADR registry and stays out if one is present. Does NOT author specs itself (the installed system owns that), does NOT build the .claude/ agent harness (that is harness-setup), and does NOT create Claude Code components (that is plugin-dev or skill-creator)."
+description: "Detect whether a software project lacks a spec-driven development system and, if so, advise which one fits (GitHub Spec Kit, OpenSpec, BMAD-METHOD, Agent OS, Taskmaster, AWS Kiro, ADR tooling) and delegate setup to that system's own installer. Use when setting up a project's spec or planning process, when asked which spec system or SDD framework a project should use, when adopting spec-driven development, or when harness-setup detects a software project with no spec system. Scans first for any existing spec or ADR registry and stays out if one is present. Does NOT author specs itself (the installed system owns that), does NOT build the .claude/ agent harness (that is harness-setup), does NOT create Claude Code components (that is plugin-dev or skill-creator), and does NOT choose an issue or bug tracker (that is tracker-advisor)."
 model: inherit
 ---
 
@@ -24,6 +24,7 @@ This skill does **not**:
 | Does NOT | Use instead |
 |---|---|
 | Author specs, PRDs, or ADRs | the **installed system** — it owns its workflow |
+| Choose or set up an issue tracker | **tracker-advisor** |
 | Build the `.claude/` agent harness (agents, skills, orchestrator) | **harness-setup** |
 | Assess how well a harness is used | **harness-review** |
 | Create Claude Code components (skills, agents, plugins) | **plugin-dev / skill-creator** |
@@ -114,9 +115,17 @@ the user at the official source (kiro.dev), and stop. Do not run an installer or
 - **Detection ambiguity** — resolve the shared `requirements/design/tasks` triple by parent
   directory first (per `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md`); if still ambiguous,
   report exactly what was found and ask, rather than guessing the system.
-- **Installer failure** — report the failure and point the user at the system's official
-  troubleshooting source. Do not partially hand-roll the setup; a half-installed system is worse
-  than a clean failure the user can retry.
+- **Installer failure** — apply the failure contract:
+  1. **Report plainly** — the command run, the error, and the system's official troubleshooting
+     source. Do not partially hand-roll the setup; a half-installed system is worse than a clean
+     failure the user can retry.
+  2. **Record nothing** — a failed install leaves no coordination context; the project still
+     counts as having no spec system.
+  3. **Leave a clean retry path** — name any artifacts the failed installer left behind so the
+     user can remove them and retry; do not delete them without the user's say-so.
+  4. **Tell the caller** — when invoked from `harness-setup`, state the outcome explicitly:
+     "install failed — proceed as if no system is present," so nothing downstream assumes the
+     system exists.
 - **User declines at any gate** — stop cleanly. The skill is advisory; an off-ramp taken is a
   valid outcome, not a failure.
 
