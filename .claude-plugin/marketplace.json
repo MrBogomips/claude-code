@@ -1,30 +1,27 @@
 {
-  "name": "mrbogomips",
+  "name": "mrbogomips-tools",
   "owner": {
     "name": "Mr Bogomips",
     "email": "giovanni.costagliola@gmail.com"
   },
   "metadata": {
     "description": "A curated collection of Claude Code plugins for professional workflows",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "license": "MIT"
   },
   "plugins": [
-    {
-      "name": "agentic-harness",
-      "source": "./agentic-harness",
-      "description": "Stand up, assess, and maintain an agentic harness in an existing repo — generate project-specific agent teams and the skills they use, assess how effectively they are used, advise on spec-driven development systems and agent-suited issue trackers, and generate a dual-tracker sync when a repo-native and a human tracker coexist",
-      "version": "0.8.0",
-      "category": "engineering",
-      "tags": ["harness", "agents", "skills", "scaffolding", "orchestration", "multi-agent", "meta-skill", "issue-tracker", "tracker-sync", "spec-driven-development"]
-    },
     {
       "name": "developer-tools",
       "source": "./developer-tools",
       "description": "Developer environment tooling — devcontainer generation, stack detection, infrastructure config",
       "version": "2.4.0",
       "category": "engineering",
-      "tags": ["devcontainer", "docker", "infrastructure", "developer-experience"]
+      "tags": [
+        "devcontainer",
+        "docker",
+        "infrastructure",
+        "developer-experience"
+      ]
     },
     {
       "name": "human-resources",
@@ -32,7 +29,14 @@
       "description": "HR interview workflow — job descriptions, candidate pre-screening, interview preparation, evaluation, compliance checking, and methodology guidance",
       "version": "0.2.0",
       "category": "human-resources",
-      "tags": ["hr", "recruiting", "interviews", "compliance", "evaluation", "job-description"]
+      "tags": [
+        "hr",
+        "recruiting",
+        "interviews",
+        "compliance",
+        "evaluation",
+        "job-description"
+      ]
     },
     {
       "name": "kaizen",
@@ -40,7 +44,15 @@
       "description": "Continuous improvement loops — a generic recursive optimization engine with bundled profiles for Claude Code usage, code refactoring, and process improvement",
       "version": "1.0.0",
       "category": "engineering",
-      "tags": ["kaizen", "improvement", "optimization", "automation", "autoresearch", "kpi", "refactoring"]
+      "tags": [
+        "kaizen",
+        "improvement",
+        "optimization",
+        "automation",
+        "autoresearch",
+        "kpi",
+        "refactoring"
+      ]
     },
     {
       "name": "plantuml",
@@ -48,7 +60,15 @@
       "description": "Authoring, rendering, and maintenance of PlantUML diagrams — policy-driven projects with multi-target rendering, lint, validate, review, advisor, and migrate",
       "version": "1.0.0",
       "category": "documentation",
-      "tags": ["plantuml", "diagrams", "uml", "c4", "documentation", "rendering", "lint"]
+      "tags": [
+        "plantuml",
+        "diagrams",
+        "uml",
+        "c4",
+        "documentation",
+        "rendering",
+        "lint"
+      ]
     },
     {
       "name": "project-management",
@@ -56,7 +76,16 @@
       "description": "SOW writing, review, estimation, and PMI-compliant PERT analysis — an integrated project management pipeline",
       "version": "1.0.0",
       "category": "operations",
-      "tags": ["pmo", "sow", "pert", "estimation", "wbs", "risk", "planning", "review"]
+      "tags": [
+        "pmo",
+        "sow",
+        "pert",
+        "estimation",
+        "wbs",
+        "risk",
+        "planning",
+        "review"
+      ]
     },
     {
       "name": "tech-writing",
@@ -64,7 +93,11 @@
       "description": "Technical writing support — documentation structure, style guides, content review",
       "version": "0.1.0",
       "category": "documentation",
-      "tags": ["writing", "documentation", "style-guide"]
+      "tags": [
+        "writing",
+        "documentation",
+        "style-guide"
+      ]
     }
   ]
 }
