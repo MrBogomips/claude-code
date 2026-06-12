@@ -1,6 +1,6 @@
 ---
 name: harness-setup
-description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up, scaffold, extend, rebuild, or sync a harness, to add or change an agent or skill, or to apply a review context from harness-review; on request it also discovers and registers fitting MCP/plugin tools. For read-only assessment of an existing harness, use harness-review — this skill is the writer, that one is the reader. Not for authoring a single standalone skill or plugin (use plugin-dev or skill-creator), or one-shot automation recommendations (use claude-code-setup). Not for choosing a project's spec-driven development system — use spec-advisor."
+description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up, scaffold, extend, rebuild, or sync a harness, to add or change an agent or skill, or to apply a review context from harness-review; on request it also discovers and registers fitting MCP/plugin tools. For read-only assessment of an existing harness, use harness-review — this skill is the writer, that one is the reader. Not for authoring a single standalone skill or plugin (use plugin-dev or skill-creator), or one-shot automation recommendations (use claude-code-setup). Not for choosing a project's spec-driven development system or issue tracker — use spec-advisor or tracker-advisor."
 model: inherit
 ---
 
@@ -49,22 +49,36 @@ plan is confirmed.
    Record the answers. Asking is the default; a "no" is a fine answer, but a silent skip is
    not. Running happens only on a yes — see Step 1b. This confirms the approach; the concrete
    list of files and tools is approved separately at Step 2b, before anything is written.
-5. **Account for the project's spec process.** A harness is the *who/how/when* of the work; a
-   spec-driven development (SDD) system is the *project process* the work follows. They are
-   complementary, so check which case applies — scan with
+5. **Account for the project's process layers.** A harness is the *who/how/when* of the work; a
+   project may also follow *process layers* — a spec process (what to build) and an issue
+   tracker (what work is ready and in what state). They are complementary to the harness, so
+   check each advisor area — scan with
    `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md`:
-   - **No SDD system, project looks like software** → offer to run the `spec-advisor` skill, which
-     advises which SDD system fits and delegates setup to that system's own installer. Offering is
-     the default; running is gated on a yes, and nothing is installed without `spec-advisor`'s own
-     per-system approval. If the user installs one, fold its coordination into the plan below.
-   - **An SDD system is present** → do not re-recommend and do not install. Identify the system and
-     version, look up its row in `${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md`, and record a
-     **coordination context** — `{system, version, owned-segment, activation, auto-invokable,
-     hand-back contract, write-back rule}` — to carry into Step 2 and Step 5. This is the lightweight
-     read `harness-setup` needs to bake the coordination into the orchestrator; `spec-advisor` still
-     owns recommending and installing.
 
-   Record the answer either way.
+   | Process area | Advisor skill | Coordination map |
+   |---|---|---|
+   | Spec process (SDD) | `spec-advisor` | `${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md` |
+   | Issue tracking | `tracker-advisor` | `${CLAUDE_PLUGIN_ROOT}/shared/tracker-coordination.md` |
+
+   The same gate applies to every area:
+   - **No system, project looks like software** → offer to run the area's advisor skill, which
+     advises what fits and delegates setup to the chosen system's own installer. Offering is the
+     default; running is gated on a yes, and nothing is installed without the advisor's own
+     per-system approval. If the user installs one, fold its coordination into the plan below.
+     **If the advisor reports an installer failure, treat the area as having no system** — record
+     no coordination context; the advisor leaves the retry path with the user.
+   - **A system is present** (detected, or just installed) → do not re-recommend and do not
+     install. Identify the system and version, look up its row in the area's coordination map,
+     and record a **coordination context** — for SDD `{system, version, owned-segment,
+     activation, auto-invokable, hand-back contract, write-back rule}`; for a tracker
+     `{tracker, version, entry point, ready-work query, create convention, status write-back,
+     auto-invokable}` — to carry into Step 2 and Step 5. This is the lightweight read
+     `harness-setup` needs to bake the coordination into the orchestrator; the advisor skills
+     still own recommending and installing. The protocol behind every map is
+     `${CLAUDE_PLUGIN_ROOT}/shared/coordination-protocol.md`.
+
+   Record the answer for each area either way. A future advisor adds a row to the table; the
+   gate itself does not change.
 
 ## Step 1: Analyze the domain
 
@@ -122,15 +136,23 @@ covers them.
 criteria table is in `references/agent-design-patterns.md`. Prefer a few focused agents over
 many thin ones; coordination cost grows with team size.
 
-**Coordinate with the spec process.** If Step 0 recorded a coordination context (an SDD system is
-present), decide *with the user* how the orchestrator and the SDD compose — they must work together
-without overlap and with minimal friction, not run in parallel. Using
-`${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md`, settle: which phases the orchestrator **delegates**
-to the SDD (the spec/plan/decompose segment it owns) versus **owns** (typically execution,
-integration, and a cross-boundary QA pass); and whether activation is **auto-invokable** (the
-orchestrator calls the SDD's CLI/MCP entry point with a contextual prompt) or **human-gated** (it
-emits the prompt and pauses for the user, as with an IDE or an approval step). Fold the decision into
-the Step 2b manifest so it is approved before any write.
+**Coordinate with the process layers.** If Step 0 recorded a coordination context, decide *with
+the user* how the orchestrator and each present system compose — they must work together without
+overlap and with minimal friction, not run in parallel.
+
+- **Spec process (SDD).** Using `${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md`, settle: which
+  phases the orchestrator **delegates** to the SDD (the spec/plan/decompose segment it owns) versus
+  **owns** (typically execution, integration, and a cross-boundary QA pass); and whether activation
+  is **auto-invokable** (the orchestrator calls the SDD's CLI/MCP entry point with a contextual
+  prompt) or **human-gated** (it emits the prompt and pauses for the user, as with an IDE or an
+  approval step).
+- **Issue tracker.** Using `${CLAUDE_PLUGIN_ROOT}/shared/tracker-coordination.md`, settle: which
+  phases touch the tracker (phase 0 pulls ready work or creates the issue; integrate writes status
+  back); whether access is **auto-invokable** (CLI / configured MCP) or **human-gated** (a SaaS UI
+  with no configured access); and the **one-status-owner rule** when Taskmaster or an SDD task
+  artifact co-exists with the tracker — each item's work state has exactly one owning system.
+
+Fold the decisions into the Step 2b manifest so they are approved before any write.
 
 ## Step 2b: Approve the change manifest — required before any write
 
@@ -232,12 +254,17 @@ Build into the orchestrator:
 - **The tools registry**, when tool discovery (Step 1b) has run: it lives in this
   orchestrator's `references/` directory as `tools.md`, and agents and skills reference tools
   by role from it.
-- **SDD coordination**, when Step 0 recorded a coordination context: splice the addenda from
+- **SDD coordination**, when Step 0 recorded an SDD coordination context: splice the addenda from
   `references/orchestrator-template.md` (SDD coordination section) into the orchestrator's phase 0,
   prepare, and integrate phases, **inlining the system's concrete artifact paths and entry point** —
   the orchestrator cannot read the shared file at runtime. Mark each phase as delegated
   (`→ SDD: {system}`) or orchestrator-owned. The model is in
   `${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md`.
+- **Tracker coordination**, when Step 0 recorded a tracker coordination context: splice the
+  addenda from `references/orchestrator-template.md` (Tracker coordination section) into the
+  orchestrator's phase 0 and integrate phases, **inlining the tracker's concrete commands** (the
+  ready-work query, the create command, the status write-back). The model is in
+  `${CLAUDE_PLUGIN_ROOT}/shared/tracker-coordination.md`.
 
 When extending rather than building new, modify the existing orchestrator — do not create a
 second one. Reflect a new agent in the team composition, task assignment, data flow, and
@@ -288,8 +315,11 @@ Before calling a setup or change complete:
 - [ ] If an SDD system is present: the orchestrator activates it via a contextual prompt and resumes
       on hand-back, every phase has exactly one owner, and no SDD artifact is copied into
       `_agents_workspace/`.
+- [ ] If a tracker is present: phase 0 pulls ready work or creates the issue, integrate writes
+      status back, each item's work state has exactly one owner, and no issue content is copied
+      into `_agents_workspace/`.
 - [ ] The `CLAUDE.md` pointer is registered (goal + entry-point directive (hard gate) + change
-      history; plus the spec-process line when an SDD system is present).
+      history; plus the spec-process and issue-tracking lines when those systems are present).
 - [ ] The change-history table records this change.
 - [ ] The user was asked whether to run tool research (and, on an existing harness, tool
       maintenance), and the answer was recorded — whatever they chose.
@@ -313,6 +343,9 @@ Before calling a setup or change complete:
 - `${CLAUDE_PLUGIN_ROOT}/shared/harness-model.md`,
   `${CLAUDE_PLUGIN_ROOT}/shared/execution-modes.md`,
   `${CLAUDE_PLUGIN_ROOT}/shared/claude-md-pointer.md` — shared concepts.
-- `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md` — how to recognise an installed SDD system
-  (shared with `spec-advisor`); `${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md` — the
-  orchestrator↔SDD coordination model and the per-system coordination map.
+- `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md` — how to recognise an installed SDD
+  system or issue tracker (shared with `spec-advisor` and `tracker-advisor`);
+  `${CLAUDE_PLUGIN_ROOT}/shared/coordination-protocol.md` — the generic coordination protocol;
+  `${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md` and
+  `${CLAUDE_PLUGIN_ROOT}/shared/tracker-coordination.md` — the per-area instances with their
+  per-system coordination maps.

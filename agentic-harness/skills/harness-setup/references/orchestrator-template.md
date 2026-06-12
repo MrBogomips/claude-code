@@ -12,6 +12,7 @@ state the mode per phase.
   - [Template B — subagent (fallback / lightweight)](#template-b--subagent-fallback--lightweight)
   - [Template C — hybrid](#template-c--hybrid)
   - [SDD coordination](#sdd-coordination)
+  - [Tracker coordination](#tracker-coordination)
   - [Authoring rules](#authoring-rules)
   - [Follow-up keywords](#follow-up-keywords)
 
@@ -22,9 +23,10 @@ state the mode per phase.
 The first choice when two or more agents need to talk while they work. Build the team with
 `TeamCreate`; coordinate over a shared task list and `SendMessage`.
 
-> If the project has an installed SDD system, also splice in the [SDD coordination](#sdd-coordination)
-> addenda (phase 0, prepare, integrate) so the orchestrator hands work to the spec process and
-> resumes on hand-back.
+> If the project has an installed SDD system and/or issue tracker, also splice in the matching
+> [SDD coordination](#sdd-coordination) addenda (phase 0, prepare, integrate) and/or
+> [Tracker coordination](#tracker-coordination) addenda (phase 0, work, integrate), so the
+> orchestrator hands work to the spec process and keeps the tracker as the work-state owner.
 
 ````markdown
 ---
@@ -118,8 +120,8 @@ nudges or reassigns a stuck member, and checks state with `TaskGet`.
 When team communication is unnecessary, or the team tools are unavailable. Spawn each agent
 with the `Agent` tool and collect return values.
 
-> If the project has an installed SDD system, also splice in the [SDD coordination](#sdd-coordination)
-> addenda (phase 0, prepare, integrate).
+> If the project has an installed SDD system and/or issue tracker, also splice in the matching
+> [SDD coordination](#sdd-coordination) and/or [Tracker coordination](#tracker-coordination) addenda.
 
 ````markdown
 ---
@@ -171,9 +173,10 @@ Keep `_agents_workspace/`; report a summary.
 A different mode per phase. State `**Execution mode:** {team | subagent}` at the top of each
 phase.
 
-> If the project has an installed SDD system, the [SDD coordination](#sdd-coordination) addenda
-> attach to whichever phases own the context check, the prepare step, and the integrate step —
-> regardless of each phase's execution mode.
+> If the project has an installed SDD system and/or issue tracker, the
+> [SDD coordination](#sdd-coordination) and/or [Tracker coordination](#tracker-coordination)
+> addenda attach to whichever phases own the context check, the prepare step, and the integrate
+> step — regardless of each phase's execution mode.
 
 ````markdown
 ---
@@ -292,6 +295,75 @@ task loop), and have the orchestrator own only what the SDD does not: typically 
 integration, and a cross-boundary QA pass over the SDD's output. When Taskmaster pairs with a spec
 system, anchor requirements to the spec and route **task status** through `.taskmaster/tasks/tasks.json`.
 
+## Tracker coordination
+
+Use this when the project has an installed issue tracker. The model — the tracker as the
+**work-state owner**, the phase-0 pull-or-create, the write-back, and the per-tracker command map —
+is in `${CLAUDE_PLUGIN_ROOT}/shared/tracker-coordination.md`. This section turns it into three
+**addenda** you splice into whichever template you picked (A / B / C). The generated orchestrator
+cannot read that shared file at runtime, so **inline the concrete values** from the detected
+tracker's coordination row: `{tracker}`, `{READY_QUERY}` (its ready-work query), `{CREATE_CMD}`
+(its create command), `{STATUS_WRITEBACK}` (its close/transition convention), and auto-invokable or
+human-gated access.
+
+Unlike an SDD system, a tracker does not own a phase — it owns the work-state **concern** that
+brackets the run. Reference issues by ID; never copy issue content into `_agents_workspace/`, and
+keep no parallel status file beside the tracker.
+
+### Addendum T1 — phase 0 (context check): pull ready work, or create the issue
+Add to the context-check step of phase 0 (intake & triage), reached only after triage routes the
+request in as in-{domain} work:
+
+```
+- Check the tracker for a matching ready item: run `{READY_QUERY}`. If one matches this request,
+  claim it and carry its ID through the run.
+- If the work is new, create the issue first (`{CREATE_CMD}`), so {tracker} owns the work state
+  from the start — then proceed with its ID.
+- Human-gated access (no CLI/MCP configured): emit a contextual prompt stating what to file or
+  look up, and **pause** until the user confirms.
+```
+
+### Addendum T2 — work: reference the issue, do not copy it
+Add to the prepare/work phases:
+
+```
+- Carry the issue ID in the headers of workspace artifacts (`issue: {tracker-id}`); read the
+  issue in place when context is needed.
+- Do not copy issue content into `_agents_workspace/`, and keep no status file of your own —
+  {tracker} is the single owner of work state.
+```
+
+### Addendum T3 — integrate / finish: write status back in {tracker}'s conventions
+Add to the integrate (team) or finish (subagent) phase:
+
+```
+- The final deliverable goes to the user's target path as usual.
+- Write status back: {STATUS_WRITEBACK}, referencing the deliverable's path. Never delete issues
+  and never rewrite human-authored issue prose — the tracker owns intent and history, the
+  harness owns execution.
+```
+
+### Worked snippet — Beads (auto-invokable)
+- **READY_QUERY:** `bd ready --json` · **CREATE_CMD:** `bd create "title"` ·
+  **STATUS_WRITEBACK:** `bd update {id} --claim` on start, `bd close {id} "summary"` on completion
+
+```
+### Phase 0: intake & triage
+... triage (trivial/off-domain → answer and stop); then the context-check branch ...
+- Run `bd ready --json`; if an item matches this request, claim it (`bd update {id} --claim`)
+  and carry the ID. If the work is new, `bd create "title"` first.
+### Phase 4: integrate
+- Write the deliverable; `bd close {id} "done — see {deliverable path}"`.
+```
+
+### Composing with an SDD system
+When both an SDD system and a tracker are present, the SDD addenda own *what to build* (spec,
+plan, decomposition) and the tracker addenda own *work state* (ready, in progress, done) — splice
+both, and give each item's status exactly one owner. When Taskmaster is present, spec-derived
+tasks route their status through `.taskmaster/tasks/tasks.json`, general issues through the
+tracker — never mirror one item's state in both (see the Taskmaster boundary in
+`${CLAUDE_PLUGIN_ROOT}/shared/tracker-coordination.md`).
+
 ## Authoring rules
 
 1. State the execution mode at the top. For hybrid, a per-phase mode table is required.
@@ -303,8 +375,10 @@ system, anchor requirements to the spec and route **task status** through `.task
    call out the transition points.
 6. Make error handling realistic — do not assume everything succeeds.
 7. Include at least one normal and one error test scenario.
-8. When an SDD system is present, splice in the [SDD coordination](#sdd-coordination) addenda with
-   the system's concrete values inlined, and mark each phase as delegated or orchestrator-owned.
+8. When an SDD system and/or issue tracker is present, splice in the matching
+   [SDD coordination](#sdd-coordination) / [Tracker coordination](#tracker-coordination) addenda
+   with the system's concrete values inlined; mark each phase as delegated or orchestrator-owned,
+   and give each item's work state exactly one owner.
 
 ## Follow-up keywords
 

@@ -27,6 +27,7 @@ run_test() {
 run_test "$TESTS_DIR/validate-plugin.sh" "Plugin Structure"
 run_test "$TESTS_DIR/validate-connectors.sh" "Connector References"
 run_test "$TESTS_DIR/validate-references.sh" "Reference Paths"
+run_test "$TESTS_DIR/validate-versions.sh" "Version Sync"
 
 echo ""
 echo "================================================"

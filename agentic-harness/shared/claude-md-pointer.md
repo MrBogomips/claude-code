@@ -8,7 +8,8 @@ wrong place for anything the file system already holds.
 
 After a harness is built or changed, write (or update) one short section in the target
 project's `CLAUDE.md`. It carries three things — plus, when the project has an installed
-spec-driven development (SDD) system, one line recording how the orchestrator coordinates with it:
+process layer (an SDD system, an issue tracker), one line per layer recording how the
+orchestrator coordinates with it:
 
 1. The harness's **goal**, in one line.
 2. The **entry-point directive** — a hard gate making the orchestrator skill the single entry
@@ -16,6 +17,8 @@ spec-driven development (SDD) system, one line recording how the orchestrator co
 3. A **change-history** table.
 4. *(only when an SDD system is present)* a **spec-process** line — which system, and the segment
    the orchestrator hands to it.
+5. *(only when an issue tracker is present)* an **issue-tracking** line — which tracker, and how
+   the orchestrator pulls ready work and writes status back.
 
 This is enough for a fresh session: the entry-point directive gates every prompt to the
 orchestrator, and the orchestrator triages and handles the rest from the files under `.claude/`.
@@ -31,6 +34,9 @@ instruction layer, so it does not depend on the skill description triggering on 
 
 **Spec process:** {system} ({version}) — orchestrator activates it for {owned segment};
 hand-back via {contract}. *(omit this line entirely when no SDD system is present)*
+
+**Issue tracking:** {tracker} ({version}) — orchestrator pulls ready work via {ready-work query};
+status written back via {write-back convention}. *(omit this line entirely when no tracker is present)*
 
 **Entry point — applies to every prompt in this repo:** You MUST invoke the
 `{orchestrator-skill-name}` skill *before* responding to any request — new work, a follow-up, a
@@ -50,9 +56,12 @@ orchestrator's first phase, so a trivial or off-domain prompt still routes throu
 and is answered quickly there. This keeps the orchestrator the reliable entry point without spinning
 up a team for every message.
 
-The spec-process line records the **coordination relationship**, not the spec contents — the
-requirements, plan, and tasks stay in the SDD system's own files. The full coordination model is in
-`${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md`.
+The spec-process and issue-tracking lines record the **coordination relationship**, not the
+contents — the requirements, plan, and tasks stay in the SDD system's own files, and the issues
+stay in the tracker's own store. The coordination protocol is in
+`${CLAUDE_PLUGIN_ROOT}/shared/coordination-protocol.md`, with the per-area instances in
+`${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md` and
+`${CLAUDE_PLUGIN_ROOT}/shared/tracker-coordination.md`.
 
 ### When the repo has more than one harness
 
@@ -60,7 +69,7 @@ Write the hard-gate sentence **once**, as a shared routing preamble above the pe
 "Before responding to any request, invoke the orchestrator whose domain matches it; if none matches,
 answer directly" — and keep each `## Harness: {domain}` section to its goal, an **Orchestrator:**
 `{orchestrator-skill-name}` line (so the preamble can resolve domain → orchestrator), its
-spec-process line, and change history. Do not repeat "invoke *this* orchestrator before any prompt"
+spec-process and issue-tracking lines, and change history. Do not repeat "invoke *this* orchestrator before any prompt"
 in every section: N such directives contradict each other. One preamble routes by domain; each
 section just names the orchestrator it routes to.
 
@@ -75,6 +84,8 @@ Leave these out of `CLAUDE.md`:
 - Detailed execution rules — they belong in the skills and the orchestrator.
 - The spec contents — the spec-process line names the system and the coordinated segment only; the
   requirements/plan/tasks live in the SDD system's own files, the single source of truth.
+- The issue contents — the issue-tracking line names the tracker and the touchpoints only; the
+  issues live in the tracker's own store, the single source of truth for work state.
 
 The pointer is a signpost, not a manifest. Keep it small enough that it stays correct.
 
