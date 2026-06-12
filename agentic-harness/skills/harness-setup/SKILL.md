@@ -1,6 +1,6 @@
 ---
 name: harness-setup
-description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up, scaffold, extend, rebuild, or sync a harness, to add or change an agent or skill, or to apply a review context from harness-review; on request it also discovers and registers fitting MCP/plugin tools. For read-only assessment of an existing harness, use harness-review — this skill is the writer, that one is the reader. Not for authoring a single standalone skill or plugin (use plugin-dev or skill-creator), or one-shot automation recommendations (use claude-code-setup). Not for choosing a project's spec-driven development system or issue tracker — use spec-advisor or tracker-advisor."
+description: "Build, extend, and maintain a project's agentic harness — the agents, skills, and orchestrator under .claude/. This skill writes files. Use it to set up, scaffold, extend, rebuild, or sync a harness, to add or change an agent or skill, or to apply a review context from harness-review; on request it also discovers and registers fitting MCP/plugin tools. When a project runs both a repo-native tracker and a human tracker (Jira, Linear, GitHub Issues), it also generates the dual-tracker sync — use it for 'keep the trackers in sync', 'sync issues to Jira/Linear', or 'tracker sync setup'. For read-only assessment of an existing harness, use harness-review — this skill is the writer, that one is the reader. Not for authoring a single standalone skill or plugin (use plugin-dev or skill-creator), or one-shot automation recommendations (use claude-code-setup). Not for choosing a project's spec-driven development system or issue tracker — use spec-advisor or tracker-advisor."
 model: inherit
 ---
 
@@ -76,6 +76,18 @@ plan is confirmed.
      `harness-setup` needs to bake the coordination into the orchestrator; the advisor skills
      still own recommending and installing. The protocol behind every map is
      `${CLAUDE_PLUGIN_ROOT}/shared/coordination-protocol.md`.
+
+   - **Both an agentic tracker and a human tracker present or declared** (a repo-native
+     tracker like Beads plus Jira, Linear, or GitHub Issues — the human-tracker usage signals
+     are in `${CLAUDE_PLUGIN_ROOT}/shared/detection-signatures.md`) → also offer the
+     **dual-tracker sync sub-step**: generate the project's `tracker-sync` skill, agent, and
+     sync config per `${CLAUDE_PLUGIN_ROOT}/shared/tracker-sync-protocol.md`, using
+     `references/tracker-sync-template.md`. Offer it **only** on this dual-tracker condition —
+     never when one tracker or none is present. Before generating any sync artifact, run the
+     **sync preflight**: validate the recorded tracker coordination context by actually calling
+     both entry points — the ready-work query on the agentic side, `human-tracker` role
+     resolution plus a cheap ping on the SaaS side. A failed validation stops the sub-step and
+     corrects the context first; never generate against a stale context.
 
    Record the answer for each area either way. A future advisor adds a row to the table; the
    gate itself does not change.
@@ -176,6 +188,7 @@ Present it as concrete items, each labelled with its action and target:
 | create / update | `.claude/skills/{domain}-orchestrator/` |
 | update | `CLAUDE.md` (harness pointer + change-history row) |
 | install / uninstall | `{role} -> {tool}` (only if tool discovery or maintenance proposed it) |
+| register / unregister schedule | `{venue} — {cadence} — {mode}` (one row per scheduled run; **environment-level** — approving it changes the user's machine, not just the repo) |
 
 List only the rows that apply. If the user amends the list — drops an agent, declines a tool,
 renames a skill — revise and present it again; the approval is of the final list. Once
@@ -265,10 +278,23 @@ Build into the orchestrator:
   orchestrator's phase 0 and integrate phases, **inlining the tracker's concrete commands** (the
   ready-work query, the create command, the status write-back). The model is in
   `${CLAUDE_PLUGIN_ROOT}/shared/tracker-coordination.md`.
+- **Tracker-sync write-through**, when the dual-tracker sync sub-step generated artifacts:
+  splice **Addendum T4** (Tracker coordination section of
+  `references/orchestrator-template.md`) immediately after T3, so the integrate phase invokes
+  the generated `tracker-sync` skill in `scoped` mode for the items it just wrote back. The
+  sync model is in `${CLAUDE_PLUGIN_ROOT}/shared/tracker-sync-protocol.md`.
 
 When extending rather than building new, modify the existing orchestrator — do not create a
 second one. Reflect a new agent in the team composition, task assignment, data flow, and
 trigger keywords.
+
+**Verify generation before declaring it complete.** After writing the generated artifacts —
+the orchestrator and, when the sync sub-step ran, the sync skill, agent, and sync config —
+grep **every written file** for unsubstituted `{PLACEHOLDER}` tokens and for
+`${CLAUDE_PLUGIN_ROOT}` references. Any hit fails the run: fix the file and re-verify before
+moving to Step 6. Generated files must be self-contained — a leaked placeholder or plugin
+path surfaces later inside the target project, at worst in a scheduled headless run that
+fails with nobody watching.
 
 Then **register the pointer** in the project's `CLAUDE.md`: goal, the **entry-point directive**
 (the hard gate that makes the orchestrator the single entry point — every prompt routes through
@@ -318,6 +344,13 @@ Before calling a setup or change complete:
 - [ ] If a tracker is present: phase 0 pulls ready work or creates the issue, integrate writes
       status back, each item's work state has exactly one owner, and no issue content is copied
       into `_agents_workspace/`.
+- [ ] Every generated artifact passed the placeholder check — no unsubstituted `{PLACEHOLDER}`
+      token or `${CLAUDE_PLUGIN_ROOT}` reference remains in any written file.
+- [ ] If the dual-tracker sync sub-step ran: it was offered only because both an agentic and a
+      human tracker are present/declared; the sync preflight validated both entry points before
+      anything was generated; the sync config is complete (confirmed state table, intake filter,
+      backfill choice, designated branch, cadence, item cap); and every schedule row was
+      approved in the manifest as an environment-level change.
 - [ ] The `CLAUDE.md` pointer is registered (goal + entry-point directive (hard gate) + change
       history; plus the spec-process and issue-tracking lines when those systems are present).
 - [ ] The change-history table records this change.
@@ -340,6 +373,9 @@ Before calling a setup or change complete:
   applying a review context, syncing drift, feedback routing, and periodic tool review.
 - `references/tool-discovery.md` — the optional, on-request tool-discovery step: the
   search subagent's context, the explicit-acceptance flow, and the `tools.md` registry schema.
+- `references/tracker-sync-template.md` — what the dual-tracker sync sub-step generates: the
+  `tracker-sync` skill, agent, and sync-config templates, the elicitation guidance, and the
+  schedule-registration block per venue.
 - `${CLAUDE_PLUGIN_ROOT}/shared/harness-model.md`,
   `${CLAUDE_PLUGIN_ROOT}/shared/execution-modes.md`,
   `${CLAUDE_PLUGIN_ROOT}/shared/claude-md-pointer.md` — shared concepts.
@@ -348,4 +384,6 @@ Before calling a setup or change complete:
   `${CLAUDE_PLUGIN_ROOT}/shared/coordination-protocol.md` — the generic coordination protocol;
   `${CLAUDE_PLUGIN_ROOT}/shared/sdd-coordination.md` and
   `${CLAUDE_PLUGIN_ROOT}/shared/tracker-coordination.md` — the per-area instances with their
-  per-system coordination maps.
+  per-system coordination maps;
+  `${CLAUDE_PLUGIN_ROOT}/shared/tracker-sync-protocol.md` — the dual-tracker sync model
+  (lanes, state store, fingerprints, concurrency, failure rules, per-SaaS map).
