@@ -13,10 +13,10 @@
     {
       "name": "agentic-harness",
       "source": "./agentic-harness",
-      "description": "Stand up, assess, and maintain an agentic harness in an existing repo — generate project-specific agent teams and the skills they use, assess how effectively they are used, and advise on spec-driven development systems and agent-suited issue trackers",
-      "version": "0.7.0",
+      "description": "Stand up, assess, and maintain an agentic harness in an existing repo — generate project-specific agent teams and the skills they use, assess how effectively they are used, advise on spec-driven development systems and agent-suited issue trackers, and generate a dual-tracker sync when a repo-native and a human tracker coexist",
+      "version": "0.8.0",
       "category": "engineering",
-      "tags": ["harness", "agents", "skills", "scaffolding", "orchestration", "multi-agent", "meta-skill", "issue-tracker", "spec-driven-development"]
+      "tags": ["harness", "agents", "skills", "scaffolding", "orchestration", "multi-agent", "meta-skill", "issue-tracker", "tracker-sync", "spec-driven-development"]
     },
     {
       "name": "developer-tools",
