@@ -1,11 +1,11 @@
 {
   "name": "tech-writing",
-  "version": "0.1.0",
-  "description": "Technical writing support — documentation structure, style guides, content review",
+  "version": "0.2.0",
+  "description": "Technical writing support — transform documents between internal and client-facing audiences: redact reserved material into client deliverables, distill assessments into internal commercial & delivery summaries, plus documentation structure, style guides, and content review",
   "author": {
     "name": "MrBogomips",
     "url": "https://github.com/MrBogomips"
   },
   "license": "MIT",
-  "keywords": ["writing", "documentation", "style-guide", "tech-writing"]
+  "keywords": ["writing", "documentation", "style-guide", "tech-writing", "client-facing", "redaction", "bid", "delivery", "internal-summary"]
 }
