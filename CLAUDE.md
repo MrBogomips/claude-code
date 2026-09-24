@@ -6,8 +6,11 @@ Guidance for working in the mrbogomips plugins marketplace repository.
 
 This is a flat-at-root plugin marketplace following the convention used by Anthropic's domain-specific marketplaces. Each top-level directory is a plugin:
 
+- `context-hygiene/` — context hygiene for agentic projects (CLAUDE.md, rules, auto-memory)
 - `developer-tools/` — developer environment tooling
 - `human-resources/` — HR workflow support
+- `kaizen/` — continuous improvement loops
+- `plantuml/` — PlantUML diagram authoring and maintenance
 - `project-management/` — project management workflows
 - `tech-writing/` — technical writing support
 
@@ -19,6 +22,16 @@ Every plugin must contain `.claude-plugin/plugin.json`. Components are discovere
 - **Agents** — `agents/*/AGENT.md`
 - **Hooks** — `hooks/hooks.json`
 - **Commands** — `commands/*.md`
+
+## Generic-usage principle
+
+This is a repository of plugins for generic use. When developing any new agent, skill, hook or command, do not rely on the local system configuration of the author:
+
+- no hardcoded personal paths or personal folder conventions (e.g. a private working-docs directory)
+- no dependence on the author's global `~/.claude` instructions, rules or memory
+- no assumption that particular plugins, MCP servers or CLI tools are installed — discover them at runtime, or declare them as optional (see the CONNECTORS pattern)
+
+When a component needs a location or tool it cannot discover, it asks the user.
 
 ## Editing marketplace.json
 

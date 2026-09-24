@@ -1,0 +1,11 @@
+{
+  "name": "context-hygiene",
+  "version": "0.1.0",
+  "description": "Context hygiene for agentic projects — audits CLAUDE.md, rules and auto-memory for wrong, stale and redundant content, and applies only explicitly authorized changes",
+  "author": {
+    "name": "MrBogomips",
+    "url": "https://github.com/MrBogomips"
+  },
+  "license": "MIT",
+  "keywords": ["context", "memory", "claude-md", "hygiene", "cleanup"]
+}

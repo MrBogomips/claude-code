@@ -6,6 +6,7 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 
 | Plugin | Description | Category |
 |--------|-------------|----------|
+| [context-hygiene](./context-hygiene) | Context hygiene for agentic projects — audit CLAUDE.md, rules and auto-memory for wrong, stale and redundant content; apply only authorized changes | Engineering |
 | [developer-tools](./developer-tools) | Developer environment tooling — devcontainer generation, stack detection, infrastructure config | Engineering |
 | [human-resources](./human-resources) | HR interview workflow — job descriptions, pre-screening, interview prep, evaluation, compliance | Human Resources |
 | [kaizen](./kaizen) | Continuous improvement loops — recursive optimization engine with profiles for Claude Code usage, refactoring, and process improvement | Engineering |
