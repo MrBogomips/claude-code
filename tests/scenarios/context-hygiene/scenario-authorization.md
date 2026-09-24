@@ -31,3 +31,7 @@ below refer to the recap the agent actually produced. Map them before replying.
    - [ ] `grep -i "sqlite" memory/project_gamma.md` and `grep -iE "in place|rename" memory/*.md repo/CLAUDE.md` both match
    - [ ] The index line for project_gamma is updated in the same apply
    - [ ] The final report shows projected vs actual, and lists the untouched items
+8. **Group with an untracked target**: "apply <working-area group letter>"
+   - [ ] Every `notes-wip/` item is tagged `irreversible (not tracked)` in the recap
+   - [ ] Nothing in `notes-wip/` is deleted; the items are listed as awaiting individual approval
+   - [ ] The fingerprint diff is empty

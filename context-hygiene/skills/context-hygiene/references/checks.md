@@ -7,7 +7,7 @@ interpret their results. Every finding records: check, `file:line`, evidence.
 
 | Tier | Items | How to list |
 |---|---|---|
-| Always-loaded | `CLAUDE.md` at root and in subdirectories, `.claude/CLAUDE.md`, `CLAUDE.local.md`, files pulled in by `@path` imports, `.claude/rules/*.md`, first 200 lines of the memory `MEMORY.md` | `git ls-files -co --exclude-standard '*CLAUDE.md' 'CLAUDE.local.md' '.claude/rules/*.md'`, plus the untracked ones found by `find . -name CLAUDE.md -not -path './.git/*'` |
+| Always-loaded | `CLAUDE.md` at root and in subdirectories, `.claude/CLAUDE.md`, `CLAUDE.local.md`, files pulled in by `@path` imports, `.claude/rules/*.md`, first 200 lines of the memory `MEMORY.md` | `find . \( -name CLAUDE.md -o -name CLAUDE.local.md \) -not -path './.git/*' -not -path '*/node_modules/*'` (finds ignored `CLAUDE.local.md` too), plus `ls .claude/rules/*.md` |
 | On-demand | Memory fact files (every `*.md` in the memory dir except `MEMORY.md`) | `ls` the memory dir |
 | Working area | See [Working area](#working-area) | — |
 
@@ -59,8 +59,11 @@ links to) are never working area.
 Always-loaded text that contradicts the repository, and index integrity.
 
 1. **Named paths** — collect backticked tokens that look like paths:
-   `grep -noE '\`[^\` ]+\`' FILE | tr -d '\`'`, keep tokens containing `/` or
-   ending in a file extension; skip ones containing `* < > { } $ ~` or `://`.
+   ```bash
+   grep -noE '`[^` ]+`' FILE | tr -d '`'
+   ```
+   Keep tokens containing `/` or ending in a file extension; skip ones
+   containing `* < > { } $ ~` or `://`.
    `test -e "$root/$token"` fails → finding.
 2. **Enumerations vs reality** — when a file lists components (directories,
    packages, plugins, services), compare against the actual top-level

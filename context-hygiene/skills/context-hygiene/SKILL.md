@@ -1,7 +1,7 @@
 ---
 name: context-hygiene
 description: Audit a project's agentic context (CLAUDE.md files, .claude/rules, Claude Code auto-memory and MEMORY.md, working-doc folders) for wrong, stale or redundant content, and prune it only with per-item authorization after a schematic recap. Use when asked to clean up, prune, dedupe, squeeze or de-bloat memory or CLAUDE.md, remove outdated or stale memory, or check context hygiene. Not for adding to or improving CLAUDE.md content, /init, or compacting the live session (/compact).
-allowed-tools: Read, Glob, Grep, Bash, Edit, Write
+allowed-tools: Read, Glob, Grep, Bash(git rev-parse:*), Bash(git ls-files:*), Bash(git log:*), Bash(git status:*), Bash(git branch:*), Bash(git check-ignore:*), Bash(wc:*), Bash(ls:*)
 ---
 
 # Context Hygiene
@@ -17,8 +17,8 @@ propose how to fix it, and apply only what the user authorizes.
    anything — in the project, the memory directory or anywhere else.
 2. **Vague replies are not authorization** ("ok", "sounds good", "go ahead",
    "yes"). Re-prompt with the valid IDs.
-3. **Group approval never covers ⚠ rationale-risk items.** They must be named
-   individually.
+3. **Group approval never covers ⚠ rationale-risk or irreversible (not
+   tracked) items.** They must be named individually.
 4. **Chat only.** No report files, no state files, no hooks.
 5. **Never touch** secrets, `settings*.json` (read-only), other projects'
    memory, final/published docs, or global user configuration (unless the
@@ -50,8 +50,8 @@ evidence.
 
 Apply the retention rule in `references/retention-recap.md`: keep decisions,
 current policies, open items and steering lessons. Before proposing to
-compress or point away any text, extract its decisions and lessons into the
-after-text. Tag `⚠ rationale-risk` on every compress, pointer, merge or
+compress, point away, merge or remove any text, extract its decisions and
+lessons into the after-text and say where each now lives. Tag `⚠ rationale-risk` on every compress, pointer, merge or
 remove of text that holds a decision, lesson or rationale — even when the
 after-text keeps it. A memory fact file and its index line are one item.
 

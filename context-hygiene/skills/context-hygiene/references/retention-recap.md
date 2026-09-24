@@ -11,8 +11,9 @@ pointer or is removed.
   `DON'T <tempting default> → DO <correction>. Why: <incident, date>.`
 - Lessons live only in CLAUDE.md or memory — never in working folders, which
   do not steer the model.
-- **Before proposing COMPRESS or POINTER**, extract every decision and lesson
-  from the text and show them in the after-text.
+- **Before proposing COMPRESS, POINTER, MERGE or REMOVE**, extract every
+  decision and lesson from the text, show them in the after-text, and say
+  where each one now lives (the surviving file, or a line added by this item).
 - **Pointer format**: `<one-line durable fact> — see <commit SHA | PR | issue | URL>`.
 - Keep provenance annotations ("per user, 2026-05-19").
 - Tag `⚠ rationale-risk` on every COMPRESS, POINTER, MERGE or REMOVE whose
@@ -47,7 +48,7 @@ Actions — lettered groups, globally numbered items:
 A. <group title> (<k> actions, <±tok>)
   1. <VERB>  <target>[:line | §section]
      before: <schematic>        after: <schematic>
-     why: <rationale, check>    benefit: <correctness ✔ | −N tok>    risk: <low|medium> [⚠ rationale-risk] [needs: BACKUP]
+     why: <rationale, check>    benefit: <correctness ✔ | −N tok>    risk: <low|medium> [⚠ rationale-risk] [irreversible (not tracked)] [needs: BACKUP]
 ```
 
 Verbs: `EDIT` `COMPRESS` `POINTER` `MERGE` `REMOVE` `BACKUP` `POLICY`.
@@ -63,7 +64,7 @@ Verbs: `EDIT` `COMPRESS` `POINTER` `MERGE` `REMOVE` `BACKUP` `POLICY`.
 
 Close the recap with exactly:
 
-> Nothing has been changed. Reply with item numbers or group letters to apply (e.g. "apply A, 3"). ⚠ items must be named individually.
+> Nothing has been changed. Reply with item numbers or group letters to apply (e.g. "apply A, 3"). ⚠ and irreversible items must be named individually.
 
 ## Write-time rule
 
@@ -81,5 +82,5 @@ Awaiting individual approval (⚠): <ids or "none">
 Always-loaded: <before> → projected <y> → actual <z> tok
 Checks re-run: <remaining findings or "clean">
 Kept items verified: <n>/<n> found (<file> for each)
-Undo: memory → <backup path | "no backup (declined)">; repo → git (`git diff` / `git checkout -- <file>`)
+Undo: memory → <backup path | "no backup (declined)">; tracked files → git (`git diff` / `git checkout -- <file>`); not recoverable → <ids of irreversible items, or "none">
 ```

@@ -9,12 +9,14 @@
   "looks right", emoji, silence, or approval from an earlier run. Re-prompt
   with the list of valid IDs.
 - "yes, do 1 and 3" authorizes exactly {1, 3}.
-- A group letter covers its items **except** `⚠ rationale-risk` ones. Apply
+- A group letter covers its items **except** `⚠ rationale-risk` and
+  `irreversible (not tracked)` ones. Apply
   the non-⚠ items of the authorized set now; list the excluded ⚠ items in the
-  final report under "Awaiting individual approval".
+  final report under "Awaiting individual approval". The same holds for
+  "apply all".
 - Exception to the IDs-only rule: the literal phrase "apply all" equals every
-  non-⚠ ID. Echo the expanded set before applying; ⚠ items still need their
-  numbers.
+  non-⚠, reversible ID. Echo the expanded set before applying; ⚠ and
+  irreversible items still need their numbers.
 - Items marked `needs: BACKUP` authorized without `BACKUP`: ask once
   "Include BACKUP first? Reply `BACKUP` (or its ID) or `no`." Only `BACKUP`
   or its ID authorizes it; proceed without it only on an explicit no. Any
@@ -31,6 +33,11 @@ Order: `BACKUP` → edits → `POLICY` → verify.
 - Tracked files: if `git status --porcelain -- FILE` is non-empty, ask the
   user to commit or stash first; do not edit. Never run commit, stash or
   checkout yourself.
+- Untracked or ignored targets: if `git ls-files --error-unmatch FILE` fails
+  and the file is not inside the backed-up memory directory, nothing can
+  restore it. Its recap item must say `risk: irreversible (not tracked)`, it
+  must be named individually, and the final report lists it as "not
+  recoverable". Untracked (`??`) files follow this rule, not commit/stash.
 - Memory: update fact files and their `MEMORY.md` lines in the same step;
   never leave a dangling link or an unindexed file you created.
 - Edit only the authorized items; leave every other byte untouched,
