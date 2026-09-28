@@ -152,7 +152,7 @@ User can type additional version control needs via "Other".
 
 **Only present this step if an agentic coding tool was selected in Step 3.** Otherwise skip to Step 6.
 
-Before presenting options, perform a `WebSearch` query like "best MCP servers for {detected stack} 2026" to check for newly popular MCP servers. Supplement the static catalog with any fresh recommendations.
+Before presenting options, perform a `WebSearch` query like "best MCP servers for {detected stack} {current year}" to check for newly popular MCP servers. Supplement the static catalog with any fresh recommendations.
 
 Present MCP servers organized by category with stack-aware pre-selections:
 
