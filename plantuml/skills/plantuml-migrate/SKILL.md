@@ -85,7 +85,7 @@ so safety mechanisms are explicit.
    (applied/skipped/error counts) for the summary.
 
 7. **Validate**: run `plantuml -checkonly` over every `.puml` file
-   (excluding `.plantuml/_*.puml`). Aggregate results. On any failure,
+   (excluding everything under `.plantuml/`). Aggregate results. On any failure,
    stop reporting "complete" and emit a recovery block (see Output).
 
 ## Output
