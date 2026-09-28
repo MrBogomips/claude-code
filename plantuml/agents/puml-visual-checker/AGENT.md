@@ -30,8 +30,8 @@ image and emit three pass/fail verdicts.
 1. **color**: is a color clearly matching `primary_color` (within ~10%
    perceptual tolerance) visible somewhere in the image — typically on
    class headers, arrow accents, or borders?
-2. **font**: does the rendered text suggest the declared font family
-   (sans-serif, geometric proportions consistent with Inter / Arial)?
+2. **font**: does the rendered text look consistent with the declared
+   `font_family` (serif vs sans-serif vs monospace, proportions, weight)?
    If the image is too small to tell, return `inconclusive` rather than
    `fail`.
 3. **layout**: any obvious overflow (text spilling outside boxes), label
