@@ -6,7 +6,7 @@ Tool-agnostic connector registry for the human-resources plugin. Skills referenc
 
 | Category | Placeholder | Options | Used by |
 |----------|-------------|---------|---------|
-| Knowledge base | `~~knowledge base` | Notion, Confluence, Guru, Coda, SharePoint | all skills |
+| Knowledge base | `~~knowledge base` | Notion, Confluence, Guru, Coda, SharePoint | job-description, pre-screening, interview-prep, interview-close, compliance-check |
 | ATS | `~~ATS` | Greenhouse, Lever, Ashby, Workable, TeamTailor | pre-screening, interview-prep, interview-close |
 | HRIS | `~~HRIS` | Workday, BambooHR, Rippling, Gusto, Personio | interview-close |
 
