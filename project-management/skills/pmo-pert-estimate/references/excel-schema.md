@@ -286,8 +286,8 @@ Column A holds the label, column B holds the formula.
 |-------|-------|
 | Calendar Duration (weeks) | `config.calendar_total_weeks` if set, else `max(phase.end_week) - min(phase.start_week) + 1`, else Resource Plan `total_weeks` fallback |
 
-Single number. No CI 68%/95% Duration block is produced (v1's sequential
-leaf-sum was misleading — Issue #2 in the refactor changelog).
+Single number. No CI 68%/95% Duration block is produced: a sequential
+sum of leaf durations ignores phase parallelism.
 
 ### Effort by Team (after a blank row)
 
@@ -309,23 +309,22 @@ is followed by one text row per entry in column A.
 
 All output cells representing effort are person-days. Percentages may
 only appear in input JSON under `config.*_pct` fields to declare ratios.
-The previous Resources sheet mixed % allocations with effort cells in a
-way that produced numerically meaningless rollups (Issue #1) — that
-pattern is no longer expressible.
+Mixing % allocations with effort cells produces numerically
+meaningless rollups.
 
 ### Calendar duration as an explicit single number
 
 Aggregating leaf PERT durations sequentially ignores phase parallelism
 and over-estimates the calendar duration by a factor of 2–3 in projects
-with overlapping phases (Issue #2). The new design represents calendar
-duration as a single declarative value.
+with overlapping phases. Calendar duration is therefore a single
+declarative value.
 
 ### MR base = Tech + Overhead + Contingency
 
-Per PMI PMBOK §4.3 and §11.7, Management Reserve covers unknown unknowns
-on the full effort baseline, not only on the modelled contingency
-(Issue #3). The new formula puts Tech + Overhead + Contingency into the
-multiplier so the displayed MR matches the project's actual baseline.
+Management Reserve covers unknown unknowns on the full effort
+baseline, not only on the modelled contingency. The formula puts
+Tech + Overhead + Contingency into the multiplier so the displayed MR
+matches the project's actual baseline.
 
 ### Primary role per activity
 
@@ -339,5 +338,5 @@ generator does not infer the primary role from notes or other signals.
 
 Only σ for Duration is computed (column M of WBS). Effort uncertainty is
 communicated through the three-point values (O/M/P) and the three bands.
-The legacy v1 σ-total / CI 68/95 block was based on a sequential leaf
-sum and is no longer produced.
+No σ-total / CI 68/95 block is produced, because it would rest on a
+sequential leaf sum.

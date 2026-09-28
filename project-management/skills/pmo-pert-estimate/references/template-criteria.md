@@ -19,11 +19,6 @@ English canonical name **or** the Italian translation produced when
 | `Risks` | `Rischi` | Risk register with P×I scoring and Management Reserve |
 | `Summary` | `Riepilogo` | Phase rollup, effort bands, calendar duration |
 
-**Removed (vs the legacy 5-sheet layout)**: `Timeline` (sequential Gantt — was
-not actionable, see Issue #4 in the refactor changelog) and `Resources` (held
-percentages presented as effort — Issue #1). Both responsibilities are now
-covered by the single PD-based `Resource Plan`.
-
 **Extra sheets**: Accepted by the validator. Generated workbooks contain only
 the 4 sheets above.
 
