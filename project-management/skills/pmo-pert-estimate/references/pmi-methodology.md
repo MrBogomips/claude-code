@@ -190,12 +190,15 @@ Both Probability and Impact are scored on a 1-5 scale:
 | Type | Purpose | Calculated from | Controlled by |
 |------|---------|----------------|---------------|
 | **Contingency** | Address identified, specific risks | Sum of contingency per risk (effort-based) | Project Manager |
-| **Management Reserve** | Address unknown unknowns and correlated risks | Percentage of total PERT (typically 5-15%) | Sponsor / PMO |
+| **Management Reserve** | Address unknown unknowns and correlated risks | Percentage (typically 5-15%) of Tech PERT + PM/DevOps overhead + total contingency | Sponsor / PMO |
 
-**Practical formula**:
+**Practical formula** (as computed on the Summary sheet):
 
 ```
-Adjusted Estimate = PERT + Total Contingency + Management Reserve
+Low Band (Fascia BASSA)    = Tech PERT + PM/DevOps Overhead + Total Contingency
+Management Reserve         = Low Band × MR%
+Medium Band (Fascia MEDIA) = Low Band + Management Reserve   (recommended)
+High Band (Fascia ALTA)    = Medium Band × (1 + alta_uplift_pct)
 ```
 
 ---
