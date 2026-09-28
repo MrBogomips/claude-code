@@ -39,7 +39,7 @@ Variants generated from $VARIANTS_DIR.
 
 Next steps:
   1. bash scripts/render-variants.sh $RUN_DIR
-  2. Dispatch adversarial reviewers (see SKILL.md "Test harness")
+  2. Dispatch adversarial reviewers (see plugin README § Dev "Test harness")
   3. bash scripts/aggregate-reviews.sh $RUN_DIR
 EOF
 

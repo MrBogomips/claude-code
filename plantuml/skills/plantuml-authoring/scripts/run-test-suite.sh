@@ -19,7 +19,7 @@ echo "2/3 Rendering…"
 
 echo
 echo "3/3 Reviewer dispatch is an agent step."
-echo "See SKILL.md §\"Test harness — reviewer dispatch\" for the protocol."
+echo "See plugin README § Dev \"Test harness — reviewer dispatch\" for the protocol."
 echo
 echo "After agent produces review.md files, run:"
 echo "  $SCRIPTS/aggregate-reviews.sh $RUN_DIR"
