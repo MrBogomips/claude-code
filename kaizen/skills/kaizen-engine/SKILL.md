@@ -287,10 +287,10 @@ Compare verification KPIs against the pre-iteration measurement:
 - Otherwise: **REVERT**
 
 **Multi-objective strategy:**
-Apply Pareto dominance check:
+Apply the Pareto dominance check in `references/ratchet-strategies.md`:
 - **KEEP** if: no KPI regressed beyond epsilon AND at least one KPI improved by at least epsilon
-- **REVERT** if: any KPI regressed beyond epsilon
-- **ESCALATE** if: autonomy is not `autonomous` and there's a trade-off (one improved, another regressed within epsilon) — present to user for judgment
+- **ESCALATE** if: autonomy is not `autonomous`, at least one KPI improved by at least epsilon, and another regressed beyond epsilon — present the trade-off to the user
+- **REVERT** otherwise
 
 **Decision record:**
 Write to `.kaizen/runs/{run-id}/iterations/{NNN}/decision.json`:
