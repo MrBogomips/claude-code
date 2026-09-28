@@ -53,7 +53,6 @@ When running in a repository for the first time, check whether `CLAUDE.md` conta
    - **DurationUnit** -- `days` / `weeks` / `sprints` (default: `d`)
    - **PrimaryColor** -- hex color for Excel formatting (default: `1B4FA5`)
    - **Currency** -- currency code (default: `EUR`)
-   - **PeriodType** -- `weekly` / `biweekly` / `monthly` (default: `biweekly`)
    - **AvgRate** -- average daily rate for cost calculations (optional, default: none)
    - **ManagementReservePct** -- management reserve percentage (default: `10`)
    - **OutputDir** -- where to save generated workbooks (default: `docs/outbox/`)
@@ -80,7 +79,6 @@ When running in a repository for the first time, check whether `CLAUDE.md` conta
 | DurationUnit | d |
 | PrimaryColor | 1B4FA5 |
 | Currency | EUR |
-| PeriodType | biweekly |
 | AvgRate | (none) |
 | ManagementReservePct | 10 |
 | OutputDir | docs/outbox/ |
@@ -270,7 +268,7 @@ Agent(model="sonnet")
   - `docs/pert-workspace/rbs-draft.md`
   - `docs/pert-workspace/risk-register.md`
   - `docs/pert-workspace/estimates-draft.md`
-- The pmo-pert-estimate configuration from CLAUDE.md (effort_unit, duration_unit, primary_color, currency, period_type, avg_rate, management_reserve_pct)
+- The pmo-pert-estimate configuration from CLAUDE.md (lang, effort_unit, duration_unit, primary_color, currency, avg_rate, management_reserve_pct — as a ratio, e.g. 10 → 0.10)
 - Target values (if any)
 - Reference: `references/excel-schema.md` -- the complete JSON input schema and column/formula definitions per sheet
 - Instructions:
