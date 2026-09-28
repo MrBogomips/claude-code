@@ -32,9 +32,9 @@ mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 When added as a secondary stack in a multi-stack project:
 
 ```dockerfile
-RUN wget https://go.dev/dl/go1.23.0.linux-amd64.tar.gz \
-    && tar -C /usr/local -xzf go1.23.0.linux-amd64.tar.gz \
-    && rm go1.23.0.linux-amd64.tar.gz
+RUN wget https://go.dev/dl/go1.27.1.linux-amd64.tar.gz \
+    && tar -C /usr/local -xzf go1.27.1.linux-amd64.tar.gz \
+    && rm go1.27.1.linux-amd64.tar.gz
 ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH="/home/vscode/go"
 ENV PATH="${GOPATH}/bin:${PATH}"
@@ -45,7 +45,7 @@ ENV PATH="${GOPATH}/bin:${PATH}"
 ```json
 {
   "ghcr.io/devcontainers/features/go:1": {
-    "version": "1.23"
+    "version": "1.27"
   }
 }
 ```
