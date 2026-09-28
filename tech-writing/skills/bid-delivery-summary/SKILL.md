@@ -63,8 +63,9 @@ Read all provided source documents. If a source is not Markdown (PDF, DOCX, PPTX
 it first with a connected **~~document converter** (for example markitdown's `convert_to_markdown`);
 if none is connected, read it with the tools available and tell the user about any source that cannot be read.
 
-Detect language by counting language-specific tokens across the input (house thresholds: >80% →
-auto-select; 60–80% → recommend and confirm; <60% → ask).
+**Language detection:** Use the dominant language of the input documents and conversation for
+output. When the inputs clearly mix languages, recommend the dominant language and ask the user to
+confirm; when no language dominates, ask the user to choose.
 
 Establish a working `<doc-name>` (slug from the source title or filename) for output naming.
 
@@ -198,11 +199,9 @@ Before writing output, the skill validates itself:
 
 ## 5. Language Detection
 
-Count language-specific tokens across the input. Classification:
-
-- **>80% single language** → auto-select that language for output
-- **60–80% dominant language** → recommend the dominant language, ask the user to confirm
-- **<60% any language** → ask the user to choose
+Use the dominant language of the input documents and conversation for output. When the inputs
+clearly mix languages, recommend the dominant language and ask the user to confirm; when no language
+dominates, ask the user to choose.
 
 Supported languages:
 - `en` — English (`references/language-packs/en.md`)
