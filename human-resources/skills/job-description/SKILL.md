@@ -231,11 +231,7 @@ The inclusive language guide (`references/inclusive-language-guide.md`) is also 
 
 ## 6. Language Detection
 
-Count language-specific tokens across the conversation. Classification:
-
-- **>80% single language** → auto-select that language for output
-- **60-80% dominant language** → recommend dominant, ask user to confirm
-- **<60% any language** → ask user to choose
+Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 Supported languages:
 - `en` — English

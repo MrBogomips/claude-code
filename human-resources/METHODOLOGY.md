@@ -371,7 +371,7 @@ The plugin auto-detects language from the conversation and input documents rathe
 
 - **Natural interaction.** Forcing a language choice adds friction and breaks conversational flow. In a bilingual workplace (common in Italian companies with international operations), the user may switch languages naturally — the plugin follows.
 - **Document-aware.** When a JD is provided in Italian and the user writes in English, the skill detects the dominant language and asks for confirmation rather than guessing. This handles the common case where an Italian document is being discussed in English.
-- **Threshold-based.** The detection uses token counting: >80% in one language auto-selects it; 60-80% recommends the dominant language with confirmation; <60% asks the user. This avoids both over-confidence and over-asking.
+- **Judgment-based.** When one language clearly dominates, it is selected automatically; when the inputs clearly mix languages, the dominant language is recommended for confirmation; when none dominates, the user chooses. This avoids both over-confidence and over-asking.
 
 ### 4.4 Corporate Context with Memory
 

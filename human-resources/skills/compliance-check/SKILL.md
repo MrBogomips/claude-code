@@ -48,10 +48,7 @@ Analyze the input to determine operating parameters:
   - Italian-language content or references to Italian law → Italy jurisdiction (applies Italian + EU + general rules)
   - EU context without Italian specifics → EU jurisdiction (applies EU + general rules)
   - No jurisdiction cues → General best practices (flag that jurisdiction-specific analysis is limited)
-- **Language detection**: count language-specific tokens across input. Classification:
-  - **>80% single language** → auto-select that language for output
-  - **60-80% dominant language** → recommend dominant, ask user to confirm (standalone only; embedded uses dominant)
-  - **<60% any language** → ask user to choose (standalone only; embedded defaults to English)
+- **Language detection**: Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose. In embedded mode, do not ask: use the dominant language, or English when none dominates.
 
 If **~~knowledge base** is connected: search for organization-specific compliance policies and previous audit results for similar document types.
 
@@ -270,11 +267,7 @@ Before returning any findings, the skill validates its own output:
 
 ## 7. Language Detection
 
-Count language-specific tokens across input documents and conversation context. Classification:
-
-- **>80% single language** → auto-select that language for output
-- **60-80% dominant language** → recommend dominant, ask user to confirm (standalone mode); use dominant silently (embedded mode)
-- **<60% any language** → ask user to choose (standalone mode); default to English (embedded mode)
+Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose. In embedded mode, do not ask: use the dominant language, or English when none dominates.
 
 Supported languages:
 - `en` — English
