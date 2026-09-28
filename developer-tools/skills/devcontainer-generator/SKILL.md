@@ -294,7 +294,7 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
    - `postStartCommand` and `capAdd: ["NET_ADMIN"]` are always present in the template
 
    **b. `.devcontainer/Dockerfile`**
-   - Set `{{BASE_IMAGE}}` to the selected official image
+   - Set `{{BASE_IMAGE}}` to `mcr.microsoft.com/devcontainers/base:ubuntu-24.04`
    - Insert service client packages into `{{APT_EXTRA}}` (e.g., postgresql-client)
    - Insert runtime layers into `{{RUNTIME_LAYERS}}` for secondary stacks
    - If Git LFS selected: add `git-lfs` to apt install
