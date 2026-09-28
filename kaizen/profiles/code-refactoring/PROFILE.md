@@ -77,7 +77,7 @@ Calculate code quality metrics for all files in the mutation scope:
 1. **Identify language** — detect the primary programming language(s) from file extensions
 2. **Calculate cyclomatic complexity** — use language-appropriate tools:
    - Python: `radon cc` or AST-based analysis
-   - JavaScript/TypeScript: count decision points (if, else, for, while, switch cases, &&, ||, ?:)
+   - JavaScript/TypeScript: count decision points as listed in references/quality-metrics.md (if/else if, loops, case, catch, &&, ||, ?:)
    - Go: count branching statements
    - For other languages: count `if`, `for`, `while`, `switch`, `case`, `&&`, `||`, `?:`, `catch` tokens
 3. **Detect duplicated blocks** — find sequences of >= 6 identical non-blank lines across files
