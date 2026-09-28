@@ -37,8 +37,8 @@ Backtrack arrows:
 ### Steps
 
 1. Ask output language (default: `en`)
-2. Ask effort unit (`pd` / `hours` / `story_points`)
-3. Ask duration unit (`days` / `weeks` / `sprints`)
+2. Effort unit: `pd` (capacity checks and bands are person-day based)
+3. Duration unit: `d` (working days; the Resource Plan converts to weeks at 5 days per week)
 4. Ask output directory (default: `docs/outbox/`)
 5. Ask about template (the generator always builds the canonical layout; a custom template is only checked for compatibility):
    - **Use bundled** — inform about bundled template location and criteria doc

@@ -49,8 +49,8 @@ When running in a repository for the first time, check whether `CLAUDE.md` conta
 
 1. **Ask** the user for project-specific values:
    - **Language** -- output language (default: `en`)
-   - **EffortUnit** -- `pd` / `hours` / `story_points` (default: `pd`)
-   - **DurationUnit** -- `days` / `weeks` / `sprints` (default: `d`)
+   - **EffortUnit** -- `pd` (the workbook's capacity checks and bands are person-day based)
+   - **DurationUnit** -- `d` (working days; the Resource Plan converts to weeks at 5 days per week)
    - **PrimaryColor** -- hex color for Excel formatting (default: `1B4FA5`)
    - **Currency** -- currency code (default: `EUR`)
    - **AvgRate** -- average daily rate for cost calculations (optional, default: none)
