@@ -154,7 +154,7 @@ Essential data only. No explanations, no methodology notes. Compact tables.
 > - Low Band: 727 pd · Management Reserve (10%): 73 pd · Medium Band (recommended): 800 pd · High Band: 896 pd
 > - Calendar duration: 22 weeks
 >
-> Output: `docs/outbox/pert-estimate.xlsx`
+> Output: `{OutputDir}/pert-estimate.xlsx`
 >
 > Review the Excel and let me know if adjustments are needed."
 

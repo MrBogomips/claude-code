@@ -17,7 +17,7 @@ Use `tests/scenarios/integration/sample-brief.md` as input.
 6. Section Generation: generates sections progressively
 7. Section 10 (Economics): placeholder referencing sow-estimate
 8. Consistency Check: verifies cross-references
-9. Output: saves to docs/outbox/
+9. Output: saves to the output directory (declared in CLAUDE.md, or asked; e.g., docs/outbox/)
 
 ## Acceptance Criteria
 - [ ] All 15 sections present in output

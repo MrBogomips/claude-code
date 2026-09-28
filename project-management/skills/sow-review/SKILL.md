@@ -123,7 +123,7 @@ Should-fix items for quality: vague language, missing traceability, weak accepta
 #### Standards Compliance (if applicable)
 Checklist of corporate standard requirements with pass/fail per item.
 
-Save the report to `docs/outbox/<project-name>-sow-review.md`.
+Save the report as `<project-name>-sow-review.md` in the output directory: the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 ---
 

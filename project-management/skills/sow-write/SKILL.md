@@ -14,7 +14,7 @@ This skill writes professional Statements of Work from project briefs, PRDs, con
 
 The skill auto-detects language from input documents and produces output in the detected language. When language is ambiguous (mixed-language inputs), it asks the user to choose. Language packs provide localized section headers, boilerplate text, and legal terminology.
 
-**Output directory:** `docs/outbox/` (configurable)
+**Output directory:** the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 **Connector support:** Skills degrade gracefully without connectors. See `CONNECTORS.md` for the full registry.
 
@@ -40,7 +40,7 @@ If connectors are available:
 - **~~knowledge base**: search for existing templates matching the project domain
 - **~~document storage**: search for related documents (past SOWs for the same client, similar projects)
 
-Save analysis to `docs/outbox/<project-name>-input-analysis.md`.
+Save analysis to `<output directory>/<project-name>-input-analysis.md`.
 
 ### Step 2 — Mode Selection
 
@@ -132,7 +132,7 @@ Flag any inconsistencies to the user with specific fix recommendations.
 
 ### Step 8 — Output
 
-Save the completed SOW to `docs/outbox/<project-name>-sow-v0.1.0.md`.
+Save the completed SOW to `<output directory>/<project-name>-sow-v0.1.0.md`.
 
 Present a summary: section count, word count, language, mode, any placeholders remaining, and suggested next steps (run `sow-review` for quality check, run `sow-estimate` for economics).
 

@@ -18,7 +18,7 @@ Verify that the three SOW skills work together as a pipeline, with outputs from 
 - [ ] Section 8 (Collaboration Model) has team from brief
 - [ ] Section 11 (Risk Management) includes data migration and GDPR risks
 - [ ] Language: English (brief is in English)
-- [ ] Saved to docs/outbox/homeai-sow-v0.1.0.md
+- [ ] Saved to `<output directory>/homeai-sow-v0.1.0.md` (e.g., docs/outbox/)
 
 ### Step 2: SOW Estimate
 **Invoke**: `sow-estimate` on the SOW from Step 1
@@ -28,7 +28,7 @@ Verify that the three SOW skills work together as a pipeline, with outputs from 
 - [ ] Roles extracted: matches Section 8 team composition
 - [ ] Risks extracted: matches Section 11 risk register
 - [ ] PERT invoked with pre-populated structures
-- [ ] PERT Excel generated at docs/outbox/pert-estimate.xlsx
+- [ ] PERT Excel generated at `{OutputDir}/pert-estimate.xlsx` (e.g., docs/outbox/)
 - [ ] SOW Economics section (10) backfilled with PERT results
 - [ ] SOW Schedule section (9) updated with PERT timeline
 - [ ] Updated SOW saved as v0.2.0
@@ -41,7 +41,7 @@ Verify that the three SOW skills work together as a pipeline, with outputs from 
 - [ ] Completeness score >= 4 (all sections present after backfill)
 - [ ] Consistency score checked (economics now match scope)
 - [ ] Adversarial challenges generated
-- [ ] Review report saved to docs/outbox/homeai-sow-review.md
+- [ ] Review report saved to `<output directory>/homeai-sow-review.md` (e.g., docs/outbox/)
 
 ### Step 4: Feedback Loop (optional)
 **Invoke**: feed review recommendations back to `sow-write`

@@ -39,7 +39,7 @@ Backtrack arrows:
 1. Ask output language (default: `en`)
 2. Effort unit: `pd` (capacity checks and bands are person-day based)
 3. Duration unit: `d` (working days; the Resource Plan converts to weeks at 5 days per week)
-4. Ask output directory (default: `docs/outbox/`)
+4. Ask output directory (suggest `docs/outbox/`)
 5. Ask about template (the generator always builds the canonical layout; a custom template is only checked for compatibility):
    - **Use bundled** — inform about bundled template location and criteria doc
    - **Check a custom template** — run `scripts/validate_template.py`; show errors; record the path for reference only

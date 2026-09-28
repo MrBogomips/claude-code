@@ -37,7 +37,7 @@ references/
 ```
 
 **Workspace directory:** `docs/pert-workspace/` (created during Phase 1)
-**Output directory:** configurable per project (default: `docs/outbox/`)
+**Output directory:** the `OutputDir` the project's CLAUDE.md declares (in `## pmo-pert-estimate Configuration`); if none is declared, ask the user in Phase 0 (suggest `docs/outbox/`)
 
 ---
 
@@ -55,7 +55,7 @@ When running in a repository for the first time, check whether `CLAUDE.md` conta
    - **Currency** -- currency code (default: `EUR`)
    - **AvgRate** -- average daily rate for cost calculations (optional, default: none)
    - **ManagementReservePct** -- management reserve percentage (default: `10`)
-   - **OutputDir** -- where to save generated workbooks (default: `docs/outbox/`)
+   - **OutputDir** -- where to save generated workbooks (suggest `docs/outbox/`)
 
 2. **Ask about template**. The generator always builds the canonical 4-sheet layout from scratch; a custom template is checked for compatibility but is not used as the base for generated workbooks. Offer:
    - **Use bundled** -- the reference layout is at `assets/pert-template.xlsx` (relative to this skill directory); criteria are in `references/template-criteria.md`

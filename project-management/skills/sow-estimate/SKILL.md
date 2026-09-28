@@ -11,6 +11,7 @@ This skill bridges the gap between a Statement of Work and PERT three-point esti
 
 **Input:** SOW document (markdown or docx) — must have at least: scope/phases, team/roles, and ideally risk sections
 **Output:** Updated SOW with populated Economics and Schedule sections + PERT Excel workbook
+**Output directory:** the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 ---
 
@@ -130,7 +131,7 @@ Present the backfilled sections to the user for review before writing.
 ### Step 8 — Output
 
 Save the updated SOW (replacing the economics placeholder with actual content) to the same path, incrementing the version:
-- `docs/outbox/<project-name>-sow-v0.1.0.md` → `docs/outbox/<project-name>-sow-v0.2.0.md`
+- `<output directory>/<project-name>-sow-v0.1.0.md` → `<output directory>/<project-name>-sow-v0.2.0.md`
 
 Present a summary: extraction statistics (phases, activities, roles, risks extracted), PERT results (Tech PERT effort, Low / Medium / High Band, Calendar Duration in weeks), and the updated SOW location.
 
