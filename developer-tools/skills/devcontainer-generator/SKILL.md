@@ -326,6 +326,7 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
 
    **f. `.devcontainer/firewall-rules.conf`**
    - Start from `@references/configs/firewall-rules.conf` as base
+   - Insert every added rule above the `# --- Default Policy ---` block: rules are first-match-wins, so a rule after the catch-all never matches
    - Add stack-specific firewall domains from each selected stack's reference file
    - Add tool-specific firewall domains from each selected tool's reference file
    - Add MCP server firewall domains from `@references/mcp-servers.md` for each selected server
