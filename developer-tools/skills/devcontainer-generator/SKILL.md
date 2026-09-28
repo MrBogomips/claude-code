@@ -30,7 +30,7 @@ Generate a production-ready `.devcontainer` setup for any repository through an 
 2. Scan CWD for tech stack:
    - **Languages**: `package.json` → Node.js, `*.csproj`/`*.sln`/`global.json` → .NET, `requirements.txt`/`pyproject.toml`/`setup.py`/`Pipfile` → Python, `go.mod` → Go, `Cargo.toml` → Rust, `pom.xml`/`build.gradle`/`build.gradle.kts` → Java
    - **Frameworks**: `angular.json` → Angular, `next.config.*` → Next.js, `nuxt.config.*` → Nuxt, `vite.config.*` → Vite, `docusaurus.config.js` → Docusaurus, `.storybook/` → Storybook, `remix.config.*` → Remix
-   - **Package managers**: `pnpm-lock.yaml` → pnpm, `yarn.lock` → Yarn, `package-lock.json` → npm, `bun.lockb` → Bun
+   - **Package managers**: `pnpm-lock.yaml` → pnpm, `yarn.lock` → Yarn, `package-lock.json` → npm, `bun.lock`/`bun.lockb` → Bun
    - **Monorepo indicators**: `pnpm-workspace.yaml`, `nx.json`, `turbo.json`, `lerna.json`, `apps/`, `packages/`, `services/`
    - **Versions**: Check `engines.node` in package.json, `sdk.version` in global.json, Python version in pyproject.toml
 
