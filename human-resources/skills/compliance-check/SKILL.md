@@ -135,6 +135,7 @@ For each finding, record: location, the structural gap, applicable rule/law, sev
 
 - `location` — where in the document the issue occurs (section, line, field name)
 - `issue` — description of the compliance problem
+- `law` — the statute article, GDPR article, or named best practice the finding rests on (required; see Self-Check Rules)
 - `severity` — `CRITICAL`, `WARNING`, or `INFO`
 - `suggested_fix` — actionable correction
 
@@ -231,12 +232,14 @@ The skill returns a list of finding objects:
   {
     "location": "Section 3, paragraph 2",
     "issue": "Question 'Are you married?' directly asks about marital status",
+    "law": "D.Lgs. 198/2006 Art. 27(1); L. 300/1970 Art. 8",
     "severity": "CRITICAL",
     "suggested_fix": "Remove the question entirely — marital status is not relevant to professional aptitude"
   },
   {
     "location": "Requirements section",
     "issue": "'Native Italian speaker' is a proxy for national origin discrimination",
+    "law": "D.Lgs. 215/2003 Art. 2(1)(b)",
     "severity": "WARNING",
     "suggested_fix": "Replace with 'Fluent in Italian (C1/C2 level)'"
   }
