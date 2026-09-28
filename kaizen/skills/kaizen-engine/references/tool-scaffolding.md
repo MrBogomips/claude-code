@@ -48,12 +48,12 @@ Written by the engine during BOOTSTRAP:
   "profile": "claude-code-usage",
   "run_id": "2026-03-23-claude-code-usage-001",
   "sources": [
-    {"type": "session_transcripts", "path": "~/.claude/sessions/"},
+    {"type": "session_transcripts", "path": "~/.claude/projects/*/sessions/"},
     {"type": "config", "path": ".claude/"}
   ],
   "kpis": [
     {"name": "tool_efficiency", "formula": "dedicated_tool_calls / total_tool_calls", "direction": "maximize"},
-    {"name": "search_precision", "formula": "targets_found / total_searches", "direction": "minimize"}
+    {"name": "search_precision", "formula": "total_search_operations / unique_search_targets_found", "direction": "minimize"}
   ]
 }
 ```
