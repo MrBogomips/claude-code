@@ -12,7 +12,7 @@ This skill reviews HR documents for legal compliance, bias, and discriminatory l
 It operates in two modes:
 
 - **Embedded mode** — invoked as a validation step by other HR skills (job-description, pre-screening, interview-prep, interview-close). Receives draft text, returns a structured list of findings. No file output.
-- **Standalone mode** — audits any existing HR document provided by the user. Produces a full compliance audit report saved to the outbox directory.
+- **Standalone mode** — audits any existing HR document provided by the user. Produces a full compliance audit report saved to the output directory — the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 The skill applies four analysis layers in sequence:
 
@@ -141,7 +141,7 @@ For each finding, record: location, the structural gap, applicable rule/law, sev
 
 No file is produced. The calling skill receives the list and decides how to act on it.
 
-**Standalone mode:** Produce a compliance audit report saved to `docs/outbox/{document-name}-compliance-audit.md` using the output template (see Section 4).
+**Standalone mode:** Produce a compliance audit report saved as `{document-name}-compliance-audit.md` in the output directory using the output template (see Section 4).
 
 Present a summary to the user: total issues by severity, overall status, and recommended next steps.
 
@@ -153,7 +153,7 @@ If the user requests a corrected version, produce a clean copy of the original d
 - WARNING issues: corrected with best-practice language
 - INFO issues: improved where straightforward
 
-Save to `docs/outbox/{document-name}-clean.md`. Highlight changes with inline comments so the user can review what was modified and why.
+Save as `{document-name}-clean.md` in the output directory. Highlight changes with inline comments so the user can review what was modified and why.
 
 ---
 

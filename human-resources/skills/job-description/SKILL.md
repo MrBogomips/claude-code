@@ -14,7 +14,7 @@ This skill writes professional job descriptions for technical and non-technical 
 
 The skill auto-detects language from the conversation and produces output in the detected language. Supported languages: English (`en`) and Italian (`it`). When language is ambiguous, the skill asks the user to choose.
 
-**Output file:** `{role}-job-description.md`
+**Output file:** `{role}-job-description.md` in the output directory — the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 **Connector support:** Skills degrade gracefully without connectors. See `CONNECTORS.md` for the full registry.
 
@@ -140,7 +140,7 @@ If compliance-check returns any CRITICAL findings, loop back to fix and re-valid
 
 Apply all confirmed fixes from Steps 5-7 and produce the final JD.
 
-Save to `{role}-job-description.md` (where `{role}` is the sanitized role title, lowercase, hyphens for spaces).
+Save as `{role}-job-description.md` in the output directory (where `{role}` is the sanitized role title, lowercase, hyphens for spaces).
 
 Present a summary to the user:
 - Framework used (competency-based / outcome-based / hybrid)

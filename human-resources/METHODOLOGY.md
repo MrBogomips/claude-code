@@ -311,7 +311,7 @@ job-description ──JD──> pre-screening ──JD + CV gap analysis──> 
 |--------|--------|
 | **WHEN** | Automatically invoked by every pipeline stage before output (embedded mode). Also available as a standalone audit tool at any time. |
 | **WHO** | In embedded mode: transparent to the user, runs as part of the pipeline. In standalone mode: HR professional, legal/compliance team, or anyone reviewing an existing HR document. |
-| **WHAT it produces** | Embedded: a list of findings (severity + location + suggested fix) returned to the calling skill. Standalone: a compliance audit report saved to the outbox. |
+| **WHAT it produces** | Embedded: a list of findings (severity + location + suggested fix) returned to the calling skill. Standalone: a compliance audit report saved to the output directory. |
 | **WHY this step matters** | Compliance errors are expensive — legally, financially, and reputationally. By validating at every stage, the plugin catches issues when they are cheap to fix (draft stage) rather than after a document is sent to candidates or used in an interview. |
 
 **Four analysis layers:**

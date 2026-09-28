@@ -11,7 +11,7 @@ This skill produces standardized post-interview evaluations by guiding interview
 
 The core interaction is a **guided feedback conversation**: rather than accepting vague impressions, the skill probes each competency area with targeted questions, converts subjective statements into observable evidence, and flags potential bias patterns. This coaching approach produces evaluations that are consistent, comparable across candidates, and defensible.
 
-**Output file:** `{candidate}-evaluation.md` in `docs/outbox/`
+**Output file:** `{candidate}-evaluation.md` in the output directory — the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 **Connector support:** Skills degrade gracefully without connectors. See `CONNECTORS.md` for the full registry.
 
@@ -140,7 +140,7 @@ If no corporate template exists, use the standard evaluation structure from Sect
 
 ### Step 9 — Output
 
-Save the completed evaluation to `docs/outbox/{candidate}-evaluation.md` in the detected language and confirmed format.
+Save the completed evaluation as `{candidate}-evaluation.md` in the output directory, in the detected language and confirmed format.
 
 Present a summary to the user:
 - Candidate name and role

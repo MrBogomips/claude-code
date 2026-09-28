@@ -16,7 +16,7 @@ It operates in two delivery modes:
 
 The skill auto-detects language from the conversation and input documents, producing output in the detected language. Supported languages: English (`en`) and Italian (`it`). The user may override with an explicit language choice.
 
-**Output file:** `{candidate}-prescreening.md` in `docs/outbox/`
+**Output file:** `{candidate}-prescreening.md` in the output directory — the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 **Connector support:** Skills degrade gracefully without connectors.
 
@@ -114,7 +114,7 @@ If any questions are modified, note the compliance adjustments in the output.
 
 ### Step 6 — Output
 
-Produce the final questionnaire as `docs/outbox/{candidate}-prescreening.md` in the selected delivery mode format (see Section 4 for templates).
+Produce the final questionnaire as `{candidate}-prescreening.md` in the output directory, in the selected delivery mode format (see Section 4 for templates).
 
 Present a summary to the user:
 - Delivery mode used
