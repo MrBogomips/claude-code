@@ -31,6 +31,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### GitHub MCP
 - **Package**: `@modelcontextprotocol/server-github`
+- **Status**: npm marks this package "no longer supported" (checked 2026-09-28). Before emitting this entry, find the maintained replacement (GitHub's own MCP server) through the Step 5 web search and confirm it with the user.
 - **Description**: GitHub integration — PRs, issues, code search, repository management
 - **Install**: `npx -y @modelcontextprotocol/server-github`
 - **Config**:
@@ -116,6 +117,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### PostgreSQL MCP
 - **Package**: `@modelcontextprotocol/server-postgres`
+- **Status**: npm marks this package "no longer supported" (checked 2026-09-28). Before emitting this entry, find the maintained replacement through the Step 5 web search and confirm it with the user.
 - **Description**: PostgreSQL database integration — query, schema inspection
 - **Install**: `npx -y @modelcontextprotocol/server-postgres`
 - **Config**:
@@ -211,6 +213,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Puppeteer MCP
 - **Package**: `@modelcontextprotocol/server-puppeteer`
+- **Status**: npm marks this package "no longer supported" (checked 2026-09-28). Before emitting this entry, find the maintained replacement (or use the Playwright entry) through the Step 5 web search and confirm it with the user.
 - **Description**: Browser automation, screenshots, and web scraping
 - **Install**: `npx -y @modelcontextprotocol/server-puppeteer`
 - **Config**:
@@ -298,16 +301,16 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 ## Search & Web
 
 ### Brave Search MCP
-- **Package**: `@modelcontextprotocol/server-brave-search`
+- **Package**: `@brave/brave-search-mcp-server`
 - **Description**: Web search from within the agent
-- **Install**: `npx -y @modelcontextprotocol/server-brave-search`
+- **Install**: `npx -y @brave/brave-search-mcp-server`
 - **Config**:
   ```json
   {
     "mcpServers": {
       "brave-search": {
         "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+        "args": ["-y", "@brave/brave-search-mcp-server"],
         "env": {
           "BRAVE_API_KEY": "<your-key>"
         }
