@@ -441,7 +441,7 @@ This is also where bias detection operates: monitoring for all-identical scores,
 
 5. **Conduct the interview** using the question plan. The interviewer uses the minimal notes template, capturing key quotes and starring a particularly strong answer about API versioning.
 
-6. **Invoke interview-close** with the interview-prep outputs and interviewer notes. The skill guides the interviewer through a competency-by-competency evaluation. For system design, the interviewer initially says "he was okay" — the skill probes for specific evidence, and the interviewer recalls a detailed example about designing a message queue architecture. Final score: 3.5, rounded to 4 after anchoring to the BARS definition. The skill maps the candidate to "Mid-Senior" level with Medium confidence. Output: `mario-rossi-evaluation.md` with a "Hire" recommendation.
+6. **Invoke interview-close** with the interview-prep outputs and interviewer notes. The skill guides the interviewer through a competency-by-competency evaluation. For system design, the interviewer initially says "he was okay" — the skill probes for specific evidence, and the interviewer recalls a detailed example about designing a message queue architecture. Final score: 4, once the example is anchored to the BARS definition. The skill classifies the candidate at the Mid level, noted as "approaching Senior", with Medium confidence. Output: `mario-rossi-evaluation.md` with a "Hire" recommendation.
 
 ---
 
