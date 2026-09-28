@@ -29,7 +29,7 @@ Expected KPIs: {list of kpi names from profile}
 Output file: {path_to_measurement.json_or_verification.json}
 
 Instructions:
-1. Execute the measurement script: `python {script_path}` or `npx tsx {script_path}`
+1. Execute the measurement script: `python3 {script_path}` or `npx tsx {script_path}`
 2. Capture stdout as the measurement result
 3. If exit code is non-zero, capture stderr for error diagnosis
 4. Write the result to the output file path
