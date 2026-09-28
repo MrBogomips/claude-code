@@ -43,10 +43,12 @@ For each file, evaluate:
 - **R3 (no hex color literals)** — pattern `#[0-9A-Fa-f]{6,8}` outside of
   a `' …` comment. Allowed only inside `_*.puml` policy partials.
   Suppressed if `policy_present=false`.
-- **R4 (filename matches title)** — first `@startuml <title>` directive
-  must match the file's basename without extension. Title is required.
-- **R5 (single startuml/enduml)** — exactly one `@startuml … @enduml`
-  block per file.
+- **R4 (filename matches title)** — the id on the first `@start<kind>`
+  directive (`@startuml`, `@startjson`, `@startyaml`, `@startgantt`,
+  `@startmindmap`, `@startwbs`, `@startsalt`, `@startnwdiag`, …) must match
+  the file's basename without extension. The id is required.
+- **R5 (single start/end block)** — exactly one `@start<kind> … @end<kind>`
+  block per file, with matching kinds.
 
 ## Output format
 
