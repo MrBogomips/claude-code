@@ -15,8 +15,8 @@ for section in "Type fit" "Detail level" "Layout" "Labels"; do
   grep -q "$section" "$SKILL" || fail "SKILL.md does not document section '$section'"
 done
 # No agent dispatch — review is interactive
-if grep -qE '^allowed-tools:.*Task' "$SKILL"; then
-  fail "review must NOT use Task"
+if grep -qE '^allowed-tools:.*(Task|Agent)' "$SKILL"; then
+  fail "review must NOT use Task or Agent"
 fi
 
 echo "PASS: plantuml-review static smoke"

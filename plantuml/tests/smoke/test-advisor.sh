@@ -16,8 +16,8 @@ done
 grep -q 'principles.md' "$SKILL" || fail "advisor must reference principles.md"
 
 # No agent dispatch — advisor is interactive
-if grep -qE '^allowed-tools:.*Task' "$SKILL"; then
-  fail "advisor must NOT use Task"
+if grep -qE '^allowed-tools:.*(Task|Agent)' "$SKILL"; then
+  fail "advisor must NOT use Task or Agent"
 fi
 
 echo "PASS: plantuml-advisor static smoke"
