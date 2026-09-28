@@ -275,9 +275,9 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
 
 3. **Read reference data** from loaded stack/service/tool files and **compose** the final content by replacing template placeholders with assembled content blocks.
 
-4. **IMPORTANT — remoteUser**: The `remoteUser` MUST always be `"vscode"`. The `common-utils:2` feature guarantees this user exists regardless of base image. Never use image-specific users (`node`, `python`, etc.) as `remoteUser` — they may not survive feature layering.
+4. **remoteUser**: Set `remoteUser` to `"vscode"`. The `common-utils:2` feature guarantees this user exists regardless of base image; image-specific users (`node`, `python`, etc.) may not survive feature layering.
 
-5. **CRITICAL — common-utils user settings**: NEVER add `username`, `userUid`, or `userGid` parameters to the `common-utils:2` feature. The template intentionally omits these so common-utils defaults to `"automatic"` user detection, which reuses existing non-root users. Setting explicit UID/GID causes `groupadd` failures. Only include the four template parameters: `installZsh`, `configureZshAsDefaultShell`, `installOhMyZsh`, `upgradePackages`.
+5. **common-utils user settings**: Leave `username`, `userUid`, and `userGid` off the `common-utils:2` feature — explicit UID/GID causes `groupadd` failures. The template omits them so common-utils uses `"automatic"` user detection, which reuses existing non-root users. Include only the four template parameters: `installZsh`, `configureZshAsDefaultShell`, `installOhMyZsh`, `upgradePackages`.
 
 6. **Generate these 7 files**:
 
