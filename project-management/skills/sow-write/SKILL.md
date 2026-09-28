@@ -115,7 +115,7 @@ Insert a placeholder with instruction to run `sow-estimate` to populate:
 > - Effort summary per phase (CAPEX/OPEX breakdown)
 > - Rate card and resource allocation
 > - Payment schedule aligned with milestones
-> - Confidence intervals from PERT analysis
+> - Effort bands (Low / Medium / High) and management reserve from PERT analysis
 ```
 
 ### Step 7 — Consistency Check
