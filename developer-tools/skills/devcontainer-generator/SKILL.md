@@ -1,7 +1,6 @@
 ---
 name: devcontainer-generator
 description: Generate devcontainer setups by scanning CWD for tech stack and infra services. Triggers on devcontainer, dev container, devcontainer.json, development container, containerized development, VS Code Remote Containers, GitHub Codespaces. Produces devcontainer.json, Dockerfile, Docker Compose, post-create scripts, firewall rules, and DEVCONTAINER.md summary. Uses an 11-step interactive workflow (Steps 0–9 with Step 1b for host credential sharing).
-user-invokable: true
 context: fork
 disable-model-invocation: true
 allowed-tools: Read, Write, Glob, Grep, WebFetch, WebSearch, AskUserQuestion
