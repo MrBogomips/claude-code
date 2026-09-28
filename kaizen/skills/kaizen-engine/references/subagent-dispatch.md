@@ -162,7 +162,7 @@ Provide a verdict: PASSED (improvements are genuine) or FLAGGED (concerns identi
 ## Dispatch Mechanics
 
 Use the `Agent` tool with:
-- `subagent_type`: the agent name (e.g., "kaizen-measurer")
+- `subagent_type`: the entry in the available agent list whose name ends with the agent name (plugin agents are listed with a `kaizen:` namespace prefix)
 - `model`: as specified in the registry
 - `prompt`: the context package above, with placeholders filled
 - `description`: brief label (e.g., "Measure KPIs for iteration 3")
