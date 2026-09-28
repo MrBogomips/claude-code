@@ -24,7 +24,7 @@ levels of stringency.
 
 1. **Read Policy** from `CLAUDE.md` § "PlantUML Policy". Extract Primary +
    Additional targets. Abort with a clear message if Policy missing.
-2. **Enumerate** `.puml` files (excluding `.plantuml/_*.puml`).
+2. **Enumerate** `.puml` files (excluding everything under `.plantuml/`).
 3. **Compute matrix** `file × target`.
 4. **Compute baseline path** for each cell:
    `tests/plantuml-baselines/<flat-relpath>--<target>.<level>`
