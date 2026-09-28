@@ -90,7 +90,7 @@ Kaizen runs **recursive improvement loops** against measurable KPIs. Each loop f
 
 ### Stopping Conditions
 
-- **Convergence** — KPI delta < epsilon for `patience` consecutive iterations
+- **Convergence** — `patience` consecutive iterations without a kept change
 - **Budget** — iteration count exceeded
 - **User interrupt** — manual stop
 - **Adversarial flag** — reviewer detects measurement integrity issues
@@ -152,7 +152,7 @@ Recursively improves code quality metrics using safe, behavior-preserving refact
 | `duplication_ratio` | minimize | Percentage of duplicated code |
 | `file_size_compliance` | maximize | Percentage of files under 400 lines |
 
-**Data sources:** Source files in scope, linter output, test results
+**Data sources:** Project root scan (language, framework, quality config), recent git history
 **Mutates:** Source files in user-specified scope (tests are immutable)
 **Autonomy:** hybrid(3)
 
