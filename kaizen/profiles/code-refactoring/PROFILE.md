@@ -81,7 +81,7 @@ Calculate code quality metrics for all files in the mutation scope:
    - Go: count branching statements
    - For other languages: count `if`, `for`, `while`, `switch`, `case`, `&&`, `||`, `?:`, `catch` tokens
 3. **Detect duplicated blocks** — find sequences of >= 6 identical non-blank lines across files
-4. **Measure file sizes** — count lines per file (excluding blank lines and comments)
+4. **Measure file sizes** — count total lines per file, blank lines and comments included (see references/quality-metrics.md)
 
 `Read references/quality-metrics.md` for detailed calculation methods.
 
