@@ -1,6 +1,6 @@
 ---
 name: kaizen-engine
-description: "Recursive improvement loop engine inspired by karpathy/autoresearch. Orchestrates continuous improvement with 8-phase iterations (MEASURE, ANALYZE, HYPOTHESIZE, PROPOSE, APPLY, VERIFY, DECIDE, LOG). Supports greedy and multi-objective ratcheting strategies with configurable autonomy levels. Use when the user says 'run kaizen', 'kaizen loop', 'improve', 'optimization loop', 'continuous improvement', 'recursive improvement', 'iterative optimization', 'run improvement profile', or wants to iteratively improve code, configuration, or processes against measurable KPIs. Also activates when user references a specific profile name like 'claude-code-usage', 'code-refactoring', or 'process-improvement'. Optionally uses **~~sequential-thinking**."
+description: "Recursive improvement loop engine inspired by karpathy/autoresearch. Runs 8-phase iterations (MEASURE, ANALYZE, HYPOTHESIZE, PROPOSE, APPLY, VERIFY, DECIDE, LOG) against measurable KPIs, with greedy or multi-objective ratcheting and configurable autonomy. Use when the user wants to run a kaizen, continuous-improvement, or iterative optimization loop that improves code, configuration, or processes against measurable KPIs, or names a bundled profile ('claude-code-usage', 'code-refactoring', 'process-improvement'). Not for a one-off 'improve this' edit. Optionally uses **~~sequential-thinking**."
 ---
 
 # Kaizen Engine — Recursive Improvement Loop Orchestrator
