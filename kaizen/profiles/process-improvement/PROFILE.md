@@ -53,7 +53,6 @@ connectors:
   required: []
   optional:
     - "~~sequential-thinking"
-    - "~~knowledge base"
 ---
 
 # Process Improvement Instructions
