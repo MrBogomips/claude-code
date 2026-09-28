@@ -290,7 +290,7 @@ If the Python script fails during execution:
    - Wrong type (e.g., string where number expected): fix the type in JSON
    - Formula error: check against `references/excel-schema.md` patterns
    - openpyxl API error: report the specific cell/sheet causing the issue
-3. **Re-generate** the JSON with fixes and retry (maximum 2 attempts)
+3. **Re-generate** the JSON with fixes and retry (maximum 2 retries)
 4. **If unrecoverable** after 2 retries: report the error to the user with full context (traceback, last valid artifacts, specific cell/sheet if known) for manual intervention
 
 ---
