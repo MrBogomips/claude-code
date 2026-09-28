@@ -73,6 +73,5 @@ Write analysis as markdown to the specified output path:
 
 - Do NOT propose changes — that's the proposer's job
 - Read only the measurement data you are given; write only the analysis file at the output path
-- Base all analysis on data, not assumptions
 - If data is insufficient for trend analysis, say so explicitly
 - Apply the domain-specific analysis guidance from the profile when available
