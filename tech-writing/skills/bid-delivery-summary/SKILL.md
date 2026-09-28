@@ -22,7 +22,7 @@ and delivery planning.
 
 **The output focuses on actionable information and decision support, not implementation detail.**
 
-Three rules are mandatory and non-negotiable:
+Four rules are mandatory and non-negotiable:
 
 1. **Confidentiality header** — the document always begins with the verbatim `INTERNAL USE ONLY`
    notice from the language pack.
