@@ -6,7 +6,7 @@
 MEASURE → ANALYZE → HYPOTHESIZE → PROPOSE → APPLY → VERIFY → DECIDE → LOG → [loop or stop]
 ```
 
-Each phase maps to one Sequential Thinking thought. The chain represents a single iteration.
+Each iteration runs these phases in order.
 
 ## Phase Specifications
 
@@ -178,7 +178,7 @@ Same protocol as Phase 1 (MEASURE), writing to `verification.json` instead.
 |-------|-----------------|-------|
 | MEASURE | 5-15s | haiku (via measurer agent) |
 | ANALYZE | 10-30s | sonnet (via analyzer agent) |
-| HYPOTHESIZE | 5-15s | inline (Sequential Thinking) |
+| HYPOTHESIZE | 5-15s | inline |
 | PROPOSE | 15-45s | sonnet (via proposer agent) |
 | APPLY | 5-20s | inline (file operations) |
 | VERIFY | 5-15s | haiku (via measurer agent) |

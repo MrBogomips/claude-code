@@ -23,7 +23,7 @@ A recursive optimization engine inspired by [karpathy/autoresearch](https://gith
 ## Quick Start
 
 ```bash
-# 1. Install the Sequential Thinking MCP (required)
+# 1. Install the Sequential Thinking MCP (optional)
 # Add to your Claude Code MCP configuration:
 # {
 #   "mcpServers": {
@@ -107,9 +107,9 @@ The plugin follows an **engine + profiles** architecture:
 - **Profiles** (`profiles/{name}/PROFILE.md`) — domain-specific specs. Define KPIs, data sources, mutation targets, and improvement instructions.
 - **Agents** — specialized subagents dispatched by the engine for specific phases.
 
-### Sequential Thinking MCP Integration
+### Sequential Thinking MCP (optional)
 
-Each iteration is orchestrated as a **Sequential Thinking chain** with 8 thoughts (one per phase). This provides structured reasoning throughout the loop and enables the engine to track its progress through the iteration.
+When connected, each iteration can be recorded as a Sequential Thinking chain with 8 thoughts (one per phase). The loop runs the same without it.
 
 ### Context Management
 
@@ -250,7 +250,7 @@ mutation_targets:
   immutable:
     - path: "tests/**"
 connectors:
-  required:
+  optional:
     - "~~sequential-thinking"
 ---
 
@@ -348,9 +348,9 @@ When you run the same profile again, the engine reads the previous run's `summar
 
 ## Setup
 
-### Required: Sequential Thinking MCP
+### Optional: Sequential Thinking MCP
 
-The kaizen engine requires the Sequential Thinking MCP server for loop orchestration.
+The kaizen engine can use the Sequential Thinking MCP server to record each iteration; it is not required.
 
 **Option 1: Claude Code MCP settings**
 
@@ -398,7 +398,6 @@ For enhanced cross-session continuity, configure a memory-capable MCP server or 
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| "Sequential Thinking MCP not found" | MCP server not configured | Follow Setup instructions above |
 | Measurement tool fails | Python/TS runtime missing | Install the required runtime |
 | Measurement tool produces wrong values | Tool implementation bug | Review the tool source in `.kaizen/runs/{id}/measure.py`; check adversarial review findings |
 | All iterations revert | Epsilon too high; scope too narrow; wrong approach | Lower epsilon; expand mutation scope; try different profile |

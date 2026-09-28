@@ -78,9 +78,9 @@ mutation_targets:
     - path: "node_modules/**"
 
 connectors:
-  required:
-    - "~~sequential-thinking"
+  required: []
   optional:
+    - "~~sequential-thinking"
     - "~~memory"
 ---
 

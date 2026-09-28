@@ -1,6 +1,6 @@
 ---
 name: kaizen-engine
-description: "Recursive improvement loop engine inspired by karpathy/autoresearch. Orchestrates continuous improvement via Sequential Thinking MCP with 8-phase iterations (MEASURE, ANALYZE, HYPOTHESIZE, PROPOSE, APPLY, VERIFY, DECIDE, LOG). Supports greedy and multi-objective ratcheting strategies with configurable autonomy levels. Use when the user says 'run kaizen', 'kaizen loop', 'improve', 'optimization loop', 'continuous improvement', 'recursive improvement', 'iterative optimization', 'run improvement profile', or wants to iteratively improve code, configuration, or processes against measurable KPIs. Also activates when user references a specific profile name like 'claude-code-usage', 'code-refactoring', or 'process-improvement'. Requires **~~sequential-thinking** connector."
+description: "Recursive improvement loop engine inspired by karpathy/autoresearch. Orchestrates continuous improvement with 8-phase iterations (MEASURE, ANALYZE, HYPOTHESIZE, PROPOSE, APPLY, VERIFY, DECIDE, LOG). Supports greedy and multi-objective ratcheting strategies with configurable autonomy levels. Use when the user says 'run kaizen', 'kaizen loop', 'improve', 'optimization loop', 'continuous improvement', 'recursive improvement', 'iterative optimization', 'run improvement profile', or wants to iteratively improve code, configuration, or processes against measurable KPIs. Also activates when user references a specific profile name like 'claude-code-usage', 'code-refactoring', or 'process-improvement'. Optionally uses **~~sequential-thinking**."
 ---
 
 # Kaizen Engine — Recursive Improvement Loop Orchestrator
@@ -11,7 +11,7 @@ The kaizen engine runs recursive improvement loops against measurable KPIs. It r
 
 **Architecture:** Engine + Profiles. The engine is generic; profiles are domain-specific.
 
-**Connector requirement:** This skill requires **~~sequential-thinking** for loop orchestration. Without it, the skill cannot function. Direct the user to the README for setup instructions.
+**Connector:** **~~sequential-thinking** is optional. When it is connected, you may record each iteration's phases as one thought chain; the loop below runs the same either way.
 
 **Storage:** Audit logs are written to `.kaizen/runs/` at the improvement target location:
 - Project-level improvements: `.kaizen/` at project root
@@ -137,7 +137,7 @@ Write `.kaizen/runs/{run-id}/manifest.json`:
 
 ### Step 2 — Iteration Loop
 
-Each iteration is orchestrated as a **Sequential Thinking chain** via `~~sequential-thinking`. The chain comprises 8 thoughts, one per phase.
+Each iteration runs the 8 phases below, in order.
 
 Before each iteration, reconstruct optimal context:
 - Profile frontmatter (KPIs, strategy, mutation targets)
@@ -151,8 +151,6 @@ Before each iteration, reconstruct optimal context:
 ---
 
 #### Phase 1: MEASURE
-
-**Sequential Thinking — Thought 1**
 
 Collect current KPI values:
 
@@ -178,8 +176,6 @@ Write results to `.kaizen/runs/{run-id}/iterations/{NNN}/measurement.json`:
 
 #### Phase 2: ANALYZE
 
-**Sequential Thinking — Thought 2**
-
 Dispatch **kaizen-analyzer** agent to interpret measurements:
 
 **Context to pass:**
@@ -202,8 +198,6 @@ Write to `.kaizen/runs/{run-id}/iterations/{NNN}/analysis.md`
 
 #### Phase 3: HYPOTHESIZE
 
-**Sequential Thinking — Thought 3**
-
 Based on the analysis, form hypotheses about:
 - **Root causes** — why are specific KPIs at their current levels?
 - **Opportunities** — what changes would most likely improve the target KPIs?
@@ -211,15 +205,13 @@ Based on the analysis, form hypotheses about:
 
 Read the profile's `## HYPOTHESIZE Phase` section for domain-specific guidance.
 
-This phase is inline (no subagent dispatch) — it uses the Sequential Thinking chain's reasoning capability.
+This phase is inline (no subagent dispatch).
 
 Write hypotheses to `.kaizen/runs/{run-id}/iterations/{NNN}/analysis.md` (append to analysis).
 
 ---
 
 #### Phase 4: PROPOSE
-
-**Sequential Thinking — Thought 4**
 
 Dispatch **kaizen-proposer** agent to generate a concrete change proposal:
 
@@ -247,8 +239,6 @@ Write to `.kaizen/runs/{run-id}/iterations/{NNN}/proposal.md`
 
 #### Phase 5: APPLY
 
-**Sequential Thinking — Thought 5**
-
 Apply the proposed changes:
 
 1. **Backup** — before any mutation, create backups of all files in mutation scope:
@@ -275,8 +265,6 @@ Apply the proposed changes:
 
 #### Phase 6: VERIFY
 
-**Sequential Thinking — Thought 6**
-
 Re-measure KPIs after the change (same method as Phase 1):
 - If measurement tool exists: dispatch **kaizen-measurer** agent
 - If user-reported: ask user for updated values
@@ -289,8 +277,6 @@ Write to `.kaizen/runs/{run-id}/iterations/{NNN}/verification.json` (same schema
 ---
 
 #### Phase 7: DECIDE
-
-**Sequential Thinking — Thought 7**
 
 `Read references/ratchet-strategies.md`
 
@@ -332,8 +318,6 @@ Write to `.kaizen/runs/{run-id}/iterations/{NNN}/decision.json`:
 ---
 
 #### Phase 8: LOG
-
-**Sequential Thinking — Thought 8**
 
 Update the run's aggregate state:
 
@@ -473,7 +457,6 @@ This ensures the engine can run many iterations without context exhaustion.
 | Measurement tool crash (fundamental) | Abort iteration, report to user |
 | Partial APPLY failure | Full revert from backup |
 | Subagent dispatch failure | Retry once, then run phase inline |
-| Sequential Thinking unavailable | CRITICAL — skill cannot function. Direct user to README for setup. |
 | Git operations fail | Fall back to file-backup-based revert |
 | summary.json corrupted | Rebuild from iteration records |
 

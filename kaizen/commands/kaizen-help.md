@@ -81,9 +81,9 @@ Use `/kaizen-history` to browse the audit trail.
 
 ## Setup
 
-### Required: Sequential Thinking MCP
+### Optional: Sequential Thinking MCP
 
-The kaizen engine requires Sequential Thinking MCP for loop orchestration.
+The kaizen engine can record each iteration as a Sequential Thinking chain when this MCP server is connected; it runs without it.
 
 **Installation:**
 
@@ -104,7 +104,6 @@ Add to your `.claude/settings.json` or MCP configuration:
 
 | Issue | Solution |
 |-------|----------|
-| "Sequential Thinking MCP not found" | Install the MCP server (see Setup above) |
 | Measurement tool fails | Check Python/TS runtime is installed; read the error in the audit trail |
 | All iterations revert | The epsilon may be too high; the scope may be too narrow; try a different approach |
 | Context window exhaustion | The engine compacts between iterations; reduce iteration budget if needed |

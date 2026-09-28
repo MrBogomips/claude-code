@@ -50,9 +50,9 @@ mutation_targets:
     - path: "tests/**"
 
 connectors:
-  required:
-    - "~~sequential-thinking"
+  required: []
   optional:
+    - "~~sequential-thinking"
     - "~~knowledge base"
 ---
 

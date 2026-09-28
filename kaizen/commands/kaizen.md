@@ -47,9 +47,9 @@ Run a recursive improvement loop using the kaizen engine.
 
 Audit trail is written to `.kaizen/runs/` (project-level) or `~/.kaizen/runs/` (user-level).
 
-## Prerequisites
+## Optional connectors
 
-- **~~sequential-thinking** MCP connector must be configured. See the kaizen README for setup instructions.
+- **~~sequential-thinking** MCP connector. See the kaizen README.
 
 ## Invoke
 

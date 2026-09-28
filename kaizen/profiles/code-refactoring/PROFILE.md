@@ -63,9 +63,9 @@ mutation_targets:
     - path: "yarn.lock"
 
 connectors:
-  required:
+  required: []
+  optional:
     - "~~sequential-thinking"
-  optional: []
 ---
 
 # Code Refactoring Improvement Instructions
