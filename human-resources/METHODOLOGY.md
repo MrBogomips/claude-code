@@ -627,7 +627,7 @@ Candidates have strong protections:
 | **Seniority matrix** | A table mapping expected competency scores to seniority levels (Junior, Mid, Senior, Lead/Principal), used for candidate classification in interview-close. |
 | **STAR method** | Situation, Task, Action, Result — a framework for structuring behavioral interview questions and evaluating the completeness of candidate responses. |
 | **Standalone mode** | The operating mode where compliance-check is invoked directly by the user to audit an existing document, producing a full compliance report. |
-| **Structured interview** | An interview where all candidates are asked the same questions in the same order, scored against the same rubric. 2x more predictive than unstructured interviews. |
+| **Structured interview** | An interview where all candidates are asked the same questions in the same order, scored against the same rubric. Predictive validity of 0.51, versus 0.38 for unstructured interviews. |
 
 ### 7.2 BARS Scoring Scale — Full Definitions
 

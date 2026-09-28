@@ -138,7 +138,7 @@ An interviewing approach based on the principle that past behavior predicts futu
 
 Interviews where all candidates are asked the same questions in the same order, scored against the same rubric. Contrasts with unstructured "conversational" interviews.
 
-- **Why it matters:** Higher validity, lower bias, legally defensible. Research shows structured interviews are 2x more predictive than unstructured ones.
+- **Why it matters:** Higher validity, lower bias, legally defensible. Schmidt & Hunter's meta-analysis reports a predictive validity of 0.51 for structured interviews versus 0.38 for unstructured ones.
 - **Applied in:** `interview-prep` (standardized question sets), `interview-close` (consistent scoring)
 
 ### Competency Frameworks
