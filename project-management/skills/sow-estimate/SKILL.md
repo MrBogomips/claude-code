@@ -119,7 +119,7 @@ After PERT completes, read the estimation results and populate the SOW:
 - Total estimate: the Medium Band (includes contingency and management reserve)
 
 **Schedule section (full mode section 9):**
-- PERT-derived timeline (from Timeline sheet)
+- PERT-derived timeline (from the Resource Plan week columns and the Summary's Calendar Duration in weeks)
 - Updated milestone dates (based on PERT duration calculations)
 - Critical path (from dependency analysis)
 
