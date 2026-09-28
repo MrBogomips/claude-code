@@ -151,7 +151,7 @@ originally authored for the customer.
 ### Step 7 — Output
 
 Write the client deliverable to `<deliverables>/<doc-name>-client-v<N>.md` (start at `v1`; increment the
-suffix if the target already exists, per the document-collision convention).
+suffix to the next free `v<N>` if the target already exists).
 
 Write the redaction audit to `<working-docs>/<doc-name>-redaction-audit.md` using
 `references/audit-template.md`, populated from the audit buffer.
