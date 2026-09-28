@@ -2,7 +2,7 @@
 name: puml-visual-checker
 description: "Build-time smoke check on a rendered diagram image. Verifies (1) Policy primary color is visibly present, (2) declared font is applied, (3) layout has no obvious overflow or label collision. Returns a per-check JSON verdict. Not user-facing in v1.0.0."
 model: sonnet
-allowed-tools: Read
+tools: Read
 ---
 
 # PlantUML Visual Checker Agent

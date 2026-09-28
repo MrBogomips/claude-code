@@ -2,7 +2,7 @@
 name: puml-migrator
 description: "Apply a declarative edit plan to a single `.puml` file. Returns a JSON status of applied/skipped/error operations. Dispatched by plantuml-migrate."
 model: haiku
-allowed-tools: Read, Edit
+tools: Read, Edit
 ---
 
 # PlantUML Migrator Agent

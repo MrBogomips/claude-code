@@ -15,6 +15,6 @@ grep -qiE 'manual.edit.detect|hash|divergent' "$SKILL" || fail "skill missing ma
 
 grep -qE '^name:\s*puml-migrator' "$AGENT" || fail "agent name wrong"
 grep -qE '^model:\s*haiku' "$AGENT" || fail "agent not haiku"
-grep -qE '^allowed-tools:.*Edit' "$AGENT" || fail "agent missing Edit"
+grep -qE '^tools:.*Edit' "$AGENT" || fail "agent missing Edit"
 
 echo "PASS: plantuml-migrate static smoke"

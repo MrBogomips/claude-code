@@ -2,7 +2,7 @@
 name: puml-linter
 description: "Lint a list of `.puml` files against PlantUML Policy invariants. Returns a JSON array of violations. Dispatched by the plantuml-lint skill in parallel batches."
 model: haiku
-allowed-tools: Read
+tools: Read
 ---
 
 # PlantUML Linter Agent
