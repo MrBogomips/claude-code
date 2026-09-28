@@ -149,11 +149,10 @@ Essential data only. No explanations, no methodology notes. Compact tables.
 > "PERT estimation complete.
 >
 > - 5 phases, 15 work packages, 38 activities
-> - Total PERT Effort: 620 pd (CI 95%: 540-700 pd)
-> - Total PERT Duration: 95 days (CI 95%: 82-108 days)
+> - Tech PERT effort: 620 pd (+ PM/DevOps overhead: 62 pd)
 > - 8 risks identified, total contingency: 45 pd
-> - Management reserve (10%): 62 pd
-> - Adjusted estimate: 727 pd
+> - Low Band: 727 pd · Management Reserve (10%): 73 pd · Medium Band (recommended): 800 pd · High Band: 896 pd
+> - Calendar duration: 22 weeks
 >
 > Output: `docs/outbox/pert-estimate.xlsx`
 >
