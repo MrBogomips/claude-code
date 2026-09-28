@@ -241,9 +241,7 @@ Write to `.kaizen/runs/{run-id}/iterations/{NNN}/proposal.md`
 
 Apply the proposed changes:
 
-1. **Backup** — before any mutation, create backups of all files in mutation scope:
-   `.kaizen/runs/{run-id}/iterations/{NNN}/backup/`
-   Copy each file that will be modified, preserving relative paths.
+1. **Backup** — before any mutation, copy every file the proposal will modify into `.kaizen/runs/{run-id}/iterations/{NNN}/backup/`, preserving relative paths, and record in `backup/created.txt` every file the proposal will create.
 
 2. **Verify immutability** — double-check that no proposed change touches files matching `mutation_targets.immutable` patterns. If a violation is detected, ABORT the iteration and flag to the user.
 
@@ -252,12 +250,10 @@ Apply the proposed changes:
    - Apply the modification
    - Verify the file is syntactically valid (if applicable — e.g., JSON, YAML)
 
-4. **Generate diff** — capture the changes:
-   - If targets are under git: `git diff` → save as `.kaizen/runs/{run-id}/iterations/{NNN}/diff.patch`
-   - If not under git: generate a unified diff from the backup copies
+4. **Generate diff** — diff each modified file against its backup copy, include each created file in full, and save the result as `.kaizen/runs/{run-id}/iterations/{NNN}/diff.patch`.
 
 **Failure mode:** If any mutation fails partway through:
-1. Restore ALL files from backup (full revert)
+1. Restore every backed-up file and delete each file listed in `backup/created.txt` (full revert)
 2. Log the failure
 3. Proceed to DECIDE with `apply_failed: true`
 
@@ -307,12 +303,11 @@ Write to `.kaizen/runs/{run-id}/iterations/{NNN}/decision.json`:
 ```
 
 **If REVERT:**
-- Restore all files from `.kaizen/runs/{run-id}/iterations/{NNN}/backup/`
-- If targets are under git: `git checkout` the modified files
+- Restore every modified file from `.kaizen/runs/{run-id}/iterations/{NNN}/backup/` and delete each file listed in `backup/created.txt`. The backup holds the pre-iteration state, including uncommitted edits, so do not run `git checkout` on these files.
 - Increment the patience counter
 
 **If KEEP:**
-- If targets are under git: stage and commit with message `kaizen({profile}): iteration {N} — {brief description}`
+- If targets are under git: stage only the files this iteration modified or created (`git add -- <files>`) and commit with message `kaizen({profile}): iteration {N} — {brief description}`
 - Reset the patience counter
 
 ---
@@ -457,7 +452,7 @@ This ensures the engine can run many iterations without context exhaustion.
 | Measurement tool crash (fundamental) | Abort iteration, report to user |
 | Partial APPLY failure | Full revert from backup |
 | Subagent dispatch failure | Retry once, then run phase inline |
-| Git operations fail | Fall back to file-backup-based revert |
+| Git commit fails on KEEP | Leave the change in the working tree, note it in decision.json, and tell the user |
 | summary.json corrupted | Rebuild from iteration records |
 
 ---
