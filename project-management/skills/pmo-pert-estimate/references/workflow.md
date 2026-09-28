@@ -159,7 +159,7 @@ Backtrack arrows:
 - Evaluates Probability (1-5) x Impact (1-5)
 - Proposes strategy (Mitigate / Transfer / Accept / Avoid)
 - Calculates contingency per risk
-- Proposes management reserve (% of total PERT)
+- Proposes management reserve (% of Tech PERT + overhead + contingency)
 - User validates before proceeding to Estimator
 
 ### Estimator (Opus) — runs after risk validation
