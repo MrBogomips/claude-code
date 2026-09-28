@@ -11,8 +11,8 @@ Static lint over `.puml` files in the current project.
 ## Usage
 
 Default: lint every `.puml` and `.plantuml` and `.iuml` under the project
-root, excluding `.plantuml/_*.puml` (those are policy partials, not
-authored diagrams).
+root, excluding everything under `.plantuml/` (policy partials and
+`_targets/` overrides, not authored diagrams).
 
 Custom path: a single file, glob, or directory passed as argument.
 
