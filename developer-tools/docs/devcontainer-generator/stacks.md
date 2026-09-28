@@ -53,7 +53,7 @@ Each stack defines credential files that can be shared from the host to the cont
 | Node.js | `~/.npmrc`, `~/.yarnrc.yml` | `.npmrc` always; `.yarnrc.yml` if Yarn Berry | `NPM_TOKEN`, `YARN_NPM_AUTH_TOKEN` |
 | Python | `~/.pip/pip.conf`, `~/.pypirc` | `pip.conf` always; `.pypirc` optional | `PIP_INDEX_URL`, `TWINE_PASSWORD` |
 | .NET | `~/.nuget/NuGet.Config` | Always | `NUGET_AUTH_TOKEN` |
-| Go | `~/.netrc`, `GOPRIVATE`/`GONOSUMCHECK` (env) | Always | `GONOSUMDB` |
+| Go | `~/.netrc`, `GOPRIVATE`/`GONOSUMDB` (env) | Always | `GONOSUMDB` |
 | Rust | `~/.cargo/credentials.toml` | Always | `CARGO_REGISTRY_TOKEN` |
 | Java | `~/.m2/settings.xml`, `~/.gradle/gradle.properties` | Maven/Gradle detection | `MAVEN_SERVER_PASSWORD`, `GRADLE_PUBLISH_KEY` |
 

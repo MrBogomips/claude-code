@@ -89,7 +89,7 @@ Present credential files relevant to the selected stacks. Options are dynamicall
 
 **Go credentials** (shown if Go selected):
 [ ] ~/.netrc — Private Go module credentials (pre-selected)
-[ ] GOPRIVATE / GONOSUMCHECK env vars — Private module path prefixes (pre-selected)
+[ ] GOPRIVATE / GONOSUMDB env vars — Private module path prefixes (pre-selected)
 
 **Rust credentials** (shown if Rust selected):
 [ ] ~/.cargo/credentials.toml — Cargo registry auth tokens (pre-selected)
@@ -100,7 +100,7 @@ Present credential files relevant to the selected stacks. Options are dynamicall
 
 **Multi-stack handling**: When multiple stacks are selected, the credential options from all stacks are unioned into a single prompt. Duplicate credential files (if any) are shown once.
 
-**Go env vars special case**: `GOPRIVATE` and `GONOSUMCHECK` are not files — they don't need a mount or extraction. They are merged into the existing `{{REMOTE_ENV}}` placeholder in `devcontainer.json` using `"${localEnv:GOPRIVATE}"` syntax.
+**Go env vars special case**: `GOPRIVATE` and `GONOSUMDB` are not files — they don't need a mount or extraction. They are merged into the existing `{{REMOTE_ENV}}` placeholder in `devcontainer.json` using `"${localEnv:GOPRIVATE}"` syntax.
 
 **If all credentials deselected**: Skip credential generation entirely — no `initializeCommand`, `mounts`, or `{{CREDENTIAL_SETUP}}` content is emitted. The generated files will have no credential-related sections.
 

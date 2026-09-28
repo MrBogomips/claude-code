@@ -143,9 +143,9 @@ fi
 
 ### Environment Variables (no mount required)
 
-`GOPRIVATE` and `GONOSUMCHECK` control which Go modules bypass the public proxy and checksum database. These are shared via `remoteEnv` in `devcontainer.json` — no file mount or extraction is needed.
+`GOPRIVATE` and `GONOSUMDB` control which Go modules bypass the public proxy and checksum database. These are shared via `remoteEnv` in `devcontainer.json` — no file mount or extraction is needed.
 
 - **GOPRIVATE**: Comma-separated module path prefixes (e.g., `github.com/myorg/*`)
-- **GONOSUMCHECK**: Module paths to skip checksum verification
-- **remoteEnv entry**: `"GOPRIVATE": "${localEnv:GOPRIVATE}"`, `"GONOSUMCHECK": "${localEnv:GONOSUMCHECK}"`
+- **GONOSUMDB**: Module paths to skip checksum verification
+- **remoteEnv entry**: `"GOPRIVATE": "${localEnv:GOPRIVATE}"`, `"GONOSUMDB": "${localEnv:GONOSUMDB}"`
 
