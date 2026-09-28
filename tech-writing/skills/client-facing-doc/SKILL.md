@@ -31,7 +31,7 @@ caught before the document is shared.
 
 **Outputs:**
 - **Client deliverable** → `docs/outbox/<doc-name>-client-v<N>.md`
-- **Redaction audit** (verification trail, never shared) → `.aidocs/<doc-name>-redaction-audit.md`
+- **Redaction audit** (verification trail, never shared) → `<working-docs>/<doc-name>-redaction-audit.md`, where `<working-docs>` is the working-documents folder the project's CLAUDE.md declares; if none is declared, ask the user, and prefer a git-ignored folder because the audit quotes the removed confidential snippets
 
 The original source document is never modified.
 
@@ -153,7 +153,7 @@ originally authored for the customer.
 Write the client deliverable to `docs/outbox/<doc-name>-client-v<N>.md` (start at `v1`; increment the
 suffix if the target already exists, per the document-collision convention).
 
-Write the redaction audit to `.aidocs/<doc-name>-redaction-audit.md` using
+Write the redaction audit to `<working-docs>/<doc-name>-redaction-audit.md` using
 `references/audit-template.md`, populated from the audit buffer.
 
 Present a summary to the user:
@@ -193,7 +193,7 @@ Before writing output, the skill validates itself:
    removed, not kept. This rule is mandatory and overrides any preference to retain detail.
 5. **Preserve without inventing** — restructuring and prose expansion must not introduce technical
    claims, figures, or commitments absent from the source.
-6. **Audit stays internal** — the redaction audit is written only to `.aidocs/` and is never included
+6. **Audit stays internal** — the redaction audit is written only to the working-documents folder resolved in §1 and is never included
    in, linked from, or referenced by the client deliverable.
 7. **Section plan honored** — the deliverable includes exactly the sections the user kept in Step 2 and
    none of the sections marked for removal. Deviations from the confirmed plan are not allowed without

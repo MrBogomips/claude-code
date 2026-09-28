@@ -8,7 +8,7 @@ Technical writing support for Claude Code — documentation structure, style gui
   client-facing deliverable. Silently removes confidential content (costs, rates, effort estimates,
   internal planning, AI artifacts, drafts, internal notes) while preserving and improving the
   customer-relevant technical substance. Produces the deliverable in `docs/outbox/` and a separate
-  redaction audit in `.aidocs/` for verification. Bilingual (English/Italian).
+  internal redaction audit for verification. Bilingual (English/Italian).
 
 - **bid-delivery-summary** — The internal counterpart of `client-facing-doc`. Distills a project
   assessment, estimation, or solution design into a concise internal commercial & delivery summary

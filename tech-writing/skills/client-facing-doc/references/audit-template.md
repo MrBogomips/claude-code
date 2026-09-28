@@ -1,6 +1,6 @@
 # Redaction Audit Template
 
-This audit is an internal verification artifact. It is written to `.aidocs/` only and is **never**
+This audit is an internal verification artifact. It is written to the working-documents folder only and is **never**
 shared with the customer or referenced from the client deliverable. Its purpose is to let a human
 confirm that nothing confidential leaked and that nothing essential was lost.
 
