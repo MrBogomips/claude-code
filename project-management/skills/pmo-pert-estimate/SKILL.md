@@ -9,7 +9,7 @@ description: "Create PMI-compliant PERT three-point estimation workbooks with WB
 
 This skill produces PMI-compliant PERT three-point estimation workbooks through a multi-phase agentic pipeline. Starting from project documents (SoW, RFP, scope descriptions), it interactively builds a WBS, resource breakdown, risk register, and three-point estimates, then generates a fully automated Excel workbook with live formulas (PERT, SUM rollups, cross-sheet references, effort bands). The skill follows three key principles: **progressive disclosure** of reference documents (loaded only when the relevant phase begins, never all at once), **adaptive interaction** across three levels (Formative / Collaborative / Autonomous) chosen by the user with dynamic adjustment, and **strict input/formula separation** where Excel formula cells are always injected as strings and never overwritten with computed values.
 
-**Output workbook composition:** exactly 4 sheets in this order — `WBS`, `Resource Plan` (`Pianificazione Risorse` in IT), `Risks` (`Rischi` in IT), `Summary` (`Riepilogo` in IT). All effort cells are person-days (PD); calendar quantities are weeks. No cell ever holds a percentage that is presented as effort. The legacy `Timeline` (sequential Gantt) and `Resources` (% allocation matrix) sheets are no longer produced — both were structurally misleading and have been replaced by the single PD-based `Resource Plan`.
+**Output workbook composition:** exactly 4 sheets in this order — `WBS`, `Resource Plan` (`Pianificazione Risorse` in IT), `Risks` (`Rischi` in IT), `Summary` (`Riepilogo` in IT). All effort cells are person-days (PD); calendar quantities are weeks. No cell ever holds a percentage that is presented as effort.
 
 **Bundled assets:**
 
