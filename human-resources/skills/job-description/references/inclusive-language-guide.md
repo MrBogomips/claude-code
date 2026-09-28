@@ -107,7 +107,7 @@ Warning signs of experience inflation:
 | Pattern | Problem | Fix |
 |---------|---------|-----|
 | >8 required qualifications | Discourages diverse applicants | Reduce to 5-8; move extras to "Preferred" |
-| "10+ years of experience in React" (React is ~11 years old) | Mathematically impossible or near-impossible | Use proficiency level, not years |
+| "10+ years of experience in [technology]" when the technology itself is younger than that | Impossible or near-impossible to meet | Use proficiency level, not years |
 | "5+ years" for every skill listed | Not all skills need the same depth | Differentiate: some foundational, some advanced |
 | Requiring experience in specific company's tech stack | Limits to ex-employees of specific companies | List the category: "Experience with a modern CI/CD platform" |
 | "Expert in X, Y, Z, A, B, C, D, E" | No one is expert in 8 things | Pick 2-3 expert-level, rest at intermediate |
