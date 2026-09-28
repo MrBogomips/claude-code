@@ -38,7 +38,7 @@ Four rules are mandatory and non-negotiable:
 The skill pauses for the user at two points: the cost-model gate (Step 3) and the section-plan
 approval (Step 4). Everything else runs automatically.
 
-**Output:** the internal summary → `docs/outbox/<doc-name>-internal-summary-v<N>.md`. The
+**Output:** the internal summary → `<deliverables>/<doc-name>-internal-summary-v<N>.md`, where `<deliverables>` is the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`). The
 `INTERNAL USE ONLY` header carries the confidentiality semantics.
 
 The skill auto-detects language from the input and produces output in the detected language.
@@ -150,7 +150,7 @@ estimates, cost estimates (only if authorized), and commercial assumptions.
 
 ### Step 6 — Output
 
-Write the internal summary to `docs/outbox/<doc-name>-internal-summary-v<N>.md` (start at `v1`;
+Write the internal summary to `<deliverables>/<doc-name>-internal-summary-v<N>.md` (start at `v1`;
 increment the suffix if the target already exists).
 
 Present a brief summary to the user (outside the document): the Bid Readiness Conclusion, the Delivery

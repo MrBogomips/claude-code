@@ -10,7 +10,7 @@ Populate the template below from the audit buffer.
 # Redaction Audit — [Document Name]
 
 Source: [source path/title]
-Client deliverable: docs/outbox/[doc-name]-client-v[N].md
+Client deliverable: [deliverables]/[doc-name]-client-v[N].md
 Language: [en | it]
 Date: [date]
 

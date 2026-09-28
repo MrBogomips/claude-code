@@ -30,7 +30,7 @@ removed. Verification happens **after** the fact through a separate redaction au
 caught before the document is shared.
 
 **Outputs:**
-- **Client deliverable** → `docs/outbox/<doc-name>-client-v<N>.md`
+- **Client deliverable** → `<deliverables>/<doc-name>-client-v<N>.md`, where `<deliverables>` is the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`)
 - **Redaction audit** (verification trail, never shared) → `<working-docs>/<doc-name>-redaction-audit.md`, where `<working-docs>` is the working-documents folder the project's CLAUDE.md declares; if none is declared, ask the user, and prefer a git-ignored folder because the audit quotes the removed confidential snippets
 
 The original source document is never modified.
@@ -150,7 +150,7 @@ originally authored for the customer.
 
 ### Step 7 — Output
 
-Write the client deliverable to `docs/outbox/<doc-name>-client-v<N>.md` (start at `v1`; increment the
+Write the client deliverable to `<deliverables>/<doc-name>-client-v<N>.md` (start at `v1`; increment the
 suffix if the target already exists, per the document-collision convention).
 
 Write the redaction audit to `<working-docs>/<doc-name>-redaction-audit.md` using
