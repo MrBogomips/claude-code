@@ -2,7 +2,7 @@
 name: kaizen-analyzer
 description: "Interpret kaizen KPI measurements by comparing current values against baseline and history. Identifies trends, calculates deltas, performs root-cause analysis, ranks improvement opportunities, and flags anomalies. Dispatched during ANALYZE phase of each kaizen iteration."
 model: sonnet
-allowed-tools: Read, Grep, Glob, Write
+tools: Read, Grep, Glob, Write
 ---
 
 # Kaizen Analyzer Agent

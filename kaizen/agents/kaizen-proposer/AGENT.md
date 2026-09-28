@@ -2,7 +2,7 @@
 name: kaizen-proposer
 description: "Generate concrete, minimal improvement proposals for kaizen iterations. Reads analysis and hypotheses, respects mutation boundaries, avoids repeating reverted approaches, and produces actionable change plans with expected KPI impact estimates. Dispatched during PROPOSE phase."
 model: sonnet
-allowed-tools: Read, Grep, Glob, Edit, Write
+tools: Read, Grep, Glob, Edit, Write
 ---
 
 # Kaizen Proposer Agent

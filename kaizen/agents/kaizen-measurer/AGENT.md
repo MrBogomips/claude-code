@@ -2,7 +2,7 @@
 name: kaizen-measurer
 description: "Execute kaizen measurement tools and collect KPI values. Runs auto-generated Python or TypeScript measurement scripts, captures JSON output, and writes structured results to the iteration directory. Dispatched during MEASURE and VERIFY phases of each kaizen iteration. Lightweight and fast — optimized for frequent invocation."
 model: haiku
-allowed-tools: Bash, Read, Write, Grep, Glob
+tools: Bash, Read, Write, Grep, Glob
 ---
 
 # Kaizen Measurer Agent
