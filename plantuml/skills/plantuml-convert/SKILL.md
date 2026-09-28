@@ -40,6 +40,12 @@ plantuml -t<format> -Sscale=<scale> -o <output_dir> <input_file>
 - `<output_dir>`: **absolute path** to the output directory. PlantUML requires this to be absolute when using `-o`.
 - `<input_file>`: path to the `.puml` file.
 
+In a project with a `## PlantUML Policy`, diagrams include
+`.plantuml/_targets/$target.puml`, so prefix the command with the render target:
+`PLANTUML_TARGET=<web|docx|pdf|pptx> plantuml …`. Without it the diagram renders
+without that target's overrides. The target → format mapping is in
+`${CLAUDE_PLUGIN_ROOT}/skills/plantuml-authoring/render-profiles.md`.
+
 ## Workflow
 
 ### Single file conversion
