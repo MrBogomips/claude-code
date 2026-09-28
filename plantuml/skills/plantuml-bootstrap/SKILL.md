@@ -168,5 +168,4 @@ it is already the source of truth in this direction.
 - Do NOT translate the Policy section or `.plantuml/` files — they stay
   English regardless of `Label language` (which controls diagram-content
   labels, not config).
-- Do NOT commit secrets — brand colors are public.
 - Do NOT regenerate without asking when the project is already configured.
