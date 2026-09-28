@@ -58,6 +58,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Atlassian MCP (Jira + Confluence)
 - **Package**: `@anthropic/mcp-server-atlassian`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Jira issue tracking and Confluence wiki integration
 - **Install**: `npx -y @anthropic/mcp-server-atlassian`
 - **Config**:
@@ -86,6 +87,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Linear MCP
 - **Package**: `@anthropic/mcp-server-linear`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Linear project management integration
 - **Install**: `npx -y @anthropic/mcp-server-linear`
 - **Config**:
@@ -133,6 +135,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Redis MCP
 - **Package**: `@anthropic/mcp-server-redis`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Redis data store integration
 - **Install**: `npx -y @anthropic/mcp-server-redis`
 - **Config**:
@@ -154,28 +157,34 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 - **Relevant stacks**: All (when Redis service selected)
 
 ### SQLite MCP
-- **Package**: `@modelcontextprotocol/server-sqlite`
+- **Package**: `mcp-server-sqlite` (PyPI; requires `uv` in the container)
 - **Description**: SQLite database integration
-- **Install**: `npx -y @modelcontextprotocol/server-sqlite`
+- **Install**: `uvx mcp-server-sqlite --db-path /path/to/db.sqlite`
 - **Config**:
   ```json
   {
     "mcpServers": {
       "sqlite": {
-        "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-sqlite", "/path/to/db.sqlite"]
+        "command": "uvx",
+        "args": ["mcp-server-sqlite", "--db-path", "/path/to/db.sqlite"]
       }
     }
   }
   ```
 - **API key required**: No
-- **Firewall domains**: None (local file)
+- **Firewall domains**:
+  ```
+  ALLOW pypi.org
+  ALLOW files.pythonhosted.org
+  ```
+  (for the `uvx` download; the database itself is a local file)
 - **Relevant stacks**: All
 
 ## Design & Browser
 
 ### Figma MCP
 - **Package**: `@anthropic/mcp-server-figma`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Figma design file access and inspection
 - **Install**: `npx -y @anthropic/mcp-server-figma`
 - **Config**:
@@ -220,16 +229,16 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 - **Relevant stacks**: Node.js
 
 ### Playwright MCP
-- **Package**: `@anthropic/mcp-server-playwright`
+- **Package**: `@playwright/mcp`
 - **Description**: Browser testing automation with Playwright
-- **Install**: `npx -y @anthropic/mcp-server-playwright`
+- **Install**: `npx -y @playwright/mcp@latest`
 - **Config**:
   ```json
   {
     "mcpServers": {
       "playwright": {
         "command": "npx",
-        "args": ["-y", "@anthropic/mcp-server-playwright"]
+        "args": ["-y", "@playwright/mcp@latest"]
       }
     }
   }
@@ -268,6 +277,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Serena MCP
 - **Package**: `serena-mcp`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Code navigation and understanding — semantic search, symbol lookup
 - **Install**: `npx -y serena-mcp`
 - **Config**:
@@ -314,22 +324,22 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 - **Relevant stacks**: All
 
 ### Fetch MCP
-- **Package**: `@modelcontextprotocol/server-fetch`
+- **Package**: `mcp-server-fetch` (PyPI; requires `uv` in the container)
 - **Description**: Web content fetching and conversion to markdown
-- **Install**: `npx -y @modelcontextprotocol/server-fetch`
+- **Install**: `uvx mcp-server-fetch`
 - **Config**:
   ```json
   {
     "mcpServers": {
       "fetch": {
-        "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-fetch"]
+        "command": "uvx",
+        "args": ["mcp-server-fetch"]
       }
     }
   }
   ```
 - **API key required**: No
-- **Firewall domains**: Depends on target sites
+- **Firewall domains**: `ALLOW pypi.org` and `ALLOW files.pythonhosted.org` for the `uvx` download; otherwise depends on target sites
 - **Relevant stacks**: All
 
 ## AI & Reasoning
