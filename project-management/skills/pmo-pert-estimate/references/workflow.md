@@ -40,11 +40,10 @@ Backtrack arrows:
 2. Ask effort unit (`pd` / `hours` / `story_points`)
 3. Ask duration unit (`days` / `weeks` / `sprints`)
 4. Ask output directory (default: `docs/outbox/`)
-5. Ask about custom Excel template:
-   - **No** — inform about bundled template location and criteria doc
-   - **Yes** — run `scripts/validate_template.py`; valid = copy to `assets/`; invalid = show errors
-   - **Customize now** — copy bundled to project dir, user modifies, then validate
-   - **Generate empty only** — produce base template and stop (inspection mode)
+5. Ask about template (the generator always builds the canonical layout; a custom template is only checked for compatibility):
+   - **Use bundled** — inform about bundled template location and criteria doc
+   - **Check a custom template** — run `scripts/validate_template.py`; show errors; record the path for reference only
+   - **Inspect only** — point to the bundled template and stop
 6. Save configuration to CLAUDE.md
 
 ### Error Recovery

@@ -57,15 +57,14 @@ When running in a repository for the first time, check whether `CLAUDE.md` conta
    - **ManagementReservePct** -- management reserve percentage (default: `10`)
    - **OutputDir** -- where to save generated workbooks (default: `docs/outbox/`)
 
-2. **Ask about template**. Offer four options:
-   - **Use bundled** -- inform that the base template is at `assets/pert-template.xlsx` (relative to this skill directory) and criteria are documented in `references/template-criteria.md`
-   - **Use custom** -- run validation:
+2. **Ask about template**. The generator always builds the canonical 4-sheet layout from scratch; a custom template is checked for compatibility but is not used as the base for generated workbooks. Offer:
+   - **Use bundled** -- the reference layout is at `assets/pert-template.xlsx` (relative to this skill directory); criteria are in `references/template-criteria.md`
+   - **Check a custom template** -- run validation:
      ```bash
      cd <skill-dir>/scripts && python3 validate_template.py --template <user_path>
      ```
-     If valid: record path. If invalid: show specific errors, offer to fall back to bundled.
-   - **Customize now** -- copy bundled template to project directory for user modification, then validate
-   - **Generate empty only** -- produce the base template and stop (inspection mode)
+     Show any errors. Record the path for reference only.
+   - **Inspect only** -- point the user to the bundled template and stop
 
 3. **Write** the configuration section into `CLAUDE.md`:
 
