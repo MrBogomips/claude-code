@@ -479,9 +479,9 @@ This is also where bias detection operates: monitoring for all-identical scores,
 
 4. **Layer 2 (Biased Language):** Flags "Il candidato ideale e un leader nato" (The ideal candidate is a born leader) as INFO — gendered language ("nato" is masculine). Suggests: "La persona ideale dimostra capacita di leadership."
 
-5. **Layer 3 (GDPR):** Flags the absence of a privacy notice reference. Severity: HIGH.
+5. **Layer 3 (GDPR):** Flags the absence of a privacy notice reference. Severity: WARNING.
 
-6. **Layer 4 (Structural):** Notes that no scoring rubric is referenced. Severity: MEDIUM.
+6. **Layer 4 (Structural):** Notes that no scoring rubric is referenced. Severity: WARNING.
 
 7. Output: `interview-questionnaire-compliance-audit.md` with all findings, legal citations, and suggested fixes. Overall status: Pass with warnings.
 
