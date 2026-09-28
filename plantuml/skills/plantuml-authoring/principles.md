@@ -177,7 +177,6 @@ convert`).
 
 ---
 
-**Usage in the workflow:** these principles are checks applied during
+**Usage in the workflow:** apply these principles as checks during
 step 4 ("Emit `.puml`") and step 5 ("Validate") of the SKILL.md
-workflow. An adversarial reviewer (test harness) uses them as evaluation
-axes.
+workflow.
