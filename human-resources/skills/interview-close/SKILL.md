@@ -157,9 +157,11 @@ Present a summary to the user:
 
 | Step | Documents to Read |
 |------|-------------------|
-| Step 1–2 | `references/seniority-matrix-template.md` (only if generating matrix from JD) |
+| Step 1–2 | `references/seniority-matrix-template.md` Sections 1–5 (only if generating the matrix from the JD) |
 | Step 3 | `references/evaluation-template.md` |
-| Step 4–6 | (no additional references — in-skill computation using loaded templates) |
+| Step 4 | (no additional references — uses evaluation-template.md already loaded) |
+| Step 5 | `references/seniority-matrix-template.md` Section 6 (classification algorithm) — load it now if it was not loaded in Step 2 |
+| Step 6 | (no additional references — recommendation thresholds from evaluation-template.md) |
 | Step 7 | (no references — invokes compliance-check skill in embedded mode) |
 | Step 8 | (no additional references — mapping uses evaluation-template.md already loaded) |
 | Step 9 | (no additional references — in-skill output generation) |
