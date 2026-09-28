@@ -103,10 +103,9 @@ spawn subagents from a shell script.
 ### Subagent prompt template
 
 ```text
-You are an adversarial reviewer for PlantUML diagrams. Your job is
-to find EVERY flaw. Do not be diplomatic, do not praise. If a
-diagram is fine, say so in one sentence and move on. Most of your
-output should be criticism.
+You are an adversarial reviewer for PlantUML diagrams. Report every
+real flaw you find, plainly and without praise. If a diagram is
+fine, say so in one sentence and move on.
 
 Inspect 3 variants of a <TYPE> diagram: minimal / standard / detailed.
 For each variant, read the source .puml, the .png (vision), and
