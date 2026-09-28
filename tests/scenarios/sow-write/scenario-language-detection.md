@@ -12,13 +12,13 @@ For each input: "Write a SOW from this brief"
 ## Expected Behavior
 - **Input A**: auto-detects Italian, loads `it.md` language pack, produces Italian output
 - **Input B**: auto-detects English, loads `en.md` language pack, produces English output
-- **Input C**: detects ambiguity, asks user to choose language
+- **Input C**: detects mixed languages, recommends the dominant language (Italian) and asks the user to confirm
 
 ## Acceptance Criteria
 - [ ] Input A: section headers in Italian (e.g., "Perimetro" not "Scope")
 - [ ] Input A: legal boilerplate in Italian
 - [ ] Input B: section headers in English
-- [ ] Input C: skill asks "I detected mixed languages — which language should I use for the SOW?"
+- [ ] Input C: skill recommends Italian and asks the user to confirm before proceeding
 - [ ] Language pack loaded only after detection (progressive disclosure)
 
 ## Edge Cases

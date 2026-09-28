@@ -33,7 +33,7 @@ The skill auto-detects language from input documents and produces output in the 
 Read all provided documents (notes, PRDs, briefs, contracts, emails, meeting transcripts). For each document:
 - Identify document type (brief, contract, RFP, meeting notes, technical spec)
 - Extract key entities: parties, dates, deliverables, constraints, budget references
-- Detect language (count tokens per language, flag if mixed > 20%)
+- Detect the language (see Section 6, Language Detection); note when the inputs clearly mix languages
 - Rate input maturity: **rich** (clear scope, parties, timeline) / **partial** (gaps in 2+ critical areas) / **thin** (high-level only)
 
 If connectors are available:
@@ -189,10 +189,7 @@ Present a summary: section count, word count, language, mode, any placeholders r
 
 ## 6. Language Detection
 
-Count language-specific tokens across all input documents. Classification:
-- **>80% single language** → auto-select that language
-- **60-80% dominant language** → recommend dominant, ask user to confirm
-- **<60% any language** → ask user to choose
+**Language detection:** Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 Supported languages and their packs:
 - `en` — `references/language-packs/en.md`
