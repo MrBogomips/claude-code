@@ -127,7 +127,6 @@ If Policy theme is a built-in:
 !theme cerulean-outline
 skinparam backgroundColor $surface
 skinparam ArrowColor $neutral
-skinparam DefaultTextAlignment center
 ```
 
 If `custom`, skip `!theme` and emit a full skinparam block derived from
