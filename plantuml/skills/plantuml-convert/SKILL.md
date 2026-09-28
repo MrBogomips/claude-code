@@ -78,6 +78,10 @@ plantuml -tsvg -o /absolute/path/to/output input.puml
 
 Note: `-Sscale` has no effect on SVG since SVG is vector-based.
 
+Note: for JSON/YAML diagrams (`@startjson` / `@startyaml`), omit `-Sscale` and any
+other `-S` flag in PNG renders; PlantUML 1.2026.x then renders an error stub. Scale via
+`skinparam dpi` in the include chain instead.
+
 ## Integration with Document Creation
 
 When a document skill (/docx, /pdf, /pptx) needs diagram images:
