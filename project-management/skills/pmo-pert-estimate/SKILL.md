@@ -215,7 +215,7 @@ Agent(model="sonnet")
   - Evaluate Probability (1-5) x Impact (1-5)
   - Propose strategy: Mitigate / Transfer / Accept / Avoid
   - Calculate contingency per risk
-  - Propose management reserve (% of total PERT, default from config `ManagementReservePct`)
+  - Propose management reserve as a % of Tech PERT + PM/DevOps overhead + total contingency (default from config `ManagementReservePct`)
   - For **Level A**: introduce P x I matrix with examples, explain each response strategy, walk through contingency calculation
   - For **Level B**: propose complete risk register, highlight highest-priority risks
   - For **Level C**: generate complete risk register autonomously
