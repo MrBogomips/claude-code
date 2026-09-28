@@ -161,7 +161,7 @@ Present a summary to the user:
 - Residual-scan result (clean / items caught in Step 6)
 - Word count and detected language
 - Path to both output files
-- An offer to convert the deliverable to DOCX via `document-skills:docx` or the `links-gc-xdoc` skill
+- If a DOCX-generation skill is available (for example `document-skills:docx`), an offer to convert the deliverable to DOCX with it
 
 ---
 

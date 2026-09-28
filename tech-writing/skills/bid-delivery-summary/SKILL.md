@@ -155,8 +155,8 @@ increment the suffix if the target already exists).
 
 Present a brief summary to the user (outside the document): the Bid Readiness Conclusion, the Delivery
 Confidence Level, whether costs were included or the output is effort-only, the count of flagged gaps
-and customer questions, and the detected language. Offer optional DOCX conversion via
-`document-skills:docx` or the `links-gc-xdoc` skill.
+and customer questions, and the detected language. If a DOCX-generation skill is available (for example
+`document-skills:docx`), offer optional DOCX conversion with it.
 
 ---
 
