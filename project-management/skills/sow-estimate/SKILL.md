@@ -132,7 +132,7 @@ Present the backfilled sections to the user for review before writing.
 Save the updated SOW (replacing the economics placeholder with actual content) to the same path, incrementing the version:
 - `docs/outbox/<project-name>-sow-v0.1.0.md` → `docs/outbox/<project-name>-sow-v0.2.0.md`
 
-Present a summary: extraction statistics (phases, activities, roles, risks extracted), PERT results (total effort, duration, CI ranges), and the updated SOW location.
+Present a summary: extraction statistics (phases, activities, roles, risks extracted), PERT results (Tech PERT effort, Low / Medium / High Band, Calendar Duration in weeks), and the updated SOW location.
 
 ---
 
