@@ -145,36 +145,36 @@ Present a summary to the user:
 
 **Privacy notice:** [Reference to organization's recruitment privacy notice]
 
-## CV-JD Alignment Summary
-
-| Area | Status | Notes |
-|------|--------|-------|
-| [Requirement 1] | Match / Partial / Gap / Unclear | [Brief note] |
-| ... | ... | ... |
-
 ## Screening Questions
 
 ### Logistics & Eligibility
-1. [Question] — *Rationale: [why this question is asked — recruiter-only, excluded from candidate version]*
+1. [Question]
 
 ### Experience Alignment
-2. [Question] (please answer in 2-4 sentences) — *Rationale: [maps to JD requirement X]*
+2. [Question] (please answer in 2-4 sentences)
 
 ### Motivation
-3. [Question] — *Rationale: [assesses role-specific interest]*
+3. [Question]
 
 ### Key Competency Probe
-4. [Question] (please answer in 3-5 sentences) — *Rationale: [maps to JD competency Y]*
+4. [Question] (please answer in 3-5 sentences)
 
 ### Your Questions
 5. Do you have any questions about the role, team, or company?
 
 ## Evaluation Guidance (recruiter only — do not send to candidate)
 
-| # | Question | Green | Yellow | Red |
-|---|----------|-------|--------|-----|
-| 1 | [Question summary] | [What good looks like] | [Borderline signals] | [Disqualifying signals] |
-| ... | ... | ... | ... | ... |
+### CV-JD Alignment Summary
+
+| Area | Status | Notes |
+|------|--------|-------|
+| [Requirement 1] | Match / Partial / Gap / Unclear | [Brief note] |
+| ... | ... | ... |
+
+| # | Question | Rationale | Green | Yellow | Red |
+|---|----------|-----------|-------|--------|-----|
+| 1 | [Question summary] | [Why asked — maps to JD requirement X] | [What good looks like] | [Borderline signals] | [Disqualifying signals] |
+| ... | ... | ... | ... | ... | ... |
 
 **Suggested pass/fail threshold:** Proceed if zero Red and no more than [N] Yellow signals.
 ```
