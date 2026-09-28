@@ -40,10 +40,8 @@ kpis:
 
 mutation_targets:
   defaults:
-    - path: ".docs/processes/"
-      description: "Process documentation, SOPs, and checklists"
-    - path: ".docs/workflows/"
-      description: "Workflow definitions and diagrams"
+    - path: ""
+      description: "Process documents (SOPs, checklists, workflow definitions) — location confirmed with the user during BOOTSTRAP"
   immutable:
     - path: ".git/**"
     - path: "src/**"
@@ -76,7 +74,7 @@ This profile requires additional setup during BOOTSTRAP because KPIs are user-de
    - Is there a secondary metric to track trade-offs?
 
 3. **Gather process documentation**:
-   - Ask the user to provide or point to existing SOPs, checklists, or workflow descriptions
+   - Ask the user to provide or point to existing SOPs, checklists, or workflow descriptions; that location becomes the mutation target
    - If no documentation exists, help the user document the current process (this becomes the baseline artifact)
 
 4. **Set the `.kaizen/` location**:
