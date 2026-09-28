@@ -103,7 +103,7 @@
     {
       "name": "tech-writing",
       "source": "./tech-writing",
-      "description": "Technical writing support — transform documents between internal and client-facing audiences: redact reserved material into client deliverables, distill assessments into internal commercial & delivery summaries, documentation structure, style guides, content review",
+      "description": "Technical writing support — transform documents between internal and client-facing audiences: redact reserved material into client deliverables and distill assessments into internal commercial & delivery summaries",
       "version": "0.2.0",
       "category": "documentation",
       "tags": [

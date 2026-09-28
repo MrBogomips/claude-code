@@ -12,7 +12,7 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 | [kaizen](./kaizen) | Continuous improvement loops — recursive optimization engine with profiles for Claude Code usage, refactoring, and process improvement | Engineering |
 | [plantuml](./plantuml) | PlantUML diagrams — policy-driven authoring, rendering, lint, validate, review, advisor, and migrate | Documentation |
 | [project-management](./project-management) | SOW writing, review, estimation, and PMI-compliant PERT analysis — integrated project management pipeline | Operations |
-| [tech-writing](./tech-writing) | Technical writing support — documentation structure, style guides, content review | Documentation |
+| [tech-writing](./tech-writing) | Technical writing support — transform documents between internal and client-facing audiences | Documentation |
 
 > **Moved:** the `agentic-harness` plugin now lives in its own repository — [MrBogomips/agentic-harness](https://github.com/MrBogomips/agentic-harness). If you installed it from this marketplace, re-add it from there.
 

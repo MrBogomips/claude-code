@@ -1,6 +1,6 @@
 # Tech Writing
 
-Technical writing support for Claude Code — documentation structure, style guides, and content review.
+Technical writing support for Claude Code — transform documents between internal and client-facing audiences.
 
 ## Skills
 
