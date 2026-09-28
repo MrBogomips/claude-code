@@ -85,4 +85,4 @@ For each selected MCP server, the generated `DEVCONTAINER.md` includes:
 - Required API keys and where to obtain them
 - Firewall domains to whitelist (already added to `firewall-rules.conf`)
 
-For the full catalog of supported MCP servers with configuration details, see the [MCP servers reference](../skills/devcontainer-generator/references/mcp-servers.md).
+For the full catalog of supported MCP servers with configuration details, see the [MCP servers reference](../../skills/devcontainer-generator/references/mcp-servers.md).
