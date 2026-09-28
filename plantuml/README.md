@@ -118,7 +118,7 @@ All must pass before considering the install complete.
 - `plantuml-migrate` has no concurrent-edit locking. Do not run while another tool is writing `.puml` files.
 - `puml-visual-checker` is a build-time agent only; it is not exposed as a user-facing skill in v1.0.0.
 - Cross-machine `level=svg-hash` comparisons require pinned fonts. On heterogeneous CI, prefer `level=checkonly`.
-- Agents (`agents/<name>/AGENT.md`) are auto-discovered by Claude Code. If discovery fails on first install, the orchestrating skills degrade to inline Sonnet invocations (correct but slower and costlier). Verify agent availability at first use.
+- Agents (`agents/<name>/AGENT.md`) are auto-discovered by Claude Code. `plantuml-lint`, `plantuml-validate` and `plantuml-migrate` dispatch them and define no inline fallback, so verify agent availability at first use.
 
 ## Dev
 
