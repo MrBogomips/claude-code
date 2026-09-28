@@ -32,7 +32,7 @@ The skill composes the call to `plantuml-convert` like this:
 # 1. Pick target from CLAUDE.md Policy or user override.
 TARGET="docx"    # or web | pdf | pptx
 
-# 2. Export env var so !getenv("PLANTUML_TARGET") in the .puml resolves.
+# 2. Export env var so %getenv("PLANTUML_TARGET") in the .puml resolves.
 export PLANTUML_TARGET="$TARGET"
 
 # 3. Map target → plantuml-convert CLI args.
