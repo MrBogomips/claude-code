@@ -101,7 +101,7 @@ The Summary is followed by a single-column key/value block listing:
 - Total Billable Effort (PD), Billable Ratio
 - Calendar Duration (weeks) — single number
 - Effort by Team (PD) — real PD totals derived from WBS primary roles
-- Sensitivity Scenarios — text list (when `config.scenarios` is provided)
+- Sensitivity Scenarios — text list (when top-level `scenarios` is provided)
 
 ---
 
