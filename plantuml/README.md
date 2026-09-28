@@ -44,8 +44,8 @@ Add this marketplace to Claude Code and install the `plantuml` plugin via the pl
 > plantuml-validate mode=bless
 
   [plantuml-validate activates, renders all targets, writes baselines]
-  diagrams/login.puml [png]: blessed
-  diagrams/login.puml [svg]: blessed
+  diagrams/login.puml [docx]: blessed
+  diagrams/login.puml [web]: blessed
 ```
 
 ## Components
