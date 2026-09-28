@@ -29,7 +29,7 @@ If no connectors are available, the skill asks the user to provide interview not
 
 Collect inputs for the evaluation:
 
-1. **Interview-prep outputs** — if the interview-prep skill was used for this role, collect the interview script, competency framework, and scoring rubric. Accept as file path or pasted text.
+1. **Interview-prep outputs** — if the interview-prep skill was used for this candidate, collect the position assessment, the interview questions (competencies, question plan, answer examples), and the completed interview notes. Accept as file path or pasted text.
 2. **Interviewer notes / feedback** — raw impressions, completed scorecards, or free-form notes from the interviewer(s). Accept as file path, pasted text, or verbal input.
 3. **Candidate information** — name, role title, interview date, interviewer name(s), interview format (panel / 1:1 / video).
 
@@ -239,7 +239,7 @@ Date: [date] | Interviewer(s): [names] | Format: [panel/1:1/video]
 
 ## 5. Integration
 
-- **Consumes:** interview-prep outputs (interview script, competency framework, scoring rubric, seniority matrix); interviewer notes and raw feedback
+- **Consumes:** interview-prep outputs (position assessment, interview questions, interview notes); interviewer notes and raw feedback; the seniority matrix used during interview preparation, if one was stored in memory
 - **Invokes:** `compliance-check` in embedded mode (Step 7) to validate the evaluation for bias and legal compliance
 - **Final pipeline output:** this skill produces the terminal artifact of the HR interview pipeline — the structured evaluation that feeds into hiring decisions
 
