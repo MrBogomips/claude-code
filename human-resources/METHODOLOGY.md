@@ -39,7 +39,7 @@ Three risks compound when interviews lack structure:
 This plugin implements a clear division of labor:
 
 - **The AI prepares.** It generates job descriptions, screening questionnaires, interview questions, scoring rubrics, and evaluation templates — all grounded in research-backed frameworks and validated against compliance requirements.
-- **Humans judge.** Every hiring decision is made by people. The AI never scores a candidate, never makes a recommendation on its own, and never replaces the interviewer's judgment. It provides the structure; the interviewer provides the assessment.
+- **Humans judge.** Every hiring decision is made by people. Interviewers assign every competency score from their own evidence; the AI computes the weighted total, proposes a seniority level and a recommendation category from those scores, and the interviewer reviews and may override them with documented justification. It provides the structure; the interviewer provides the assessment.
 
 This is not automation of hiring. It is augmentation of the hiring process — removing the mechanical burden of creating compliant, structured documents so that interviewers can focus their cognitive energy where it matters most: listening, probing, and evaluating.
 
