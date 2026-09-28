@@ -200,7 +200,7 @@ Suggest the user update corporate context when:
 ### Guiding Users on Corporate Context
 
 When a user asks about corporate context, explain:
-1. **First-time setup:** On first use of any skill, the skill asks for corporate-specific information and saves it to memory.
+1. **First-time setup:** Skills check memory for saved corporate context. The job-description skill asks for missing company context; the other skills use what is saved and store any new corporate context the user provides during an invocation.
 2. **Subsequent uses:** Saved context is applied automatically — the user is not re-asked.
 3. **Updates:** The user can update corporate context at any time by providing new information during a skill invocation.
 4. **Cross-skill sharing:** Corporate context saved by one skill (e.g., seniority matrix saved by interview-prep) is available to other skills (e.g., interview-close).
