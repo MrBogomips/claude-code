@@ -298,7 +298,7 @@ Tech PERT minus activities with empty `resources[]`.
 
 ### Sensitivity Scenarios (optional, after a blank row)
 
-When `config.scenarios` is provided, the header `Sensitivity Scenarios`
+When top-level `scenarios` is provided, the header `Sensitivity Scenarios`
 is followed by one text row per entry in column A.
 
 ---
