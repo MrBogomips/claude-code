@@ -232,9 +232,9 @@ To answer questions accurately, this skill reads the following files using relat
 
 **Response style:** Direct, no definitions.
 
-> The interview-close skill addresses this through its guided feedback interaction (Step 3). Each panelist provides independent impressions per competency before seeing others' scores. The skill then runs a consistency analysis in Step 5 — if scores diverge by more than 1 point on any competency, it flags the divergence and asks each evaluator for the specific behavioral evidence behind their rating. The final evaluation synthesizes all inputs with divergence notes.
+> The interview-close skill supports this through its guided feedback interaction (Step 3): for each competency it asks the interviewer for specific observed behavior, converts vague impressions into evidence, and flags bias patterns such as halo effects or near-identical scores. Every score must cite evidence, so diverging ratings can be traced back to what each interviewer actually observed.
 >
-> For the scoring rubric itself, the skill uses BARS-style anchors from the seniority matrix (either corporate or generated), which reduces scale interpretation differences across evaluators.
+> For panel calibration, the interview-prep scoring rubric describes independent scoring before group discussion and an evidence review for any competency where scores diverge by 2 or more points. Seniority is then classified against a seniority matrix (corporate or generated) that the user confirms before scoring.
 
 ### Example 2: Practitioner — Step-by-Step Guidance
 
