@@ -26,7 +26,7 @@ Custom path: a single file, glob, or directory passed as argument.
      policy_present=false
    fi
    ```
-2. **Enumerate files** via `Glob`, excluding `.plantuml/_*.puml`.
+2. **Enumerate files** via `Glob`, excluding everything under `.plantuml/`.
 3. **Batch** files into chunks of ≤10.
 4. **Dispatch** each batch to `puml-linter` (agent) via `Task`. Pass the
    batch + `project_root` (absolute, from `pwd`) + `policy_present` as
