@@ -79,10 +79,10 @@ The last rule sets the default policy:
 - `DENY *` — block all traffic not explicitly allowed (restrictive)
 - `ALLOW *` — allow all traffic (permissive)
 
-Changes take effect on next container start or by running:
+The firewall applies the copy of this file baked into the image at `/devcontainer/firewall-rules.conf`, so edits persist only after a rebuild ("Dev Containers: Rebuild Container"). To apply an edited file right away (until the next container start), run from the workspace root:
 
 ```bash
-sudo bash /devcontainer/scripts/apply-firewall.sh /devcontainer/firewall-rules.conf
+sudo bash /devcontainer/scripts/apply-firewall.sh .devcontainer/firewall-rules.conf
 ```
 
 ### Adding Dependencies
@@ -107,6 +107,6 @@ docker compose -f .devcontainer/docker-compose.yml down -v
 # Check firewall status
 sudo iptables -L DEVCONTAINER_FW -n -v
 
-# Re-apply firewall rules manually
-sudo bash /devcontainer/scripts/apply-firewall.sh /devcontainer/firewall-rules.conf
+# Apply the edited workspace rules now (until next start; rebuild to persist)
+sudo bash /devcontainer/scripts/apply-firewall.sh .devcontainer/firewall-rules.conf
 ```
