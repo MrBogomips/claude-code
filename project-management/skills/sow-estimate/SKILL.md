@@ -113,10 +113,10 @@ After PERT completes, read the estimation results and populate the SOW:
 **Economics section (full mode section 10):**
 - Effort summary per phase (from PERT WBS sheet rollups)
 - CAPEX/OPEX breakdown (if rate information available)
-- Rate card (from PERT resources sheet)
+- Rate card (from the SOW's own rate card or the configured AvgRate; the workbook carries no per-role rates)
 - Payment schedule (aligned with SOW milestones)
-- Confidence intervals (from PERT summary sheet: 68% and 95% CI)
-- Total estimate with management reserve
+- Effort bands (from the PERT Summary sheet: Low / Medium / High Band)
+- Total estimate: the Medium Band (includes contingency and management reserve)
 
 **Schedule section (full mode section 9):**
 - PERT-derived timeline (from Timeline sheet)
