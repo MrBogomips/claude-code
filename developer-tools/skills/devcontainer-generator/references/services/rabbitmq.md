@@ -4,7 +4,7 @@
 
 ```yaml
 rabbitmq:
-  image: rabbitmq:3.13-management
+  image: rabbitmq:4-management
   restart: unless-stopped
   volumes:
     - devcontainer-{{PROJECT_NAME}}-rabbitmq-data:/var/lib/rabbitmq
