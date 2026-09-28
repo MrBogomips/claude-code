@@ -59,8 +59,8 @@ Project starts 2026-07-01
 ## Common pitfalls
 
 - Using PlantUML Gantt for actual PM. Fix: it's illustrative; for
-  critical-path analysis use `pmo-pert-estimate` (Excel) or a PM
-  tool.
+  critical-path analysis use a PM tool, or the `pmo-pert-estimate`
+  skill (Excel) if the `project-management` plugin is installed.
 - Forgetting `Project starts`. Fix: always set a start date.
 - Dependencies via comment instead of syntax. Fix: use `starts at
   [X]'s end`.
