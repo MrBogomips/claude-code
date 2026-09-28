@@ -109,7 +109,7 @@ Per-section advice for writing high-quality SOW content. Use this reference duri
 ### Section 9: Schedule
 
 **Quality criteria:**
-- Milestones align with Phase 6 deliverables
+- Milestones align with Section 6 deliverables
 - Critical path is identified
 - Mutual obligations have deadlines and impact-if-late
 
@@ -143,7 +143,7 @@ Per-section advice for writing high-quality SOW content. Use this reference duri
 
 **Quality criteria:**
 - Testing approach covers unit, integration, and UAT minimum
-- Definition of Done is explicit and referenced in Phase 6
+- Definition of Done is explicit and referenced in Section 6
 - Quality standards reference applicable frameworks (ISO, OWASP, WCAG)
 
 **Common mistakes:**
