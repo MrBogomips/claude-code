@@ -2,7 +2,7 @@
 name: plantuml-convert
 description: Convert PlantUML (.puml) files to PNG, SVG, or PDF using the CLI. Use when rendering or exporting diagrams, or when document skills (.docx, .pdf, .pptx) need diagram images as input.
 compatibility: Requires plantuml and java CLI tools installed (macOS: brew install plantuml)
-model: claude-haiku-4-5-20251001
+model: haiku
 allowed-tools: Bash
 ---
 
