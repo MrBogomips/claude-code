@@ -63,7 +63,7 @@ Create the run directory: `.kaizen/runs/{run-id}/`
 #### 1b. Continuity Check
 
 Look for previous runs of the same profile in `.kaizen/runs/`:
-- If a previous `summary.json` exists, read it. The `final` KPIs from the most recent run become the **inherited baseline**. Skip fresh source collection — we already know the previous state.
+- If a previous `summary.json` exists, read it. Its `current` KPIs (the most recent run's final values) become the **inherited baseline**. Skip fresh source collection — we already know the previous state.
 - If no previous runs exist, proceed to fresh source collection.
 
 #### 1c. Source Collection

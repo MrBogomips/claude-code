@@ -339,7 +339,7 @@ Every run creates a structured audit trail:
 
 ### Cross-Run Continuity
 
-When you run the same profile again, the engine reads the previous run's `summary.json` and uses its final KPIs as the new baseline. This enables:
+When you run the same profile again, the engine reads the previous run's `summary.json` and uses its final KPIs (the `current` field) as the new baseline. This enables:
 - **Trend tracking** across runs
 - **Diminishing returns detection**
 - **No duplicate baseline capture** on subsequent runs
