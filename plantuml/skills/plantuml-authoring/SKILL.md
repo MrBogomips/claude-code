@@ -56,9 +56,11 @@ Decide which sub-files to load based on the routing rules below.
 
 ## Inherited invariants
 
-The rules file (`~/.claude/rules/documentation/plantuml.md`) is auto-loaded
-when editing `*.puml` and lists 5 universal invariants. They are NOT
-repeated here; treat them as always applied.
+Every diagram satisfies the five `plantuml-lint` invariants R1–R5, defined in
+`${CLAUDE_PLUGIN_ROOT}/agents/puml-linter/AGENT.md`: include `_base.puml`; no inline
+`skinparam` that the base already sets; no hex color literals outside `_*.puml` partials;
+the `@start…` id matches the filename; one `@start…`/`@end…` block per file. R1–R3 apply
+when the project has a PlantUML Policy.
 
 ## Do NOT
 
