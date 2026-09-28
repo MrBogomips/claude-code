@@ -328,7 +328,7 @@ Agent(model="sonnet")
   - If 3 iterations exhausted with remaining issues: present the issues to the user with recommendations
 - Output: validation report + corrected Excel (if fixes were applied)
 
-**Present final workbook** to user with summary statistics (total phases, activities, PERT effort, PERT duration, CI ranges, number of risks, contingency, adjusted estimate).
+**Present final workbook** to user with summary statistics (total phases, activities, Tech PERT effort, Low / Medium / High Band, Calendar Duration in weeks, number of risks, contingency, Management Reserve).
 
 ---
 
