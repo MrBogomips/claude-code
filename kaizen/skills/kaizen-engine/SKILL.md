@@ -87,7 +87,7 @@ If `measurement.tool_generation` is `true` in the profile:
 1. `Read references/tool-scaffolding.md` for the generation template and interface contract
 2. Generate a measurement script in the declared `language` (Python or TypeScript)
 3. The script MUST:
-   - Accept no arguments (reads its own config from the run directory)
+   - Accept no arguments; read its settings from `config.json` beside it. Write that file to `.kaizen/runs/{run-id}/config.json` before running the script (schema in `references/tool-scaffolding.md` → Config File)
    - Output JSON to stdout: `{"kpis": {"kpi_name": numeric_value, ...}, "metadata": {"timestamp": "ISO-8601", "profile": "name", "details": {...}}}`
    - Handle errors gracefully (exit code 1 + JSON error message to stderr)
    - Be self-contained (no external dependencies beyond the standard library and common tools like `git`)
