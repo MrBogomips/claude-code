@@ -21,7 +21,7 @@ exactly **4 sheets** in this order: **WBS**, **Resource Plan** /
 
 ---
 
-## JSON Input Schema (v2 — 4-sheet refactor)
+## JSON Input Schema
 
 ### `config` block
 
@@ -37,7 +37,7 @@ exactly **4 sheets** in this order: **WBS**, **Resource Plan** /
     "management_reserve_pct": 0.10,
     "avg_rate": 500,                    // optional, drives Contingency Cost columns
 
-    // ---- New in v2 ----
+    // ---- Overhead, bands, calendar ----
     "pm_overhead_pct": 0.0,             // ratio of Tech PERT (e.g. 0.10 = +10%)
     "devops_overhead_pct": 0.0,         // ratio of Tech PERT
     "alta_uplift_pct": 0.12,            // High Band uplift over Medium Band
@@ -46,7 +46,7 @@ exactly **4 sheets** in this order: **WBS**, **Resource Plan** /
 }
 ```
 
-### `phases[].start_week` / `phases[].end_week` (new, optional)
+### `phases[].start_week` / `phases[].end_week` (optional)
 
 ```jsonc
 {
@@ -66,7 +66,7 @@ When present, drive the Resource Plan calendar and the Summary
 `Calendar Duration` value. When absent, phases are stacked sequentially
 using a duration heuristic.
 
-### `scenarios[]` (new, optional)
+### `scenarios[]` (top-level, optional)
 
 ```jsonc
 {
@@ -151,7 +151,7 @@ fields) is still accepted. The generator routes input through
 
 ## Sheet 1 — WBS
 
-Unchanged from v1. Columns A–S retain the same layout.
+Columns A–S.
 
 | Col | Header | Type | Leaf row | Rollup row | TOTAL row |
 |-----|--------|------|----------|-----------|-----------|
@@ -174,8 +174,6 @@ Unchanged from v1. Columns A–S retain the same layout.
 ---
 
 ## Sheet 2 — Resource Plan (Pianificazione Risorse)
-
-Replaces both the legacy Resources and Timeline sheets.
 
 ### Layout
 
@@ -214,7 +212,7 @@ tolerance from the per-phase distribution).
 
 ## Sheet 3 — Risks (Rischi)
 
-Columns A–M unchanged from v1.
+Columns A–M.
 
 | Col | Header | Type | Formula |
 |-----|--------|------|---------|
@@ -232,7 +230,7 @@ Columns A–M unchanged from v1.
 | L | Contingency (pd) | input | Numeric (PD) |
 | M | Contingency Cost | **formula** | `=L{r}*avg_rate` (when `avg_rate` is configured) |
 
-### Footer rows (v2)
+### Footer rows
 
 | Row | Column | Formula |
 |-----|--------|---------|
