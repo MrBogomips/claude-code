@@ -31,7 +31,7 @@ Collect inputs for the evaluation:
 
 1. **Interview-prep outputs** — if the interview-prep skill was used for this candidate, collect the position assessment, the interview questions (competencies, question plan, answer examples), and the completed interview notes. Accept as file path or pasted text.
 2. **Interviewer notes / feedback** — raw impressions, completed scorecards, or free-form notes from the interviewer(s). Accept as file path, pasted text, or verbal input.
-3. **Candidate information** — name, role title, interview date, interviewer name(s), interview format (panel / 1:1 / video).
+3. **Candidate information** — name, role title, interview date, interviewer name(s), interview format (panel / 1:1 / sequential; in person or video).
 
 If **~~ATS** is connected: search for the candidate profile and pull interview records, previous stage evaluations (pre-screening results, interview-prep script).
 
@@ -170,7 +170,7 @@ Present a summary to the user:
 ```markdown
 # Interview Evaluation — [Candidate Name] for [Role Title]
 
-Date: [date] | Interviewer(s): [names] | Format: [panel/1:1/video]
+Date: [date] | Interviewer(s): [names] | Format: [panel / 1:1 / sequential]
 
 ## Competency Scores
 
