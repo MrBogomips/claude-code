@@ -164,7 +164,7 @@ After successful validation, the validator produces:
 
 1. **Copy the bundled template**
    ```
-   cp .claude/skills/pmo-pert-estimate/assets/pert-template.xlsx ./my-template.xlsx
+   cp <skill-dir>/assets/pert-template.xlsx ./my-template.xlsx
    ```
 2. **Open in Excel / LibreOffice.**
 3. **Verify sheet names**: `WBS`, `Resource Plan` (or `Pianificazione Risorse`), `Risks` (or `Rischi`), `Summary` (or `Riepilogo`). Do not rename to non-matching values.
@@ -173,7 +173,7 @@ After successful validation, the validator produces:
 6. **Preserve formula patterns** for PERT, σ, Risk Score, Priority IF, and Management Reserve (see Section 3).
 7. **Validate**:
    ```
-   python .claude/skills/pmo-pert-estimate/scripts/validate_template.py --template my-template.xlsx
+   cd <skill-dir>/scripts && python3 validate_template.py --template <path>/my-template.xlsx
    ```
 8. **Configure in CLAUDE.md**:
    ```markdown
