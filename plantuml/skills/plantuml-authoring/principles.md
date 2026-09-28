@@ -128,9 +128,8 @@ directive on its own line, in addition to the `@startuml <id>` token.
 not the source filename — so the id must be unique per file (otherwise
 two diagrams in the same output dir overwrite each other). The id is
 a tech identifier; the `title` is what the reader sees in a DOCX
-caption, a slide header, or a PDF figure list. Most adversarial
-review failures around "no caption" trace back to authors using the
-id as if it were the title.
+caption, a slide header, or a PDF figure list; a diagram that uses
+the id as if it were the title ends up with no caption.
 
 **Conventions:**
 - `@startuml <Type>_<Subject>_<Variant>` — unique, mechanically derived,
