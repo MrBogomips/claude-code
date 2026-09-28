@@ -48,9 +48,9 @@ predict `detailed`'s structure from `standard`'s.
 
 **Why:** A 40-node component diagram is unreadable regardless of layout.
 Context + container + component (C4-style) is readable at each level.
-Adversarial reviewers consistently flag detail levels that introduce
-new entities at higher tiers as "three different diagrams of roughly
-the same topic, not a zoom-in on one model".
+Detail levels that introduce new entities at higher tiers read as
+"three different diagrams of roughly the same topic, not a zoom-in on
+one model".
 
 **Detailed is the riskiest preset.** If `detailed` degrades readability
 or introduces semantic ambiguity vs `standard`, prefer `standard` and
