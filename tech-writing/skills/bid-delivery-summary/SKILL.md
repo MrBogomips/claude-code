@@ -60,8 +60,8 @@ proceeds effort-only when no approved cost model is found.
 ### Step 1 — Input Ingestion & Normalization
 
 Read all provided source documents. If a source is not Markdown (PDF, DOCX, PPTX, XLSX, HTML), convert
-it first using the `markitdown` MCP tool (`convert_to_markdown`). Do not attempt manual extraction
-when the tool is available.
+it first with a connected **~~document converter** (for example markitdown's `convert_to_markdown`);
+if none is connected, read it with the tools available and tell the user about any source that cannot be read.
 
 Detect language by counting language-specific tokens across the input (house thresholds: >80% →
 auto-select; 60–80% → recommend and confirm; <60% → ask).
@@ -164,7 +164,7 @@ and customer questions, and the detected language. If a DOCX-generation skill is
 
 | Step | Documents to Read |
 |------|-------------------|
-| Step 1 | (no references — ingestion, conversion via `markitdown`, language detection) |
+| Step 1 | (no references — ingestion, conversion via **~~document converter**, language detection) |
 | Step 2 | `references/extraction-principles.md` |
 | Step 3 | `references/cost-model-verification.md` |
 | Step 4 | `references/summary-structure.md` (audience-aware section plan) |

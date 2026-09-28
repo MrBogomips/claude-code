@@ -54,8 +54,8 @@ knowledge base connection would add.
 ### Step 1 — Input Ingestion & Normalization
 
 Read all provided source documents. If a source is not Markdown (PDF, DOCX, PPTX, XLSX, HTML), convert
-it to Markdown first using the `markitdown` MCP tool (`convert_to_markdown`). Do not attempt manual
-extraction when the tool is available.
+it to Markdown first with a connected **~~document converter** (for example markitdown's `convert_to_markdown`);
+if none is connected, read it with the tools available and tell the user about any source that cannot be read.
 
 Detect language by counting language-specific tokens across the input. Classification thresholds
 match the house convention:
@@ -169,7 +169,7 @@ Present a summary to the user:
 
 | Step | Documents to Read |
 |------|-------------------|
-| Step 1 | (no references — ingestion, conversion via `markitdown`, language detection) |
+| Step 1 | (no references — ingestion, conversion via **~~document converter**, language detection) |
 | Step 2 | `references/confidential-taxonomy.md` + `references/preserve-checklist.md` (audience-aware section plan) |
 | Step 3 | `references/confidential-taxonomy.md` |
 | Step 4 | `references/preserve-checklist.md` |

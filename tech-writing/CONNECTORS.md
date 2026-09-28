@@ -8,6 +8,7 @@ Tool-agnostic connector registry for the tech-writing plugin. Skills reference c
 | Category | Placeholder | Options | Used by |
 |----------|-------------|---------|---------|
 | Knowledge base | `~~knowledge base` | Notion, Confluence, Guru, Coda, SharePoint | client-facing-doc, bid-delivery-summary |
+| Document converter | `~~document converter` | markitdown | client-facing-doc, bid-delivery-summary |
 
 ## How Skills Use Connectors
 
@@ -19,5 +20,7 @@ enrich its pipeline:
   the deliverable; for `bid-delivery-summary`, search for approved cost models, rate cards,
   service-catalog pricing, and commercial estimation frameworks (used only by its cost-model
   authorization gate).
+- **~~document converter** — convert non-Markdown sources (PDF, DOCX, PPTX, XLSX, HTML) to Markdown
+  before analysis.
 
 When no connector is available, skills fall back to their built-in references and local file output.
