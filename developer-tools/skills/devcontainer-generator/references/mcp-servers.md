@@ -2,6 +2,8 @@
 
 Reference catalog of Model Context Protocol (MCP) servers for agentic coding tools. Each entry includes installation, configuration, and firewall requirements.
 
+Package names and commands were last verified on 2026-09-28 and change often. Before emitting a selected server's configuration, check its package with WebFetch (npm: `https://registry.npmjs.org/<package>/latest`; PyPI: `https://pypi.org/pypi/<package>/json`). If it is missing or marked deprecated, tell the user and offer the current alternative found in Step 5's web search instead.
+
 ## Documentation & Code Context
 
 ### Context7 (by Upstash)
