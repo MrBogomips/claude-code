@@ -72,7 +72,7 @@ For each finding, record: location in document, the specific text, the prohibite
 
 Use built-in bias detection rules from `references/prohibited-topics.md` (gendered/ageist/ableist sections and validation rules).
 
-When the sibling skill **job-description** provides an inclusive language guide (`../job-description/` → `inclusive-language-guide.md`), load it at runtime for enhanced language analysis with broader replacement suggestions. This is a forward reference resolved at runtime — if the file does not exist, proceed with built-in rules only.
+Also load the **job-description** skill's inclusive language guide (the `inclusive-language-guide.md` file in `../job-description/references/`) for broader replacement suggestions. If the file is not present, proceed with the built-in rules only.
 
 Scan for:
 
