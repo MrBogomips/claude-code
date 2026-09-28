@@ -79,12 +79,15 @@ right format.
 
 ## Max-width post-check (docx, pptx)
 
-After rendering PNG, run:
+After rendering PNG, if ImageMagick's `identify` is available
+(`command -v identify`), run:
 
 ```bash
-W=$(identify -format "%w" "out.png")
-[ "$W" -le "$MAX" ] || echo "WARN: $out.png is $W px, max is $MAX"
+W=$(identify -format "%w" "$PNG")
+[ "$W" -le "$MAX" ] || echo "WARN: $PNG is $W px, max is $MAX"
 ```
+
+If `identify` is not installed, skip the check and tell the user it was skipped.
 
 Over-wide diagrams are a warning, not an error: the author may have
 intentionally laid out a wide landscape that the consumer will scale to
