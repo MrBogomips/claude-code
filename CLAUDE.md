@@ -72,3 +72,8 @@ Scripts must be macOS (BSD) compatible — no `grep -P`, no `head -n -1`. Use `g
 - Worktree location: n/a (topic branch in main checkout)
 - Base branch: main
 - Recorded on: 2026-06-01
+
+## Working documents
+- AI-generated working documents for this repository (specs, plans, drafts, audit reports, intermediate materials) go under `.aidocs/` at the repository root.
+- `.aidocs/` is gitignored and never committed. Plugin content must not reference it (see the generic-usage principle).
+- Recorded on: 2026-09-29
