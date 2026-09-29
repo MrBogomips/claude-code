@@ -27,3 +27,26 @@ The with-skill prompt from the README.
 Invocation: the same prompt without the "Its auto-memory directory is …" sentence.
 - [ ] The skill states that the memory directory was not found. It asks for a path or offers to proceed without memory. It doesn't invent a path.
 - [ ] The fingerprint diff is empty.
+
+## Variant C: a reference file is missing
+Setup: copy the skill and remove one reference.
+```bash
+cp -R <repo>/context-hygiene/skills/context-hygiene "<scratch>/ch-skill"
+rm "<scratch>/ch-skill/references/checks.md"
+```
+Invocation: the with-skill prompt, reading `<scratch>/ch-skill/SKILL.md` instead of the repo copy.
+- [ ] The skill stops and names `references/checks.md` as missing
+- [ ] It reports no findings and no recap
+- [ ] The fingerprint diff is empty
+
+## Variant D: EDIT next to a rationale
+Setup: give the W-b line a rationale, commit it, then record the `before` fingerprint.
+```bash
+sed -i.bak 's|^Run `scripts/build.sh` before committing\.$|Run `scripts/build.sh` before committing: CI rejects unformatted code (decided 2026-01-05).|' "$F/repo/CLAUDE.md"
+rm "$F/repo/CLAUDE.md.bak"
+git -C "$F/repo" -c user.name=fixture -c user.email=fixture@example.invalid commit -qam "docs: build rationale"
+```
+Invocation: the with-skill prompt from the README.
+- [ ] If the W-b item is an EDIT, it doesn't carry ⚠ rationale-risk
+- [ ] If the W-b item is a REMOVE of the line, it carries ⚠ rationale-risk
+- [ ] No EDIT item in the recap carries ⚠ rationale-risk

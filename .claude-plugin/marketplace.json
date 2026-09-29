@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A curated collection of Claude Code plugins for professional workflows",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "license": "MIT"
   },
   "plugins": [
@@ -14,7 +14,7 @@
       "name": "context-hygiene",
       "source": "./context-hygiene",
       "description": "Context hygiene for agentic projects — audits CLAUDE.md, rules and auto-memory for wrong, stale and redundant content, and applies only explicitly authorized changes",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "engineering",
       "tags": [
         "context",
