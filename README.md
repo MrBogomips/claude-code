@@ -48,17 +48,19 @@ Browse and manage everything interactively with `/plugin`.
 
 The [`skills`](https://github.com/vercel-labs/skills) CLI installs the skills from this repo straight into your agent's skills directory — no marketplace setup, and it works outside Claude Code too. It pulls **only the skills**, not the agents/commands/hooks that come with the full plugins above.
 
-First, see what's available:
+Always name a plugin folder in the source (`MrBogomips/claude-code/<plugin>`): the repository's own `.claude/` holds the OpenSpec tooling used to maintain this repo, which is not part of the marketplace.
+
+First, see what a plugin offers:
 
 ```bash
-npx skills add MrBogomips/claude-code --list
+npx skills add MrBogomips/claude-code/plantuml --list
 ```
 
 **Install locally to a project** (committed with the repo, shared with your team — lives in `./.claude/skills/`):
 
 ```bash
 # Add the PlantUML authoring skill to the current project, for Claude Code
-npx skills add MrBogomips/claude-code --skill plantuml-authoring -a claude-code
+npx skills add MrBogomips/claude-code/plantuml --skill plantuml-authoring -a claude-code
 ```
 
 Use this when a skill is project-specific — e.g. the `plantuml-*` skills on a repo full of diagrams, or the `sow-*` skills on a proposal repo — so everyone who clones the repo gets it.
@@ -67,7 +69,7 @@ Use this when a skill is project-specific — e.g. the `plantuml-*` skills on a 
 
 ```bash
 # Add the kaizen continuous-improvement skill everywhere, for Claude Code
-npx skills add MrBogomips/claude-code --skill kaizen-engine -g -a claude-code
+npx skills add MrBogomips/claude-code/kaizen --skill kaizen-engine -g -a claude-code
 ```
 
 Use this for skills you want on hand everywhere, regardless of which repo you're in.
