@@ -70,5 +70,10 @@ jobs:
 
           echo "All plugin entries valid"
 
+      - name: Set up Node (for OpenSpec validation)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
       - name: Run structural validation
         run: bash tests/ci/run-structural-tests.sh
