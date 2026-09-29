@@ -8,8 +8,9 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OPENSPEC_VERSION="1.13.2"
 export OPENSPEC_NO_UPDATE_CHECK=1
 
-red()   { printf '\033[0;31m%s\033[0m\n' "$*"; }
-green() { printf '\033[0;32m%s\033[0m\n' "$*"; }
+red()    { printf '\033[0;31m%s\033[0m\n' "$*"; }
+yellow() { printf '\033[0;33m%s\033[0m\n' "$*"; }
+green()  { printf '\033[0;32m%s\033[0m\n' "$*"; }
 
 if [[ ! -d "$REPO_ROOT/openspec" ]]; then
     red "ERROR: openspec/ not found at repository root"
@@ -18,6 +19,10 @@ fi
 
 if command -v openspec >/dev/null 2>&1; then
     OPENSPEC=(openspec)
+    local_version="$(openspec --version 2>/dev/null || echo unknown)"
+    if [[ "$local_version" != "$OPENSPEC_VERSION" ]]; then
+        yellow "WARN: openspec $local_version on PATH differs from the pinned $OPENSPEC_VERSION used in CI"
+    fi
 elif command -v npx >/dev/null 2>&1; then
     OPENSPEC=(npx --yes "@fission-ai/openspec@$OPENSPEC_VERSION")
 else

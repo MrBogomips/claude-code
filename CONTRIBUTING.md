@@ -57,8 +57,8 @@ Plugin behavior is specified with [OpenSpec](https://github.com/Fission-AI/OpenS
 Setup, once per machine:
 
 ```bash
-# Install the CLI: the version pinned in tests/validate-openspec.sh
-brew install openspec                      # or: npm i -g @fission-ai/openspec@1.13.2
+# Install the CLI at the version pinned in tests/validate-openspec.sh (used by CI)
+npm i -g @fission-ai/openspec@1.13.2       # or: brew install openspec (tracks the latest release)
 
 # Use the OpenSpec default profile, which matches the committed agent files
 openspec config profile core
@@ -73,7 +73,7 @@ Flow for a behavior change, on your branch:
 2. `/opsx:apply` implements the tasks and ticks them in `tasks.md`
 3. `/opsx:archive` merges the deltas into `openspec/specs/`; make it the last commit before merge
 
-The agent files under `.claude/skills/openspec-*` and `.claude/commands/opsx/` are generated and committed. After upgrading the CLI, refresh them with `openspec update` and commit the result. Run it only with the profile above; otherwise it rewrites them to match your own profile.
+The agent files under `.claude/skills/openspec-*` and `.claude/commands/opsx/` are generated and committed. To upgrade the CLI, in one commit: bump `OPENSPEC_VERSION` in `tests/validate-openspec.sh` and the version above, run `openspec update`, and commit the regenerated files. Run `openspec update` only with the profile above; otherwise it rewrites them to match your own profile.
 
 ## Pull Request Guidelines
 
