@@ -24,6 +24,8 @@ Every plugin must contain `.claude-plugin/plugin.json`. Components are discovere
 - **Hooks** — `hooks/hooks.json`
 - **Commands** — `commands/*.md`
 
+When a skill's `SKILL.md` restates a rule from its `references/`, change both in the same commit and re-check the Layer 2 scenarios that cover the rule (`tests/scenarios/<plugin>/`).
+
 ## Generic-usage principle
 
 This is a repository of plugins for generic use. When developing any new agent, skill, hook or command, do not rely on the local system configuration of the author:
