@@ -25,6 +25,9 @@ propose how to fix it, and apply only what the user authorizes.
    user explicitly asks in this run and names the item).
 6. **Assume nothing about the local setup.** Discover locations; when
    unsure, ask.
+7. **References must be readable.** If any referenced file under
+   `references/` cannot be read, stop immediately, report which file is
+   missing or unreadable, and do not proceed with discovery, checks or recap.
 
 Full protocol: `references/safety.md`.
 
@@ -36,8 +39,12 @@ Full protocol: `references/safety.md`.
 2. List the always-loaded and on-demand tiers — `references/checks.md` §Scope.
 3. Resolve the memory directory — `references/checks.md` §Memory location.
    Not found → say so and ask; never guess.
-4. Discover working-area candidates from signals —
-   `references/checks.md` §Working area. One signal only → ask.
+4. Discover working-area candidates from signals — a signal is: git-ignored
+   markdown content; dated or versioned filenames; names containing `plan`,
+   `handoff`, `draft`, `scratch`, `notes` or `wip`; status/supersession text;
+   or a declaration in the project's CLAUDE.md. See `references/checks.md`
+   §Working area for the exact rules. One signal only → ask, except that the
+   project's CLAUDE.md declaration is sufficient by itself.
 5. Measure bytes and tokens (≈ bytes/4) per file and per tier.
 
 ### 2. Check (read-only)
@@ -48,12 +55,18 @@ evidence.
 
 ### 3. Classify
 
-Apply the retention rule in `references/retention-recap.md`: keep decisions,
-current policies, open items and steering lessons. Before proposing to
-compress, point away, merge or remove any text, extract its decisions and
-lessons into the after-text and say where each now lives. Tag `⚠ rationale-risk` on every compress, pointer, merge or
-remove of text that holds a decision, lesson or rationale — even when the
-after-text keeps it. A memory fact file and its index line are one item.
+Apply the retention rule in `references/retention-recap.md` with this
+sub-checklist:
+
+1. Identify whether the text is a decision, current policy, open item,
+   steering lesson or other content.
+2. Before proposing to compress, point away, merge or remove text, extract
+   every decision and lesson into the after-text.
+3. Record where each extracted decision and lesson now lives.
+4. Tag `⚠ rationale-risk` on every COMPRESS, POINTER, MERGE or REMOVE whose
+   source contains a decision, lesson or rationale, even when the after-text
+   preserves it. EDIT, BACKUP and POLICY items are not tagged.
+5. Treat a memory fact file and its index line as one item.
 
 ### 4. Recap — then stop
 
@@ -69,15 +82,19 @@ start applying in the same turn.
 
 Parse the reply into an explicit set of IDs (`references/safety.md`
 §Authorization). Regroup requests or questions → answer and wait. Anything
-ambiguous → re-prompt. Echo the authorized set before applying.
+ambiguous → re-prompt. If a reply names IDs and also vaguely approves items
+it does not name ("3, and the rest looks fine"), treat only the named IDs as
+candidates, echo them, and re-prompt for the rest before applying anything. A
+bare "yes" approves no other items: "yes, do 1 and 3" is exactly {1, 3}. Echo
+the authorized set before applying.
 
 ### 6. Apply — authorized items only
 
 Order: `BACKUP` → edits → `POLICY`. Per item, re-read the target first. If it
-changed since the recap, stop that item and re-ask. Tracked file with
-uncommitted changes → ask to commit or stash. Update memory fact files and
-index lines together. Details: `references/safety.md` §Apply safety and
-§Backup.
+changed, was moved or was deleted since the recap, stop that item, report the
+specific state and re-ask. Tracked file with uncommitted changes → ask to
+commit or stash. Update memory fact files and index lines together. Details:
+`references/safety.md` §Apply safety and §Backup.
 
 ### 7. Verify and report
 

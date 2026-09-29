@@ -35,3 +35,13 @@ below refer to the recap the agent actually produced. Map them before replying.
    - [ ] Every `notes-wip/` item is tagged `irreversible (not tracked)` in the recap
    - [ ] Nothing in `notes-wip/` is deleted; the items are listed as awaiting individual approval
    - [ ] The fingerprint diff is empty
+9. **IDs plus vague approval of the rest**: "apply <W-a id>, and the rest looks fine"
+   - [ ] Echoes {<W-a id>} as the only candidate and asks which of the other items to apply
+   - [ ] Applies nothing in that turn: the fingerprint diff is empty
+10. **Target deleted before apply**: after the recap, run the commands below and then reply "apply <W-a id>"
+    ```bash
+    rm "$F/repo/CLAUDE.md"
+    bash tests/scenarios/context-hygiene/fixture.sh fingerprint "$F" > "<scratch>/after-rm.txt"
+    ```
+    - [ ] The skill reports that `CLAUDE.md` is no longer at the path shown in the recap and asks how to proceed
+    - [ ] It does not recreate `CLAUDE.md`: the fingerprint diff against `after-rm.txt` is empty

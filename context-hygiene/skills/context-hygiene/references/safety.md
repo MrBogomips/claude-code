@@ -9,6 +9,10 @@
   "looks right", emoji, silence, or approval from an earlier run. Re-prompt
   with the list of valid IDs.
 - "yes, do 1 and 3" authorizes exactly {1, 3}.
+- A reply that names IDs and also vaguely approves items it does not name
+  ("3, and the rest looks fine") authorizes nothing yet: echo the named IDs as
+  candidates, ask which of the other items to apply, and apply nothing until
+  the user answers.
 - A group letter covers its items **except** `⚠ rationale-risk` and
   `irreversible (not tracked)` ones. Apply
   the non-⚠ items of the authorized set now; list the excluded ⚠ items in the
@@ -29,7 +33,9 @@
 Order: `BACKUP` → edits → `POLICY` → verify.
 
 - Before each edit, re-read the target. If it differs from what the recap
-  showed, stop that item, show the new before→after, and ask again.
+  showed, stop that item, show the new before→after, and ask again. If it is
+  no longer at the path the recap showed (moved or deleted), stop that item,
+  say so — and where it went, if `git status` shows a rename — and ask again.
 - Tracked files: if `git status --porcelain -- FILE` is non-empty, ask the
   user to commit or stash first; do not edit. Never run commit, stash or
   checkout yourself.
