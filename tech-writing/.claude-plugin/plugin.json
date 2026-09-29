@@ -1,6 +1,6 @@
 {
   "name": "tech-writing",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Technical writing support — transform documents between internal and client-facing audiences: redact reserved material into client deliverables and distill assessments into internal commercial & delivery summaries",
   "author": {
     "name": "MrBogomips",
