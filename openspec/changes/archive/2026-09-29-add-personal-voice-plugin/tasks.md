@@ -41,4 +41,4 @@
 - [x] 7.1 Run an end-to-end loop in a scratch project: draft with the write skill, revise, record observations, repeat the trait in a second text, wrap up, run maintenance and promote; verify the promoted rule appears in the right file and changes the next draft
 - [x] 7.2 Run `claude plugin validate ./personal-voice --strict` and verify it passes
 - [x] 7.3 Run `bash tests/ci/run-structural-tests.sh` and verify all suites pass
-- [ ] 7.4 Archive the change with `/opsx:archive` as the last commit before merge, and verify `openspec/specs/personal-voice/` holds the four capabilities
+- [x] 7.4 Archive the change with `/opsx:archive` as the last commit before merge, and verify `openspec/specs/personal-voice/` holds the four capabilities
