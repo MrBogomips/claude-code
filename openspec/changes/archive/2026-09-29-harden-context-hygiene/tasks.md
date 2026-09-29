@@ -11,4 +11,4 @@
 
 - [x] 2.1 Bump `context-hygiene` 0.1.0 → 0.2.0 in `plugin.json` and its `marketplace.json` entry, and `metadata.version` 3.2.0 → 3.2.1; verify with `bash tests/validate-versions.sh`
 - [x] 2.2 Run `bash tests/ci/run-structural-tests.sh` and `claude plugin validate ./context-hygiene --strict`; verify both pass
-- [ ] 2.3 Archive this change with `/opsx:archive` as the last commit before merge; verify `openspec/specs/context-hygiene/` holds the three capabilities
+- [x] 2.3 Archive this change with `/opsx:archive` as the last commit before merge; verify `openspec/specs/context-hygiene/` holds the three capabilities
