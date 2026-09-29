@@ -19,7 +19,7 @@ This is a flat-at-root plugin marketplace following the convention used by Anthr
 Every plugin must contain `.claude-plugin/plugin.json`. Components are discovered by convention:
 
 - **Skills** — `skills/*/SKILL.md`
-- **Agents** — `agents/*/AGENT.md`
+- **Agents** — `agents/*/AGENT.md`; restrict an agent's tools with `tools:` in its frontmatter (`allowed-tools:` is the skill/command key and has no effect in an agent)
 - **Hooks** — `hooks/hooks.json`
 - **Commands** — `commands/*.md`
 
