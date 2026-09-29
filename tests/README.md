@@ -8,7 +8,7 @@ Three-layer testing strategy for the marketplace. Layer 1 is automated; Layers 2
 bash tests/ci/run-structural-tests.sh
 ```
 
-Runs on every push/PR to `main`. Requires `jq`.
+Runs on every push/PR to `main`. Requires `jq` and the OpenSpec CLI (or Node ≥20.19 for `npx`).
 
 | Script | Checks |
 |--------|--------|
@@ -16,6 +16,7 @@ Runs on every push/PR to `main`. Requires `jq`.
 | `validate-connectors.sh` | `~~placeholder` references match CONNECTORS.md entries |
 | `validate-references.sh` | `references/` paths in SKILL.md resolve to existing files |
 | `validate-versions.sh` | every plugin.json version matches its marketplace.json entry; no orphan entries |
+| `validate-openspec.sh` | `openspec validate --all --strict` over `openspec/` (main specs and active changes) |
 
 ## Layer 2: Skill Scenarios (manual)
 

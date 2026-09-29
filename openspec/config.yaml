@@ -1,0 +1,22 @@
+schema: spec-driven
+
+context: |
+  This repository is a public Claude Code plugin marketplace made of markdown and JSON, with no build step.
+  Each top-level directory containing .claude-plugin/plugin.json is a plugin. CLAUDE.md is the authority
+  for repository conventions.
+  The repository is public: no artifact contains personal paths, client, company or person names, email
+  addresses or private URLs. Examples use neutral placeholders.
+  Spec coverage is partial: specs exist only for behavior changed since OpenSpec was adopted (2026-09-29).
+  A missing spec does not mean missing behavior; the first change to such a capability uses ADDED requirements.
+
+rules:
+  proposal:
+    - Name each affected plugin and the semver bump it needs (plugin.json and its marketplace.json entry).
+    - A change that makes a design decision (new component, rejected alternative, trade-off) includes design.md.
+  specs:
+    - Capability path is <plugin>/<capability>, or marketplace/<capability> for repository-level rules, in kebab-case.
+    - Never place spec.md directly under specs/<plugin>/, and never name a folder dist, build, coverage or .cache (gitignored).
+    - A plugin rename or move is a REMOVED delta at the old path plus an ADDED delta at the new path.
+  tasks:
+    - Tick each checkbox as soon as its task is done.
+    - End with a task to run bash tests/ci/run-structural-tests.sh and a task to archive the change as the last commit before merge.
