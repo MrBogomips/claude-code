@@ -1,0 +1,38 @@
+# Applying
+
+Edit the store with the file tools, one item at a time, so each change can be
+reviewed; do not batch items into a shell script.
+
+For each authorized item, in number order:
+
+1. Re-read the target files. If one changed since the recap, stop this item,
+   show its new before and after, and ask again.
+2. Write the change in the format of the store format's Rule entries:
+   - **PROMOTE**: add the rule under its heading, with its qualifiers, evidence
+     and `reinforced` date; remove the observation from `observations.md`.
+     Create the file with its frontmatter if it is the first rule there.
+   - **REINFORCE**: update the rule's evidence and `reinforced` date; remove
+     the observation.
+   - **MERGE**: replace the rules with the merged one.
+   - **CONFLICT**: apply the author's choice; a qualified rule gets its new
+     qualifier; the losing observation is removed.
+   - **REMOVE**, **DELETE**, **TRIM**: remove or shorten exactly the named
+     entry or exemplar.
+   - **MOVE**: add the rule to the destination with the evidence summed, then
+     remove it from the source. Refuse a move of personal material into a
+     project store, even if approved.
+   - Any item whose destination is a project store that does not exist yet
+     (a MOVE, or a promotion with "scope: project"): first run the store
+     format's Project store initialization. If the author chooses Skip, skip
+     the item and say so.
+   - Edited text or a changed scope from the reply replaces the proposal's.
+3. Keep every rule file at 50 rules or fewer. If an applied promotion would
+   break the limit because its linked merge or removal was not approved, skip
+   the promotion and say so.
+
+Then:
+
+- Set `last_maintenance` to today in the global `observations.md`, creating
+  the file with its frontmatter if needed.
+- Final report, in the language of the conversation: applied items, skipped
+  items and why, and the pending observations left.
