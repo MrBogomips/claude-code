@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A curated collection of Claude Code plugins for professional workflows",
-    "version": "3.1.1",
+    "version": "3.2.0",
     "license": "MIT"
   },
   "plugins": [
@@ -65,6 +65,21 @@
         "autoresearch",
         "kpi",
         "refactoring"
+      ]
+    },
+    {
+      "name": "personal-voice",
+      "source": "./personal-voice",
+      "description": "Personal writing voice — writes documents, emails and messages in the author's tone and lexicon, learns from the author's revisions and own texts, and maintains the profile only with per-item approval",
+      "version": "0.1.0",
+      "category": "documentation",
+      "tags": [
+        "writing",
+        "voice",
+        "tone",
+        "style",
+        "lexicon",
+        "personalization"
       ]
     },
     {

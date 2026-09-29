@@ -10,6 +10,7 @@ This is a flat-at-root plugin marketplace following the convention used by Anthr
 - `developer-tools/` — developer environment tooling
 - `human-resources/` — HR workflow support
 - `kaizen/` — continuous improvement loops
+- `personal-voice/` — personal writing voice (tone and lexicon learned from the author's revisions)
 - `plantuml/` — PlantUML diagram authoring and maintenance
 - `project-management/` — project management workflows
 - `tech-writing/` — technical writing support

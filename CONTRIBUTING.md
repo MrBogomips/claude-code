@@ -9,7 +9,7 @@ Thank you for your interest in contributing to the Claude Code plugins marketpla
 | Engineering | `developer-tools/` | Developer tooling, infrastructure, build systems |
 | Human Resources | `human-resources/` | HR workflows, recruiting, evaluation |
 | Operations | `project-management/` | Project management, estimation, reporting |
-| Documentation | `tech-writing/` | Technical writing, style guides, content review |
+| Documentation | `tech-writing/`, `personal-voice/` | Technical writing, style guides, content review, personal writing voice |
 
 ## Repository Structure
 
