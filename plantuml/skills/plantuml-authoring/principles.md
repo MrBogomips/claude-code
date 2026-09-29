@@ -48,9 +48,9 @@ predict `detailed`'s structure from `standard`'s.
 
 **Why:** A 40-node component diagram is unreadable regardless of layout.
 Context + container + component (C4-style) is readable at each level.
-Adversarial reviewers consistently flag detail levels that introduce
-new entities at higher tiers as "three different diagrams of roughly
-the same topic, not a zoom-in on one model".
+Detail levels that introduce new entities at higher tiers read as
+"three different diagrams of roughly the same topic, not a zoom-in on
+one model".
 
 **Detailed is the riskiest preset.** If `detailed` degrades readability
 or introduces semantic ambiguity vs `standard`, prefer `standard` and
@@ -128,9 +128,8 @@ directive on its own line, in addition to the `@startuml <id>` token.
 not the source filename — so the id must be unique per file (otherwise
 two diagrams in the same output dir overwrite each other). The id is
 a tech identifier; the `title` is what the reader sees in a DOCX
-caption, a slide header, or a PDF figure list. Most adversarial
-review failures around "no caption" trace back to authors using the
-id as if it were the title.
+caption, a slide header, or a PDF figure list; a diagram that uses
+the id as if it were the title ends up with no caption.
 
 **Conventions:**
 - `@startuml <Type>_<Subject>_<Variant>` — unique, mechanically derived,
@@ -178,7 +177,6 @@ convert`).
 
 ---
 
-**Usage in the workflow:** these principles are checks applied during
+**Usage in the workflow:** apply these principles as checks during
 step 4 ("Emit `.puml`") and step 5 ("Validate") of the SKILL.md
-workflow. An adversarial reviewer (test harness) uses them as evaluation
-axes.
+workflow.

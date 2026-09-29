@@ -24,7 +24,7 @@ If no runs are found, inform the user and suggest running `/kaizen` first.
 
 For each run directory found:
 1. Read `summary.json`
-2. Extract: profile name, run ID, start date, iterations completed/kept/reverted, baseline KPIs, final KPIs, improvement percentages, convergence reason, adversarial review status
+2. Extract: profile name, run ID, start date, iterations completed/kept/reverted, baseline KPIs, final KPIs (the `current` field), improvement percentages, convergence reason, adversarial review status
 3. Sort runs chronologically
 
 ### Step 3 — Present Report

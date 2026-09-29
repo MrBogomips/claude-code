@@ -19,7 +19,7 @@ Why this approach:
 | Node.js | `package.json`, `tsconfig.json`, `.nvmrc` | 22 | `ghcr.io/devcontainers/features/node:1` | Next.js, Angular, Vite, Nuxt, Remix, Docusaurus, Storybook | ESLint, Prettier, Tailwind CSS |
 | Python | `requirements.txt`, `pyproject.toml`, `setup.py`, `Pipfile`, `uv.lock` | 3.12 | `ghcr.io/devcontainers/features/python:1` | Flask, Django, FastAPI | Python, Pylance |
 | .NET | `*.csproj`, `*.fsproj`, `*.sln`, `global.json` | 10.0 | `ghcr.io/devcontainers/features/dotnet:2` | ASP.NET Core, Blazor, .NET Aspire | C# Dev Kit, C#, .NET Runtime |
-| Go | `go.mod`, `go.sum` | 1.23 | `ghcr.io/devcontainers/features/go:1` | Gin, Echo, Fiber | Go |
+| Go | `go.mod`, `go.sum` | 1.27 | `ghcr.io/devcontainers/features/go:1` | Gin, Echo, Fiber | Go |
 | Rust | `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml` | latest | `ghcr.io/devcontainers/features/rust:1` | Actix Web, Axum, Rocket | rust-analyzer, crates |
 | Java | `pom.xml`, `build.gradle`, `build.gradle.kts` | 21 | `ghcr.io/devcontainers/features/java:1` | Spring Boot, Quarkus, Micronaut | Java Extension Pack, Spring Boot Tools |
 
@@ -53,7 +53,7 @@ Each stack defines credential files that can be shared from the host to the cont
 | Node.js | `~/.npmrc`, `~/.yarnrc.yml` | `.npmrc` always; `.yarnrc.yml` if Yarn Berry | `NPM_TOKEN`, `YARN_NPM_AUTH_TOKEN` |
 | Python | `~/.pip/pip.conf`, `~/.pypirc` | `pip.conf` always; `.pypirc` optional | `PIP_INDEX_URL`, `TWINE_PASSWORD` |
 | .NET | `~/.nuget/NuGet.Config` | Always | `NUGET_AUTH_TOKEN` |
-| Go | `~/.netrc`, `GOPRIVATE`/`GONOSUMCHECK` (env) | Always | `GONOSUMDB` |
+| Go | `~/.netrc`, `GOPRIVATE`/`GONOSUMDB` (env) | Always | `GONOSUMDB` |
 | Rust | `~/.cargo/credentials.toml` | Always | `CARGO_REGISTRY_TOKEN` |
 | Java | `~/.m2/settings.xml`, `~/.gradle/gradle.properties` | Maven/Gradle detection | `MAVEN_SERVER_PASSWORD`, `GRADLE_PUBLISH_KEY` |
 

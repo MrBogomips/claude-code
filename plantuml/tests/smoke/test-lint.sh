@@ -20,7 +20,7 @@ fail() { echo "FAIL: $*" >&2; exit 1; }
 
 # Skill frontmatter
 grep -qE '^name:\s*plantuml-lint' "$SKILL" || fail "skill name wrong"
-grep -qE '^allowed-tools:.*Task' "$SKILL" || fail "skill missing Task"
+grep -qE '^allowed-tools:.*Agent' "$SKILL" || fail "skill missing Agent"
 
 # Agent frontmatter
 grep -qE '^name:\s*puml-linter' "$AGENT" || fail "agent name wrong"

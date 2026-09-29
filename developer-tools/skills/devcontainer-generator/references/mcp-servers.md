@@ -2,6 +2,8 @@
 
 Reference catalog of Model Context Protocol (MCP) servers for agentic coding tools. Each entry includes installation, configuration, and firewall requirements.
 
+Package names and commands were last verified on 2026-09-28 and change often. Before emitting a selected server's configuration, check its package with WebFetch (npm: `https://registry.npmjs.org/<package>/latest`; PyPI: `https://pypi.org/pypi/<package>/json`). If it is missing or marked deprecated, tell the user and offer the current alternative found in Step 5's web search instead.
+
 ## Documentation & Code Context
 
 ### Context7 (by Upstash)
@@ -31,6 +33,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### GitHub MCP
 - **Package**: `@modelcontextprotocol/server-github`
+- **Status**: npm marks this package "no longer supported" (checked 2026-09-28). Before emitting this entry, find the maintained replacement (GitHub's own MCP server) through the Step 5 web search and confirm it with the user.
 - **Description**: GitHub integration — PRs, issues, code search, repository management
 - **Install**: `npx -y @modelcontextprotocol/server-github`
 - **Config**:
@@ -58,6 +61,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Atlassian MCP (Jira + Confluence)
 - **Package**: `@anthropic/mcp-server-atlassian`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Jira issue tracking and Confluence wiki integration
 - **Install**: `npx -y @anthropic/mcp-server-atlassian`
 - **Config**:
@@ -86,6 +90,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Linear MCP
 - **Package**: `@anthropic/mcp-server-linear`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Linear project management integration
 - **Install**: `npx -y @anthropic/mcp-server-linear`
 - **Config**:
@@ -114,6 +119,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### PostgreSQL MCP
 - **Package**: `@modelcontextprotocol/server-postgres`
+- **Status**: npm marks this package "no longer supported" (checked 2026-09-28). Before emitting this entry, find the maintained replacement through the Step 5 web search and confirm it with the user.
 - **Description**: PostgreSQL database integration — query, schema inspection
 - **Install**: `npx -y @modelcontextprotocol/server-postgres`
 - **Config**:
@@ -133,6 +139,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Redis MCP
 - **Package**: `@anthropic/mcp-server-redis`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Redis data store integration
 - **Install**: `npx -y @anthropic/mcp-server-redis`
 - **Config**:
@@ -154,28 +161,34 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 - **Relevant stacks**: All (when Redis service selected)
 
 ### SQLite MCP
-- **Package**: `@modelcontextprotocol/server-sqlite`
+- **Package**: `mcp-server-sqlite` (PyPI; requires `uv` in the container)
 - **Description**: SQLite database integration
-- **Install**: `npx -y @modelcontextprotocol/server-sqlite`
+- **Install**: `uvx mcp-server-sqlite --db-path /path/to/db.sqlite`
 - **Config**:
   ```json
   {
     "mcpServers": {
       "sqlite": {
-        "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-sqlite", "/path/to/db.sqlite"]
+        "command": "uvx",
+        "args": ["mcp-server-sqlite", "--db-path", "/path/to/db.sqlite"]
       }
     }
   }
   ```
 - **API key required**: No
-- **Firewall domains**: None (local file)
+- **Firewall domains**:
+  ```
+  ALLOW pypi.org
+  ALLOW files.pythonhosted.org
+  ```
+  (for the `uvx` download; the database itself is a local file)
 - **Relevant stacks**: All
 
 ## Design & Browser
 
 ### Figma MCP
 - **Package**: `@anthropic/mcp-server-figma`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Figma design file access and inspection
 - **Install**: `npx -y @anthropic/mcp-server-figma`
 - **Config**:
@@ -202,6 +215,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Puppeteer MCP
 - **Package**: `@modelcontextprotocol/server-puppeteer`
+- **Status**: npm marks this package "no longer supported" (checked 2026-09-28). Before emitting this entry, find the maintained replacement (or use the Playwright entry) through the Step 5 web search and confirm it with the user.
 - **Description**: Browser automation, screenshots, and web scraping
 - **Install**: `npx -y @modelcontextprotocol/server-puppeteer`
 - **Config**:
@@ -220,16 +234,16 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 - **Relevant stacks**: Node.js
 
 ### Playwright MCP
-- **Package**: `@anthropic/mcp-server-playwright`
+- **Package**: `@playwright/mcp`
 - **Description**: Browser testing automation with Playwright
-- **Install**: `npx -y @anthropic/mcp-server-playwright`
+- **Install**: `npx -y @playwright/mcp@latest`
 - **Config**:
   ```json
   {
     "mcpServers": {
       "playwright": {
         "command": "npx",
-        "args": ["-y", "@anthropic/mcp-server-playwright"]
+        "args": ["-y", "@playwright/mcp@latest"]
       }
     }
   }
@@ -268,6 +282,7 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 
 ### Serena MCP
 - **Package**: `serena-mcp`
+- **Status**: package not found on npm (checked 2026-09-28). Before emitting this entry, find the current package or the vendor's hosted MCP endpoint through the Step 5 web search and confirm it with the user.
 - **Description**: Code navigation and understanding — semantic search, symbol lookup
 - **Install**: `npx -y serena-mcp`
 - **Config**:
@@ -288,16 +303,16 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 ## Search & Web
 
 ### Brave Search MCP
-- **Package**: `@modelcontextprotocol/server-brave-search`
+- **Package**: `@brave/brave-search-mcp-server`
 - **Description**: Web search from within the agent
-- **Install**: `npx -y @modelcontextprotocol/server-brave-search`
+- **Install**: `npx -y @brave/brave-search-mcp-server`
 - **Config**:
   ```json
   {
     "mcpServers": {
       "brave-search": {
         "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+        "args": ["-y", "@brave/brave-search-mcp-server"],
         "env": {
           "BRAVE_API_KEY": "<your-key>"
         }
@@ -314,22 +329,22 @@ Reference catalog of Model Context Protocol (MCP) servers for agentic coding too
 - **Relevant stacks**: All
 
 ### Fetch MCP
-- **Package**: `@modelcontextprotocol/server-fetch`
+- **Package**: `mcp-server-fetch` (PyPI; requires `uv` in the container)
 - **Description**: Web content fetching and conversion to markdown
-- **Install**: `npx -y @modelcontextprotocol/server-fetch`
+- **Install**: `uvx mcp-server-fetch`
 - **Config**:
   ```json
   {
     "mcpServers": {
       "fetch": {
-        "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-fetch"]
+        "command": "uvx",
+        "args": ["mcp-server-fetch"]
       }
     }
   }
   ```
 - **API key required**: No
-- **Firewall domains**: Depends on target sites
+- **Firewall domains**: `ALLOW pypi.org` and `ALLOW files.pythonhosted.org` for the `uvx` download; otherwise depends on target sites
 - **Relevant stacks**: All
 
 ## AI & Reasoning

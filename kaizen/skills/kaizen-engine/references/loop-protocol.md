@@ -6,7 +6,7 @@
 MEASURE → ANALYZE → HYPOTHESIZE → PROPOSE → APPLY → VERIFY → DECIDE → LOG → [loop or stop]
 ```
 
-Each phase maps to one Sequential Thinking thought. The chain represents a single iteration.
+Each iteration runs these phases in order.
 
 ## Phase Specifications
 
@@ -123,11 +123,11 @@ Each phase maps to one Sequential Thinking thought. The chain represents a singl
 
 **Protocol:**
 1. Create `backup/` directory
-2. For each file in mutation scope: copy to backup preserving relative path
+2. Copy each file the proposal will modify to backup preserving relative path; list files it will create in `backup/created.txt`
 3. Verify no proposed change violates immutable list
 4. Apply each change using Edit/Write tools
 5. After each file change, verify syntactic validity if applicable
-6. Generate diff (git diff or unified diff from backups)
+6. Generate diff (unified diff of each modified file against its backup, plus created files in full)
 
 **Failure modes:**
 | Failure | Severity | Recovery |
@@ -178,7 +178,7 @@ Same protocol as Phase 1 (MEASURE), writing to `verification.json` instead.
 |-------|-----------------|-------|
 | MEASURE | 5-15s | haiku (via measurer agent) |
 | ANALYZE | 10-30s | sonnet (via analyzer agent) |
-| HYPOTHESIZE | 5-15s | inline (Sequential Thinking) |
+| HYPOTHESIZE | 5-15s | inline |
 | PROPOSE | 15-45s | sonnet (via proposer agent) |
 | APPLY | 5-20s | inline (file operations) |
 | VERIFY | 5-15s | haiku (via measurer agent) |

@@ -1,6 +1,6 @@
 ---
 name: hr-help
-description: "Plugin mentor and HR advisor — explains methodology, guides skill usage, answers HR best practice questions, and references corporate context from memory. Adapts interaction depth to user expertise: direct answers for experts, procedural guidance for practitioners, Socratic coaching for newcomers. Three knowledge rings: Ring 1 (plugin usage — which skill when, pipeline flow, inputs/outputs), Ring 2 (HR best practices — STAR, behavioral interviewing, bias reduction, competency frameworks), Ring 3 (corporate context — memorized templates, matrices, policies). Does NOT generate documents or make hiring decisions. Use when the user says 'how do I use', 'help with interview', 'what skill should I', 'explain the methodology', 'come funziona', 'aiuto colloquio', 'come si usa', 'perche', or asks any question about the HR interview workflow."
+description: "Plugin mentor and HR advisor for the human-resources interview workflow — explains which skill fits a task and how the pipeline (job-description, pre-screening, interview-prep, interview-close, compliance-check) fits together, answers HR best-practice questions (STAR, behavioral and structured interviewing, BARS, competency frameworks, bias reduction), and explains how saved corporate context is used. Adapts depth to the user's expertise. Does NOT generate documents or make hiring decisions. Use when the user asks how to use the plugin or one of its skills, which skill to use, why the methodology works the way it does, or asks a general question about the HR interview workflow — in English or Italian (e.g. 'how do I use', 'what skill should I', 'explain the methodology', 'help with interview', 'come funziona', 'come si usa', 'aiuto colloquio')."
 ---
 
 # HR Help — Plugin Mentor and HR Advisor
@@ -138,7 +138,7 @@ An interviewing approach based on the principle that past behavior predicts futu
 
 Interviews where all candidates are asked the same questions in the same order, scored against the same rubric. Contrasts with unstructured "conversational" interviews.
 
-- **Why it matters:** Higher validity, lower bias, legally defensible. Research shows structured interviews are 2x more predictive than unstructured ones.
+- **Why it matters:** Higher validity, lower bias, legally defensible. Schmidt & Hunter's meta-analysis reports a predictive validity of 0.51 for structured interviews versus 0.38 for unstructured ones.
 - **Applied in:** `interview-prep` (standardized question sets), `interview-close` (consistent scoring)
 
 ### Competency Frameworks
@@ -200,7 +200,7 @@ Suggest the user update corporate context when:
 ### Guiding Users on Corporate Context
 
 When a user asks about corporate context, explain:
-1. **First-time setup:** On first use of any skill, the skill asks for corporate-specific information and saves it to memory.
+1. **First-time setup:** Skills check memory for saved corporate context. The job-description skill asks for missing company context; the other skills use what is saved and store any new corporate context the user provides during an invocation.
 2. **Subsequent uses:** Saved context is applied automatically — the user is not re-asked.
 3. **Updates:** The user can update corporate context at any time by providing new information during a skill invocation.
 4. **Cross-skill sharing:** Corporate context saved by one skill (e.g., seniority matrix saved by interview-prep) is available to other skills (e.g., interview-close).
@@ -232,9 +232,9 @@ To answer questions accurately, this skill reads the following files using relat
 
 **Response style:** Direct, no definitions.
 
-> The interview-close skill addresses this through its guided feedback interaction (Step 3). Each panelist provides independent impressions per competency before seeing others' scores. The skill then runs a consistency analysis in Step 5 — if scores diverge by more than 1 point on any competency, it flags the divergence and asks each evaluator for the specific behavioral evidence behind their rating. The final evaluation synthesizes all inputs with divergence notes.
+> The interview-close skill supports this through its guided feedback interaction (Step 3): for each competency it asks the interviewer for specific observed behavior, converts vague impressions into evidence, and flags bias patterns such as halo effects or near-identical scores. Every score must cite evidence, so diverging ratings can be traced back to what each interviewer actually observed.
 >
-> For the scoring rubric itself, the skill uses BARS-style anchors from the seniority matrix (either corporate or generated), which reduces scale interpretation differences across evaluators.
+> For panel calibration, the interview-prep scoring rubric describes independent scoring before group discussion and an evidence review for any competency where scores diverge by 2 or more points. Seniority is then classified against a seniority matrix (corporate or generated) that the user confirms before scoring.
 
 ### Example 2: Practitioner — Step-by-Step Guidance
 

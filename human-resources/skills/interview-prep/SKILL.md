@@ -15,7 +15,7 @@ This skill prepares technical interviewers and department evaluators for candida
 
 The user persona is a technical interviewer or department evaluator — someone with domain expertise who needs structured preparation, not HR training.
 
-**Output directory:** `docs/outbox/` (configurable)
+**Output directory:** the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 **Connector support:** Skills degrade gracefully without connectors. See `CONNECTORS.md` for the full registry.
 
@@ -53,10 +53,7 @@ If **~~knowledge base** is connected: search for organization-specific competenc
 
 **Output format preference:** Check memory for previously stored output format preference (formatting choices, default interview format). If found, apply as default without re-asking.
 
-**Language detection:** Count language-specific tokens across all input documents:
-- **>80% single language** — auto-select that language for output
-- **60-80% dominant language** — recommend dominant, ask user to confirm
-- **<60% any language** — ask user to choose
+**Language detection:** Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 ### Step 2 — Deep CV-JD Analysis
 
@@ -76,7 +73,7 @@ Present the competency mapping to the user before proceeding.
 
 ### Step 3 — Position Assessment
 
-Produce the first output file: `docs/outbox/{candidate}-position-assessment.md`
+Produce the first output file: `{candidate}-position-assessment.md` in the output directory
 
 This is the interviewer's private briefing document. It synthesizes the CV-JD analysis into a structured assessment of candidate fit (see Section 4 for the template).
 
@@ -104,7 +101,7 @@ Generate 4-6 behavioral questions, one per competency identified in Step 2. For 
 
 ### Step 5 — Interview Notes Template
 
-Produce the third output file: `docs/outbox/{candidate}-interview-notes.md`
+Produce the third output file: `{candidate}-interview-notes.md` in the output directory
 
 **Design philosophy:** Capture signal, not bureaucracy. The template is deliberately minimal — interviewers should spend their cognitive energy listening and probing, not filling out forms. The detailed scoring happens post-interview using the rubric.
 
@@ -140,7 +137,7 @@ If pre-screening results were consumed in Step 1:
 
 ### Step 8 — Output
 
-Produce all three files in `docs/outbox/`:
+Produce all three files in the output directory:
 
 1. `{candidate}-position-assessment.md`
 2. `{candidate}-interview-questions.md`
@@ -299,11 +296,7 @@ Write freely during the interview. Focus on what the candidate says and does, no
 
 ## 6. Language Detection
 
-Count language-specific tokens across all input documents and conversation context. Classification:
-
-- **>80% single language** — auto-select that language for output
-- **60-80% dominant language** — recommend dominant, ask user to confirm
-- **<60% any language** — ask user to choose
+Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 Supported languages:
 - `en` — English

@@ -10,7 +10,7 @@ The Devcontainer Generator can add infrastructure services to your development e
 | MySQL 8 | `mysql:8` | 3306 | root: `root` / `root`, app: `dev` / `dev` | `mysqladmin ping -h localhost` |
 | MongoDB 7 | `mongo:7` | 27017 | `admin` / `admin` | `mongosh --eval "db.adminCommand('ping')"` |
 | Redis 7 | `redis:7-alpine` | 6379 | No authentication | `redis-cli ping` |
-| RabbitMQ | `rabbitmq:3.13-management` | 5672, 15672 | `guest` / `guest` | `rabbitmq-diagnostics check_running` |
+| RabbitMQ | `rabbitmq:4-management` | 5672, 15672 | `guest` / `guest` | `rabbitmq-diagnostics check_running` |
 | Kafka (with Zookeeper) | `confluentinc/cp-kafka:7.5.0` | 9092, 29092, 2181 | No authentication | `kafka-broker-api-versions` |
 | Azurite | `mcr.microsoft.com/azure-storage/azurite` | 10000, 10001, 10002 | Well-known dev credentials | None (no built-in check) |
 | LocalStack | `localstack/localstack:latest` | 4566 | `test` / `test` | `curl http://localstack:4566/_localstack/health` |

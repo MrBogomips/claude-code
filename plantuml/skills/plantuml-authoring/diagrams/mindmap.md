@@ -29,7 +29,7 @@ brainstorming, note-taking, or executive-facing conceptual overviews.
 PlantUML 1.2026.x mindmap rendering does **not reserve enough left-side
 padding**, especially when branches grow leftward (`-` prefix). The SVG
 viewBox can start at a negative `x`, and PNG output clips the leftmost
-labels. Adversarial reviewers consistently flag this as a defect.
+labels.
 
 Add explicit canvas padding at the top of any mindmap that uses
 left-side branches:

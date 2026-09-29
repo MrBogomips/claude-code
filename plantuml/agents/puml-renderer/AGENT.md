@@ -2,7 +2,7 @@
 name: puml-renderer
 description: "Render or validate a single (file, target) pair and compare against a baseline. Returns a JSON status. Dispatched by plantuml-validate in parallel."
 model: haiku
-allowed-tools: Bash
+tools: Bash
 ---
 
 # PlantUML Renderer Agent

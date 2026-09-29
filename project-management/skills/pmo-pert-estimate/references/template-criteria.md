@@ -19,20 +19,16 @@ English canonical name **or** the Italian translation produced when
 | `Risks` | `Rischi` | Risk register with P×I scoring and Management Reserve |
 | `Summary` | `Riepilogo` | Phase rollup, effort bands, calendar duration |
 
-**Removed (vs the legacy 5-sheet layout)**: `Timeline` (sequential Gantt — was
-not actionable, see Issue #4 in the refactor changelog) and `Resources` (held
-percentages presented as effort — Issue #1). Both responsibilities are now
-covered by the single PD-based `Resource Plan`.
-
-**Extra sheets**: Preserved as-is. The skill will not populate them but will
-not remove them either.
+**Extra sheets**: Accepted by the validator. Generated workbooks contain only
+the 4 sheets above.
 
 ---
 
 ## 2. Required Columns per Sheet
 
-Column position is flexible. The validator searches the header row for
-matching column names. Column order does not matter.
+The validator locates required columns by header text (partial,
+case-insensitive match). The PERT formula check reads column H, so keep
+PERT Effort in column H.
 
 ### WBS Sheet
 
@@ -46,9 +42,9 @@ matching column names. Column order does not matter.
 | Resources | Role codes. **Order matters**: the first element is the activity's primary role and drives Resource Plan / Effort by Team rollups. |
 | Billable | Y/N flag |
 
-**Optional but expected** (created if missing): Phase, Work Package,
-Activity, Best/Likely/Worst Duration, PERT Duration, σ Duration,
-Dependencies, Risks, Notes, Billable PERT Effort.
+**Also required by the validator**: Phase, Work Package, Activity,
+Best/Likely/Worst Duration, PERT Duration, σ Duration, Dependencies, Risks,
+Notes, Billable PERT Effort.
 
 ### Resource Plan Sheet
 
@@ -74,8 +70,8 @@ within ±1 PD (rounding tolerance).
 | Strategy | Mitigate / Transfer / Accept / Avoid |
 | Contingency | Numeric effort (PD) |
 
-**Optional but expected**: Risk Description, Category, Affected Phases,
-Priority, Mitigation Action, Owner, Contingency Cost.
+**Also required by the validator**: Risk Description, Category, Affected
+Phases, Priority, Mitigation Action, Owner. Optional: Contingency Cost.
 
 **Footer rows**: `TOTAL CONTINGENCY` and `MANAGEMENT RESERVE`. The MR cell
 formula uses the PMI-correct base: `=(WBS!H{total}*(1+pm_pct+devops_pct)+L{contingency_total})*mr_pct`.
@@ -101,7 +97,7 @@ The Summary is followed by a single-column key/value block listing:
 - Total Billable Effort (PD), Billable Ratio
 - Calendar Duration (weeks) — single number
 - Effort by Team (PD) — real PD totals derived from WBS primary roles
-- Sensitivity Scenarios — text list (when `config.scenarios` is provided)
+- Sensitivity Scenarios — text list (when top-level `scenarios` is provided)
 
 ---
 
@@ -116,8 +112,10 @@ The Summary is followed by a single-column key/value block listing:
 | Priority IF | `IF\(.+,"CRITICAL"` | `=IF(G2>=15,"CRITICAL",...)` |
 | Management Reserve | `=\(WBS!H\d+\*\(1\+.*\).+\)\*\d` | `=(WBS!H10*(1+0.1+0.05)+L7)*0.2` |
 
-The validator scans formula cells and checks that structural patterns
-exist in the appropriate columns. Exact formulas are not required.
+The validator checks only the WBS PERT Effort column (H): each formula
+there must be `=(E{n}+4*F{n}+G{n})/6` or a `SUM(...)`. The other patterns
+above, and the cross-references in Section 4, describe what the generator
+writes; the validator does not check them.
 
 ---
 
@@ -135,9 +133,9 @@ exist in the appropriate columns. Exact formulas are not required.
 
 | Element | Behavior |
 |---------|----------|
-| Extra columns on required sheets | Preserved, not populated by the skill |
-| Extra sheets | Preserved, not modified |
-| Missing optional columns | Created automatically by the generator |
+| Extra columns on required sheets | Accepted by the validator (reported as warnings); not carried into generated workbooks |
+| Extra sheets | Accepted by the validator; not carried into generated workbooks |
+| Missing required columns | Reported as validation errors |
 | Reordered columns | Supported — validator builds a column map |
 
 ---
@@ -166,16 +164,16 @@ After successful validation, the validator produces:
 
 1. **Copy the bundled template**
    ```
-   cp .claude/skills/pmo-pert-estimate/assets/pert-template.xlsx ./my-template.xlsx
+   cp <skill-dir>/assets/pert-template.xlsx ./my-template.xlsx
    ```
 2. **Open in Excel / LibreOffice.**
 3. **Verify sheet names**: `WBS`, `Resource Plan` (or `Pianificazione Risorse`), `Risks` (or `Rischi`), `Summary` (or `Riepilogo`). Do not rename to non-matching values.
-4. **Add extra columns or sheets** as needed — they are preserved but not populated.
-5. **Adjust formatting** (colors, fonts, borders). The generator only restyles cells it writes; untouched cells keep your formatting.
+4. **Add extra columns or sheets** as needed — the validator accepts them, but generated workbooks do not include them.
+5. **Adjust formatting** (colors, fonts, borders) for your own copy. The generator builds each workbook from scratch and does not read the template, so template formatting does not carry into generated output.
 6. **Preserve formula patterns** for PERT, σ, Risk Score, Priority IF, and Management Reserve (see Section 3).
 7. **Validate**:
    ```
-   python .claude/skills/pmo-pert-estimate/scripts/validate_template.py --template my-template.xlsx
+   cd <skill-dir>/scripts && python3 validate_template.py --template <path>/my-template.xlsx
    ```
 8. **Configure in CLAUDE.md**:
    ```markdown

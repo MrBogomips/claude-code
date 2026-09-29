@@ -11,7 +11,7 @@ This skill produces standardized post-interview evaluations by guiding interview
 
 The core interaction is a **guided feedback conversation**: rather than accepting vague impressions, the skill probes each competency area with targeted questions, converts subjective statements into observable evidence, and flags potential bias patterns. This coaching approach produces evaluations that are consistent, comparable across candidates, and defensible.
 
-**Output file:** `{candidate}-evaluation.md` in `docs/outbox/`
+**Output file:** `{candidate}-evaluation.md` in the output directory — the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 **Connector support:** Skills degrade gracefully without connectors. See `CONNECTORS.md` for the full registry.
 
@@ -29,9 +29,9 @@ If no connectors are available, the skill asks the user to provide interview not
 
 Collect inputs for the evaluation:
 
-1. **Interview-prep outputs** — if the interview-prep skill was used for this role, collect the interview script, competency framework, and scoring rubric. Accept as file path or pasted text.
+1. **Interview-prep outputs** — if the interview-prep skill was used for this candidate, collect the position assessment, the interview questions (competencies, question plan, answer examples), and the completed interview notes. Accept as file path or pasted text.
 2. **Interviewer notes / feedback** — raw impressions, completed scorecards, or free-form notes from the interviewer(s). Accept as file path, pasted text, or verbal input.
-3. **Candidate information** — name, role title, interview date, interviewer name(s), interview format (panel / 1:1 / video).
+3. **Candidate information** — name, role title, interview date, interviewer name(s), interview format (panel / 1:1 / sequential; in person or video).
 
 If **~~ATS** is connected: search for the candidate profile and pull interview records, previous stage evaluations (pre-screening results, interview-prep script).
 
@@ -41,10 +41,7 @@ If **~~knowledge base** is connected: search for corporate evaluation templates.
 
 **Output format preference:** Check memory for previously stored output format preference. If found, apply as default without re-asking.
 
-**Language detection:** Count language-specific tokens across all input documents:
-- **>80% single language** — auto-select that language for output
-- **60-80% dominant language** — recommend dominant, ask user to confirm
-- **<60% any language** — ask user to choose
+**Language detection:** Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 ### Step 2 — Seniority Matrix Resolution
 
@@ -140,7 +137,7 @@ If no corporate template exists, use the standard evaluation structure from Sect
 
 ### Step 9 — Output
 
-Save the completed evaluation to `docs/outbox/{candidate}-evaluation.md` in the detected language and confirmed format.
+Save the completed evaluation as `{candidate}-evaluation.md` in the output directory, in the detected language and confirmed format.
 
 Present a summary to the user:
 - Candidate name and role
@@ -157,9 +154,11 @@ Present a summary to the user:
 
 | Step | Documents to Read |
 |------|-------------------|
-| Step 1–2 | `references/seniority-matrix-template.md` (only if generating matrix from JD) |
+| Step 1–2 | `references/seniority-matrix-template.md` Sections 1–5 (only if generating the matrix from the JD) |
 | Step 3 | `references/evaluation-template.md` |
-| Step 4–6 | (no additional references — in-skill computation using loaded templates) |
+| Step 4 | (no additional references — uses evaluation-template.md already loaded) |
+| Step 5 | `references/seniority-matrix-template.md` Section 6 (classification algorithm) — load it now if it was not loaded in Step 2 |
+| Step 6 | (no additional references — recommendation thresholds from evaluation-template.md) |
 | Step 7 | (no references — invokes compliance-check skill in embedded mode) |
 | Step 8 | (no additional references — mapping uses evaluation-template.md already loaded) |
 | Step 9 | (no additional references — in-skill output generation) |
@@ -171,7 +170,7 @@ Present a summary to the user:
 ```markdown
 # Interview Evaluation — [Candidate Name] for [Role Title]
 
-Date: [date] | Interviewer(s): [names] | Format: [panel/1:1/video]
+Date: [date] | Interviewer(s): [names] | Format: [panel / 1:1 / sequential]
 
 ## Competency Scores
 
@@ -239,7 +238,7 @@ Date: [date] | Interviewer(s): [names] | Format: [panel/1:1/video]
 
 ## 5. Integration
 
-- **Consumes:** interview-prep outputs (interview script, competency framework, scoring rubric, seniority matrix); interviewer notes and raw feedback
+- **Consumes:** interview-prep outputs (position assessment, interview questions, interview notes); interviewer notes and raw feedback; the seniority matrix used during interview preparation, if one was stored in memory
 - **Invokes:** `compliance-check` in embedded mode (Step 7) to validate the evaluation for bias and legal compliance
 - **Final pipeline output:** this skill produces the terminal artifact of the HR interview pipeline — the structured evaluation that feeds into hiring decisions
 
@@ -247,11 +246,7 @@ Date: [date] | Interviewer(s): [names] | Format: [panel/1:1/video]
 
 ## 6. Language Detection
 
-Count language-specific tokens across all input documents and conversation context. Classification:
-
-- **>80% single language** — auto-select that language for output
-- **60-80% dominant language** — recommend dominant, ask user to confirm
-- **<60% any language** — ask user to choose
+Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 Supported languages:
 - `en` — English

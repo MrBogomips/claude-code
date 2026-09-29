@@ -1,6 +1,6 @@
 {
   "name": "developer-tools",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Developer environment tooling — devcontainer generation, stack detection, infrastructure config",
   "author": {
     "name": "MrBogomips",

@@ -12,7 +12,7 @@ This skill reviews HR documents for legal compliance, bias, and discriminatory l
 It operates in two modes:
 
 - **Embedded mode** — invoked as a validation step by other HR skills (job-description, pre-screening, interview-prep, interview-close). Receives draft text, returns a structured list of findings. No file output.
-- **Standalone mode** — audits any existing HR document provided by the user. Produces a full compliance audit report saved to the outbox directory.
+- **Standalone mode** — audits any existing HR document provided by the user. Produces a full compliance audit report saved to the output directory — the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 The skill applies four analysis layers in sequence:
 
@@ -48,10 +48,7 @@ Analyze the input to determine operating parameters:
   - Italian-language content or references to Italian law → Italy jurisdiction (applies Italian + EU + general rules)
   - EU context without Italian specifics → EU jurisdiction (applies EU + general rules)
   - No jurisdiction cues → General best practices (flag that jurisdiction-specific analysis is limited)
-- **Language detection**: count language-specific tokens across input. Classification:
-  - **>80% single language** → auto-select that language for output
-  - **60-80% dominant language** → recommend dominant, ask user to confirm (standalone only; embedded uses dominant)
-  - **<60% any language** → ask user to choose (standalone only; embedded defaults to English)
+- **Language detection**: Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose. In embedded mode, do not ask: use the dominant language, or English when none dominates.
 
 If **~~knowledge base** is connected: search for organization-specific compliance policies and previous audit results for similar document types.
 
@@ -72,7 +69,7 @@ For each finding, record: location in document, the specific text, the prohibite
 
 Use built-in bias detection rules from `references/prohibited-topics.md` (gendered/ageist/ableist sections and validation rules).
 
-When the sibling skill **job-description** provides an inclusive language guide (`../job-description/` → `inclusive-language-guide.md`), load it at runtime for enhanced language analysis with broader replacement suggestions. This is a forward reference resolved at runtime — if the file does not exist, proceed with built-in rules only.
+Also load the **job-description** skill's inclusive language guide (the `inclusive-language-guide.md` file in `../job-description/references/`) for broader replacement suggestions. If the file is not present, proceed with the built-in rules only.
 
 Scan for:
 
@@ -135,12 +132,13 @@ For each finding, record: location, the structural gap, applicable rule/law, sev
 
 - `location` — where in the document the issue occurs (section, line, field name)
 - `issue` — description of the compliance problem
+- `law` — the statute article, GDPR article, or named best practice the finding rests on (required; see Self-Check Rules)
 - `severity` — `CRITICAL`, `WARNING`, or `INFO`
 - `suggested_fix` — actionable correction
 
 No file is produced. The calling skill receives the list and decides how to act on it.
 
-**Standalone mode:** Produce a compliance audit report saved to `docs/outbox/{document-name}-compliance-audit.md` using the output template (see Section 4).
+**Standalone mode:** Produce a compliance audit report saved as `{document-name}-compliance-audit.md` in the output directory using the output template (see Section 4).
 
 Present a summary to the user: total issues by severity, overall status, and recommended next steps.
 
@@ -152,7 +150,7 @@ If the user requests a corrected version, produce a clean copy of the original d
 - WARNING issues: corrected with best-practice language
 - INFO issues: improved where straightforward
 
-Save to `docs/outbox/{document-name}-clean.md`. Highlight changes with inline comments so the user can review what was modified and why.
+Save as `{document-name}-clean.md` in the output directory. Highlight changes with inline comments so the user can review what was modified and why.
 
 ---
 
@@ -231,12 +229,14 @@ The skill returns a list of finding objects:
   {
     "location": "Section 3, paragraph 2",
     "issue": "Question 'Are you married?' directly asks about marital status",
+    "law": "D.Lgs. 198/2006 Art. 27(1); L. 300/1970 Art. 8",
     "severity": "CRITICAL",
     "suggested_fix": "Remove the question entirely — marital status is not relevant to professional aptitude"
   },
   {
     "location": "Requirements section",
     "issue": "'Native Italian speaker' is a proxy for national origin discrimination",
+    "law": "D.Lgs. 215/2003 Art. 2(1)(b)",
     "severity": "WARNING",
     "suggested_fix": "Replace with 'Fluent in Italian (C1/C2 level)'"
   }
@@ -267,11 +267,7 @@ Before returning any findings, the skill validates its own output:
 
 ## 7. Language Detection
 
-Count language-specific tokens across input documents and conversation context. Classification:
-
-- **>80% single language** → auto-select that language for output
-- **60-80% dominant language** → recommend dominant, ask user to confirm (standalone mode); use dominant silently (embedded mode)
-- **<60% any language** → ask user to choose (standalone mode); default to English (embedded mode)
+Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose. In embedded mode, do not ask: use the dominant language, or English when none dominates.
 
 Supported languages:
 - `en` — English

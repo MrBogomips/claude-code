@@ -14,7 +14,7 @@ This skill writes professional Statements of Work from project briefs, PRDs, con
 
 The skill auto-detects language from input documents and produces output in the detected language. When language is ambiguous (mixed-language inputs), it asks the user to choose. Language packs provide localized section headers, boilerplate text, and legal terminology.
 
-**Output directory:** `docs/outbox/` (configurable)
+**Output directory:** the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 **Connector support:** Skills degrade gracefully without connectors. See `CONNECTORS.md` for the full registry.
 
@@ -33,14 +33,14 @@ The skill auto-detects language from input documents and produces output in the 
 Read all provided documents (notes, PRDs, briefs, contracts, emails, meeting transcripts). For each document:
 - Identify document type (brief, contract, RFP, meeting notes, technical spec)
 - Extract key entities: parties, dates, deliverables, constraints, budget references
-- Detect language (count tokens per language, flag if mixed > 20%)
+- Detect the language (see Section 6, Language Detection); note when the inputs clearly mix languages
 - Rate input maturity: **rich** (clear scope, parties, timeline) / **partial** (gaps in 2+ critical areas) / **thin** (high-level only)
 
 If connectors are available:
 - **~~knowledge base**: search for existing templates matching the project domain
 - **~~document storage**: search for related documents (past SOWs for the same client, similar projects)
 
-Save analysis to `docs/outbox/<project-name>-input-analysis.md`.
+Save analysis to `<output directory>/<project-name>-input-analysis.md`.
 
 ### Step 2 — Mode Selection
 
@@ -115,7 +115,7 @@ Insert a placeholder with instruction to run `sow-estimate` to populate:
 > - Effort summary per phase (CAPEX/OPEX breakdown)
 > - Rate card and resource allocation
 > - Payment schedule aligned with milestones
-> - Confidence intervals from PERT analysis
+> - Effort bands (Low / Medium / High) and management reserve from PERT analysis
 ```
 
 ### Step 7 — Consistency Check
@@ -132,7 +132,7 @@ Flag any inconsistencies to the user with specific fix recommendations.
 
 ### Step 8 — Output
 
-Save the completed SOW to `docs/outbox/<project-name>-sow-v0.1.0.md`.
+Save the completed SOW to `<output directory>/<project-name>-sow-v0.1.0.md`.
 
 Present a summary: section count, word count, language, mode, any placeholders remaining, and suggested next steps (run `sow-review` for quality check, run `sow-estimate` for economics).
 
@@ -189,10 +189,7 @@ Present a summary: section count, word count, language, mode, any placeholders r
 
 ## 6. Language Detection
 
-Count language-specific tokens across all input documents. Classification:
-- **>80% single language** → auto-select that language
-- **60-80% dominant language** → recommend dominant, ask user to confirm
-- **<60% any language** → ask user to choose
+**Language detection:** Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 Supported languages and their packs:
 - `en` — `references/language-packs/en.md`

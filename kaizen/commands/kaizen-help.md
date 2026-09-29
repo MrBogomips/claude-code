@@ -33,7 +33,7 @@ Profiles define the improvement domain. Three are bundled:
 Analyzes Claude Code tool and skill usage patterns. Detects anti-patterns like bash grep instead of Grep tool, missing CLAUDE.md sections, unconfigured permissions. Suggests configuration improvements.
 
 **KPIs:** tool_efficiency, search_precision, config_completeness, skill_utilization
-**Mutates:** `.claude/CLAUDE.md`, `.claude/settings.json`
+**Mutates:** `.claude/CLAUDE.md`, `.claude/settings.json`, `.claude/settings.local.json`
 **Best for:** Optimizing your Claude Code workflow
 
 ### code-refactoring
@@ -81,9 +81,9 @@ Use `/kaizen-history` to browse the audit trail.
 
 ## Setup
 
-### Required: Sequential Thinking MCP
+### Optional: Sequential Thinking MCP
 
-The kaizen engine requires Sequential Thinking MCP for loop orchestration.
+The kaizen engine can record each iteration as a Sequential Thinking chain when this MCP server is connected; it runs without it.
 
 **Installation:**
 
@@ -104,8 +104,7 @@ Add to your `.claude/settings.json` or MCP configuration:
 
 | Issue | Solution |
 |-------|----------|
-| "Sequential Thinking MCP not found" | Install the MCP server (see Setup above) |
 | Measurement tool fails | Check Python/TS runtime is installed; read the error in the audit trail |
 | All iterations revert | The epsilon may be too high; the scope may be too narrow; try a different approach |
-| Context window exhaustion | The engine compacts between iterations; reduce iteration budget if needed |
+| Context window exhaustion | Reduce the iteration budget; the engine writes each iteration to disk and reloads only the summary and last decision |
 | KPIs don't improve | Check if the measurement tool is correct; review the adversarial review output |

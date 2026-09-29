@@ -1,7 +1,7 @@
 ---
 name: plantuml-migrate
 description: Apply a Policy change across all `.puml` files in the project (theme switch, target add/remove, brand colors update). Use after editing `## PlantUML Policy` in CLAUDE.md. Detects manual edits to `.plantuml/_*.puml` and halts to prompt before overwriting. Backs up `.plantuml/` before any destructive write.
-allowed-tools: Read, Edit, Glob, Bash, Task
+allowed-tools: Read, Edit, Glob, Bash, Agent
 ---
 
 # PlantUML Migrate
@@ -85,7 +85,7 @@ so safety mechanisms are explicit.
    (applied/skipped/error counts) for the summary.
 
 7. **Validate**: run `plantuml -checkonly` over every `.puml` file
-   (excluding `.plantuml/_*.puml`). Aggregate results. On any failure,
+   (excluding everything under `.plantuml/`). Aggregate results. On any failure,
    stop reporting "complete" and emit a recovery block (see Output).
 
 ## Output

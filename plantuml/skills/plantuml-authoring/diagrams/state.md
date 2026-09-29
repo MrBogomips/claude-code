@@ -82,5 +82,5 @@ Cancelled --> [*]
   from `[*]` and have a path to `[*]` (or be explicitly terminal).
 - **Concurrent regions silently disappear with smetana.** Fix: add
   `!pragma layout dot` after the include chain (see Render-engine
-  note above). Verify by checking that `*.png.stderr` contains no
-  `UNKNOWN ENTITY` lines after rendering.
+  note above). Verify by checking that the render's stderr shows no
+  `exportGroup issue` or `UNKNOWN ENTITY` lines.

@@ -1,6 +1,6 @@
 ---
 name: bid-delivery-summary
-description: "Distill a software project assessment, estimation, technical analysis, architecture study, solution design, or AI-generated evaluation into a concise INTERNAL commercial and delivery summary for sales, account managers, delivery and project managers, practice leads, resource and bid managers, and executive stakeholders. Produces an executive and operational brief covering scope, resource requirements, effort estimation, resource allocation, activities, milestones, assumptions, risks, dependencies, commercial considerations, a bid-review checklist with a bid-readiness verdict, and a delivery-readiness assessment. Effort-only by default; cost figures appear only when an approved cost model is present and the user explicitly authorizes it. Output begins with a mandatory INTERNAL USE ONLY notice. Auto-detects language (English/Italian). Use when the user says 'internal summary', 'bid readiness', 'delivery readiness', 'commercial summary', 'summarize this assessment for sales/bid', 'proposal readiness', 'is this ready to bid', 'riepilogo interno', 'sintesi per l'offerta', 'valutazione bid', 'sommario commerciale e di delivery', or 'siamo pronti per l'offerta'."
+description: "Distill a software project assessment, estimation, technical analysis, architecture study, solution design or AI-generated evaluation into an INTERNAL commercial and delivery summary for sales, bid, account, delivery, project and resource managers and executives — scope, resources, effort, activities, milestones, assumptions, risks, dependencies, commercial considerations, a bid-readiness verdict and a delivery-readiness assessment. Effort-only unless an approved cost model is present and authorized. English or Italian. Use when asked for an internal, commercial, bid or delivery summary of an assessment, or whether a project is ready to bid or propose (e.g. 'is this ready to bid', 'riepilogo interno', 'sintesi per l'offerta', 'siamo pronti per l'offerta')."
 ---
 
 # Bid & Delivery Summary — Internal Commercial & Delivery Brief
@@ -22,7 +22,7 @@ and delivery planning.
 
 **The output focuses on actionable information and decision support, not implementation detail.**
 
-Three rules are mandatory and non-negotiable:
+Four rules are mandatory and non-negotiable:
 
 1. **Confidentiality header** — the document always begins with the verbatim `INTERNAL USE ONLY`
    notice from the language pack.
@@ -38,7 +38,7 @@ Three rules are mandatory and non-negotiable:
 The skill pauses for the user at two points: the cost-model gate (Step 3) and the section-plan
 approval (Step 4). Everything else runs automatically.
 
-**Output:** the internal summary → `docs/outbox/<doc-name>-internal-summary-v<N>.md`. The
+**Output:** the internal summary → `<deliverables>/<doc-name>-internal-summary-v<N>.md`, where `<deliverables>` is the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`). The
 `INTERNAL USE ONLY` header carries the confidentiality semantics.
 
 The skill auto-detects language from the input and produces output in the detected language.
@@ -60,11 +60,12 @@ proceeds effort-only when no approved cost model is found.
 ### Step 1 — Input Ingestion & Normalization
 
 Read all provided source documents. If a source is not Markdown (PDF, DOCX, PPTX, XLSX, HTML), convert
-it first using the `markitdown` MCP tool (`convert_to_markdown`). Do not attempt manual extraction
-when the tool is available.
+it first with a connected **~~document converter** (for example markitdown's `convert_to_markdown`);
+if none is connected, read it with the tools available and tell the user about any source that cannot be read.
 
-Detect language by counting language-specific tokens across the input (house thresholds: >80% →
-auto-select; 60–80% → recommend and confirm; <60% → ask).
+**Language detection:** Use the dominant language of the input documents and conversation for
+output. When the inputs clearly mix languages, recommend the dominant language and ask the user to
+confirm; when no language dominates, ask the user to choose.
 
 Establish a working `<doc-name>` (slug from the source title or filename) for output naming.
 
@@ -150,13 +151,13 @@ estimates, cost estimates (only if authorized), and commercial assumptions.
 
 ### Step 6 — Output
 
-Write the internal summary to `docs/outbox/<doc-name>-internal-summary-v<N>.md` (start at `v1`;
+Write the internal summary to `<deliverables>/<doc-name>-internal-summary-v<N>.md` (start at `v1`;
 increment the suffix if the target already exists).
 
 Present a brief summary to the user (outside the document): the Bid Readiness Conclusion, the Delivery
 Confidence Level, whether costs were included or the output is effort-only, the count of flagged gaps
-and customer questions, and the detected language. Offer optional DOCX conversion via
-`document-skills:docx` or the `links-gc-xdoc` skill.
+and customer questions, and the detected language. If a DOCX-generation skill is available (for example
+`document-skills:docx`), offer optional DOCX conversion with it.
 
 ---
 
@@ -164,7 +165,7 @@ and customer questions, and the detected language. Offer optional DOCX conversio
 
 | Step | Documents to Read |
 |------|-------------------|
-| Step 1 | (no references — ingestion, conversion via `markitdown`, language detection) |
+| Step 1 | (no references — ingestion, conversion via **~~document converter**, language detection) |
 | Step 2 | `references/extraction-principles.md` |
 | Step 3 | `references/cost-model-verification.md` |
 | Step 4 | `references/summary-structure.md` (audience-aware section plan) |
@@ -198,11 +199,9 @@ Before writing output, the skill validates itself:
 
 ## 5. Language Detection
 
-Count language-specific tokens across the input. Classification:
-
-- **>80% single language** → auto-select that language for output
-- **60–80% dominant language** → recommend the dominant language, ask the user to confirm
-- **<60% any language** → ask the user to choose
+Use the dominant language of the input documents and conversation for output. When the inputs
+clearly mix languages, recommend the dominant language and ask the user to confirm; when no language
+dominates, ask the user to choose.
 
 Supported languages:
 - `en` — English (`references/language-packs/en.md`)

@@ -1,7 +1,7 @@
 {
   "name": "tech-writing",
-  "version": "0.2.0",
-  "description": "Technical writing support — transform documents between internal and client-facing audiences: redact reserved material into client deliverables, distill assessments into internal commercial & delivery summaries, plus documentation structure, style guides, and content review",
+  "version": "0.2.1",
+  "description": "Technical writing support — transform documents between internal and client-facing audiences: redact reserved material into client deliverables and distill assessments into internal commercial & delivery summaries",
   "author": {
     "name": "MrBogomips",
     "url": "https://github.com/MrBogomips"

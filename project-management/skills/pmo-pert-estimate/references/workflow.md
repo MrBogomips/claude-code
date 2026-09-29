@@ -37,14 +37,13 @@ Backtrack arrows:
 ### Steps
 
 1. Ask output language (default: `en`)
-2. Ask effort unit (`pd` / `hours` / `story_points`)
-3. Ask duration unit (`days` / `weeks` / `sprints`)
-4. Ask output directory (default: `docs/outbox/`)
-5. Ask about custom Excel template:
-   - **No** — inform about bundled template location and criteria doc
-   - **Yes** — run `scripts/validate_template.py`; valid = copy to `assets/`; invalid = show errors
-   - **Customize now** — copy bundled to project dir, user modifies, then validate
-   - **Generate empty only** — produce base template and stop (inspection mode)
+2. Effort unit: `pd` (capacity checks and bands are person-day based)
+3. Duration unit: `d` (working days; the Resource Plan converts to weeks at 5 days per week)
+4. Ask output directory (suggest `docs/outbox/`)
+5. Ask about template (the generator always builds the canonical layout; a custom template is only checked for compatibility):
+   - **Use bundled** — inform about bundled template location and criteria doc
+   - **Check a custom template** — run `scripts/validate_template.py`; show errors; record the path for reference only
+   - **Inspect only** — point to the bundled template and stop
 6. Save configuration to CLAUDE.md
 
 ### Error Recovery
@@ -159,7 +158,7 @@ Backtrack arrows:
 - Evaluates Probability (1-5) x Impact (1-5)
 - Proposes strategy (Mitigate / Transfer / Accept / Avoid)
 - Calculates contingency per risk
-- Proposes management reserve (% of total PERT)
+- Proposes management reserve (% of Tech PERT + overhead + contingency)
 - User validates before proceeding to Estimator
 
 ### Estimator (Opus) — runs after risk validation

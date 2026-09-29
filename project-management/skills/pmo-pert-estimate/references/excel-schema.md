@@ -21,7 +21,7 @@ exactly **4 sheets** in this order: **WBS**, **Resource Plan** /
 
 ---
 
-## JSON Input Schema (v2 — 4-sheet refactor)
+## JSON Input Schema
 
 ### `config` block
 
@@ -37,7 +37,7 @@ exactly **4 sheets** in this order: **WBS**, **Resource Plan** /
     "management_reserve_pct": 0.10,
     "avg_rate": 500,                    // optional, drives Contingency Cost columns
 
-    // ---- New in v2 ----
+    // ---- Overhead, bands, calendar ----
     "pm_overhead_pct": 0.0,             // ratio of Tech PERT (e.g. 0.10 = +10%)
     "devops_overhead_pct": 0.0,         // ratio of Tech PERT
     "alta_uplift_pct": 0.12,            // High Band uplift over Medium Band
@@ -46,7 +46,7 @@ exactly **4 sheets** in this order: **WBS**, **Resource Plan** /
 }
 ```
 
-### `phases[].start_week` / `phases[].end_week` (new, optional)
+### `phases[].start_week` / `phases[].end_week` (optional)
 
 ```jsonc
 {
@@ -66,7 +66,7 @@ When present, drive the Resource Plan calendar and the Summary
 `Calendar Duration` value. When absent, phases are stacked sequentially
 using a duration heuristic.
 
-### `scenarios[]` (new, optional)
+### `scenarios[]` (top-level, optional)
 
 ```jsonc
 {
@@ -151,7 +151,7 @@ fields) is still accepted. The generator routes input through
 
 ## Sheet 1 — WBS
 
-Unchanged from v1. Columns A–S retain the same layout.
+Columns A–S.
 
 | Col | Header | Type | Leaf row | Rollup row | TOTAL row |
 |-----|--------|------|----------|-----------|-----------|
@@ -174,8 +174,6 @@ Unchanged from v1. Columns A–S retain the same layout.
 ---
 
 ## Sheet 2 — Resource Plan (Pianificazione Risorse)
-
-Replaces both the legacy Resources and Timeline sheets.
 
 ### Layout
 
@@ -214,7 +212,7 @@ tolerance from the per-phase distribution).
 
 ## Sheet 3 — Risks (Rischi)
 
-Columns A–M unchanged from v1.
+Columns A–M.
 
 | Col | Header | Type | Formula |
 |-----|--------|------|---------|
@@ -232,7 +230,7 @@ Columns A–M unchanged from v1.
 | L | Contingency (pd) | input | Numeric (PD) |
 | M | Contingency Cost | **formula** | `=L{r}*avg_rate` (when `avg_rate` is configured) |
 
-### Footer rows (v2)
+### Footer rows
 
 | Row | Column | Formula |
 |-----|--------|---------|
@@ -286,8 +284,8 @@ Column A holds the label, column B holds the formula.
 |-------|-------|
 | Calendar Duration (weeks) | `config.calendar_total_weeks` if set, else `max(phase.end_week) - min(phase.start_week) + 1`, else Resource Plan `total_weeks` fallback |
 
-Single number. No CI 68%/95% Duration block is produced (v1's sequential
-leaf-sum was misleading — Issue #2 in the refactor changelog).
+Single number. No CI 68%/95% Duration block is produced: a sequential
+sum of leaf durations ignores phase parallelism.
 
 ### Effort by Team (after a blank row)
 
@@ -298,7 +296,7 @@ Tech PERT minus activities with empty `resources[]`.
 
 ### Sensitivity Scenarios (optional, after a blank row)
 
-When `config.scenarios` is provided, the header `Sensitivity Scenarios`
+When top-level `scenarios` is provided, the header `Sensitivity Scenarios`
 is followed by one text row per entry in column A.
 
 ---
@@ -309,23 +307,22 @@ is followed by one text row per entry in column A.
 
 All output cells representing effort are person-days. Percentages may
 only appear in input JSON under `config.*_pct` fields to declare ratios.
-The previous Resources sheet mixed % allocations with effort cells in a
-way that produced numerically meaningless rollups (Issue #1) — that
-pattern is no longer expressible.
+Mixing % allocations with effort cells produces numerically
+meaningless rollups.
 
 ### Calendar duration as an explicit single number
 
 Aggregating leaf PERT durations sequentially ignores phase parallelism
 and over-estimates the calendar duration by a factor of 2–3 in projects
-with overlapping phases (Issue #2). The new design represents calendar
-duration as a single declarative value.
+with overlapping phases. Calendar duration is therefore a single
+declarative value.
 
 ### MR base = Tech + Overhead + Contingency
 
-Per PMI PMBOK §4.3 and §11.7, Management Reserve covers unknown unknowns
-on the full effort baseline, not only on the modelled contingency
-(Issue #3). The new formula puts Tech + Overhead + Contingency into the
-multiplier so the displayed MR matches the project's actual baseline.
+Management Reserve covers unknown unknowns on the full effort
+baseline, not only on the modelled contingency. The formula puts
+Tech + Overhead + Contingency into the multiplier so the displayed MR
+matches the project's actual baseline.
 
 ### Primary role per activity
 
@@ -339,5 +336,5 @@ generator does not infer the primary role from notes or other signals.
 
 Only σ for Duration is computed (column M of WBS). Effort uncertainty is
 communicated through the three-point values (O/M/P) and the three bands.
-The legacy v1 σ-total / CI 68/95 block was based on a sequential leaf
-sum and is no longer produced.
+No σ-total / CI 68/95 block is produced, because it would rest on a
+sequential leaf sum.

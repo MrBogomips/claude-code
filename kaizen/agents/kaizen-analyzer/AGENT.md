@@ -2,7 +2,7 @@
 name: kaizen-analyzer
 description: "Interpret kaizen KPI measurements by comparing current values against baseline and history. Identifies trends, calculates deltas, performs root-cause analysis, ranks improvement opportunities, and flags anomalies. Dispatched during ANALYZE phase of each kaizen iteration."
 model: sonnet
-allowed-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, Write
 ---
 
 # Kaizen Analyzer Agent
@@ -72,7 +72,6 @@ Write analysis as markdown to the specified output path:
 ## Constraints
 
 - Do NOT propose changes — that's the proposer's job
-- Do NOT access or modify files outside the measurement data
-- Base all analysis on data, not assumptions
+- Read only the measurement data you are given; write only the analysis file at the output path
 - If data is insufficient for trend analysis, say so explicitly
 - Apply the domain-specific analysis guidance from the profile when available

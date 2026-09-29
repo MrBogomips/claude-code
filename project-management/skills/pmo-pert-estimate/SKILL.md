@@ -9,7 +9,7 @@ description: "Create PMI-compliant PERT three-point estimation workbooks with WB
 
 This skill produces PMI-compliant PERT three-point estimation workbooks through a multi-phase agentic pipeline. Starting from project documents (SoW, RFP, scope descriptions), it interactively builds a WBS, resource breakdown, risk register, and three-point estimates, then generates a fully automated Excel workbook with live formulas (PERT, SUM rollups, cross-sheet references, effort bands). The skill follows three key principles: **progressive disclosure** of reference documents (loaded only when the relevant phase begins, never all at once), **adaptive interaction** across three levels (Formative / Collaborative / Autonomous) chosen by the user with dynamic adjustment, and **strict input/formula separation** where Excel formula cells are always injected as strings and never overwritten with computed values.
 
-**Output workbook composition:** exactly 4 sheets in this order — `WBS`, `Resource Plan` (`Pianificazione Risorse` in IT), `Risks` (`Rischi` in IT), `Summary` (`Riepilogo` in IT). All effort cells are person-days (PD); calendar quantities are weeks. No cell ever holds a percentage that is presented as effort. The legacy `Timeline` (sequential Gantt) and `Resources` (% allocation matrix) sheets are no longer produced — both were structurally misleading and have been replaced by the single PD-based `Resource Plan`.
+**Output workbook composition:** exactly 4 sheets in this order — `WBS`, `Resource Plan` (`Pianificazione Risorse` in IT), `Risks` (`Rischi` in IT), `Summary` (`Riepilogo` in IT). All effort cells are person-days (PD); calendar quantities are weeks. No cell ever holds a percentage that is presented as effort.
 
 **Bundled assets:**
 
@@ -37,7 +37,7 @@ references/
 ```
 
 **Workspace directory:** `docs/pert-workspace/` (created during Phase 1)
-**Output directory:** configurable per project (default: `docs/outbox/`)
+**Output directory:** the `OutputDir` the project's CLAUDE.md declares (in `## pmo-pert-estimate Configuration`); if none is declared, ask the user in Phase 0 (suggest `docs/outbox/`)
 
 ---
 
@@ -49,24 +49,22 @@ When running in a repository for the first time, check whether `CLAUDE.md` conta
 
 1. **Ask** the user for project-specific values:
    - **Language** -- output language (default: `en`)
-   - **EffortUnit** -- `pd` / `hours` / `story_points` (default: `pd`)
-   - **DurationUnit** -- `days` / `weeks` / `sprints` (default: `d`)
+   - **EffortUnit** -- `pd` (the workbook's capacity checks and bands are person-day based)
+   - **DurationUnit** -- `d` (working days; the Resource Plan converts to weeks at 5 days per week)
    - **PrimaryColor** -- hex color for Excel formatting (default: `1B4FA5`)
    - **Currency** -- currency code (default: `EUR`)
-   - **PeriodType** -- `weekly` / `biweekly` / `monthly` (default: `biweekly`)
    - **AvgRate** -- average daily rate for cost calculations (optional, default: none)
    - **ManagementReservePct** -- management reserve percentage (default: `10`)
-   - **OutputDir** -- where to save generated workbooks (default: `docs/outbox/`)
+   - **OutputDir** -- where to save generated workbooks (suggest `docs/outbox/`)
 
-2. **Ask about template**. Offer four options:
-   - **Use bundled** -- inform that the base template is at `assets/pert-template.xlsx` (relative to this skill directory) and criteria are documented in `references/template-criteria.md`
-   - **Use custom** -- run validation:
+2. **Ask about template**. The generator always builds the canonical 4-sheet layout from scratch; a custom template is checked for compatibility but is not used as the base for generated workbooks. Offer:
+   - **Use bundled** -- the reference layout is at `assets/pert-template.xlsx` (relative to this skill directory); criteria are in `references/template-criteria.md`
+   - **Check a custom template** -- run validation:
      ```bash
      cd <skill-dir>/scripts && python3 validate_template.py --template <user_path>
      ```
-     If valid: record path. If invalid: show specific errors, offer to fall back to bundled.
-   - **Customize now** -- copy bundled template to project directory for user modification, then validate
-   - **Generate empty only** -- produce the base template and stop (inspection mode)
+     Show any errors. Record the path for reference only.
+   - **Inspect only** -- point the user to the bundled template and stop
 
 3. **Write** the configuration section into `CLAUDE.md`:
 
@@ -80,7 +78,6 @@ When running in a repository for the first time, check whether `CLAUDE.md` conta
 | DurationUnit | d |
 | PrimaryColor | 1B4FA5 |
 | Currency | EUR |
-| PeriodType | biweekly |
 | AvgRate | (none) |
 | ManagementReservePct | 10 |
 | OutputDir | docs/outbox/ |
@@ -215,7 +212,7 @@ Agent(model="sonnet")
   - Evaluate Probability (1-5) x Impact (1-5)
   - Propose strategy: Mitigate / Transfer / Accept / Avoid
   - Calculate contingency per risk
-  - Propose management reserve (% of total PERT, default from config `ManagementReservePct`)
+  - Propose management reserve as a % of Tech PERT + PM/DevOps overhead + total contingency (default from config `ManagementReservePct`)
   - For **Level A**: introduce P x I matrix with examples, explain each response strategy, walk through contingency calculation
   - For **Level B**: propose complete risk register, highlight highest-priority risks
   - For **Level C**: generate complete risk register autonomously
@@ -270,7 +267,7 @@ Agent(model="sonnet")
   - `docs/pert-workspace/rbs-draft.md`
   - `docs/pert-workspace/risk-register.md`
   - `docs/pert-workspace/estimates-draft.md`
-- The pmo-pert-estimate configuration from CLAUDE.md (effort_unit, duration_unit, primary_color, currency, period_type, avg_rate, management_reserve_pct)
+- The pmo-pert-estimate configuration from CLAUDE.md (lang, effort_unit, duration_unit, primary_color, currency, avg_rate, management_reserve_pct — as a ratio, e.g. 10 → 0.10)
 - Target values (if any)
 - Reference: `references/excel-schema.md` -- the complete JSON input schema and column/formula definitions per sheet
 - Instructions:
@@ -293,7 +290,7 @@ If the Python script fails during execution:
    - Wrong type (e.g., string where number expected): fix the type in JSON
    - Formula error: check against `references/excel-schema.md` patterns
    - openpyxl API error: report the specific cell/sheet causing the issue
-3. **Re-generate** the JSON with fixes and retry (maximum 2 attempts)
+3. **Re-generate** the JSON with fixes and retry (maximum 2 retries)
 4. **If unrecoverable** after 2 retries: report the error to the user with full context (traceback, last valid artifacts, specific cell/sheet if known) for manual intervention
 
 ---
@@ -328,7 +325,7 @@ Agent(model="sonnet")
   - If 3 iterations exhausted with remaining issues: present the issues to the user with recommendations
 - Output: validation report + corrected Excel (if fixes were applied)
 
-**Present final workbook** to user with summary statistics (total phases, activities, PERT effort, PERT duration, CI ranges, number of risks, contingency, adjusted estimate).
+**Present final workbook** to user with summary statistics (total phases, activities, Tech PERT effort, Low / Medium / High Band, Calendar Duration in weeks, number of risks, contingency, Management Reserve).
 
 ---
 

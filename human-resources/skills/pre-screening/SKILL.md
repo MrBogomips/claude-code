@@ -16,7 +16,7 @@ It operates in two delivery modes:
 
 The skill auto-detects language from the conversation and input documents, producing output in the detected language. Supported languages: English (`en`) and Italian (`it`). The user may override with an explicit language choice.
 
-**Output file:** `{candidate}-prescreening.md` in `docs/outbox/`
+**Output file:** `{candidate}-prescreening.md` in the output directory — the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 **Connector support:** Skills degrade gracefully without connectors.
 
@@ -44,10 +44,7 @@ If **~~knowledge base** is connected: search for organization-specific screening
 
 **Output format preference:** Check memory for previously stored output format preference (async vs. live default, specific formatting choices). If found, apply as default without re-asking.
 
-**Language detection:** Count language-specific tokens across all input documents:
-- **>80% single language** — auto-select that language for output
-- **60-80% dominant language** — recommend dominant, ask user to confirm
-- **<60% any language** — ask user to choose
+**Language detection:** Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 ### Step 2 — CV-JD Gap Analysis
 
@@ -114,7 +111,7 @@ If any questions are modified, note the compliance adjustments in the output.
 
 ### Step 6 — Output
 
-Produce the final questionnaire as `docs/outbox/{candidate}-prescreening.md` in the selected delivery mode format (see Section 4 for templates).
+Produce the final questionnaire as `{candidate}-prescreening.md` in the output directory, in the selected delivery mode format (see Section 4 for templates).
 
 Present a summary to the user:
 - Delivery mode used
@@ -148,36 +145,36 @@ Present a summary to the user:
 
 **Privacy notice:** [Reference to organization's recruitment privacy notice]
 
-## CV-JD Alignment Summary
-
-| Area | Status | Notes |
-|------|--------|-------|
-| [Requirement 1] | Match / Partial / Gap / Unclear | [Brief note] |
-| ... | ... | ... |
-
 ## Screening Questions
 
 ### Logistics & Eligibility
-1. [Question] — *Rationale: [why this question is asked — recruiter-only, excluded from candidate version]*
+1. [Question]
 
 ### Experience Alignment
-2. [Question] (please answer in 2-4 sentences) — *Rationale: [maps to JD requirement X]*
+2. [Question] (please answer in 2-4 sentences)
 
 ### Motivation
-3. [Question] — *Rationale: [assesses role-specific interest]*
+3. [Question]
 
 ### Key Competency Probe
-4. [Question] (please answer in 3-5 sentences) — *Rationale: [maps to JD competency Y]*
+4. [Question] (please answer in 3-5 sentences)
 
 ### Your Questions
 5. Do you have any questions about the role, team, or company?
 
 ## Evaluation Guidance (recruiter only — do not send to candidate)
 
-| # | Question | Green | Yellow | Red |
-|---|----------|-------|--------|-----|
-| 1 | [Question summary] | [What good looks like] | [Borderline signals] | [Disqualifying signals] |
-| ... | ... | ... | ... | ... |
+### CV-JD Alignment Summary
+
+| Area | Status | Notes |
+|------|--------|-------|
+| [Requirement 1] | Match / Partial / Gap / Unclear | [Brief note] |
+| ... | ... | ... |
+
+| # | Question | Rationale | Green | Yellow | Red |
+|---|----------|-----------|-------|--------|-----|
+| 1 | [Question summary] | [Why asked — maps to JD requirement X] | [What good looks like] | [Borderline signals] | [Disqualifying signals] |
+| ... | ... | ... | ... | ... | ... |
 
 **Suggested pass/fail threshold:** Proceed if zero Red and no more than [N] Yellow signals.
 ```
@@ -275,11 +272,7 @@ Present a summary to the user:
 
 ## 6. Language Detection
 
-Count language-specific tokens across all input documents and conversation context. Classification:
-
-- **>80% single language** — auto-select that language for output
-- **60-80% dominant language** — recommend dominant, ask user to confirm
-- **<60% any language** — ask user to choose
+Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 Supported languages:
 - `en` — English

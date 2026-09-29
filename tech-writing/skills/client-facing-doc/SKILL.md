@@ -1,6 +1,6 @@
 ---
 name: client-facing-doc
-description: "Convert internal or reserved technical documentation (assessments, estimations, AI-assisted drafts, internal notes) into a polished, client-facing deliverable. Silently removes all confidential content — costs, rates, budgets, effort estimates, estimation work breakdowns, resource assumptions, internal planning, AI prompts and intermediate artifacts, drafts, TODOs, internal references — while preserving and improving the customer-relevant technical substance (architecture, scope, NFRs, constraints, design decisions, dependencies, externally-communicable risks). Produces the deliverable in docs/outbox/ and a separate redaction audit in .aidocs/ for verification. Auto-detects language (English/Italian). Use when the user says 'make this client-facing', 'customer-ready version', 'redact this internal document', 'externalize this assessment', 'prepare this for the client', 'rendi questo documento condivisibile', 'versione per il cliente', 'documento per il cliente', or 'sanitizza questo documento interno'."
+description: "Convert internal or reserved technical documentation (assessments, estimations, AI-assisted drafts, internal notes) into a polished, client-facing deliverable. Silently removes confidential content — costs, rates, budgets, effort estimates, estimation breakdowns, resource assumptions, internal planning, AI prompts and artifacts, drafts, TODOs, internal references — while preserving and improving the customer-relevant technical substance, and produces a separate internal redaction audit for verification. English or Italian. Use when asked to make a document client-facing or customer-ready, or to redact, sanitize or externalize an internal document or assessment for a client (e.g. 'versione per il cliente', 'rendi questo documento condivisibile')."
 ---
 
 # Client-Facing Doc — Internal-to-External Document Converter
@@ -30,8 +30,8 @@ removed. Verification happens **after** the fact through a separate redaction au
 caught before the document is shared.
 
 **Outputs:**
-- **Client deliverable** → `docs/outbox/<doc-name>-client-v<N>.md`
-- **Redaction audit** (verification trail, never shared) → `.aidocs/<doc-name>-redaction-audit.md`
+- **Client deliverable** → `<deliverables>/<doc-name>-client-v<N>.md`, where `<deliverables>` is the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`)
+- **Redaction audit** (verification trail, never shared) → `<working-docs>/<doc-name>-redaction-audit.md`, where `<working-docs>` is the working-documents folder the project's CLAUDE.md declares; if none is declared, ask the user, and prefer a git-ignored folder because the audit quotes the removed confidential snippets
 
 The original source document is never modified.
 
@@ -54,14 +54,12 @@ knowledge base connection would add.
 ### Step 1 — Input Ingestion & Normalization
 
 Read all provided source documents. If a source is not Markdown (PDF, DOCX, PPTX, XLSX, HTML), convert
-it to Markdown first using the `markitdown` MCP tool (`convert_to_markdown`). Do not attempt manual
-extraction when the tool is available.
+it to Markdown first with a connected **~~document converter** (for example markitdown's `convert_to_markdown`);
+if none is connected, read it with the tools available and tell the user about any source that cannot be read.
 
-Detect language by counting language-specific tokens across the input. Classification thresholds
-match the house convention:
-- **>80% single language** → auto-select that language
-- **60–80% dominant language** → recommend the dominant language, ask the user to confirm
-- **<60% any language** → ask the user to choose
+**Language detection:** Use the dominant language of the input documents and conversation for
+output. When the inputs clearly mix languages, recommend the dominant language and ask the user to
+confirm; when no language dominates, ask the user to choose.
 
 Establish a working `<doc-name>` (slug derived from the source title or filename) for output naming.
 
@@ -150,10 +148,10 @@ originally authored for the customer.
 
 ### Step 7 — Output
 
-Write the client deliverable to `docs/outbox/<doc-name>-client-v<N>.md` (start at `v1`; increment the
-suffix if the target already exists, per the document-collision convention).
+Write the client deliverable to `<deliverables>/<doc-name>-client-v<N>.md` (start at `v1`; increment the
+suffix to the next free `v<N>` if the target already exists).
 
-Write the redaction audit to `.aidocs/<doc-name>-redaction-audit.md` using
+Write the redaction audit to `<working-docs>/<doc-name>-redaction-audit.md` using
 `references/audit-template.md`, populated from the audit buffer.
 
 Present a summary to the user:
@@ -161,7 +159,7 @@ Present a summary to the user:
 - Residual-scan result (clean / items caught in Step 6)
 - Word count and detected language
 - Path to both output files
-- An offer to convert the deliverable to DOCX via `document-skills:docx` or the `links-gc-xdoc` skill
+- If a DOCX-generation skill is available (for example `document-skills:docx`), an offer to convert the deliverable to DOCX with it
 
 ---
 
@@ -169,7 +167,7 @@ Present a summary to the user:
 
 | Step | Documents to Read |
 |------|-------------------|
-| Step 1 | (no references — ingestion, conversion via `markitdown`, language detection) |
+| Step 1 | (no references — ingestion, conversion via **~~document converter**, language detection) |
 | Step 2 | `references/confidential-taxonomy.md` + `references/preserve-checklist.md` (audience-aware section plan) |
 | Step 3 | `references/confidential-taxonomy.md` |
 | Step 4 | `references/preserve-checklist.md` |
@@ -193,7 +191,7 @@ Before writing output, the skill validates itself:
    removed, not kept. This rule is mandatory and overrides any preference to retain detail.
 5. **Preserve without inventing** — restructuring and prose expansion must not introduce technical
    claims, figures, or commitments absent from the source.
-6. **Audit stays internal** — the redaction audit is written only to `.aidocs/` and is never included
+6. **Audit stays internal** — the redaction audit is written only to the working-documents folder resolved in §1 and is never included
    in, linked from, or referenced by the client deliverable.
 7. **Section plan honored** — the deliverable includes exactly the sections the user kept in Step 2 and
    none of the sections marked for removal. Deviations from the confirmed plan are not allowed without
@@ -203,11 +201,9 @@ Before writing output, the skill validates itself:
 
 ## 5. Language Detection
 
-Count language-specific tokens across the input. Classification:
-
-- **>80% single language** → auto-select that language for output
-- **60–80% dominant language** → recommend the dominant language, ask the user to confirm
-- **<60% any language** → ask the user to choose
+Use the dominant language of the input documents and conversation for output. When the inputs
+clearly mix languages, recommend the dominant language and ask the user to confirm; when no language
+dominates, ask the user to choose.
 
 Supported languages:
 - `en` — English (`references/language-packs/en.md`)

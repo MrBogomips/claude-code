@@ -11,6 +11,7 @@ This skill bridges the gap between a Statement of Work and PERT three-point esti
 
 **Input:** SOW document (markdown or docx) — must have at least: scope/phases, team/roles, and ideally risk sections
 **Output:** Updated SOW with populated Economics and Schedule sections + PERT Excel workbook
+**Output directory:** the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 ---
 
@@ -113,13 +114,13 @@ After PERT completes, read the estimation results and populate the SOW:
 **Economics section (full mode section 10):**
 - Effort summary per phase (from PERT WBS sheet rollups)
 - CAPEX/OPEX breakdown (if rate information available)
-- Rate card (from PERT resources sheet)
+- Rate card (from the SOW's own rate card or the configured AvgRate; the workbook carries no per-role rates)
 - Payment schedule (aligned with SOW milestones)
-- Confidence intervals (from PERT summary sheet: 68% and 95% CI)
-- Total estimate with management reserve
+- Effort bands (from the PERT Summary sheet: Low / Medium / High Band)
+- Total estimate: the Medium Band (includes contingency and management reserve)
 
 **Schedule section (full mode section 9):**
-- PERT-derived timeline (from Timeline sheet)
+- PERT-derived timeline (from the Resource Plan week columns and the Summary's Calendar Duration in weeks)
 - Updated milestone dates (based on PERT duration calculations)
 - Critical path (from dependency analysis)
 
@@ -130,9 +131,9 @@ Present the backfilled sections to the user for review before writing.
 ### Step 8 — Output
 
 Save the updated SOW (replacing the economics placeholder with actual content) to the same path, incrementing the version:
-- `docs/outbox/<project-name>-sow-v0.1.0.md` → `docs/outbox/<project-name>-sow-v0.2.0.md`
+- `<output directory>/<project-name>-sow-v0.1.0.md` → `<output directory>/<project-name>-sow-v0.2.0.md`
 
-Present a summary: extraction statistics (phases, activities, roles, risks extracted), PERT results (total effort, duration, CI ranges), and the updated SOW location.
+Present a summary: extraction statistics (phases, activities, roles, risks extracted), PERT results (Tech PERT effort, Low / Medium / High Band, Calendar Duration in weeks), and the updated SOW location.
 
 ---
 

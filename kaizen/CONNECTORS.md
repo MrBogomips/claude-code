@@ -1,19 +1,19 @@
 # Connectors
 
-Tool-specific connector registry for the kaizen plugin. The engine requires Sequential Thinking MCP for loop orchestration and optionally uses memory connectors for cross-session continuity.
+Tool-specific connector registry for the kaizen plugin. Both connectors are optional; the engine runs without them.
 
 ## Registry
 
 | Category | Placeholder | Options | Required | Used by |
 |----------|-------------|---------|----------|---------|
-| Structured reasoning | `~~sequential-thinking` | [Sequential Thinking MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking) | **Yes** | kaizen-engine |
+| Structured reasoning | `~~sequential-thinking` | [Sequential Thinking MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking) | No | kaizen-engine (optional) |
 | Persistent memory | `~~memory` | File-based memory, Memory MCP | No | kaizen-engine (optional) |
 
 ## How Skills Use Connectors
 
-### ~~sequential-thinking (required)
+### ~~sequential-thinking (optional)
 
-The kaizen engine uses Sequential Thinking MCP to orchestrate each improvement iteration as a structured thought chain. Each thought maps to a phase of the improvement loop:
+When connected, the engine may record each improvement iteration as a structured thought chain, one thought per phase of the loop:
 
 1. MEASURE — collect current KPIs
 2. ANALYZE — compare to baseline and history
@@ -24,7 +24,7 @@ The kaizen engine uses Sequential Thinking MCP to orchestrate each improvement i
 7. DECIDE — keep improvement or revert
 8. LOG — write audit record
 
-Without this connector, the plugin cannot function. See the README for installation instructions.
+Without this connector, the engine runs the same eight phases directly.
 
 ### ~~memory (optional)
 

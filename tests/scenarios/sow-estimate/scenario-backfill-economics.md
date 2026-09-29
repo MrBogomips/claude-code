@@ -14,7 +14,7 @@ Automatic — this is Step 7 of the sow-estimate pipeline, triggered after PERT 
    - CAPEX/OPEX breakdown
    - Rate card
    - Payment schedule aligned with milestones
-   - Confidence intervals (68% and 95%)
+   - Effort bands (Low / Medium / High) with management reserve
 3. Updates SOW Section 9 (Schedule) with:
    - PERT-derived timeline
    - Updated milestone dates
@@ -25,7 +25,7 @@ Automatic — this is Step 7 of the sow-estimate pipeline, triggered after PERT 
 - [ ] Economics section fully populated (no placeholder remaining)
 - [ ] Effort per phase matches PERT WBS rollups
 - [ ] Payment milestones align with SOW Section 6 deliverables
-- [ ] Confidence intervals present (68% and 95%)
+- [ ] Effort bands present (Low / Medium / High), total = Medium Band
 - [ ] Schedule updated with PERT-derived dates
 - [ ] Version incremented
 - [ ] Original SOW preserved (new version created)

@@ -28,7 +28,7 @@ mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 ### .NET Aspire
 - Detection: `.NET Aspire` packages in `*.csproj` (e.g., `Aspire.Hosting`, `Aspire.Dashboard`)
 - CLI: `dotnet run --project *.AppHost`
-- Setup: install Aspire workload via `dotnet workload install aspire`
+- Setup: none beyond `dotnet restore` — Aspire ships as NuGet packages (`Aspire.AppHost.Sdk`)
 
 ## Package Managers
 
@@ -102,11 +102,6 @@ dotnet tool install --global dotnet-outdated-tool
 
 # Trust dev certificates
 dotnet dev-certs https --trust
-
-# Install Aspire workload if needed
-if grep -rq "Aspire" *.csproj 2>/dev/null; then
-  dotnet workload install aspire
-fi
 ```
 
 ## Aliases

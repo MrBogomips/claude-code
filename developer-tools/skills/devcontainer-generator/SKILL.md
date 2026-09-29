@@ -1,7 +1,6 @@
 ---
 name: devcontainer-generator
 description: Generate devcontainer setups by scanning CWD for tech stack and infra services. Triggers on devcontainer, dev container, devcontainer.json, development container, containerized development, VS Code Remote Containers, GitHub Codespaces. Produces devcontainer.json, Dockerfile, Docker Compose, post-create scripts, firewall rules, and DEVCONTAINER.md summary. Uses an 11-step interactive workflow (Steps 0–9 with Step 1b for host credential sharing).
-user-invokable: true
 context: fork
 disable-model-invocation: true
 allowed-tools: Read, Write, Glob, Grep, WebFetch, WebSearch, AskUserQuestion
@@ -30,7 +29,7 @@ Generate a production-ready `.devcontainer` setup for any repository through an 
 2. Scan CWD for tech stack:
    - **Languages**: `package.json` → Node.js, `*.csproj`/`*.sln`/`global.json` → .NET, `requirements.txt`/`pyproject.toml`/`setup.py`/`Pipfile` → Python, `go.mod` → Go, `Cargo.toml` → Rust, `pom.xml`/`build.gradle`/`build.gradle.kts` → Java
    - **Frameworks**: `angular.json` → Angular, `next.config.*` → Next.js, `nuxt.config.*` → Nuxt, `vite.config.*` → Vite, `docusaurus.config.js` → Docusaurus, `.storybook/` → Storybook, `remix.config.*` → Remix
-   - **Package managers**: `pnpm-lock.yaml` → pnpm, `yarn.lock` → Yarn, `package-lock.json` → npm, `bun.lockb` → Bun
+   - **Package managers**: `pnpm-lock.yaml` → pnpm, `yarn.lock` → Yarn, `package-lock.json` → npm, `bun.lock`/`bun.lockb` → Bun
    - **Monorepo indicators**: `pnpm-workspace.yaml`, `nx.json`, `turbo.json`, `lerna.json`, `apps/`, `packages/`, `services/`
    - **Versions**: Check `engines.node` in package.json, `sdk.version` in global.json, Python version in pyproject.toml
 
@@ -89,7 +88,7 @@ Present credential files relevant to the selected stacks. Options are dynamicall
 
 **Go credentials** (shown if Go selected):
 [ ] ~/.netrc — Private Go module credentials (pre-selected)
-[ ] GOPRIVATE / GONOSUMCHECK env vars — Private module path prefixes (pre-selected)
+[ ] GOPRIVATE / GONOSUMDB env vars — Private module path prefixes (pre-selected)
 
 **Rust credentials** (shown if Rust selected):
 [ ] ~/.cargo/credentials.toml — Cargo registry auth tokens (pre-selected)
@@ -100,7 +99,7 @@ Present credential files relevant to the selected stacks. Options are dynamicall
 
 **Multi-stack handling**: When multiple stacks are selected, the credential options from all stacks are unioned into a single prompt. Duplicate credential files (if any) are shown once.
 
-**Go env vars special case**: `GOPRIVATE` and `GONOSUMCHECK` are not files — they don't need a mount or extraction. They are merged into the existing `{{REMOTE_ENV}}` placeholder in `devcontainer.json` using `"${localEnv:GOPRIVATE}"` syntax.
+**Go env vars special case**: `GOPRIVATE` and `GONOSUMDB` are not files — they don't need a mount or extraction. They are merged into the existing `{{REMOTE_ENV}}` placeholder in `devcontainer.json` using `"${localEnv:GOPRIVATE}"` syntax.
 
 **If all credentials deselected**: Skip credential generation entirely — no `initializeCommand`, `mounts`, or `{{CREDENTIAL_SETUP}}` content is emitted. The generated files will have no credential-related sections.
 
@@ -152,7 +151,7 @@ User can type additional version control needs via "Other".
 
 **Only present this step if an agentic coding tool was selected in Step 3.** Otherwise skip to Step 6.
 
-Before presenting options, perform a `WebSearch` query like "best MCP servers for {detected stack} 2026" to check for newly popular MCP servers. Supplement the static catalog with any fresh recommendations.
+Before presenting options, perform a `WebSearch` query like "best MCP servers for {detected stack} {current year}" to check for newly popular MCP servers. Supplement the static catalog with any fresh recommendations.
 
 Present MCP servers organized by category with stack-aware pre-selections:
 
@@ -275,9 +274,9 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
 
 3. **Read reference data** from loaded stack/service/tool files and **compose** the final content by replacing template placeholders with assembled content blocks.
 
-4. **IMPORTANT — remoteUser**: The `remoteUser` MUST always be `"vscode"`. The `common-utils:2` feature guarantees this user exists regardless of base image. Never use image-specific users (`node`, `python`, etc.) as `remoteUser` — they may not survive feature layering.
+4. **remoteUser**: Set `remoteUser` to `"vscode"`. The `common-utils:2` feature guarantees this user exists regardless of base image; image-specific users (`node`, `python`, etc.) may not survive feature layering.
 
-5. **CRITICAL — common-utils user settings**: NEVER add `username`, `userUid`, or `userGid` parameters to the `common-utils:2` feature. The template intentionally omits these so common-utils defaults to `"automatic"` user detection, which reuses existing non-root users. Setting explicit UID/GID causes `groupadd` failures. Only include the four template parameters: `installZsh`, `configureZshAsDefaultShell`, `installOhMyZsh`, `upgradePackages`.
+5. **common-utils user settings**: Leave `username`, `userUid`, and `userGid` off the `common-utils:2` feature — explicit UID/GID causes `groupadd` failures. The template omits them so common-utils uses `"automatic"` user detection, which reuses existing non-root users. Include only the four template parameters: `installZsh`, `configureZshAsDefaultShell`, `installOhMyZsh`, `upgradePackages`.
 
 6. **Generate these 7 files**:
 
@@ -294,7 +293,7 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
    - `postStartCommand` and `capAdd: ["NET_ADMIN"]` are always present in the template
 
    **b. `.devcontainer/Dockerfile`**
-   - Set `{{BASE_IMAGE}}` to the selected official image
+   - Set `{{BASE_IMAGE}}` to `mcr.microsoft.com/devcontainers/base:ubuntu-24.04`
    - Insert service client packages into `{{APT_EXTRA}}` (e.g., postgresql-client)
    - Insert runtime layers into `{{RUNTIME_LAYERS}}` for secondary stacks
    - If Git LFS selected: add `git-lfs` to apt install
@@ -326,6 +325,7 @@ If existing `.devcontainer/` found in Step 0: **warn about overwrite**.
 
    **f. `.devcontainer/firewall-rules.conf`**
    - Start from `@references/configs/firewall-rules.conf` as base
+   - Insert every added rule above the `# --- Default Policy ---` block: rules are first-match-wins, so a rule after the catch-all never matches
    - Add stack-specific firewall domains from each selected stack's reference file
    - Add tool-specific firewall domains from each selected tool's reference file
    - Add MCP server firewall domains from `@references/mcp-servers.md` for each selected server

@@ -2,7 +2,7 @@
 name: plantuml-convert
 description: Convert PlantUML (.puml) files to PNG, SVG, or PDF using the CLI. Use when rendering or exporting diagrams, or when document skills (.docx, .pdf, .pptx) need diagram images as input.
 compatibility: Requires plantuml and java CLI tools installed (macOS: brew install plantuml)
-model: claude-haiku-4-5-20251001
+model: haiku
 allowed-tools: Bash
 ---
 
@@ -40,6 +40,12 @@ plantuml -t<format> -Sscale=<scale> -o <output_dir> <input_file>
 - `<output_dir>`: **absolute path** to the output directory. PlantUML requires this to be absolute when using `-o`.
 - `<input_file>`: path to the `.puml` file.
 
+In a project with a `## PlantUML Policy`, diagrams include
+`.plantuml/_targets/$target.puml`, so prefix the command with the render target:
+`PLANTUML_TARGET=<web|docx|pdf|pptx> plantuml …`. Without it the diagram renders
+without that target's overrides. The target → format mapping is in
+`${CLAUDE_PLUGIN_ROOT}/skills/plantuml-authoring/render-profiles.md`.
+
 ## Workflow
 
 ### Single file conversion
@@ -71,6 +77,10 @@ plantuml -tsvg -o /absolute/path/to/output input.puml
 ```
 
 Note: `-Sscale` has no effect on SVG since SVG is vector-based.
+
+Note: for JSON/YAML diagrams (`@startjson` / `@startyaml`), omit `-Sscale` and any
+other `-S` flag in PNG renders; PlantUML 1.2026.x then renders an error stub. Scale via
+`skinparam dpi` in the include chain instead.
 
 ## Integration with Document Creation
 

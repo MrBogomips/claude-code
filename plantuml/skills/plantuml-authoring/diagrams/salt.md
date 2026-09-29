@@ -33,11 +33,10 @@ rendering with `plantuml -tpng`. Only the first page of a multi-page
 salt diagram is emitted. SVG output similarly bundles all pages but
 most viewers display only the first.
 
-Workaround: split a multi-page wireframe into **separate
-`@startsalt`/`@endsalt` blocks** in the same `.puml` file (PlantUML
-emits one image per top-level block), or into **separate `.puml`
-files** for each page. Each block then renders to its own PNG/SVG and
-is independently embeddable in docs.
+Workaround: split a multi-page wireframe into **separate `.puml` files**,
+one `@startsalt`/`@endsalt` block per page (lint rule R5 allows one block
+per file). Each file then renders to its own PNG/SVG and is independently
+embeddable in docs.
 
 ## Snippet
 
@@ -65,5 +64,4 @@ is independently embeddable in docs.
 - Omitting field types. Fix: explicit `[…]` / `"…"` / `(…)` signals
   prevent ambiguity.
 - **Using `newpage` and expecting individual page renders.** Fix:
-  split into separate `@startsalt` blocks. See Known limitations
-  above.
+  split into one `.puml` file per page. See Known limitations above.

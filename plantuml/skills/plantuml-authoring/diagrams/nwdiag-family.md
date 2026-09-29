@@ -21,7 +21,7 @@ compat layer.
 
 ## Layout tips
 
-- `@startuml` + `nwdiag { … }` block.
+- `@startnwdiag` / `@endnwdiag` (or `@startuml` + `nwdiag { … }` block).
 - Order networks vertically (DMZ top, internal bottom).
 - Keep to ≤ 4 networks per diagram.
 

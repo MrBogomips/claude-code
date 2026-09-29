@@ -16,7 +16,7 @@ Use `tests/scenarios/integration/sample-contract.md` as input.
 5. Structure Proposal: presents 9-section outline
 6. Section Generation: extracts and structures content from contract
 7. Consistency Check: verifies cross-references to parent contract
-8. Output: saves to docs/outbox/
+8. Output: saves to the output directory (declared in CLAUDE.md, or asked; e.g., docs/outbox/)
 
 ## Acceptance Criteria
 - [ ] All 9 sections present

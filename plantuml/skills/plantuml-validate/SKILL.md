@@ -1,7 +1,7 @@
 ---
 name: plantuml-validate
 description: Render or check `.puml` files for all declared targets and verify they produce stable output against committed baselines. Use to catch syntax breakage and rendering regressions. Accepts `mode=check|bless` (default `check`) and `level=checkonly|svg-hash|png-perceptual` (default `checkonly`).
-allowed-tools: Read, Glob, Bash, Task
+allowed-tools: Read, Glob, Bash, Agent
 ---
 
 # PlantUML Validate
@@ -24,7 +24,7 @@ levels of stringency.
 
 1. **Read Policy** from `CLAUDE.md` § "PlantUML Policy". Extract Primary +
    Additional targets. Abort with a clear message if Policy missing.
-2. **Enumerate** `.puml` files (excluding `.plantuml/_*.puml`).
+2. **Enumerate** `.puml` files (excluding everything under `.plantuml/`).
 3. **Compute matrix** `file × target`.
 4. **Compute baseline path** for each cell:
    `tests/plantuml-baselines/<flat-relpath>--<target>.<level>`
@@ -35,7 +35,7 @@ levels of stringency.
 5. **For `mode=check`**: if any baseline is missing, abort and tell the
    user `"no baselines found, run with mode=bless to capture current state"`.
    (If only some are missing, list them; do not silently skip.)
-6. **Dispatch** each cell to `puml-renderer` via `Task` in parallel batches
+6. **Dispatch** each cell to `puml-renderer` via the `Agent` tool in parallel batches
    of ≤8.
 7. **Aggregate** statuses. Render a table.
 8. **Visual smoke (build-time only)** — applies to `mode=bless` and

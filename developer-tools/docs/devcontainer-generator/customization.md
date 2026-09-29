@@ -148,4 +148,4 @@ After editing any file in `.devcontainer/`, rebuild the container for changes to
 - **VS Code**: Command Palette, select "Dev Containers: Rebuild Container"
 - **CLI**: `devcontainer up --workspace-folder . --rebuild`
 
-Changes to `firewall-rules.conf` take effect on the next container start without a full rebuild -- the firewall script runs via `postStartCommand`.
+Changes to `firewall-rules.conf` need a rebuild to persist: `postStartCommand` applies the copy baked into the image at `/devcontainer/firewall-rules.conf`. To apply an edited file immediately (until the next start), run `sudo bash /devcontainer/scripts/apply-firewall.sh .devcontainer/firewall-rules.conf` from the workspace root.

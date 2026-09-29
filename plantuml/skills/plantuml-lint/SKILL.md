@@ -1,7 +1,7 @@
 ---
 name: plantuml-lint
 description: Check `.puml` files for PlantUML Policy drift, broken includes, and invariant violations (hardcoded colors, missing `_base.puml`, filename≠title, duplicated skinparams). Use when reviewing diagrams for compliance.
-allowed-tools: Read, Glob, Grep, Bash, Task
+allowed-tools: Read, Glob, Grep, Bash, Agent
 ---
 
 # PlantUML Lint
@@ -11,8 +11,8 @@ Static lint over `.puml` files in the current project.
 ## Usage
 
 Default: lint every `.puml` and `.plantuml` and `.iuml` under the project
-root, excluding `.plantuml/_*.puml` (those are policy partials, not
-authored diagrams).
+root, excluding everything under `.plantuml/` (policy partials and
+`_targets/` overrides, not authored diagrams).
 
 Custom path: a single file, glob, or directory passed as argument.
 
@@ -26,9 +26,9 @@ Custom path: a single file, glob, or directory passed as argument.
      policy_present=false
    fi
    ```
-2. **Enumerate files** via `Glob`, excluding `.plantuml/_*.puml`.
+2. **Enumerate files** via `Glob`, excluding everything under `.plantuml/`.
 3. **Batch** files into chunks of ≤10.
-4. **Dispatch** each batch to `puml-linter` (agent) via `Task`. Pass the
+4. **Dispatch** each batch to `puml-linter` (agent) via the `Agent` tool. Pass the
    batch + `project_root` (absolute, from `pwd`) + `policy_present` as
    the prompt. Run batches in parallel.
 5. **Aggregate** the JSON arrays into one. Sort by `file` then `line`.

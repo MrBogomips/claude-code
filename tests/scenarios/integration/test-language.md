@@ -32,8 +32,8 @@ Verify language detection and language pack usage across the pipeline.
 **Invoke**: "Create a SOW from this document"
 
 **Verify**:
-- [ ] Skill detects mixed language (< 80% single language)
-- [ ] Asks user to choose: "I detected mixed languages (Italian ~55%, English ~45%). Which language should I use for the SOW?"
+- [ ] Skill detects that the inputs mix languages
+- [ ] Recommends the dominant language and asks the user to confirm, or asks the user to choose when no language dominates (e.g., "I detected mixed Italian and English input. Which language should I use for the SOW?")
 - [ ] Proceeds in chosen language after user response
 
 ### Test D: sow-review on Italian SOW

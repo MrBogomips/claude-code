@@ -8,7 +8,7 @@ mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 - `pnpm-lock.yaml` — pnpm project
 - `yarn.lock` — yarn project
 - `package-lock.json` — npm project
-- `bun.lockb` — bun project
+- `bun.lock` or `bun.lockb` — bun project
 - `.nvmrc` or `.node-version` — pinned Node version
 - `tsconfig.json` — TypeScript variant
 
@@ -59,7 +59,7 @@ mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 | `package-lock.json` | npm | `npm ci` | `devcontainer-{{PROJECT_NAME}}-npm` mounted at `/home/vscode/.npm` |
 | `pnpm-lock.yaml` | pnpm | `pnpm install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-pnpm` mounted at `/home/vscode/.local/share/pnpm/store` |
 | `yarn.lock` | yarn | `yarn install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-yarn` mounted at `/home/vscode/.yarn/cache` |
-| `bun.lockb` | bun | `bun install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-bun` mounted at `/home/vscode/.bun/install/cache` |
+| `bun.lock` / `bun.lockb` | bun | `bun install --frozen-lockfile` | `devcontainer-{{PROJECT_NAME}}-bun` mounted at `/home/vscode/.bun/install/cache` |
 
 ## Dockerfile Layers
 
@@ -131,7 +131,7 @@ if [ -f pnpm-lock.yaml ]; then
   corepack enable && pnpm install --frozen-lockfile
 elif [ -f yarn.lock ]; then
   corepack enable && yarn install --frozen-lockfile
-elif [ -f bun.lockb ]; then
+elif [ -f bun.lock ] || [ -f bun.lockb ]; then
   bun install --frozen-lockfile
 elif [ -f package-lock.json ]; then
   npm ci

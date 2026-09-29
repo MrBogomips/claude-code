@@ -74,7 +74,7 @@ The `config_completeness` KPI measures coverage of these items:
 | At least 1 rule file | Important | 1 |
 | Memory directory exists | Optional | 1 |
 | At least 1 memory file | Optional | 1 |
-| .gitignore includes .claude/ | Important | 1 |
+| .gitignore includes .claude/settings.local.json | Important | 1 |
 
 **Score:** `sum(present_items * weight) / sum(all_items * weight) * 100`
 

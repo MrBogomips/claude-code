@@ -14,7 +14,7 @@ This skill writes professional job descriptions for technical and non-technical 
 
 The skill auto-detects language from the conversation and produces output in the detected language. Supported languages: English (`en`) and Italian (`it`). When language is ambiguous, the skill asks the user to choose.
 
-**Output file:** `{role}-job-description.md`
+**Output file:** `{role}-job-description.md` in the output directory — the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
 
 **Connector support:** Skills degrade gracefully without connectors. See `CONNECTORS.md` for the full registry.
 
@@ -140,7 +140,7 @@ If compliance-check returns any CRITICAL findings, loop back to fix and re-valid
 
 Apply all confirmed fixes from Steps 5-7 and produce the final JD.
 
-Save to `{role}-job-description.md` (where `{role}` is the sanitized role title, lowercase, hyphens for spaces).
+Save as `{role}-job-description.md` in the output directory (where `{role}` is the sanitized role title, lowercase, hyphens for spaces).
 
 Present a summary to the user:
 - Framework used (competency-based / outcome-based / hybrid)
@@ -231,11 +231,7 @@ The inclusive language guide (`references/inclusive-language-guide.md`) is also 
 
 ## 6. Language Detection
 
-Count language-specific tokens across the conversation. Classification:
-
-- **>80% single language** → auto-select that language for output
-- **60-80% dominant language** → recommend dominant, ask user to confirm
-- **<60% any language** → ask user to choose
+Use the dominant language of the input documents and conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 Supported languages:
 - `en` — English

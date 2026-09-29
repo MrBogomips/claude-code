@@ -39,7 +39,7 @@ Three risks compound when interviews lack structure:
 This plugin implements a clear division of labor:
 
 - **The AI prepares.** It generates job descriptions, screening questionnaires, interview questions, scoring rubrics, and evaluation templates — all grounded in research-backed frameworks and validated against compliance requirements.
-- **Humans judge.** Every hiring decision is made by people. The AI never scores a candidate, never makes a recommendation on its own, and never replaces the interviewer's judgment. It provides the structure; the interviewer provides the assessment.
+- **Humans judge.** Every hiring decision is made by people. Interviewers assign every competency score from their own evidence; the AI computes the weighted total, proposes a seniority level and a recommendation category from those scores, and the interviewer reviews and may override them with documented justification. It provides the structure; the interviewer provides the assessment.
 
 This is not automation of hiring. It is augmentation of the hiring process — removing the mechanical burden of creating compliant, structured documents so that interviewers can focus their cognitive energy where it matters most: listening, probing, and evaluating.
 
@@ -311,7 +311,7 @@ job-description ──JD──> pre-screening ──JD + CV gap analysis──> 
 |--------|--------|
 | **WHEN** | Automatically invoked by every pipeline stage before output (embedded mode). Also available as a standalone audit tool at any time. |
 | **WHO** | In embedded mode: transparent to the user, runs as part of the pipeline. In standalone mode: HR professional, legal/compliance team, or anyone reviewing an existing HR document. |
-| **WHAT it produces** | Embedded: a list of findings (severity + location + suggested fix) returned to the calling skill. Standalone: a compliance audit report saved to the outbox. |
+| **WHAT it produces** | Embedded: a list of findings (severity + location + suggested fix) returned to the calling skill. Standalone: a compliance audit report saved to the output directory. |
 | **WHY this step matters** | Compliance errors are expensive — legally, financially, and reputationally. By validating at every stage, the plugin catches issues when they are cheap to fix (draft stage) rather than after a document is sent to candidates or used in an interview. |
 
 **Four analysis layers:**
@@ -371,7 +371,7 @@ The plugin auto-detects language from the conversation and input documents rathe
 
 - **Natural interaction.** Forcing a language choice adds friction and breaks conversational flow. In a bilingual workplace (common in Italian companies with international operations), the user may switch languages naturally — the plugin follows.
 - **Document-aware.** When a JD is provided in Italian and the user writes in English, the skill detects the dominant language and asks for confirmation rather than guessing. This handles the common case where an Italian document is being discussed in English.
-- **Threshold-based.** The detection uses token counting: >80% in one language auto-selects it; 60-80% recommends the dominant language with confirmation; <60% asks the user. This avoids both over-confidence and over-asking.
+- **Judgment-based.** When one language clearly dominates, it is selected automatically; when the inputs clearly mix languages, the dominant language is recommended for confirmation; when none dominates, the user chooses. This avoids both over-confidence and over-asking.
 
 ### 4.4 Corporate Context with Memory
 
@@ -441,7 +441,7 @@ This is also where bias detection operates: monitoring for all-identical scores,
 
 5. **Conduct the interview** using the question plan. The interviewer uses the minimal notes template, capturing key quotes and starring a particularly strong answer about API versioning.
 
-6. **Invoke interview-close** with the interview-prep outputs and interviewer notes. The skill guides the interviewer through a competency-by-competency evaluation. For system design, the interviewer initially says "he was okay" — the skill probes for specific evidence, and the interviewer recalls a detailed example about designing a message queue architecture. Final score: 3.5, rounded to 4 after anchoring to the BARS definition. The skill maps the candidate to "Mid-Senior" level with Medium confidence. Output: `mario-rossi-evaluation.md` with a "Hire" recommendation.
+6. **Invoke interview-close** with the interview-prep outputs and interviewer notes. The skill guides the interviewer through a competency-by-competency evaluation. For system design, the interviewer initially says "he was okay" — the skill probes for specific evidence, and the interviewer recalls a detailed example about designing a message queue architecture. Final score: 4, once the example is anchored to the BARS definition. The skill classifies the candidate at the Mid level, noted as "approaching Senior", with Medium confidence. Output: `mario-rossi-evaluation.md` with a "Hire" recommendation.
 
 ---
 
@@ -479,9 +479,9 @@ This is also where bias detection operates: monitoring for all-identical scores,
 
 4. **Layer 2 (Biased Language):** Flags "Il candidato ideale e un leader nato" (The ideal candidate is a born leader) as INFO — gendered language ("nato" is masculine). Suggests: "La persona ideale dimostra capacita di leadership."
 
-5. **Layer 3 (GDPR):** Flags the absence of a privacy notice reference. Severity: HIGH.
+5. **Layer 3 (GDPR):** Flags the absence of a privacy notice reference. Severity: WARNING.
 
-6. **Layer 4 (Structural):** Notes that no scoring rubric is referenced. Severity: MEDIUM.
+6. **Layer 4 (Structural):** Notes that no scoring rubric is referenced. Severity: WARNING.
 
 7. Output: `interview-questionnaire-compliance-audit.md` with all findings, legal citations, and suggested fixes. Overall status: Pass with warnings.
 
@@ -627,7 +627,7 @@ Candidates have strong protections:
 | **Seniority matrix** | A table mapping expected competency scores to seniority levels (Junior, Mid, Senior, Lead/Principal), used for candidate classification in interview-close. |
 | **STAR method** | Situation, Task, Action, Result — a framework for structuring behavioral interview questions and evaluating the completeness of candidate responses. |
 | **Standalone mode** | The operating mode where compliance-check is invoked directly by the user to audit an existing document, producing a full compliance report. |
-| **Structured interview** | An interview where all candidates are asked the same questions in the same order, scored against the same rubric. 2x more predictive than unstructured interviews. |
+| **Structured interview** | An interview where all candidates are asked the same questions in the same order, scored against the same rubric. Predictive validity of 0.51, versus 0.38 for unstructured interviews. |
 
 ### 7.2 BARS Scoring Scale — Full Definitions
 

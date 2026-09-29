@@ -8,7 +8,8 @@ node is a unit of work, not a concept.
 ## Choose this when / avoid when
 
 - ✅ Project planning, PMO deliverables
-- ✅ Estimation scaffolding (pairs with `pmo-pert-estimate` skill)
+- ✅ Estimation scaffolding (pairs with the `pmo-pert-estimate` skill of the
+  `project-management` plugin, if installed)
 - ❌ Concept maps → use `mindmap`
 - ❌ Process flow → use `activity`
 

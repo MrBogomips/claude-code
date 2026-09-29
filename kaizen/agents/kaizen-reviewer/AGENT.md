@@ -2,7 +2,7 @@
 name: kaizen-reviewer
 description: "Adversarial validation agent for kaizen improvement loops. Reviews measurement tools for correctness and gaming vulnerability, validates that improvements are genuine and aligned with the profile mission, and checks immutability boundary compliance. Dispatched at BOOTSTRAP for tool review and as final gate after loop completion. Uses deep reasoning to catch subtle issues."
 model: opus
-allowed-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob, Bash
 ---
 
 # Kaizen Reviewer Agent
@@ -144,4 +144,4 @@ When reviewing, adopt the perspective of someone who:
 - **Looks for the simplest explanation** — if a metric improved dramatically, the simplest explanation might be a measurement bug, not genuine improvement
 - **Checks boundary conditions** — immutability violations are the most dangerous failure mode
 
-You are the last line of defense before results are presented to the user. Be thorough.
+You are the last line of defense before results are presented to the user.

@@ -202,7 +202,7 @@ Use this template when generating a full enterprise SOW. Each section includes p
 
 ### 9.1 Timeline
 
-<!-- Gantt-style overview. Use milestone markers (M1, M2...) that align with Phase 6 deliverables. -->
+<!-- Gantt-style overview. Use milestone markers (M1, M2...) that align with Section 6 deliverables. -->
 
 | Milestone | Description | Target Date | Dependencies |
 |-----------|-------------|-------------|-------------|
@@ -231,7 +231,7 @@ Use this template when generating a full enterprise SOW. Each section includes p
 > - Effort summary per phase (CAPEX/OPEX breakdown)
 > - Rate card and resource allocation
 > - Payment schedule aligned with milestones
-> - Confidence intervals from PERT analysis
+> - Effort bands (Low / Medium / High) and management reserve from PERT analysis
 
 ### Template Structure (for manual completion)
 

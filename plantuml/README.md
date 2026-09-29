@@ -25,7 +25,7 @@ Add this marketplace to Claude Code and install the `plantuml` plugin via the pl
 > /plantuml-init
 
   Creating ## PlantUML Policy in CLAUDE.md...
-  Materializing .plantuml/ (theme: aws, targets: png svg)...
+  Materializing .plantuml/ (theme: cerulean-outline, targets: docx web)...
   Done. Edit CLAUDE.md > PlantUML Policy to customize.
 
 # 2. Author a diagram (the plantuml-authoring skill activates on intent)
@@ -44,8 +44,8 @@ Add this marketplace to Claude Code and install the `plantuml` plugin via the pl
 > plantuml-validate mode=bless
 
   [plantuml-validate activates, renders all targets, writes baselines]
-  diagrams/login.puml [png]: blessed
-  diagrams/login.puml [svg]: blessed
+  diagrams/login.puml [docx]: blessed
+  diagrams/login.puml [web]: blessed
 ```
 
 ## Components
@@ -118,8 +118,88 @@ All must pass before considering the install complete.
 - `plantuml-migrate` has no concurrent-edit locking. Do not run while another tool is writing `.puml` files.
 - `puml-visual-checker` is a build-time agent only; it is not exposed as a user-facing skill in v1.0.0.
 - Cross-machine `level=svg-hash` comparisons require pinned fonts. On heterogeneous CI, prefer `level=checkonly`.
-- Agents (`agents/<name>/AGENT.md`) are auto-discovered by Claude Code. If discovery fails on first install, the orchestrating skills degrade to inline Sonnet invocations (correct but slower and costlier). Verify agent availability at first use.
+- Agents (`agents/<name>/AGENT.md`) are auto-discovered by Claude Code. `plantuml-lint`, `plantuml-validate` and `plantuml-migrate` dispatch them and define no inline fallback, so verify agent availability at first use.
 
 ## Dev
 
 The plugin is the source of truth for all PlantUML evolution. Edits go directly under `plantuml/`. Smoke tests live at `plantuml/tests/smoke/`. The minimal fixture project used by the smoke tests is at `plantuml/tests/fixtures/minimal-project/`.
+
+### Test harness — reviewer dispatch
+
+Maintainer protocol for the `plantuml-authoring` skill. Paths are relative to
+`plantuml/skills/plantuml-authoring/`.
+
+The test harness (`scripts/run-test-suite.sh`) automates steps 1–2
+(generate + render) and step 4 (aggregate). Step 3 (adversarial
+reviewers) is an **agent** responsibility: this skill does not
+spawn subagents from a shell script.
+
+#### When to run the suite
+- After any material change to principles.md, render-profiles.md,
+  or a `diagrams/<type>.md` file.
+- Before considering this skill "done" in an implementation cycle.
+
+#### Dispatch protocol
+
+1. Run the orchestrator:
+   `bash scripts/run-test-suite.sh`
+   This prints the run directory (e.g. `~/temp/plantuml-tests/2026-
+   04-24-run-01`).
+2. For each type directory under `<run>/`, spawn one subagent via
+   the `Agent` tool (general-purpose, with `Read` on .puml / .svg /
+   .png). **Use the multimodal capability to view PNG.**
+3. Prompt (English, adversarial; see full text below).
+4. Subagent writes `review.md` into each `<run>/<type>/<variant>/`
+   directory.
+5. After all 23 subagents complete, run
+   `scripts/aggregate-reviews.sh <run>` — it emits `_report.md` and
+   exits non-zero if any variant FAILs.
+
+#### Subagent prompt template
+
+```text
+You are an adversarial reviewer for PlantUML diagrams. Report every
+real flaw you find, plainly and without praise. If a diagram is
+fine, say so in one sentence and move on.
+
+Inspect 3 variants of a <TYPE> diagram: minimal / standard / detailed.
+For each variant, read the source .puml, the .png (vision), and
+optionally the .svg (XML text if overflow suspected):
+  - <RUN>/<TYPE>/minimal/<file>.puml  / .png / .svg
+  - <RUN>/<TYPE>/standard/<file>.puml / .png / .svg
+  - <RUN>/<TYPE>/detailed/<file>.puml / .png / .svg
+
+Evaluate against axes (severity BLOCKER / HIGH / MEDIUM / LOW):
+  1. Readability (overflow, overlap, font size, contrast)
+  2. Semantic clarity (is the ONE message identifiable in 5 s?)
+  3. Detail-level coherence (does the gradient feel authentic?)
+  4. Design-principle adherence (principles.md)
+  5. Target appropriateness (DOCX & web)
+  6. Source quality (include pattern, no hardcoded colors, title
+     matches filename)
+
+For each variant produce <RUN>/<TYPE>/<VARIANT>/review.md with:
+  - `Verdict: PASS | PASS-WITH-WARNINGS | FAIL` (on a line starting
+    with `Verdict:`)
+  - Issues table: `| severity | axis | description | fix |`
+  - One-line summary
+
+End your combined output (just log, not file) with a cross-variant
+comparison: is the gradient authentic, or are variants
+interchangeable?
+
+Do not modify any file. Reviews only.
+```
+
+#### Iteration loop
+
+If `_report.md` has FAILs:
+  1. Read `_report.md` top 10 systemic issues.
+  2. Fix the corresponding principles/diagram file(s).
+  3. Re-seed the FAILed variants with improved content.
+  4. Re-run `run-test-suite.sh`.
+  5. Dispatch reviewers again on the regenerated variants only.
+  6. Re-aggregate.
+
+Stop when `_report.md` shows 0 FAILs and any remaining warnings are
+acknowledged.

@@ -34,13 +34,13 @@ unchanged = [kpi for kpi in kpis if abs(delta(kpi)) < epsilon]
 IF len(regressed) == 0 AND len(improved) >= 1:
     KEEP  (Pareto improvement — at least one better, none worse)
 
+IF len(regressed) > 0 AND len(improved) >= 1 AND autonomy != "autonomous":
+    ESCALATE to user:
+    "Iteration {N} improved {improved_kpis} but regressed {regressed_kpis}.
+     Accept this trade-off?"
+
 IF len(regressed) > 0:
-    IF autonomy == "autonomous":
-        REVERT  (cannot accept trade-offs without human judgment)
-    ELSE:
-        ESCALATE to user:
-        "Iteration {N} improved {improved_kpis} but regressed {regressed_kpis}.
-         Accept this trade-off?"
+    REVERT  (no trade-off to weigh, or autonomous mode, which cannot accept trade-offs without human judgment)
 
 IF len(improved) == 0 AND len(regressed) == 0:
     REVERT  (no meaningful change)

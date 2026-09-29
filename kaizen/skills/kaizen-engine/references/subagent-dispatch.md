@@ -29,7 +29,7 @@ Expected KPIs: {list of kpi names from profile}
 Output file: {path_to_measurement.json_or_verification.json}
 
 Instructions:
-1. Execute the measurement script: `python {script_path}` or `npx tsx {script_path}`
+1. Execute the measurement script: `python3 {script_path}` or `npx tsx {script_path}`
 2. Capture stdout as the measurement result
 3. If exit code is non-zero, capture stderr for error diagnosis
 4. Write the result to the output file path
@@ -162,7 +162,7 @@ Provide a verdict: PASSED (improvements are genuine) or FLAGGED (concerns identi
 ## Dispatch Mechanics
 
 Use the `Agent` tool with:
-- `subagent_type`: the agent name (e.g., "kaizen-measurer")
+- `subagent_type`: the entry in the available agent list whose name ends with the agent name (plugin agents are listed with a `kaizen:` namespace prefix)
 - `model`: as specified in the registry
 - `prompt`: the context package above, with placeholders filled
 - `description`: brief label (e.g., "Measure KPIs for iteration 3")

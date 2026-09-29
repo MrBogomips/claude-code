@@ -90,20 +90,11 @@ Script:
    (`theme plain`, target `docx`, font `Inter, 14`, no brand colors).
    Prepend comment: `' TODO: run /plantuml-init to share styling`.
    Skip to rendering.
-3. On **setup**: run the wizard:
-   - *"Primary render target? (web / docx / pdf / pptx)"*
-   - *"Theme: built-in PlantUML theme name, or `custom`?"*
-     - If `custom`: ask for 5 brand color hex values (primary,
-       accent, neutral, surface, danger).
-   - *"Font family? (default: Inter, Arial, sans-serif)"*
-   - *"Label language? (en / it / fr / … — default: en)"*
-   - *"Default detail level? (minimal / standard / detailed — default
-     standard)"*
-4. Generate the CLAUDE.md Policy section (append if CLAUDE.md exists,
-   create it otherwise).
-5. Generate `.plantuml/` (see next section).
-6. Generate the requested diagram using the freshly configured setup.
-7. Confirm to user: *"Setup complete. Policy in CLAUDE.md + `.plantuml/`
+3. On **setup**: run the `plantuml-bootstrap` skill
+   (`${CLAUDE_PLUGIN_ROOT}/skills/plantuml-bootstrap/SKILL.md`). It runs the
+   wizard, appends the Policy section to CLAUDE.md, and generates `.plantuml/`.
+4. Generate the requested diagram using the freshly configured setup.
+5. Confirm to user: *"Setup complete. Policy in CLAUDE.md + `.plantuml/`
    generated. First diagram at <path>."*
 
 ## Generation details
@@ -136,7 +127,6 @@ If Policy theme is a built-in:
 !theme cerulean-outline
 skinparam backgroundColor $surface
 skinparam ArrowColor $neutral
-skinparam DefaultTextAlignment center
 ```
 
 If `custom`, skip `!theme` and emit a full skinparam block derived from

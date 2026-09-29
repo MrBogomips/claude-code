@@ -65,9 +65,9 @@ mutation_targets:
 
 # Connectors: MCP server dependencies
 connectors:
-  required:
+  required: []
+  optional:
     - "~~sequential-thinking"
-  optional: []
 ---
 
 # Improvement Instructions

@@ -78,9 +78,9 @@ mutation_targets:
     - path: "node_modules/**"
 
 connectors:
-  required:
-    - "~~sequential-thinking"
+  required: []
   optional:
+    - "~~sequential-thinking"
     - "~~memory"
 ---
 
@@ -146,7 +146,7 @@ Common root causes for poor Claude Code usage:
 
 Appropriate changes for this profile:
 
-- **Add tool usage conventions to CLAUDE.md** — e.g., "Always use Grep instead of bash grep for code search"
+- **Add tool usage conventions to CLAUDE.md** — e.g., "Use the Grep tool rather than bash grep for code search — it integrates with the permission system and is easier to review"
 - **Update allowedTools in settings.json** — grant permissions for frequently-used dedicated tools
 - **Add search strategy hints to CLAUDE.md** — document the project structure so searches are targeted
 - **Recommend skill installation/removal** — suggest installing relevant skills or removing dormant ones
