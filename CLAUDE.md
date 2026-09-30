@@ -50,6 +50,8 @@ When a component needs a location or tool it cannot discover, it asks the user.
 
 String-only entries (bare paths) are not valid — always use the object format.
 
+Bump a version by editing its `version` line in place. `jq` round-trips `marketplace.json` unchanged but rewrites the inline arrays in `plugin.json`.
+
 ## Validation
 
 After any change to a plugin or to `marketplace.json`, run:
