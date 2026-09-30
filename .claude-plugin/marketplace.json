@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A curated collection of Claude Code plugins for professional workflows",
-    "version": "3.2.1",
+    "version": "4.0.0",
     "license": "MIT"
   },
   "plugins": [
@@ -21,19 +21,6 @@
         "memory",
         "claude-md",
         "hygiene"
-      ]
-    },
-    {
-      "name": "developer-tools",
-      "source": "./developer-tools",
-      "description": "Developer environment tooling — devcontainer generation, stack detection, infrastructure config",
-      "version": "2.4.1",
-      "category": "engineering",
-      "tags": [
-        "devcontainer",
-        "docker",
-        "infrastructure",
-        "developer-experience"
       ]
     },
     {

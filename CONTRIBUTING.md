@@ -6,7 +6,7 @@ Thank you for your interest in contributing to the Claude Code plugins marketpla
 
 | Category | Directory | Description |
 |----------|-----------|-------------|
-| Engineering | `developer-tools/` | Developer tooling, infrastructure, build systems |
+| Engineering | `context-hygiene/`, `kaizen/` | Developer tooling, agentic context, continuous improvement |
 | Human Resources | `human-resources/` | HR workflows, recruiting, evaluation |
 | Operations | `project-management/` | Project management, estimation, reporting |
 | Documentation | `tech-writing/`, `personal-voice/` | Technical writing, style guides, content review, personal writing voice |
@@ -18,7 +18,7 @@ This is a flat-at-root marketplace. Each top-level directory containing `.claude
 ```
 mrbogomips/
 ├── .claude-plugin/marketplace.json   # Marketplace manifest
-├── developer-tools/                  # Plugin directory
+├── <plugin-name>/                    # Plugin directory
 │   ├── .claude-plugin/plugin.json    # Plugin manifest (required)
 │   ├── README.md                     # Plugin documentation
 │   ├── skills/                       # Skills (optional)

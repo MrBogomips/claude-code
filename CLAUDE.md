@@ -7,7 +7,6 @@ Guidance for working in the mrbogomips plugins marketplace repository.
 This is a flat-at-root plugin marketplace following the convention used by Anthropic's domain-specific marketplaces. Each top-level directory containing `.claude-plugin/` is a plugin (`openspec/` and `tests/` are not):
 
 - `context-hygiene/` — context hygiene for agentic projects (CLAUDE.md, rules, auto-memory)
-- `developer-tools/` — developer environment tooling
 - `human-resources/` — HR workflow support
 - `kaizen/` — continuous improvement loops
 - `personal-voice/` — personal writing voice (tone and lexicon learned from the author's revisions)
