@@ -41,8 +41,8 @@ Verify language detection and language pack usage across the pipeline.
 **Invoke**: "Revisiona questo SoW"
 
 **Verify**:
-- [ ] Review report in Italian (matching SOW language)
-- [ ] Dimension names localized
+- [ ] Review report in Italian (matching SOW language): headings, findings and grade label
+- [ ] Dimension names localized (Completezza, Chiarezza, Coerenza, Copertura dei rischi, Adeguatezza commerciale, Modello di collaborazione, Aderenza alle best practice, Standard aziendali)
 - [ ] Adversarial challenges use Italian context (e.g., references to Codice degli Appalti if applicable)
 
 ## Success Criteria

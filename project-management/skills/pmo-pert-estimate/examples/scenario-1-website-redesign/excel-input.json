@@ -4,8 +4,6 @@
     "effort_unit": "pd",
     "duration_unit": "d",
     "primary_color": "2E86AB",
-    "period_type": "biweekly",
-    "start_date": "2026-05-04",
     "management_reserve_pct": 0.1,
     "avg_rate": 450,
     "currency": "EUR",
@@ -34,9 +32,6 @@
       "id": "1",
       "name": "Discovery & Design",
       "description": "Understand pain points, define visual identity, produce wireframes and mockups",
-      "best_duration": 8,
-      "likely_duration": 12,
-      "worst_duration": 18,
       "work_packages": [
         {
           "id": "1.1",
@@ -175,9 +170,6 @@
       "id": "2",
       "name": "Development",
       "description": "Build CMS-driven website on WordPress + Elementor Pro",
-      "best_duration": 10,
-      "likely_duration": 15,
-      "worst_duration": 22,
       "work_packages": [
         {
           "id": "2.1",
@@ -279,9 +271,6 @@
       "id": "3",
       "name": "Testing & Launch",
       "description": "Validate quality, train client, execute DNS cutover",
-      "best_duration": 4,
-      "likely_duration": 6,
-      "worst_duration": 10,
       "work_packages": [
         {
           "id": "3.1",
@@ -361,40 +350,6 @@
       "end_week": 8
     }
   ],
-  "resource_allocation": [
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery & Design",
-      "description": "UX research, IA, wireframes, mockups",
-      "team": "Agency",
-      "role_code": "DSG",
-      "effort": 17
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "Development",
-      "description": "CMS setup, template dev, migration, integrations",
-      "team": "Agency",
-      "role_code": "DEV",
-      "effort": 18
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Testing & Launch",
-      "description": "QA, UAT support, launch",
-      "team": "Agency",
-      "role_code": "DSG",
-      "effort": 3
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Testing & Launch",
-      "description": "QA, launch execution",
-      "team": "Agency",
-      "role_code": "DEV",
-      "effort": 3
-    }
-  ],
   "risks": [
     {
       "id": "R1",
@@ -440,7 +395,6 @@
       "contingency_effort": 1
     }
   ],
-  "targets": null,
   "scenarios": [
     "Optimistic: ~85% of Fascia MEDIA \u2014 best-case execution for 1-website-redesign",
     "Realistic: Fascia MEDIA \u2014 current best estimate including overhead and MR",

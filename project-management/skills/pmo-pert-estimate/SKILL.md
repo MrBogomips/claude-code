@@ -1,78 +1,85 @@
 ---
 name: pmo-pert-estimate
-description: "Create PMI-compliant PERT three-point estimation workbooks with WBS, resource plan (role × week PD), risks, and summary sheets. Produces fully automated Excel with live formulas, PD-everywhere effort, PMI-correct Management Reserve, configurable PM/DevOps overhead, and explicit calendar duration. Triggers: 'create PERT estimate', 'generate WBS estimate', 'PMO estimation', 'three-point estimate', 'PERT analysis', 'project estimation', 'stima PERT', 'stima progetto'"
+description: "Build a PMI-style PERT three-point estimate of a project and generate its Excel workbook: WBS with O/M/P effort and duration, a role × week resource plan in person-days, a risk register with contingency and Management Reserve, and a summary with Low / Medium / High effort bands and the calendar duration. Guides the user from input documents through WBS, roles, risks and estimates, then checks the workbook with a bundled script. Use when the user asks for a PERT or three-point estimate, a WBS-based effort estimate or a PMO estimation workbook, or says 'stima PERT' or 'stima progetto'. To estimate a Statement of Work and write the results back into it, use sow-estimate instead."
 ---
 
 # PMO PERT Estimate — Three-point estimation workbooks
 
 ## 1. Overview
 
-This skill produces PMI-compliant PERT three-point estimation workbooks through a multi-phase agentic pipeline. Starting from project documents (SoW, RFP, scope descriptions), it interactively builds a WBS, resource breakdown, risk register, and three-point estimates, then generates a fully automated Excel workbook with live formulas (PERT, SUM rollups, cross-sheet references, effort bands). The skill follows three key principles: **progressive disclosure** of reference documents (loaded only when the relevant phase begins, never all at once), **adaptive interaction** across three levels (Formative / Collaborative / Autonomous) chosen by the user with dynamic adjustment, and **strict input/formula separation** where Excel formula cells are always injected as strings and never overwritten with computed values.
+This skill produces PMI-compliant PERT three-point estimation workbooks through a multi-phase pipeline. Starting from project documents (SoW, RFP, scope descriptions), or from the extraction that `sow-estimate` hands over, it builds a WBS, the roles, a risk register and three-point estimates with the user, then generates an Excel workbook with live formulas (PERT, SUM rollups, cross-sheet references, effort bands).
 
-**Output workbook composition:** exactly 4 sheets in this order — `WBS`, `Resource Plan` (`Pianificazione Risorse` in IT), `Risks` (`Rischi` in IT), `Summary` (`Riepilogo` in IT). All effort cells are person-days (PD); calendar quantities are weeks. No cell ever holds a percentage that is presented as effort.
+Three principles shape it:
 
-**Bundled assets:**
+- **Progressive disclosure**: each reference document is read only when its phase begins.
+- **Adaptive interaction**: three levels (Formative / Collaborative / Autonomous), chosen by the user and adjusted per phase.
+- **Formulas in the workbook, figures from the script**: the generator writes formula strings and openpyxl stores no computed values, so the numbers are never read back from the workbook. `scripts/summarize.py` computes them from `excel-input.json` with the generator's own formulas and checks the generated formulas.
+
+**Output workbook:** exactly 4 sheets in this order: `WBS`, `Resource Plan` (`Pianificazione Risorse` in IT), `Risks` (`Rischi` in IT), `Summary` (`Riepilogo` in IT). Effort cells are person-days (PD); calendar quantities are weeks.
+
+**Bundled files:**
 
 ```
-assets/
-  pert-template.xlsx              <- bundled reference template (4 sheets)
+assets/pert-template.xlsx          <- reference layout (4 sheets)
+examples/sample-input.json         <- complete, valid excel-input.json
 scripts/
-  generate_excel.py               <- JSON -> Excel generator (openpyxl)
-  validate_template.py            <- custom template validator
-  helpers/
-    __init__.py
-    wb_wbs.py                     <- WBS sheet logic
-    wb_pianificazione_risorse.py  <- Resource Plan (role × week PD) logic
-    wb_risks.py                   <- Risk register + PMI-correct MR
-    wb_summary.py                 <- Summary sheet logic (bands, overhead)
-    formatting.py                 <- Shared styles, colors, fonts, formats
-    i18n.py                       <- en/it label tables
-    config_compat.py              <- Legacy JSON detection + default backfill
+  generate_excel.py                <- JSON -> workbook (openpyxl)
+  summarize.py                     <- JSON -> figures + workbook checks
+  validate_template.py             <- custom template validator
+  requirements-dev.txt             <- openpyxl + pytest, for the test suite
+  helpers/                         <- sheet builders, figures, checks, i18n
 references/
-  workflow.md                     <- detailed agentic flow description
-  pmi-methodology.md              <- PMI guide for formative mode
-  template-criteria.md            <- criteria for custom templates
-  excel-schema.md                 <- column/formula/cross-ref schema per sheet
-  interaction-levels.md           <- description of 3 interaction levels
+  workflow.md                      <- Phase 2 context analysis
+  pmi-methodology.md               <- PMI guide (WBS, PERT, risks, reconciliation)
+  interaction-levels.md            <- behaviour per level and phase
+  excel-schema.md                  <- JSON input schema and sheet formulas
+  template-criteria.md             <- criteria for custom templates
 ```
-
-**Workspace directory:** `docs/pert-workspace/` (created during Phase 1)
-**Output directory:** the `OutputDir` the project's CLAUDE.md declares (in `## pmo-pert-estimate Configuration`); if none is declared, ask the user in Phase 0 (suggest `docs/outbox/`)
 
 ---
 
-## 2. Phase 0 -- First Run Setup
+## 2. Configuration, folders and outputs
 
-When running in a repository for the first time, check whether `CLAUDE.md` contains a `## pmo-pert-estimate Configuration` section. If it does not exist, guide the user through setup.
+**Configuration section.** All project-management skills share one section in the project's `CLAUDE.md`: `## project-management Configuration`. A section named `## pmo-pert-estimate Configuration` (written by earlier versions) is read the same way; offer once to rename its heading.
 
-### Steps
+**Estimate folder (working documents).** Drafts are working documents, not deliverables, so they never go under the output folder:
 
-1. **Ask** the user for project-specific values:
-   - **Language** -- output language (default: `en`)
-   - **EffortUnit** -- `pd` (the workbook's capacity checks and bands are person-day based)
-   - **DurationUnit** -- `d` (working days; the Resource Plan converts to weeks at 5 days per week)
-   - **PrimaryColor** -- hex color for Excel formatting (default: `1B4FA5`)
-   - **Currency** -- currency code (default: `EUR`)
-   - **AvgRate** -- average daily rate for cost calculations (optional, default: none)
-   - **ManagementReservePct** -- management reserve percentage (default: `10`)
-   - **OutputDir** -- where to save generated workbooks (suggest `docs/outbox/`)
+1. Use `WorkspaceDir` from the configuration section if it is set.
+2. Otherwise use the location the project's `CLAUDE.md` declares for working documents (a "Working documents" section or similar), preferring its gitignored scratch location.
+3. Otherwise ask the user where drafts should go, suggest a gitignored folder, and record the answer as `WorkspaceDir`.
 
-2. **Ask about template**. The generator always builds the canonical 4-sheet layout from scratch; a custom template is checked for compatibility but is not used as the base for generated workbooks. Offer:
-   - **Use bundled** -- the reference layout is at `assets/pert-template.xlsx` (relative to this skill directory); criteria are in `references/template-criteria.md`
-   - **Check a custom template** -- run validation:
-     ```bash
-     cd <skill-dir>/scripts && python3 validate_template.py --template <user_path>
-     ```
-     Show any errors. Record the path for reference only.
-   - **Inspect only** -- point the user to the bundled template and stop
+Each estimate gets its own folder, `<WorkspaceDir>/pert-<estimate-slug>/`, where `<estimate-slug>` is the project name in kebab-case. Below, `<estimate>` means that folder.
 
-3. **Write** the configuration section into `CLAUDE.md`:
+**Output folder.** `OutputDir` from the configuration section. If it is not set, ask the user (suggest `docs/outbox/`) and record it.
+
+**Versioned outputs, never overwritten.** The final workbook is `{OutputDir}/<estimate-slug>-pert-v<N>.xlsx`, where N is one more than the highest version already there (v1 for the first). An existing file is never overwritten, and input documents are never modified.
+
+---
+
+## 3. Phase 0 — Setup and runtime check
+
+### 0a. First run: configuration
+
+If the configuration section is missing, ask for these values, then write the section:
+
+- **Language** — output language (default `en`)
+- **EffortUnit** — `pd` (capacity checks and bands are person-day based)
+- **DurationUnit** — `d` (working days; the Resource Plan converts to weeks at 5 days per week)
+- **PrimaryColor** — hex color for Excel formatting (default `1B4FA5`)
+- **Currency** — currency code (default `EUR`)
+- **AvgRate** — average daily rate, used for contingency cost (optional)
+- **ManagementReservePct** — management reserve percentage (default `10`)
+- **OutputDir** and **WorkspaceDir** — as described in Section 2
+
+**Template.** The generator always builds the canonical 4-sheet layout; a custom template is only checked for compatibility. Offer: use the bundled layout (`assets/pert-template.xlsx`, criteria in `references/template-criteria.md`); check a custom template with `cd <skill-dir>/scripts && python3 validate_template.py --template <user_path>` and record its path for reference only; or inspect the bundled template and stop.
 
 ```markdown
-## pmo-pert-estimate Configuration
+## project-management Configuration
 
 | Field | Value |
 |-------|-------|
+| OutputDir | docs/outbox/ |
+| WorkspaceDir | (project working-documents location) |
 | Language | en |
 | EffortUnit | pd |
 | DurationUnit | d |
@@ -80,69 +87,89 @@ When running in a repository for the first time, check whether `CLAUDE.md` conta
 | Currency | EUR |
 | AvgRate | (none) |
 | ManagementReservePct | 10 |
-| OutputDir | docs/outbox/ |
 | CustomTemplate | (bundled) |
 ```
 
-4. **Confirm** to the user that future invocations will use these values automatically.
+If the section exists, read it and go on without asking. If `CLAUDE.md` cannot be written, report it and ask the user to fix the permissions.
 
-If the section already exists, read values from it and proceed silently.
+### 0b. Every run: Python and openpyxl
 
----
+Phases 1–4 need no Python; Phases 5–6 do. Check early so the user is not surprised at the end:
 
-## 3. Phase 1 -- Interactive Setup
+```bash
+python3 -c "import openpyxl; print(openpyxl.__version__)"
+```
 
-This phase runs in-skill (no agent call). Collect all inputs needed for subsequent phases.
+If `python3` or openpyxl is missing, say so and ask the user to choose:
 
-### Steps
-
-1. Ask for **input documents** -- path(s) to SoW, RFP, scope description, or pasted text
-2. Ask if a **reference folder** exists with additional materials (contracts, previous estimates, org charts)
-3. Ask **interaction level**:
-   - **(A) Formative** -- full guidance, explains every PMI decision (for users new to PERT/PMI)
-   - **(B) Collaborative** -- agent proposes, user validates (default)
-   - **(C) Autonomous** -- agent decides, user reviews final output (for experienced PMOs)
-4. Ask if there are **target values** for total effort and/or duration
-   - If yes: record targets for reconciliation in Phase 4
-5. Create working directory: `docs/pert-workspace/`
-   - If it already exists: ask whether to reuse or create fresh
-
-Store all choices (document paths, reference folder, interaction level, targets) for use in subsequent phase prompts.
+- **Install openpyxl now** — only with the user's consent: `python3 -m pip install --user openpyxl`, then re-run the check.
+- **Continue without it** — the skill stops after writing `excel-input.json` in Phase 5 and tells the user the two commands to run once openpyxl is installed.
 
 ---
 
-## 4. Phase 2 -- Context Analysis
+## 4. Phase 1 — Interactive setup
 
-**Progressive disclosure:** `Read references/workflow.md` Phase 2 section before constructing the agent prompt.
+This phase runs in the skill (no agent).
 
-Launch an agent to analyze the input documents and extract project context.
+### Entry from sow-estimate
+
+If `sow-estimate` invoked this skill, or the user points to an existing `sow-extraction.md`, the inputs are already collected:
+
+- The folder that holds `sow-extraction.md` is the estimate folder. Reuse it as is; do not offer to start over there, because it holds the handoff.
+- Read `sow-extraction.md`: project context, WBS draft, roles, risk register, targets and configuration hints. Do not ask again for input documents, a reference folder or targets that it already carries.
+- Ask only for the interaction level (step 3 below) and for anything the extraction flags as missing.
+- In the phases that follow, the extraction is the starting point: Phase 2 analyses it together with the SOW it names, Phase 3 refines its WBS and roles instead of starting from scratch, and the Risk Analyst starts from its risk register.
+
+### Standard entry
+
+1. Ask for the **input documents**: paths to SoW, RFP, scope description, or pasted text.
+2. Ask whether a **reference folder** exists (contracts, previous estimates, org charts).
+3. Ask the **interaction level**:
+   - **(A) Formative** — full guidance, explains every PMI decision (for users new to PERT/PMI)
+   - **(B) Collaborative** — the skill proposes, the user validates (default)
+   - **(C) Autonomous** — the skill decides, the user reviews the final output (for experienced PMOs)
+4. Ask for **target values** for total effort and/or duration, if any; they drive the Phase 4 reconciliation.
+5. Create the estimate folder `<estimate>` (Section 2). If it already exists, ask whether to **reuse** it (continue from the drafts in it) or **start over**. To start over, first rename the existing folder to `pert-<estimate-slug>.bak-<YYYYMMDD-HHMM>/`, then create a new empty one, so nothing is lost.
+
+Keep the choices (paths, level, targets, estimate folder) for the phase prompts.
+
+---
+
+## 5. How phases use agents
+
+A dispatched agent runs once and returns; it cannot ask the user anything. So:
+
+- Every agent prompt asks for a **draft plus a list of open questions**, and tells the agent to write only its own draft file in `<estimate>`.
+- The skill itself runs each **checkpoint**: it shows the draft (or its summary at Level C), asks the open questions, and collects corrections. For a small change it edits the draft itself; for a larger one it dispatches the agent again with the user's answers and the current draft.
+- At **Level A**, the WBS builder is dispatched **once per project phase**: the first dispatch covers phase 1, the checkpoint validates it, and the next dispatch covers phase 2 with the approved phases in its prompt. The other Level A agents add explanations to their drafts; the skill walks the user through them at the checkpoint.
+- For Level A, read `references/interaction-levels.md` at the start of each phase for the teaching behaviour.
+
+---
+
+## 6. Phase 2 — Context analysis
+
+Read `references/workflow.md` before constructing the agent prompt.
 
 ```
 Agent(model="opus")
 ```
 
 **Agent prompt must include:**
-- Exact file paths to read: the input document(s) and reference folder contents collected in Phase 1
-- The interaction level chosen by the user
-- Instruction to extract: scope and boundaries, constraints (time/budget/regulatory), assumptions, stakeholders, deliverables, role references, phases and milestones mentioned, risks already identified in input
-- For **Level A**: include methodology explanation sections in the output (what scope/constraints/assumptions mean, why they matter)
-- For **Level B**: present complete context analysis, ask "Does this capture everything?"
-- For **Level C**: analyze silently, present summary for acknowledgment
-- Output format: structured markdown saved to `docs/pert-workspace/project-context.md`
+- The files to read: the input documents and reference folder contents from Phase 1, or `sow-extraction.md` and the SOW it names (entry from sow-estimate)
+- The interaction level
+- What to extract: scope and boundaries, constraints (time/budget/regulatory), assumptions, stakeholders, deliverables, role references, phases and milestones, risks already identified, targets the input states
+- For **Level A**: include short methodology notes (what scope, constraints and assumptions mean and why they matter)
+- Output: `<estimate>/project-context.md`, plus open questions (ambiguities, gaps)
 
-**User validation checkpoint:** present the context analysis for review. The user may request additions or corrections.
+**Checkpoint:** present the context and ask the open questions. At Level C present a short summary for acknowledgment.
 
-**Error recovery:**
-- If input document is ambiguous: ask clarifying questions
-- If reference folder files are unreadable: skip with warning, proceed with available data
+**Error recovery:** if an input is ambiguous, ask the user at the checkpoint; if reference files are unreadable, skip them with a warning and go on.
 
 ---
 
-## 5. Phase 3 -- WBS + RBS Construction
+## 7. Phase 3 — WBS and roles
 
-**Progressive disclosure:** `Read references/pmi-methodology.md` before constructing agent prompts. For Level A interactions, the agents use this document to explain decomposition decisions and RACI concepts.
-
-Launch two agents in parallel:
+Read `references/pmi-methodology.md` (WBS, 8/80, rolling wave, 100% rule) before constructing the prompts. The two agents can run in parallel because the roles do not depend on the work packages.
 
 ### WBS Builder
 
@@ -151,51 +178,36 @@ Agent(model="opus")
 ```
 
 **Agent prompt must include:**
-- File to read: `docs/pert-workspace/project-context.md`
-- The interaction level chosen by the user
-- Target values (if any) for awareness during decomposition
-- Reference: `references/pmi-methodology.md` -- specifically sections on WBS, 8/80 rule, rolling wave planning, 100% rule
+- File to read: `<estimate>/project-context.md` (and the WBS draft in `sow-extraction.md` when entering from sow-estimate)
+- The interaction level, and target values (if any) for awareness
 - Instructions:
-  - Propose hierarchical decomposition: Phase > Work Package > Activity
-  - Apply 8/80 rule (no work package < 8h or > 80h)
+  - Decompose Phase > Work Package > Activity
+  - Apply the 8/80 rule in person-days: each leaf activity's most-likely effort is between 1 and 10 PD (8 to 80 hours at 8 h per PD); flag activities outside it and propose splits or merges
   - Identify dependencies between activities
-  - For **Level A**: propose one phase at a time, explain each decomposition decision with PMI reasoning, include "Methodology Applied" section in output
-  - For **Level B**: propose complete WBS in one pass, highlight 8/80 borderline cases
-  - For **Level C**: generate complete WBS autonomously
-- Output format: structured markdown saved to `docs/pert-workspace/wbs-draft.md`
+  - Level A: cover only the project phase named in the prompt and explain each decomposition decision ("Methodology Applied" section)
+  - Level B: the complete WBS in one pass, highlighting 8/80 borderline cases
+  - Level C: the complete WBS
+- Output: `<estimate>/wbs-draft.md`, plus open questions
 
-### RBS Builder
+### Roles Builder (RBS)
 
 ```
 Agent(model="sonnet")
 ```
 
 **Agent prompt must include:**
-- File to read: `docs/pert-workspace/project-context.md`
-- The interaction level chosen by the user
-- Reference: `references/interaction-levels.md` -- for RBS-specific behavior per level
-- Instructions:
-  - Extract roles from context (or ask if not found)
-  - Assign roles to teams
-  - Define competencies and responsibilities
-  - Propose resource allocation per work package
-  - Mark each role as billable or non-billable
-  - For **Level A**: explain RACI concepts, discuss billable vs non-billable distinction
-  - For **Level B**: propose complete RBS with team assignments
-  - For **Level C**: generate complete RBS autonomously
-- Output format: structured markdown saved to `docs/pert-workspace/rbs-draft.md`
+- File to read: `<estimate>/project-context.md` (and the roles in `sow-extraction.md` when entering from sow-estimate)
+- The interaction level; reference `references/interaction-levels.md` for RBS behaviour
+- Instructions: list the roles with a short code, assign each role to a team, describe competencies and responsibilities, and mark each role billable or non-billable. Do not allocate roles to work packages: the Estimator does that per activity in Phase 4. If the context names no roles, return that as an open question with a proposed role list.
+- Output: `<estimate>/rbs-draft.md`, plus open questions
 
-**User validation checkpoint:** present both WBS and RBS for review. If the two artifacts are inconsistent (e.g., RBS references phases not in WBS), reconcile before presenting.
-
-**Backtrack:** if context is incomplete, return to Phase 2 for additions.
+**Checkpoint:** present the WBS and the roles together. If the WBS needs a skill that no role covers, raise it here. **Backtrack:** if the context is incomplete, return to Phase 2.
 
 ---
 
-## 6. Phase 4 -- Risks + Estimates
+## 8. Phase 4 — Risks and estimates
 
-**Progressive disclosure:** `Read references/pmi-methodology.md` sections on Risk Management and Three-Point Estimation. `Read references/interaction-levels.md` for phase-specific behavior guidance.
-
-Launch two agents sequentially (Risk Analyst must complete before Estimator begins).
+Read `references/pmi-methodology.md` (Risk Management, Three-Point Estimation, Reconciliation). The Risk Analyst runs first; its checkpoint comes before the Estimator starts.
 
 ### Risk Analyst
 
@@ -204,21 +216,17 @@ Agent(model="sonnet")
 ```
 
 **Agent prompt must include:**
-- Files to read: `docs/pert-workspace/project-context.md`, `docs/pert-workspace/wbs-draft.md`, `docs/pert-workspace/rbs-draft.md`
-- The interaction level chosen by the user
-- Reference: `references/pmi-methodology.md` -- sections on Risk Identification, P x I Matrix, Response Strategies, Contingency vs Management Reserve
+- Files to read: `project-context.md`, `wbs-draft.md`, `rbs-draft.md` in `<estimate>` (and the risk register in `sow-extraction.md` when entering from sow-estimate)
+- The interaction level
 - Instructions:
-  - Identify risks per phase/activity
-  - Evaluate Probability (1-5) x Impact (1-5)
-  - Propose strategy: Mitigate / Transfer / Accept / Avoid
-  - Calculate contingency per risk
-  - Propose management reserve as a % of Tech PERT + PM/DevOps overhead + total contingency (default from config `ManagementReservePct`)
-  - For **Level A**: introduce P x I matrix with examples, explain each response strategy, walk through contingency calculation
-  - For **Level B**: propose complete risk register, highlight highest-priority risks
-  - For **Level C**: generate complete risk register autonomously
-- Output format: structured markdown saved to `docs/pert-workspace/risk-register.md`
+  - Identify risks per phase or activity; score Probability (1–5) × Impact (1–5)
+  - Treat P×I ≥ 10 as high (HIGH 10–14, CRITICAL ≥ 15): each high risk needs a mitigation action and an owner
+  - Propose a strategy (Mitigate / Transfer / Accept / Avoid) and a contingency in PD per risk
+  - Propose the management reserve as a % of Tech PERT + PM/DevOps overhead + total contingency (default `ManagementReservePct`)
+  - Level A: explain the P×I matrix, the strategies and the contingency calculation in the draft
+- Output: `<estimate>/risk-register.md`, plus open questions
 
-**User validation checkpoint:** present risk register for review before proceeding to Estimator.
+**Checkpoint:** present the register, high risks first.
 
 ### Estimator
 
@@ -227,213 +235,144 @@ Agent(model="opus")
 ```
 
 **Agent prompt must include:**
-- Files to read: `docs/pert-workspace/project-context.md`, `docs/pert-workspace/wbs-draft.md`, `docs/pert-workspace/rbs-draft.md`, `docs/pert-workspace/risk-register.md`
-- The interaction level chosen by the user
-- Target values (if any) for effort and/or duration
-- Reference: `references/pmi-methodology.md` -- sections on Three-Point Estimation (PERT), Calibration Questions, Common Estimation Pitfalls, Statistical Confidence Intervals, Top-Down/Bottom-Up Reconciliation
+- Files to read: all four drafts in `<estimate>`
+- The interaction level and the targets (if any)
 - Instructions:
-  - For each leaf activity: propose Best (O) / Most Likely (M) / Worst (P) estimates
-  - Calculate PERT = (O + 4M + P) / 6 and sigma = (P - O) / 6 per activity
-  - Rollup per phase and project total
-  - Resource assignment per activity (role codes from RBS)
-  - If targets provided and deviation > 20%: initiate guided reconciliation
-    - Analyze causes (scope, estimates, resources, dependencies)
-    - Propose adjustments (scope deferral, estimate recalibration, resource reallocation, risk reassessment)
-    - Iterate until convergence or explicit user acceptance
-    - Document reconciliation log
-  - For **Level A**: explain three-point calibration using calibration questions from methodology reference, show PERT formula derivation, explain sigma and confidence intervals
-  - For **Level B**: propose O/M/P ranges for all activities, show PERT totals and CI, ask "Any estimates you'd like to adjust?"
-  - For **Level C**: generate all estimates autonomously, auto-reconcile if delta <= 20%, flag only if delta > 20%
-- Output format: structured markdown saved to `docs/pert-workspace/estimates-draft.md`
+  - For each leaf activity: Best (O) / Most Likely (M) / Worst (P) effort in PD and duration in days
+  - PERT = (O + 4M + P) / 6 and σ = (P − O) / 6 per activity; rollups per phase and project, summed the way the workbook sums them (linear σ; see `references/pmi-methodology.md` §3)
+  - Assign roles per activity, primary role first (it drives the Resource Plan)
+  - Level A: calibration questions, PERT derivation, what σ means, and that the workbook quotes effort bands rather than a confidence interval
+  - Level B: O/M/P for all activities, PERT totals per phase and a preview of the effort bands (the final figures come from `summarize.py` in Phase 6)
+  - If targets exist and the deviation is over 20%: return the delta, its causes (scope, estimates, resources, dependencies) and proposed adjustments as open questions
+- Output: `<estimate>/estimates-draft.md`, plus open questions
 
-**User validation checkpoint:** present estimates for review. Include reconciliation analysis (if targets were provided) showing delta and adjustment rationale.
+**Checkpoint and reconciliation:** present the estimates. When the delta exceeds 20%, ask the user which adjustments to accept, then dispatch the Estimator again with the decisions. Repeat until the delta is within 20% or the user accepts it, at most 3 rounds; then present the delta and ask for an explicit scope or target change. At Level C, reconcile silently when the delta is ≤ 20% and stop only when it is larger. Record the reconciliation log in `estimates-draft.md`.
 
-**Backtrack:** if WBS needs restructuring after estimation (e.g., discovered missing activities), return to Phase 3.
+**Backtrack:** if estimation shows the WBS needs restructuring, return to Phase 3.
 
 ---
 
-## 7. Phase 5 -- Excel Generation
+## 9. Phase 5 — Excel generation
 
-**Progressive disclosure:** `Read references/excel-schema.md` before constructing the agent prompt. This is the machine-readable reference for the JSON structure and Excel column/formula schema.
+Read `references/excel-schema.md`: it documents every JSON key the generator reads (config, roles, phases, work packages, activities, risks, scenarios). `examples/sample-input.json` is a complete, valid example to copy the shape from.
 
 ```
 Agent(model="sonnet")
 ```
 
 **Agent prompt must include:**
-- Files to read: all validated markdown artifacts:
-  - `docs/pert-workspace/project-context.md`
-  - `docs/pert-workspace/wbs-draft.md`
-  - `docs/pert-workspace/rbs-draft.md`
-  - `docs/pert-workspace/risk-register.md`
-  - `docs/pert-workspace/estimates-draft.md`
-- The pmo-pert-estimate configuration from CLAUDE.md (lang, effort_unit, duration_unit, primary_color, currency, avg_rate, management_reserve_pct — as a ratio, e.g. 10 → 0.10)
-- Target values (if any)
-- Reference: `references/excel-schema.md` -- the complete JSON input schema and column/formula definitions per sheet
+- Files to read: the five drafts in `<estimate>`
+- The configuration values (lang, effort_unit, duration_unit, primary_color, currency, avg_rate, management_reserve_pct as a ratio: 10 → 0.10)
+- References: `references/excel-schema.md` and `examples/sample-input.json`
 - Instructions:
-  - Construct the structured JSON matching the schema in `references/excel-schema.md` (config, roles, phases with work_packages and activities, resource_allocation, risks, targets)
-  - Save JSON to `docs/pert-workspace/excel-input.json`
-  - Invoke the generator script:
-    ```bash
-    cd <skill-dir>/scripts && python3 generate_excel.py --input <json_path> --output <output_path>
-    ```
-  - The output path is `{OutputDir}/pert-estimate.xlsx` (from config)
-- Output: the generated Excel workbook
+  1. Write `<estimate>/excel-input.json` with the keys `config`, `roles`, `phases` (with `work_packages` and `activities`), `risks` and optionally `scenarios`. Targets and reconciliation notes stay in the markdown drafts: the generator reads no other keys.
+  2. Validate it: `cd <skill-dir>/scripts && python3 summarize.py --input <estimate>/excel-input.json > /dev/null`. Exit code 1 lists the input errors on stderr; fix them and re-run.
+  3. Generate: `cd <skill-dir>/scripts && python3 generate_excel.py --input <estimate>/excel-input.json --output <estimate>/pert-estimate.xlsx`
+  4. Return the result, or the traceback after 2 failed retries
 
-### Error Recovery Protocol
+If openpyxl is unavailable and the user chose to continue without it (Phase 0b), stop after step 1 and give the user the commands of steps 2–3 and of Phase 6.
 
-If the Python script fails during execution:
-
-1. **Capture** the full Python traceback
-2. **Analyze** root cause:
-   - Missing field in JSON: identify which field, add it with appropriate value
-   - Wrong type (e.g., string where number expected): fix the type in JSON
-   - Formula error: check against `references/excel-schema.md` patterns
-   - openpyxl API error: report the specific cell/sheet causing the issue
-3. **Re-generate** the JSON with fixes and retry (maximum 2 retries)
-4. **If unrecoverable** after 2 retries: report the error to the user with full context (traceback, last valid artifacts, specific cell/sheet if known) for manual intervention
+**Error recovery:** read the traceback; fix a missing field or a wrong type in the JSON (the validation in step 2 names them); retry at most twice; if still failing, report the traceback, the last valid drafts and the cell or sheet involved.
 
 ---
 
-## 8. Phase 6 -- Validation
+## 10. Phase 6 — Checks and figures
 
+This phase runs in the skill: the checks are a script, so no agent is needed.
+
+```bash
+cd <skill-dir>/scripts && python3 summarize.py \
+  --input <estimate>/excel-input.json \
+  --workbook <estimate>/pert-estimate.xlsx \
+  --output <estimate>/summary.json
 ```
-Agent(model="sonnet")
-```
 
-**Agent prompt must include:**
-- File to read: the generated Excel workbook at `{OutputDir}/pert-estimate.xlsx`
-- Reference: `references/excel-schema.md` for expected formula patterns and cross-references
-- Reference: `references/template-criteria.md` for structural requirements
-- Instructions:
-  - Open the workbook with openpyxl
-  - Run the verification checklist:
-    - [ ] Exactly 4 sheets present in this order: `WBS`, `Resource Plan` / `Pianificazione Risorse`, `Risks` / `Rischi`, `Summary` / `Riepilogo`
-    - [ ] Formula cells contain formulas, not hardcoded values
-    - [ ] Cross-reference inter-sheet links resolve correctly (no `#REF!` errors)
-    - [ ] Consistent formatting (font, colors, borders, number format per row type)
-    - [ ] SUM rollups match actual child ranges
-    - [ ] PERT = `(O+4M+P)/6` present on every appropriate row
-    - [ ] sigma = `(P-O)/6` present in the WBS σ Duration column
-    - [ ] No empty input cells (all leaf activities have O/M/P values)
-    - [ ] Resource Plan: TOTAL (PD) per role equals Σ PERT of activities where the role is primary; grand total within ±1 PD of `WBS!H{total}`
-    - [ ] Risks: Management Reserve formula uses the Tech+Overhead+Contingency base (cross-references `WBS!H{total}`), not just the contingency total
-    - [ ] Summary: Fascia BASSA = Subtotal + Contingency; MR is `Fascia BASSA × management_reserve_pct`; Fascia MEDIA = BASSA + MR; Fascia ALTA = MEDIA × (1 + alta_uplift_pct)
-    - [ ] Summary: Calendar Duration cell is a single weekly number (not a sum of leaf durations)
-    - [ ] TOTAL row has global SUMs for effort and billable effort
-  - If issues found: fix programmatically and re-validate (maximum 3 iterations)
-  - If 3 iterations exhausted with remaining issues: present the issues to the user with recommendations
-- Output: validation report + corrected Excel (if fixes were applied)
+If `command -v soffice` (or `libreoffice`) finds LibreOffice, add `--recalc`: the script then recalculates a copy and compares the band values with its own figures. Without LibreOffice the static checks are enough.
 
-**Present final workbook** to user with summary statistics (total phases, activities, Tech PERT effort, Low / Medium / High Band, Calendar Duration in weeks, number of risks, contingency, Management Reserve).
+- **Exit 0** — the checks passed. They cover the sheet order, formula cells holding the documented formulas at the rows the input implies (PERT, σ, billable, rollup ranges, TOTAL row), no `#REF!` or other error token, input cells filled, the Risks Management Reserve built on `WBS!H{total}`, the Summary bands (Low = Subtotal + Contingency, MR = Low × MR%, Medium = Low + MR, High = Medium × (1 + uplift)), the calendar duration value, and Resource Plan cells summing to the Tech PERT within ±1 PD.
+- **Exit 2** — each error names `Sheet!Cell`, what was expected and what was found. Fix the cause in `excel-input.json`, never by editing the workbook, regenerate (Phase 5 step 3) and re-run, at most 3 times; then present the remaining errors with recommendations.
+- **Warnings** in `summary.json` (activities outside the 8/80 rule, activities without a primary role, keys the generator does not read) do not fail the run; show them to the user.
+
+When the checks pass, copy the workbook to `{OutputDir}/<estimate-slug>-pert-v<N>.xlsx` (Section 2).
+
+**Present the result** from `summary.json`, never from the workbook: phases, work packages and activities (`counts`), Tech PERT effort, Low / Medium / High Band, Calendar Duration in weeks, number of risks and of high risks (`high_risk_ids`, P×I ≥ 10), total contingency and Management Reserve, and the output path. `summarize.py --format markdown` prints the same figures as a table.
 
 ---
 
-## 9. Progressive Disclosure Rules
+## 11. Progressive disclosure
 
-Reference documents are loaded ONLY when entering the relevant phase. This keeps agent context fresh and focused.
-
-| Phase | Documents to Read |
+| Phase | Documents to read |
 |-------|-------------------|
-| Phase 0 | (none -- in-skill setup) |
-| Phase 1 | (none -- in-skill setup) |
-| Phase 2 | `references/workflow.md` Phase 2 section |
-| Phase 3 | `references/pmi-methodology.md` (WBS, 8/80, rolling wave sections) |
-| Phase 4 | `references/pmi-methodology.md` (Risk, PERT, Reconciliation sections) |
-| Phase 5 | `references/excel-schema.md` (full document) |
-| Phase 6 | `references/excel-schema.md` + `references/template-criteria.md` |
+| Phase 0 | `references/template-criteria.md` only when checking a custom template |
+| Phase 1 | `sow-extraction.md` when entering from sow-estimate |
+| Phase 2 | `references/workflow.md` |
+| Phase 3 | `references/pmi-methodology.md` (WBS, 8/80, rolling wave) |
+| Phase 4 | `references/pmi-methodology.md` (Risk, PERT, Reconciliation) |
+| Phase 5 | `references/excel-schema.md`, `examples/sample-input.json` |
+| Phase 6 | (none; `references/excel-schema.md` if an error needs explaining) |
 
-For Level A interactions, additionally read `references/interaction-levels.md` at the start of each phase to retrieve phase-specific formative behavior guidance.
-
-**Never load all reference documents at the beginning of the workflow.**
+For Level A, also read `references/interaction-levels.md` at the start of each phase. Loading every reference at the start would crowd the context the later phases need.
 
 ---
 
-## 10. Dynamic Adaptation
+## 12. Dynamic adaptation
 
-The interaction level is not rigid. Monitor user behavior and adapt per-phase.
-
-### Upward Shift (toward more guidance)
+The interaction level adapts per phase.
 
 | Trigger | Action |
 |---------|--------|
-| Level B/C user asks "why?" or "what does X mean?" | Switch to Level A explanations for that topic. Ask: "Would you like me to switch to full guidance mode for this phase?" |
-| Level B/C user requests methodology explanation | Provide PMBOK context from `references/pmi-methodology.md`, offer to stay at Level A |
-| Level B/C user expresses uncertainty about estimates | Use calibration questions from `references/pmi-methodology.md` Section 2 |
+| Level B/C user asks "why?" or "what does X mean?" | Explain at Level A depth for that topic; ask: "Would you like full guidance for this phase?" |
+| Level B/C user asks for methodology | Give the PMBOK context from `references/pmi-methodology.md`; offer to stay at Level A |
+| Level B/C user is unsure about estimates | Use the calibration questions from `references/pmi-methodology.md` Section 2 |
+| Level A user keeps answering "ok" / "looks good" | Suggest: "You seem comfortable — want complete drafts instead of step-by-step?" |
+| Level A user edits estimates confidently | Reduce explanation density |
+| User asks for a faster pace | Switch to the requested level |
 
-### Downward Shift (toward less guidance)
-
-| Trigger | Action |
-|---------|--------|
-| Level A user consistently responds "ok" / "looks good" without engagement | Suggest: "You seem comfortable -- want me to propose complete artifacts instead of step-by-step?" |
-| Level A user modifies estimates confidently | Reduce explanation density |
-| User explicitly requests faster pace | Switch to requested level |
-
-Adaptation is **per-phase**, not global. The agent never downgrades without suggesting it first. The agent may upgrade silently (providing more context when asked) without formally announcing a level change.
+Never lower the level without suggesting it first; adding explanation when asked needs no announcement.
 
 ---
 
-## 11. Error Recovery Summary
+## 13. Error recovery summary
 
-### Phase 5 -- Excel Generation Errors
-
-1. Capture Python traceback
-2. Analyze root cause (missing field, wrong type, formula error, openpyxl API issue)
-3. Re-generate JSON with fixes (maximum 2 retries)
-4. If unrecoverable: report to user with full context
-
-### Phase 6 -- Validation Errors
-
-1. Identify failing checks from verification checklist
-2. Apply programmatic fixes (correct formula, fix cross-reference, add missing value)
-3. Re-validate (maximum 3 iterations)
-4. If unresolved: present remaining issues with recommendations
-
-### General Error Recovery
-
-- If input document path is invalid: ask user to correct
-- If workspace directory already exists: ask whether to reuse or create fresh
-- If template validation fails: show specific errors, offer fallback to bundled template
-- If CLAUDE.md is read-only: report error, ask user to fix permissions
-- If WBS violates 8/80 rule: flag violations, propose splits/merges
-- If no roles found in context: ask user to provide role list
-- If reconciliation fails to converge after 3 iterations: present delta to user, ask for explicit scope/target adjustment
+- Invalid input path: ask the user to correct it.
+- Estimate folder already exists: reuse, or back it up and start over (Section 4); after entry from sow-estimate, reuse.
+- Template validation fails: show the errors and offer the bundled layout.
+- `CLAUDE.md` read-only: report it and ask the user to fix permissions.
+- openpyxl missing: Phase 0b.
+- WBS outside the 8/80 rule: flag the activities and propose splits or merges.
+- No roles in the context: ask for the role list at the Phase 3 checkpoint.
+- Reconciliation not converging after 3 rounds: present the delta and ask for a scope or target change.
+- Generation or checks failing: Phase 5 and Phase 6 limits (2 and 3 retries), then report.
 
 ---
 
-## 12. Artifact Chain
+## 14. Artifact chain
 
-Each artifact is produced, validated by the user, and then passed as input to the next phase. The agent working on step N receives only artifacts 1..N-1 to keep context fresh.
+Each artifact is validated at a checkpoint before it feeds the next phase; the agent of step N receives only artifacts 1..N−1.
 
-| Step | File | Format | Produced by |
-|------|------|--------|-------------|
-| 1 | `docs/pert-workspace/project-context.md` | Markdown | Phase 2 (Opus) |
-| 2 | `docs/pert-workspace/wbs-draft.md` | Markdown | Phase 3 (Opus) |
-| 3 | `docs/pert-workspace/rbs-draft.md` | Markdown | Phase 3 (Sonnet) |
-| 4 | `docs/pert-workspace/risk-register.md` | Markdown | Phase 4 (Sonnet) |
-| 5 | `docs/pert-workspace/estimates-draft.md` | Markdown | Phase 4 (Opus) |
-| 6 | `docs/pert-workspace/excel-input.json` | JSON | Phase 5 (Sonnet) |
-| 7 | `{OutputDir}/pert-estimate.xlsx` | Excel | Phase 5 (Script) |
+| Step | File | Produced by |
+|------|------|-------------|
+| 0 | `<estimate>/sow-extraction.md` (entry from sow-estimate only) | sow-estimate |
+| 1 | `<estimate>/project-context.md` | Phase 2 |
+| 2 | `<estimate>/wbs-draft.md` | Phase 3 |
+| 3 | `<estimate>/rbs-draft.md` | Phase 3 |
+| 4 | `<estimate>/risk-register.md` | Phase 4 |
+| 5 | `<estimate>/estimates-draft.md` | Phase 4 |
+| 6 | `<estimate>/excel-input.json` | Phase 5 |
+| 7 | `<estimate>/pert-estimate.xlsx` (working copy) | Phase 5 (script) |
+| 8 | `<estimate>/summary.json` | Phase 6 (script) |
+| 9 | `{OutputDir}/<estimate-slug>-pert-v<N>.xlsx` | Phase 6 |
 
 ---
 
-## 13. Final Checklist
+## 15. Final checklist
 
-Before considering the estimation complete, verify:
-
-- [ ] All 4 Excel sheets present in order: `WBS`, `Resource Plan` (`Pianificazione Risorse`), `Risks` (`Rischi`), `Summary` (`Riepilogo`)
-- [ ] PERT formulas `=(O+4M+P)/6` on every appropriate WBS row
-- [ ] SUM rollups correct (exact child ranges)
-- [ ] sigma = `(P-O)/6` present in the WBS σ Duration column
-- [ ] Cross-sheet references resolve (no `#REF!` errors)
-- [ ] Input columns have values, formula columns have formulas (never inverted)
-- [ ] Consistent formatting (phase/WP/leaf/total row styles)
-- [ ] Billable flags correct, BILLABLE EFFORT calculated on the WBS sheet
-- [ ] Resource Plan: PD per role × week with TOTAL (PD) column equal to Σ PERT of activities where the role is primary; cells over capacity (`>5 PD/week`) flagged red
-- [ ] Risk register with P×I formula, priority IF, contingency, and a Management Reserve cell whose formula cross-references `WBS!H{total}` (PMI-correct base)
-- [ ] Summary with Tech PERT, PM/DevOps overhead, Subtotal, Contingency, Fascia BASSA/MEDIA/ALTA, Management Reserve, Calendar Duration, Effort by Team (real PD), and Sensitivity Scenarios (if provided)
-- [ ] TOTAL row with global SUMs for effort and billable effort
-- [ ] 8/80 rule respected in WBS decomposition
-- [ ] All intermediate `.md` artifacts saved in `docs/pert-workspace/`
-- [ ] Interaction level respected throughout the workflow
-- [ ] Reconciliation executed if targets were provided and delta > 20%
+- [ ] `summarize.py --workbook` exited 0 (and `--recalc` passed or was skipped for lack of LibreOffice)
+- [ ] The warnings in `summary.json` were shown to the user
+- [ ] 8/80 rule respected (1–10 PD most-likely per leaf activity), or each exception accepted by the user
+- [ ] Each high risk (P×I ≥ 10) has a mitigation action and an owner
+- [ ] Reconciliation executed if targets were given and the delta exceeded 20%
+- [ ] Drafts, `excel-input.json` and `summary.json` are in `<estimate>`; nothing was written to the output folder except the versioned workbook
+- [ ] The workbook was saved under a new version number; no existing file was overwritten
+- [ ] Figures presented to the user come from `summary.json`
+- [ ] The interaction level was respected throughout

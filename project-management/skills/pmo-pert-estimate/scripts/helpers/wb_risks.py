@@ -21,7 +21,9 @@ from helpers.i18n import t
 _DATA_START_ROW = 2
 
 _RED_FONT = Font(bold=True, color="FFFF0000")
-_HIGH_SCORE_THRESHOLD = 15
+#: P x I score from which a risk is "high" (HIGH or CRITICAL priority) and shown in red.
+#: Matches the Priority formula (HIGH >= 10) and the plugin-wide high-risk rule.
+_HIGH_SCORE_THRESHOLD = 10
 
 _COLUMN_WIDTHS = {
     "A": 8,
@@ -146,11 +148,11 @@ def build(wb: Workbook, data: dict, wbs_info: dict | None = None) -> dict:
         if avg_rate is not None:
             ws.cell(row=row_num, column=13, value=f"=L{row_num}*{avg_rate}")
 
-        # Apply red font to high-score risk rows (score >= threshold)
+        # Apply red font to high risks (HIGH or CRITICAL: score >= threshold)
         if score >= _HIGH_SCORE_THRESHOLD:
             for col_idx in range(1, 14):
                 cell = ws.cell(row=row_num, column=col_idx)
-                cell.font = Font(bold=True, color="FFFF0000")
+                cell.font = _RED_FONT
 
     # -----------------------------------------------------------------------
     # Footer rows: blank separator, TOTAL, Reserve

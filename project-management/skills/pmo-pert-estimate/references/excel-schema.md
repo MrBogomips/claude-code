@@ -17,135 +17,132 @@ exactly **4 sheets** in this order: **WBS**, **Resource Plan** /
 | Header row | Row 1 |
 | Data start row | Row 2 (Resource Plan: row 3, after a calendar reference row at row 2) |
 | Number format | `#,##0.00` for all numeric cells |
-| Formula injection | Always as string (e.g., `f'=(E{r}+4*F{r}+G{r})/6'`); never computed values |
+| Formula injection | Always as string (e.g., `f'=(E{r}+4*F{r}+G{r})/6'`); never computed values. The figures come from `scripts/summarize.py`, which computes them from the JSON input |
 
 ---
 
 ## JSON Input Schema
 
-### `config` block
+`examples/sample-input.json` is a complete, valid input: copy its shape. The generator reads
+only the keys below and ignores any other key. `scripts/summarize.py --input <json>` checks an
+input before generation: it exits with code 1 and lists the errors (missing or mistyped keys,
+inverted three-point values, a percentage written as 10 instead of 0.10) and reports as
+warnings the keys the generator does not read.
 
-```jsonc
-{
-  "config": {
-    "lang": "en",                       // "en" (default) | "it"
-    "effort_unit": "pd",
-    "duration_unit": "d",
-    "primary_color": "1B4FA5",
-    "currency": "EUR",
-    "project_start_date": "2026-04-06", // W1 anchor for Resource Plan calendar row
-    "management_reserve_pct": 0.10,
-    "avg_rate": 500,                    // optional, drives Contingency Cost columns
+### Top level
 
-    // ---- Overhead, bands, calendar ----
-    "pm_overhead_pct": 0.0,             // ratio of Tech PERT (e.g. 0.10 = +10%)
-    "devops_overhead_pct": 0.0,         // ratio of Tech PERT
-    "alta_uplift_pct": 0.12,            // High Band uplift over Medium Band
-    "calendar_total_weeks": null        // optional explicit calendar duration override
-  }
-}
-```
+| Key | Required | Type | Meaning |
+|-----|----------|------|---------|
+| `config` | yes | object | Units, colors, ratios, calendar (below) |
+| `roles` | yes | array | One entry per role |
+| `phases` | yes | non-empty array | WBS level 1, holding work packages and activities |
+| `risks` | yes | array (may be empty) | Risk register |
+| `scenarios` | no | array of strings | Listed verbatim under the Summary "Sensitivity Scenarios" header |
 
-### `phases[].start_week` / `phases[].end_week` (optional)
+Targets, reconciliation notes and resource allocations are not part of the input: they stay in
+the markdown drafts.
 
-```jsonc
-{
-  "phases": [
-    {
-      "id": "1",
-      "name": "Analysis",
-      "start_week": 1,
-      "end_week": 4,
-      "work_packages": [...]
-    }
-  ]
-}
-```
+### `config`
 
-When present, drive the Resource Plan calendar and the Summary
-`Calendar Duration` value. When absent, phases are stacked sequentially
-using a duration heuristic.
+| Key | Required | Default | Meaning |
+|-----|----------|---------|---------|
+| `lang` | no | `"en"` | `"en"` or `"it"`: sheet names and labels |
+| `effort_unit` | no | `"pd"` | Unit label of the effort columns; bands and capacity checks assume person-days |
+| `duration_unit` | no | `"d"` | Unit label of the duration columns (working days) |
+| `primary_color` | no | `"1B4FA5"` | Hex fill of the phase rows |
+| `currency` | no | — | Not written to the workbook; used when presenting cost figures |
+| `project_start_date` | no | — | ISO date of W1 in the Resource Plan calendar row. The legacy alias `start_date` is read only when this key is missing |
+| `management_reserve_pct` | yes | — | Ratio (`0.10` = 10%). Without it the Risks sheet falls back to 0.10 and the Summary to 0, so the two would disagree |
+| `avg_rate` | no | `null` | Daily rate; when set, the Risks sheet adds Contingency Cost formulas |
+| `pm_overhead_pct` | no | `0.0` | Ratio of Tech PERT (`0.10` = +10%) |
+| `devops_overhead_pct` | no | `0.0` | Ratio of Tech PERT |
+| `alta_uplift_pct` | no | `0.12` | High Band uplift over the Medium Band |
+| `calendar_total_weeks` | no | `null` | Explicit calendar duration in weeks; overrides the phase weeks |
 
-### `scenarios[]` (top-level, optional)
+### `roles[]`
 
-```jsonc
-{
-  "scenarios": [
-    "Optimistic: 320 PD if no integration delays",
-    "Realistic: 465 PD (Fascia MEDIA)",
-    "Pessimistic: 540 PD if external API rework"
-  ]
-}
-```
+| Key | Required | Meaning |
+|-----|----------|---------|
+| `code` | yes | Unique short code, used in `activities[].resources` and `risks[].owner` |
+| `name` | no | Resource Plan label (default: the code) |
+| `team` | no | Group for the Summary "Effort by Team" (default `Unassigned`) |
+| `billable` | no | Resource Plan Type column, `true` by default |
 
-Listed verbatim under the Summary "Sensitivity Scenarios" header.
+### `phases[]`
 
-### Activities: `resources[]` ordering
+| Key | Required | Meaning |
+|-----|----------|---------|
+| `id` | yes | WBS ID, e.g. `"1"` |
+| `name` | yes | Phase name (WBS column B) |
+| `description` | no | Summary phase table, column B |
+| `start_week`, `end_week` | no | Both or neither. Calendar weeks of the phase: drive the Resource Plan and the Summary Calendar Duration. When absent, phases are stacked sequentially at `ceil(Σ leaf PERT duration / 5)` weeks each |
+| `work_packages` | yes | Non-empty array |
 
-The first element of `activity.resources` is the **primary role** for that
-activity. The primary role drives:
+Phase rows are computed from their activities; phase-level duration fields are not read.
 
-- Resource Plan PD allocation per week
-- Summary "Effort by Team" rollup
-- Implicit team membership via `roles[primary].team`
+### `phases[].work_packages[]`
 
-Subsequent role codes in `resources[]` are informational only and appear
-in the WBS `Resources` column as a comma-joined list.
+| Key | Required | Meaning |
+|-----|----------|---------|
+| `id` | yes | WBS ID with exactly one dot, e.g. `"1.1"` (the WBS styles such rows as work packages) |
+| `name` | yes | Work package name (WBS column C) |
+| `activities` | yes | Non-empty array of leaf activities |
 
-### Legacy JSON (v1) backward compatibility
+### `phases[].work_packages[].activities[]`
 
-JSON written against the v1 schema (no `pm_overhead_pct`, no calendar
-fields) is still accepted. The generator routes input through
-`helpers.config_compat.normalize_config()`, which:
+| Key | Required | Meaning |
+|-----|----------|---------|
+| `id` | yes | Leaf WBS ID, e.g. `"1.1.1"` |
+| `name` | yes | Activity name (WBS column D) |
+| `best_effort`, `likely_effort`, `worst_effort` | yes | Numbers ≥ 0 with O ≤ M ≤ P, in `effort_unit` (PD) |
+| `best_duration`, `likely_duration`, `worst_duration` | yes | Numbers ≥ 0 with O ≤ M ≤ P, in working days |
+| `resources` | no | Role codes, **primary role first** (see below) |
+| `dependencies` | no | Activity IDs (WBS column O) |
+| `risks` | no | Risk IDs (WBS column P) |
+| `notes` | no | Free text (WBS column Q) |
+| `billable` | no | `true` by default; `false` writes `N` in column R and excludes the activity from Billable PERT Effort |
 
-1. Backfills modern config defaults (overhead = 0, alta_uplift = 0.12, `calendar_total_weeks` = `None`).
+**8/80 rule.** Each leaf activity's most-likely effort should be between 1 and 10 PD (8 to 80
+hours at 8 h per PD). `summarize.py` warns about activities outside it (8–80 when
+`effort_unit` is hours).
+
+**Primary role.** The first element of `resources` is the primary role. It drives the Resource
+Plan PD allocation per week, the Summary "Effort by Team" rollup and the implicit team
+membership through `roles[primary].team`. The other codes are informational and appear
+comma-joined in the WBS `Resources` column. An activity with empty `resources` is left out of
+the Resource Plan and of Effort by Team.
+
+### `risks[]`
+
+| Key | Required | Meaning |
+|-----|----------|---------|
+| `id` | yes | `R1`, `R2`, … |
+| `description` | yes | Risk text |
+| `category` | yes | Technical / External / Organizational / PM |
+| `affected_phases` | no | Phase IDs |
+| `probability` | yes | Integer 1–5 |
+| `impact` | yes | Integer 1–5 |
+| `strategy` | no | Mitigate / Transfer / Accept / Avoid |
+| `mitigation` | no | Mitigation action |
+| `owner` | no | Role code |
+| `contingency_effort` | no | PD ≥ 0, or `null` (counted as 0) |
+
+A risk is **high** when P×I ≥ 10: Priority HIGH (10–14) or CRITICAL (≥ 15), shown in red on the
+Risks sheet. The same threshold applies in the SOW skills.
+
+### Legacy JSON backward compatibility
+
+JSON written for earlier versions (no `pm_overhead_pct`, no calendar fields) is still accepted.
+The generator routes input through `helpers.config_compat.normalize_config()`, which:
+
+1. Backfills the defaults in the `config` table (overhead = 0, `alta_uplift_pct` = 0.12, `calendar_total_weeks` = `null`).
 2. Emits **one stderr warning** per invocation:
    ```
    [pmo-pert] LEGACY JSON: missing modern fields; using defaults. See references/excel-schema.md for migration.
    ```
 
-#### Migration example
-
-**Before (v1)**
-
-```jsonc
-{
-  "config": {
-    "effort_unit": "pd",
-    "management_reserve_pct": 0.20
-  },
-  "phases": [...],
-  "roles": [...],
-  "risks": [...]
-}
-```
-
-**After (v2 recommended)**
-
-```jsonc
-{
-  "config": {
-    "effort_unit": "pd",
-    "project_start_date": "2026-04-06",
-    "management_reserve_pct": 0.20,
-    "pm_overhead_pct": 0.10,
-    "devops_overhead_pct": 0.05,
-    "alta_uplift_pct": 0.12,
-    "calendar_total_weeks": 25
-  },
-  "phases": [
-    {"id": "1", "name": "Analysis", "start_week": 1, "end_week": 4,  "work_packages": [...]},
-    {"id": "2", "name": "Build",    "start_week": 3, "end_week": 18, "work_packages": [...]}
-  ],
-  "scenarios": [
-    "Optimistic: 320 PD",
-    "Realistic: 465 PD",
-    "Pessimistic: 540 PD"
-  ],
-  "roles": [...],
-  "risks": [...]
-}
-```
+To migrate, add `project_start_date`, the overhead ratios, `alta_uplift_pct`, and either
+`calendar_total_weeks` or `start_week`/`end_week` on each phase, as in `examples/sample-input.json`.
 
 ---
 
@@ -170,6 +167,13 @@ Columns A–S.
 | Q | Notes | input | Free text | (empty) | (empty) |
 | R | Billable | input | `Y` / `N` | (empty) | (empty) |
 | S | Billable PERT Effort | **formula** | `=IF(R{r}="Y",H{r},0)` | `=SUM(...)` | `=SUM(<phases>)` |
+
+**Rollup rows.** Work-package and phase rows sum the leaf three-point values (E–G, I–K) and
+apply the same PERT and σ formulas to the sums. PERT effort therefore equals the sum of the
+leaf PERT values. σ on a rollup row, `(ΣP − ΣO)/6`, is the **linear sum** of the leaf σ values:
+it assumes the activities are fully correlated, so it is an upper bound, and it sums durations
+as if every activity ran in sequence. The root-sum-square of independent activities is smaller;
+the workbook does not compute it (see `pmi-methodology.md` §3).
 
 ---
 
@@ -232,11 +236,16 @@ Columns A–M.
 
 ### Footer rows
 
-| Row | Column | Formula |
-|-----|--------|---------|
-| `TOTAL CONTINGENCY` | L | `=SUM(L{data_start}:L{data_end})` |
-| `MANAGEMENT RESERVE` | L | `=(WBS!H{wbs_total}*(1+pm_overhead_pct+devops_overhead_pct)+L{total_row})*management_reserve_pct` |
-| `MANAGEMENT RESERVE` | M | same expression × `avg_rate` (only when `avg_rate` is configured) |
+A blank row follows the last risk, then two footer rows (label in column A):
+
+| Row label | Column | Formula |
+|-----------|--------|---------|
+| `TOTAL` | L | `=SUM(L{data_start}:L{data_end})` (total contingency) |
+| `TOTAL` | M | `=SUM(M{data_start}:M{data_end})` (only when `avg_rate` is configured) |
+| `Management Reserve` | L | `=(WBS!H{wbs_total}*(1+pm_overhead_pct+devops_overhead_pct)+L{total_row})*management_reserve_pct` |
+| `Management Reserve` | M | same expression × `avg_rate` (only when `avg_rate` is configured) |
+
+Rows with P×I ≥ 10 (HIGH or CRITICAL) are written in bold red.
 
 The MR formula uses the PMI-correct base (Tech + Overhead + Contingency)
 so the Risks sheet and the Summary sheet agree on the MR value.
@@ -338,3 +347,39 @@ Only σ for Duration is computed (column M of WBS). Effort uncertainty is
 communicated through the three-point values (O/M/P) and the three bands.
 No σ-total / CI 68/95 block is produced, because it would rest on a
 sequential leaf sum.
+
+---
+
+## Figures and checks — `scripts/summarize.py`
+
+The workbook stores formulas without computed values, so figures are never read back from
+it. `summarize.py` computes them from the same JSON with the generator's helpers and formulas:
+
+```bash
+python3 summarize.py --input excel-input.json [--workbook estimate.xlsx [--recalc]] \
+                     [--output summary.json] [--format json|markdown]
+```
+
+Exit codes: `0` ok, `1` input missing or invalid (errors on stderr), `2` workbook checks failed.
+
+| Key in `summary.json` | Content |
+|-----------------------|---------|
+| `counts` | phases, work_packages, activities, roles, risks |
+| `phases[]` | per phase (and its `work_packages[]`): the three-point sums, `pert_effort`, `pert_duration`, `sigma_duration` (linear, as in the WBS), `billable_pert_effort` |
+| `totals` | the same figures for the WBS TOTAL row |
+| `effort` | `tech_pert`, `pm_overhead`, `devops_overhead`, `subtotal`, `contingency`, `low_band`, `management_reserve`, `medium_band`, `high_band`, `total_billable`, `billable_ratio`, and `management_reserve_risks_sheet` (equal to `management_reserve`) |
+| `calendar_weeks` | the Summary Calendar Duration value |
+| `effort_by_team` | PD per team (primary role of each activity) |
+| `resource_plan` | `total_weeks`, `role_codes`, `role_total_pd`, `grand_total_pd`, `skipped_activities`, `skipped_pd`, `overcommits` |
+| `risks[]`, `high_risk_ids` | score, priority and `high` flag (P×I ≥ 10) per risk |
+| `warnings` | 8/80 exceptions, activities without a primary role, keys the generator does not read |
+| `checks` | with `--workbook`: `passed`, `errors` (`Sheet!Cell: expected …, found …`), and `recalc` with `--recalc` |
+
+Values are rounded to 2 decimals, the precision of the workbook's `#,##0.00` format.
+
+With `--workbook`, the static checks compare every formula cell with the patterns in this
+document at the rows the JSON layout implies, and flag error tokens such as `#REF!`, empty
+input cells, a wrong sheet order, and ratios or calendar values that no longer match the
+JSON (a stale workbook). With `--recalc`, when LibreOffice (`soffice`) is on PATH, a copy is
+recalculated headless and the WBS total, the Risks Management Reserve and the Summary bands
+are compared with the computed figures; without LibreOffice the result is `skipped`.

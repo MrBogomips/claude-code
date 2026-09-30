@@ -23,15 +23,21 @@ Level 3: Activity (leaf — the actual task being estimated)
 
 ### The 8/80 Rule
 
-Every work package should require between **8 hours and 80 hours** of effort.
+The classic rule says a unit of work should take between **8 and 80 hours**. This skill works in
+person-days (PD, 8 hours) and applies the rule to **leaf activities**, the level that is
+estimated: each activity's most-likely effort should be between **1 PD and 10 PD**.
 
 | Condition | Problem | Action |
 |-----------|---------|--------|
-| Package < 8 hours | Over-decomposed; tracking overhead exceeds value | Merge with sibling or parent |
-| Package > 80 hours | Under-decomposed; too coarse for reliable estimation | Split into smaller packages |
-| Package = 8-80 hours | Appropriate granularity | Proceed with estimation |
+| Activity < 1 PD | Over-decomposed; tracking overhead exceeds value | Merge with a sibling |
+| Activity > 10 PD | Under-decomposed; too coarse for reliable estimation | Split into smaller activities |
+| Activity 1–10 PD | Appropriate granularity | Proceed with estimation |
 
-**Practical guidance**: For a typical 3-6 month project, most leaf activities should be 2-10 person-days. Shorter tasks are acceptable if they represent distinct deliverables.
+A work package is then simply the sum of its activities; it may well exceed 10 PD.
+
+**Practical guidance**: for a typical 3–6 month project, most leaf activities are 2–10 PD.
+Shorter activities are acceptable when they are distinct deliverables. `scripts/summarize.py`
+lists the activities outside 1–10 PD as warnings.
 
 ### The 100% Rule
 
@@ -102,44 +108,47 @@ When eliciting estimates in formative mode, use these calibration prompts:
 
 ---
 
-## 3. Statistical Confidence Intervals
+## 3. Uncertainty: σ, rollups and what to quote
 
-### Per-Activity Confidence
+### Per-activity spread
 
-```
-CI 68% = PERT +/- 1 sigma    (one standard deviation)
-CI 95% = PERT +/- 2 sigma    (two standard deviations)
-```
+σ = (P − O) / 6 measures the spread of one activity. As a teaching aid, PERT ± 1σ covers roughly
+68% of outcomes and PERT ± 2σ roughly 95%, if the Beta approximation holds.
 
-### Project-Level Aggregation
+### How the workbook rolls up σ
 
-For the total project duration, assuming activities are statistically independent (standard PERT/CLT assumption):
+The workbook computes σ for **durations** only (WBS column M). On a work-package, phase or TOTAL
+row it applies the same formula to the summed values, `(ΣP − ΣO) / 6`, which equals the
+**linear sum** of the children's σ. That is the conservative case: it assumes the activities are
+fully correlated (one bad surprise hits them all) and that they run in sequence.
 
-```
-sigma_total = SQRT( SUM( sigma_i^2 ) )
-```
-
-Where sigma_i is the standard deviation of each phase/activity on the critical path.
-
-**Project-level CI**:
+The textbook alternative assumes independent activities on a single critical path:
 
 ```
-CI 68%: PERT_total +/- sigma_total
-CI 95%: PERT_total +/- 2 * sigma_total
+sigma_path = SQRT( SUM( sigma_i^2 ) )
 ```
 
-### Stakeholder Communication
+It is always smaller than the linear sum. The workbook does not compute it, because the
+activities are rarely independent and the leaf durations are not a critical path: phases
+overlap. If a sponsor asks for it, compute it by hand for the activities of the critical path
+and say which assumption it rests on.
 
-| Audience | Recommended metric | Explanation |
-|----------|-------------------|-------------|
-| Executive sponsor | CI 95% upper bound | "We are 95% confident the project will complete within X days." |
-| Project team | PERT value | "Our expected duration is X days." |
-| PMO / governance | CI 68% range | "We expect completion between X and Y days with 68% confidence." |
-| Contract / procurement | CI 95% upper bound + management reserve | Conservative commitment for contractual obligations. |
+### What to quote to stakeholders
 
-### Independence Assumption
+The workbook quotes **effort bands**, not a confidence interval. Use them:
 
-The formula `sigma_total = SQRT(SUM(sigma_i^2))` assumes activities are statistically independent. In practice, correlated risks (e.g., team-wide skill gaps, organization-wide disruptions) increase actual variance. The Risk Register and Management Reserve are the mechanisms to address correlated risk — they provide additive buffers on top of the statistical CI.
+| Audience | Recommended figure | Explanation |
+|----------|--------------------|-------------|
+| Project team | Tech PERT per phase | "Our expected effort is X PD." |
+| PMO / governance | Low / Medium / High Band | "Between X and Z PD; we plan on the Medium Band, Y PD." |
+| Executive sponsor | Medium Band and Calendar Duration | "Y PD over W weeks, including contingency and management reserve." |
+| Contract / procurement | Medium Band, or the High Band for a fixed price | Conservative commitment for contractual obligations. |
+
+### Correlated risk
+
+Correlated risks (team-wide skill gaps, organization-wide disruptions) increase the real
+variance beyond any per-activity σ. The Risk Register's contingency and the Management Reserve
+are the mechanisms for them: they are added on top of the PERT effort in the bands.
 
 ---
 
@@ -175,6 +184,10 @@ Both Probability and Impact are scored on a 1-5 scale:
 | 5-9 | MEDIUM | Plan response; allocate contingency |
 | 10-14 | HIGH | Active management; dedicated mitigation |
 | 15-25 | CRITICAL | Immediate escalation; mandatory mitigation or avoidance |
+
+A **high risk** is any risk with P×I ≥ 10 (HIGH or CRITICAL): it needs a mitigation action and
+an owner. The same threshold is used by the SOW skills of this plugin and by the red font on the
+Risks sheet.
 
 ### Response Strategies
 
@@ -266,4 +279,4 @@ In formative mode, the agent explains each step:
 | Stakeholder engagement | 2.1 Stakeholder Performance Domain |
 | Schedule management | 2.5 Project Work Performance Domain |
 | Cost estimation | 2.4 Planning Performance Domain |
-| Confidence intervals | 2.7 Uncertainty Performance Domain |
+| Uncertainty and ranges | 2.7 Uncertainty Performance Domain |

@@ -2,16 +2,16 @@
 
 ## Project Overview
 
-**Client:** MediterraneTrade S.p.A. (Port Authority Holding)
+**Client:** Acme Logistics Holding
 **Engagement:** Operating Model Redesign & Organisational Transformation
-**Consulting Firm:** Meridian Strategy Partners
+**Consulting Firm:** Example Consulting
 **Start Date:** 1 October 2026
 **Effort Units:** Hours
 **Duration Units:** Weeks
 
 ## Objective
 
-MediterraneTrade S.p.A. requires a structured management consulting engagement to redesign its operating model following a recent merger of three port authorities. The engagement encompasses organisational diagnostics, strategic redesign, implementation support, and knowledge transfer to embed the new operating model.
+Acme Logistics Holding requires a structured management consulting engagement to redesign its operating model following a recent merger of three regional operators. The engagement encompasses organisational diagnostics, strategic redesign, implementation support, and knowledge transfer to embed the new operating model.
 
 ## Scope
 

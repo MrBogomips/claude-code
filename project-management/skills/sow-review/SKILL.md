@@ -10,13 +10,14 @@ description: "Review and score Statement of Work documents across 8 quality dime
 This skill reviews Statement of Work documents against 8 quality dimensions, producing a structured scorecard with actionable recommendations. It includes an adversarial pass that role-plays as both client and vendor to identify exploitable gaps.
 
 **Inputs:**
-- **SOW document** (required) — path to markdown or docx file
+- **SOW document** (required) — path to a Markdown, PDF or DOCX file
 - **Addenda** (optional) — estimation docs, PERT Excel, appendices, meeting notes
 - **Corporate standards** (optional) — company templates, style guides, or previous SOWs for compliance checking
 
 **Connector support:**
 - If **~~knowledge base** is connected: pull corporate templates and standards automatically
 - If **~~chat** is connected: post review summaries to stakeholders
+- If **~~document converter** is connected: convert PDF or DOCX inputs to Markdown
 
 ---
 
@@ -24,9 +25,11 @@ This skill reviews Statement of Work documents against 8 quality dimensions, pro
 
 ### Step 1 — Document Ingestion
 
-Read the SOW and all addenda. Determine:
+Read the SOW and all addenda. Markdown is read directly, and PDF with the Read tool. A DOCX cannot be read directly: convert it with a **~~document converter** if one is connected; otherwise look for a converter on the system (`command -v markitdown pandoc`) and, if one is found, ask before running it (`markitdown <file>` or `pandoc -t gfm <file>`); if none is available, ask the user for a Markdown or PDF export.
+
+Determine:
 - **Mode**: full (15-section) or summary (9-section) based on document structure
-- **Language**: detect from content
+- **Language**: the dominant language of the SOW; the report is written in it (Step 5)
 - **Completeness**: which sections are present, which are missing
 
 If corporate standards are provided (or available via ~~knowledge base), load them for comparison.
@@ -104,12 +107,14 @@ Produce a structured review report with these sections:
 | Corporate Standards | {SCORE} or N/A | {EVIDENCE} |
 | **Overall** | **{AVG}** | |
 
-Overall grade interpretation:
-- **4.5-5.0**: Ready for signature
-- **3.5-4.4**: Minor improvements recommended
-- **2.5-3.4**: Significant gaps — revise before signing
-- **1.5-2.4**: Major rework needed
-- **1.0-1.4**: Fundamental issues — reconsider approach
+The overall score is the average of the scored dimensions, rounded to two decimals. Grade interpretation (each band includes its lower bound):
+- **≥ 4.5**: Ready for signature
+- **≥ 3.5 and < 4.5**: Minor improvements recommended
+- **≥ 2.5 and < 3.5**: Significant gaps — revise before signing
+- **≥ 1.5 and < 2.5**: Major rework needed
+- **< 1.5**: Fundamental issues — reconsider approach
+
+For example, 31/7 = 4.43 is "Minor improvements recommended" and 24/7 = 3.43 is "Significant gaps".
 
 #### Critical Issues
 Must-fix items before signing: missing sections, contradictions, legal gaps, unbounded obligations.
@@ -123,7 +128,9 @@ Should-fix items for quality: vague language, missing traceability, weak accepta
 #### Standards Compliance (if applicable)
 Checklist of corporate standard requirements with pass/fail per item.
 
-Save the report as `<project-name>-sow-review.md` in the output directory: the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
+**Report language.** Write the whole report in the SOW's language: headings, dimension names, grade labels, findings and adversarial scenarios. For an Italian SOW, use these dimension names: Completezza, Chiarezza, Coerenza, Copertura dei rischi, Adeguatezza commerciale, Modello di collaborazione, Aderenza alle best practice, Standard aziendali; adversarial scenarios refer to the Italian context where relevant (e.g. the Codice degli Appalti, D.Lgs. 36/2023). If the SOW mixes languages, use the dominant one and say so in the report.
+
+Save the report as `<project-name>-sow-review.md` in the output folder: `OutputDir` in the project's `CLAUDE.md` section `## project-management Configuration`; if it is not set, ask the user (suggest `docs/outbox/`) and record it. When the SOW name carries a version, include it (`<project-name>-sow-v0.2.0-review.md`), so each review stays next to the version it reviewed. Never overwrite an existing report: if the name is taken, add `-2`, `-3`, … before `.md`.
 
 ---
 

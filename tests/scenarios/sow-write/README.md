@@ -10,3 +10,4 @@ Layer 2 test scenarios for the `sow-write` skill. Each scenario describes setup,
 | scenario-summary-mode.md | Summary 9-section SOW from contract extraction |
 | scenario-language-detection.md | Auto-detection and language pack usage |
 | scenario-research-activation.md | Domain research subagent dispatch |
+| scenario-triggering.md | SOW requests trigger the skill; general proposals, plans and other SOW tasks do not |

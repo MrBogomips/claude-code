@@ -385,7 +385,7 @@ class TestFormatting:
     def test_high_score_risks_get_red_font(
         self, sample_config, sample_risks, sample_roles, sample_phases
     ):
-        """Rows where P*I >= 15 must have red font applied to cells."""
+        """Rows where P*I >= 10 (HIGH or CRITICAL) must have red font applied to cells."""
         mod = _import_wb_risks()
         wb, data = _build_wb_and_data(sample_config, sample_risks, sample_roles, sample_phases)
         mod.build(wb, data)
@@ -394,20 +394,20 @@ class TestFormatting:
         for i, risk in enumerate(sample_risks):
             row_num = 2 + i
             score = risk["probability"] * risk["impact"]
-            if score >= 15:
+            if score >= 10:
                 # At minimum, the score cell (G) should have red font
                 cell_g = ws.cell(row=row_num, column=7)
                 assert cell_g.font is not None, f"Row {row_num}: score cell should have font set"
                 # Red font: color ends with FF0000 or similar red
                 rgb = str(cell_g.font.color.rgb).upper() if cell_g.font.color else ""
                 assert rgb.endswith("FF0000") or "FF" in rgb[:2], (
-                    f"Row {row_num} (score={score}>=15): expected red font, got rgb={rgb}"
+                    f"Row {row_num} (score={score}>=10): expected red font, got rgb={rgb}"
                 )
 
     def test_low_score_risks_not_red(
         self, sample_config, sample_risks, sample_roles, sample_phases
     ):
-        """Rows where P*I < 15 must NOT have red font on score cell."""
+        """Rows where P*I < 10 must NOT have red font on score cell."""
         mod = _import_wb_risks()
         wb, data = _build_wb_and_data(sample_config, sample_risks, sample_roles, sample_phases)
         mod.build(wb, data)
@@ -416,7 +416,7 @@ class TestFormatting:
         for i, risk in enumerate(sample_risks):
             row_num = 2 + i
             score = risk["probability"] * risk["impact"]
-            if score < 15:
+            if score < 10:
                 cell_g = ws.cell(row=row_num, column=7)
                 if cell_g.font and cell_g.font.color:
                     try:
@@ -426,8 +426,26 @@ class TestFormatting:
                         continue
                     # Should not be red (FF0000)
                     assert not rgb.endswith("FF0000"), (
-                        f"Row {row_num} (score={score}<15): should NOT have red font, got rgb={rgb}"
+                        f"Row {row_num} (score={score}<10): should NOT have red font, got rgb={rgb}"
                     )
+
+    def test_red_font_threshold_is_ten(
+        self, sample_config, sample_risks, sample_roles, sample_phases
+    ):
+        """Score 10 (HIGH) is red, score 9 (MEDIUM) is not: high risk means P*I >= 10."""
+        mod = _import_wb_risks()
+        risks = copy.deepcopy(sample_risks)
+        risks[0].update({"probability": 2, "impact": 5})  # 10
+        risks[1].update({"probability": 3, "impact": 3})  # 9
+        wb, data = _build_wb_and_data(sample_config, risks, sample_roles, sample_phases)
+        mod.build(wb, data)
+
+        ws = wb["Risks"]
+        red_10 = str(ws.cell(row=2, column=7).font.color.rgb).upper()
+        assert red_10.endswith("FF0000"), f"score 10 should be red, got {red_10}"
+        font_9 = ws.cell(row=3, column=7).font
+        rgb_9 = str(font_9.color.rgb).upper() if font_9 and font_9.color else ""
+        assert not rgb_9.endswith("FF0000"), f"score 9 should not be red, got {rgb_9}"
 
     def test_return_value_has_expected_keys(
         self, sample_config, sample_risks, sample_roles, sample_phases

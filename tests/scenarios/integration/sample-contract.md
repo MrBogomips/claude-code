@@ -1,27 +1,27 @@
 # Service Agreement — Managed IT Services
 
-**Contract Reference**: MSA-2025-0847
+**Contract Reference**: MSA-0000-0001
 **Effective Date**: January 1, 2026
 **Expiration Date**: December 31, 2027
 **Amendment**: Amendment 1 (March 15, 2026) — added cloud migration services
 
 ## Parties
-- **Client**: Adriatic Shipping Consortium S.p.A. ("ASC"), registered office: Trieste, Italy
-- **Vendor**: NorthStar IT Services GmbH ("NorthStar"), registered office: Munich, Germany
+- **Client**: Acme Manufacturing S.p.A. ("Acme"), registered office: Italy
+- **Vendor**: Example IT Services GmbH ("the Vendor"), registered office: Germany
 
 ## Scope of Services (§3)
 
 ### 3.1 Infrastructure Management
-NorthStar shall manage and maintain ASC's IT infrastructure comprising:
+The Vendor shall manage and maintain Acme's IT infrastructure comprising:
 - 12 physical servers (Dell PowerEdge R740)
 - VMware vSphere cluster (48 VMs)
-- Cisco network equipment (3 sites: Trieste, Venice, Ancona)
+- Cisco network equipment (3 sites: Site A, Site B, Site C)
 - Backup and disaster recovery (Veeam)
 
 ### 3.2 Service Desk
 - L1 and L2 support during business hours (08:00-18:00 CET, Mon-Fri)
 - L3 escalation to vendor specialists within 4 hours
-- Ticketing via ServiceNow instance managed by NorthStar
+- Ticketing via ServiceNow instance managed by the Vendor
 
 ### 3.3 Cloud Migration (Amendment 1)
 Migration of 20 VMs from on-premises to Azure, including:
@@ -29,7 +29,7 @@ Migration of 20 VMs from on-premises to Azure, including:
 - Azure landing zone setup
 - VM migration (Azure Migrate)
 - Post-migration validation and optimization
-- Knowledge transfer to ASC IT team
+- Knowledge transfer to Acme IT team
 
 ## Deliverables (§4)
 
@@ -37,11 +37,11 @@ Migration of 20 VMs from on-premises to Azure, including:
 |----|-------------|-------------------|----------|
 | D1 | Monthly infrastructure health report | All metrics present, no data gaps | Monthly, by 5th |
 | D2 | Quarterly security assessment | OWASP Top 10 scan + remediation plan | Quarterly |
-| D3 | Azure migration plan | Approved by ASC CTO | April 30, 2026 |
+| D3 | Azure migration plan | Approved by Acme CTO | April 30, 2026 |
 | D4 | Azure landing zone | Passes Well-Architected Review | May 31, 2026 |
 | D5 | VM migration (batch 1: 10 VMs) | All VMs operational, SLA met for 5 days | July 31, 2026 |
 | D6 | VM migration (batch 2: 10 VMs) | All VMs operational, SLA met for 5 days | September 30, 2026 |
-| D7 | Knowledge transfer package | 3 ASC engineers certified on Azure | October 31, 2026 |
+| D7 | Knowledge transfer package | 3 Acme engineers certified on Azure | October 31, 2026 |
 
 ## SLAs (§5)
 
@@ -69,19 +69,19 @@ Payment terms: Net 30 from invoice date. Migration milestones invoiced upon acce
 
 | Role | Name | Allocation |
 |------|------|-----------|
-| Account Manager | Klaus Richter | 20% |
-| Infrastructure Lead | Marco Bianchi | 100% |
-| Service Desk Lead | Anna Kowalski | 100% |
-| Cloud Architect | Stefan Weber | 50% (migration phase) |
-| Migration Engineer | Elena Popov | 100% (migration phase) |
+| Account Manager | [Name 1] | 20% |
+| Infrastructure Lead | [Name 2] | 100% |
+| Service Desk Lead | [Name 3] | 100% |
+| Cloud Architect | [Name 4] | 50% (migration phase) |
+| Migration Engineer | [Name 5] | 100% (migration phase) |
 
 ## Governance (§8)
-- Monthly service review meeting (ASC IT Director + NorthStar Account Manager)
-- Quarterly steering committee (ASC CTO + NorthStar VP Services)
-- Change requests: assessed within 5 business days, approved by ASC IT Director (< EUR 10,000) or ASC CTO (>= EUR 10,000)
+- Monthly service review meeting (Acme IT Director + Vendor Account Manager)
+- Quarterly steering committee (Acme CTO + Vendor VP Services)
+- Change requests: assessed within 5 business days, approved by Acme IT Director (< EUR 10,000) or Acme CTO (>= EUR 10,000)
 
 ## Confidentiality (§9)
-Standard mutual NDA. All ASC data classified as confidential. NorthStar personnel require ASC security clearance for on-site access.
+Standard mutual NDA. All Acme data classified as confidential. Vendor personnel require Acme security clearance for on-site access.
 
 ## Termination (§10)
 - For convenience: 90 days written notice

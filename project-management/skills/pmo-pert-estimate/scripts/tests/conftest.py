@@ -1,9 +1,15 @@
 """Shared fixtures for pmo-pert-estimate tests."""
 import json
+import sys
 import tempfile
 from pathlib import Path
 
 import pytest
+
+# Make `helpers` importable however pytest is invoked (from scripts/ or from the repo root).
+SCRIPTS_DIR = Path(__file__).resolve().parent.parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
 
 
 @pytest.fixture

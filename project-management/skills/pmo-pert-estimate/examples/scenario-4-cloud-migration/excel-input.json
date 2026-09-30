@@ -5,8 +5,6 @@
     "duration_unit": "d",
     "primary_color": "457B9D",
     "currency": "EUR",
-    "period_type": "biweekly",
-    "start_date": "2026-09-01",
     "management_reserve_pct": 0.2,
     "avg_rate": 650,
     "pm_overhead_pct": 0.1,
@@ -52,9 +50,6 @@
       "id": "1",
       "name": "Assessment & Discovery",
       "description": "Inventory and assess current-state infrastructure and application portfolio",
-      "best_duration": 12,
-      "likely_duration": 18,
-      "worst_duration": 26,
       "work_packages": [
         {
           "id": "1.1",
@@ -206,9 +201,6 @@
       "id": "2",
       "name": "Cloud Architecture & Planning",
       "description": "Design the target cloud architecture and produce the detailed migration plan",
-      "best_duration": 18,
-      "likely_duration": 26,
-      "worst_duration": 38,
       "work_packages": [
         {
           "id": "2.1",
@@ -388,9 +380,6 @@
       "id": "3",
       "name": "Infrastructure Setup",
       "description": "Provision and configure the target cloud landing zone and platform services",
-      "best_duration": 22,
-      "likely_duration": 33,
-      "worst_duration": 48,
       "work_packages": [
         {
           "id": "3.1",
@@ -564,9 +553,6 @@
       "id": "4",
       "name": "Migration Wave 1",
       "description": "Migrate 4 lower-complexity applications to the cloud environment",
-      "best_duration": 25,
-      "likely_duration": 38,
-      "worst_duration": 55,
       "work_packages": [
         {
           "id": "4.1",
@@ -718,9 +704,6 @@
       "id": "5",
       "name": "Migration Wave 2",
       "description": "Migrate 4 medium-complexity applications to the cloud environment",
-      "best_duration": 28,
-      "likely_duration": 44,
-      "worst_duration": 62,
       "work_packages": [
         {
           "id": "5.1",
@@ -875,9 +858,6 @@
       "id": "6",
       "name": "Migration Wave 3",
       "description": "Migrate 4 high-complexity, business-critical applications to cloud",
-      "best_duration": 32,
-      "likely_duration": 50,
-      "worst_duration": 72,
       "work_packages": [
         {
           "id": "6.1",
@@ -1036,9 +1016,6 @@
       "id": "7",
       "name": "Testing, Validation & Cutover",
       "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation",
-      "best_duration": 18,
-      "likely_duration": 26,
-      "worst_duration": 38,
       "work_packages": [
         {
           "id": "7.1",
@@ -1188,288 +1165,6 @@
       ],
       "start_week": 45,
       "end_week": 50
-    }
-  ],
-  "resource_allocation": [
-    {
-      "phase_id": "1",
-      "phase_name": "Assessment & Discovery",
-      "description": "Inventory and assess current-state infrastructure and application portfolio",
-      "team": "Technical",
-      "role_code": "CA",
-      "effort": 12
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Assessment & Discovery",
-      "description": "Inventory and assess current-state infrastructure and application portfolio",
-      "team": "Technical",
-      "role_code": "DE",
-      "effort": 6
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Assessment & Discovery",
-      "description": "Inventory and assess current-state infrastructure and application portfolio",
-      "team": "Technical",
-      "role_code": "SE",
-      "effort": 4
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Assessment & Discovery",
-      "description": "Inventory and assess current-state infrastructure and application portfolio",
-      "team": "Technical",
-      "role_code": "DEV",
-      "effort": 8
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Assessment & Discovery",
-      "description": "Inventory and assess current-state infrastructure and application portfolio",
-      "team": "Management",
-      "role_code": "PM",
-      "effort": 5
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "Cloud Architecture & Planning",
-      "description": "Design the target cloud architecture and produce the detailed migration plan",
-      "team": "Technical",
-      "role_code": "CA",
-      "effort": 20
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "Cloud Architecture & Planning",
-      "description": "Design the target cloud architecture and produce the detailed migration plan",
-      "team": "Technical",
-      "role_code": "DE",
-      "effort": 10
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "Cloud Architecture & Planning",
-      "description": "Design the target cloud architecture and produce the detailed migration plan",
-      "team": "Technical",
-      "role_code": "SE",
-      "effort": 12
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "Cloud Architecture & Planning",
-      "description": "Design the target cloud architecture and produce the detailed migration plan",
-      "team": "Technical",
-      "role_code": "DEV",
-      "effort": 14
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "Cloud Architecture & Planning",
-      "description": "Design the target cloud architecture and produce the detailed migration plan",
-      "team": "Management",
-      "role_code": "PM",
-      "effort": 6
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Infrastructure Setup",
-      "description": "Provision and configure the target cloud landing zone and platform services",
-      "team": "Technical",
-      "role_code": "CA",
-      "effort": 8
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Infrastructure Setup",
-      "description": "Provision and configure the target cloud landing zone and platform services",
-      "team": "Technical",
-      "role_code": "DE",
-      "effort": 24
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Infrastructure Setup",
-      "description": "Provision and configure the target cloud landing zone and platform services",
-      "team": "Technical",
-      "role_code": "SE",
-      "effort": 14
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Infrastructure Setup",
-      "description": "Provision and configure the target cloud landing zone and platform services",
-      "team": "Technical",
-      "role_code": "DEV",
-      "effort": 5
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Infrastructure Setup",
-      "description": "Provision and configure the target cloud landing zone and platform services",
-      "team": "Management",
-      "role_code": "PM",
-      "effort": 5
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Migration Wave 1",
-      "description": "Migrate 4 lower-complexity applications to the cloud environment",
-      "team": "Technical",
-      "role_code": "CA",
-      "effort": 5
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Migration Wave 1",
-      "description": "Migrate 4 lower-complexity applications to the cloud environment",
-      "team": "Technical",
-      "role_code": "DE",
-      "effort": 16
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Migration Wave 1",
-      "description": "Migrate 4 lower-complexity applications to the cloud environment",
-      "team": "Technical",
-      "role_code": "SE",
-      "effort": 8
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Migration Wave 1",
-      "description": "Migrate 4 lower-complexity applications to the cloud environment",
-      "team": "Technical",
-      "role_code": "DEV",
-      "effort": 22
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Migration Wave 1",
-      "description": "Migrate 4 lower-complexity applications to the cloud environment",
-      "team": "Management",
-      "role_code": "PM",
-      "effort": 6
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Migration Wave 2",
-      "description": "Migrate 4 medium-complexity applications to the cloud environment",
-      "team": "Technical",
-      "role_code": "CA",
-      "effort": 6
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Migration Wave 2",
-      "description": "Migrate 4 medium-complexity applications to the cloud environment",
-      "team": "Technical",
-      "role_code": "DE",
-      "effort": 22
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Migration Wave 2",
-      "description": "Migrate 4 medium-complexity applications to the cloud environment",
-      "team": "Technical",
-      "role_code": "SE",
-      "effort": 10
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Migration Wave 2",
-      "description": "Migrate 4 medium-complexity applications to the cloud environment",
-      "team": "Technical",
-      "role_code": "DEV",
-      "effort": 30
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Migration Wave 2",
-      "description": "Migrate 4 medium-complexity applications to the cloud environment",
-      "team": "Management",
-      "role_code": "PM",
-      "effort": 8
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Migration Wave 3",
-      "description": "Migrate 4 high-complexity, business-critical applications to cloud",
-      "team": "Technical",
-      "role_code": "CA",
-      "effort": 18
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Migration Wave 3",
-      "description": "Migrate 4 high-complexity, business-critical applications to cloud",
-      "team": "Technical",
-      "role_code": "DE",
-      "effort": 28
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Migration Wave 3",
-      "description": "Migrate 4 high-complexity, business-critical applications to cloud",
-      "team": "Technical",
-      "role_code": "SE",
-      "effort": 10
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Migration Wave 3",
-      "description": "Migrate 4 high-complexity, business-critical applications to cloud",
-      "team": "Technical",
-      "role_code": "DEV",
-      "effort": 45
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Migration Wave 3",
-      "description": "Migrate 4 high-complexity, business-critical applications to cloud",
-      "team": "Management",
-      "role_code": "PM",
-      "effort": 10
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Testing, Validation & Cutover",
-      "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation",
-      "team": "Technical",
-      "role_code": "CA",
-      "effort": 10
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Testing, Validation & Cutover",
-      "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation",
-      "team": "Technical",
-      "role_code": "DE",
-      "effort": 18
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Testing, Validation & Cutover",
-      "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation",
-      "team": "Technical",
-      "role_code": "SE",
-      "effort": 8
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Testing, Validation & Cutover",
-      "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation",
-      "team": "Technical",
-      "role_code": "DEV",
-      "effort": 22
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Testing, Validation & Cutover",
-      "description": "System-wide non-functional testing, UAT, production cutover and hypercare stabilisation",
-      "team": "Management",
-      "role_code": "PM",
-      "effort": 10
     }
   ],
   "risks": [
@@ -1710,10 +1405,6 @@
       "contingency_effort": 8
     }
   ],
-  "targets": {
-    "expected_effort": 100,
-    "expected_duration": 40
-  },
   "scenarios": [
     "Optimistic: ~85% of Fascia MEDIA \u2014 best-case execution for 4-cloud-migration",
     "Realistic: Fascia MEDIA \u2014 current best estimate including overhead and MR",

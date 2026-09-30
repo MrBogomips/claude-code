@@ -131,7 +131,7 @@ Per-section advice for writing high-quality SOW content. Use this reference duri
 
 **Quality criteria:**
 - P x I score for every risk
-- High risks (P x I >= 12) have mitigation plans
+- High risks (P x I >= 10) have mitigation plans
 - Each risk has a named owner
 - Management reserve percentage stated
 

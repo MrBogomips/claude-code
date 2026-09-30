@@ -1,0 +1,4 @@
+# Runtime: generate_excel.py, summarize.py and validate_template.py need openpyxl.
+openpyxl>=3.1,<4
+# Test suite: python3 -m pytest -q (from this directory or the repository root).
+pytest>=8

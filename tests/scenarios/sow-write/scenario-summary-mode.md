@@ -9,7 +9,7 @@ Use `tests/scenarios/integration/sample-contract.md` as input.
 "Create a summary SOW from this contract"
 
 ## Expected Behavior
-1. Input Analysis: identifies document as a contract, rates maturity as "rich"
+1. Input Analysis: identifies document as a contract, rates maturity as "rich"; `input-analysis.md` goes to the working folder
 2. Mode Selection: recommends summary mode
 3. Language Detection: auto-detects from contract language
 4. Clarification Round: minimal (1-2 questions, since contract is detailed)
