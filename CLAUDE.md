@@ -23,6 +23,15 @@ Every plugin must contain `.claude-plugin/plugin.json`. Components are discovere
 - **Hooks** — `hooks/hooks.json`
 - **Commands** — `commands/*.md`
 
+Skill frontmatter semantics that are easy to get wrong (verified on code.claude.com/docs/en/skills):
+
+- `allowed-tools` pre-approves tools for the invoking turn; it never restricts them. To keep a skill read-only, use `disallowed-tools`.
+- `model:` on a skill switches the main session model for the rest of the turn, unless the skill also sets `context: fork`. Put cheaper-model work in an agent instead of pinning a skill.
+- A `context: fork` skill runs as a background subagent by default: it cannot see the conversation and has no `AskUserQuestion`, so interactive skills must not fork.
+- `disable-model-invocation: true` removes the description from Claude's context; trigger phrases in it are never read.
+- Quote frontmatter values that contain `: `; Claude Code tolerates them, strict YAML parsers used for packaging do not.
+- Claude Code accepts every skill frontmatter field, but claude.ai uploads and `package_skill.py` accept only `name`, `description`, `license`, `compatibility`, `metadata` and `allowed-tools`; fields such as `disallowed-tools` or `argument-hint` make those uploads fail.
+
 When a skill's `SKILL.md` restates a rule from its `references/`, change both in the same commit and re-check the Layer 2 scenarios that cover the rule (`tests/scenarios/<plugin>/`).
 
 ## Generic-usage principle
