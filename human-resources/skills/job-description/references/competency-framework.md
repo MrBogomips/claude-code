@@ -189,7 +189,7 @@ Every job description must follow this structure. Sections may be renamed to mat
 
 ### Section 5: What We Offer
 
-- Compensation range (where legally required or culturally expected)
+- Pay range — in EU jurisdictions required before the interview (Directive 2023/970 Art. 5(1); see the legal map)
 - Benefits highlights (top 3-5)
 - Growth and development opportunities
 - Work environment and culture signals (concrete, not buzzwords)
@@ -204,7 +204,9 @@ Every job description must follow this structure. Sections may be renamed to mat
 
 **Template (Italian jurisdiction):**
 
-> [Company] e un datore di lavoro che garantisce pari opportunita. Tutte le candidature sono valutate senza distinzione di sesso, eta, origine etnica, orientamento sessuale, identita di genere, stato civile, disabilita, opinioni politiche, appartenenza sindacale, credo religioso o qualsiasi altra caratteristica protetta dalla legge (D.Lgs. 198/2006, D.Lgs. 215/2003, D.Lgs. 216/2003). Invitiamo a non includere nel curriculum informazioni personali non pertinenti alla posizione (fotografia, data di nascita, stato civile). Saranno garantiti ragionevoli adattamenti per candidati con disabilita.
+> [Company] è un datore di lavoro che garantisce pari opportunità. Tutte le candidature sono valutate senza distinzione di sesso, età, origine etnica, nazionalità, orientamento sessuale, identità di genere, stato civile, disabilità, opinioni politiche, appartenenza sindacale, credo religioso o qualsiasi altra caratteristica protetta dalla legge (D.Lgs. 198/2006, D.Lgs. 215/2003, D.Lgs. 216/2003). Invitiamo a non includere nel curriculum informazioni personali non pertinenti alla posizione (fotografia, data di nascita, stato civile). Saranno garantiti accomodamenti ragionevoli per le persone candidate con disabilità.
+
+The statutes cited in this template follow the compliance-check skill's legal map (`../../compliance-check/references/legal-map.md`); if the map changes, update the template to match. Not legal advice.
 
 **Template (English / general):**
 

@@ -1,20 +1,26 @@
 # Prohibited Interview Topics
 
-> Reference file for the compliance-check skill. Loaded on-demand during validation of JDs, screening questionnaires, interview scripts, and evaluation forms.
+> Reference file for the compliance-check skill. Loaded on-demand during validation of JDs, screening questionnaires, interview scripts, position assessments and evaluation forms.
+>
+> **Statutes:** this file names the protected ground of each topic. The statute to cite for a ground is in `legal-map.md` Section 1; this file does not restate it. **Not legal advice** — verify with counsel before relying on it.
 
 ## Quick Reference
 
-| Category | Examples of Prohibited Questions | Key Legal Basis |
+| Category | Examples of Prohibited Questions | Ground (statute: `legal-map.md`) |
 |---|---|---|
-| Race / Ethnicity | Origin, skin color, nationality | D.Lgs. 215/2003; EU Directive 2000/43/EC; Title VII (US) |
-| Religion | Faith, religious practices, holidays observed | D.Lgs. 215/2003; EU Directive 2000/78/EC; Title VII (US) |
-| Age | Date of birth, graduation year (as proxy) | D.Lgs. 198/2006; EU Directive 2000/78/EC; ADEA (US) |
-| Sex / Gender | Gender identity, sexual orientation | D.Lgs. 198/2006; EU Directive 2006/54/EC; Title VII (US) |
-| Marital / Family Status | Spouse, children, childcare arrangements | D.Lgs. 198/2006; GDPR Art. 9 |
-| Pregnancy | Current or planned pregnancy, fertility | D.Lgs. 198/2006; EU Directive 92/85/EEC; PDA (US) |
-| Disability | Health conditions, disability status | D.Lgs. 215/2003; EU Directive 2000/78/EC; ADA (US) |
-| Political Opinions | Party membership, voting preferences | D.Lgs. 215/2003; GDPR Art. 9; Italian Constitution Art. 3 |
-| Trade Union Membership | Union affiliation, union activities | D.Lgs. 215/2003; GDPR Art. 9; Statuto dei Lavoratori Art. 8 |
+| Race / Ethnicity | Origin, skin color, mother tongue, birthplace | Race and ethnic origin |
+| Nationality | Citizenship when only the right to work matters | Nationality |
+| Religion | Faith, religious practices, holidays observed | Religion or belief |
+| Age | Date of birth, graduation year (as proxy) | Age |
+| Sex / Gender | Sex, gender identity | Sex and gender |
+| Sexual Orientation | Orientation, partner's gender | Sexual orientation |
+| Marital / Family Status | Spouse, children, childcare arrangements | Sex and gender (marital and family status) |
+| Pregnancy | Current or planned pregnancy, fertility | Sex and gender (pregnancy, maternity) |
+| Disability / Health | Health conditions, disability status, sick days | Disability; special category data |
+| Political Opinions | Party membership, voting preferences | Political opinion |
+| Trade Union Membership | Union affiliation, union activities | Trade-union membership |
+| Career gaps (proxy) | "What were you doing between [date] and [date]?", "Why did you stop working?" | Pregnancy, maternity or paternity, disability, health; caregiving (sex and gender) |
+| Pay history | "What is your current salary?", "What did you earn in your last role?" | EU pay transparency (`legal-map.md` Section 3) |
 
 ---
 
@@ -24,10 +30,10 @@ Italian law provides some of the strongest protections in the EU against discrim
 
 ### Legal Framework
 
-- **D.Lgs. 198/2006** (Codice delle Pari Opportunita tra Uomo e Donna): Prohibits discrimination based on sex, sexual orientation, marital status, family status, and pregnancy in all aspects of employment, including recruitment.
-- **D.Lgs. 215/2003** (Attuazione della Direttiva 2000/43/CE): Prohibits discrimination based on race, ethnic origin, religion, personal beliefs, disability, age, and sexual orientation.
-- **D.Lgs. 276/2003** (Attuazione delle deleghe in materia di occupazione e mercato del lavoro): Protects workers' physical and psychological health; prohibits inquiries that are not strictly relevant to the role.
-- **Statuto dei Lavoratori (L. 300/1970), Art. 8**: Expressly forbids employers from investigating a worker's political opinions, religious beliefs, or trade union membership, whether during recruitment or employment.
+The statute for each ground below is in `legal-map.md` Section 1. Two rules apply to every topic:
+
+- **Relevance test** (L. 300/1970 Art. 8): nothing may be asked that is not relevant to professional aptitude.
+- **Intermediaries** (D.Lgs. 276/2003 Art. 10): agencies and other authorized intermediaries may not investigate or pre-select on any protected ground, even with consent.
 
 ### Prohibited Topics — Detailed
 
@@ -35,15 +41,15 @@ Italian law provides some of the strongest protections in the EU against discrim
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| "Where are you originally from?" | Implies selection based on ethnic origin (D.Lgs. 215/2003, Art. 2) | "Are you legally authorized to work in Italy?" |
-| "What is your mother tongue?" | Proxy for national origin discrimination | "Which languages do you speak at a professional level?" |
+| "Where are you originally from?" | Implies selection based on ethnic origin | "Are you legally authorized to work in Italy?" |
+| "What is your mother tongue?" / "Madrelingua italiana" | Proxy for ethnic or national origin | "Which languages do you speak at a professional level?" / "Italiano fluente (C1/C2)" |
 | "Where were you born?" | Irrelevant personal data; ethnicity proxy | No alternative needed — omit entirely |
 
 #### Religion / Personal Beliefs
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| "What religion do you practice?" | Protected under D.Lgs. 215/2003 and L. 300/1970 Art. 8 | No alternative needed — omit entirely |
+| "What religion do you practice?" | Direct inquiry into religion or belief; also barred by the relevance test | No alternative needed — omit entirely |
 | "Do you observe any religious holidays?" | Indirect inquiry into religious belief | "Are you available to work on [specific dates]?" |
 | "Do you wear religious clothing?" | Discriminatory screening on belief | No alternative needed — omit entirely |
 
@@ -51,7 +57,7 @@ Italian law provides some of the strongest protections in the EU against discrim
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| "How old are you?" | Age discrimination (D.Lgs. 198/2006; D.Lgs. 215/2003) | "Do you meet the minimum age requirement for this role?" |
+| "How old are you?" | Direct inquiry into age | "Do you meet the minimum age requirement for this role?" (only where a legal minimum applies) |
 | "What year did you graduate?" | Common proxy for age | "Do you hold [specific qualification]?" |
 | "Are you close to retirement?" | Age-based exclusion | No alternative needed — omit entirely |
 
@@ -59,15 +65,15 @@ Italian law provides some of the strongest protections in the EU against discrim
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| "Are you male or female?" | Gender discrimination (D.Lgs. 198/2006) | No alternative needed — omit entirely |
-| "What is your sexual orientation?" | Protected under D.Lgs. 198/2006 and D.Lgs. 215/2003 | No alternative needed — omit entirely |
+| "Are you male or female?" | Direct inquiry into sex | No alternative needed — omit entirely |
+| "What is your sexual orientation?" | Direct inquiry into sexual orientation | No alternative needed — omit entirely |
 | "Do you identify as transgender?" | Protected personal data; no job relevance | No alternative needed — omit entirely |
 
 #### Marital / Family Status
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| "Are you married?" | Marital status discrimination (D.Lgs. 198/2006) | No alternative needed — omit entirely |
+| "Are you married?" | Direct inquiry into marital status | No alternative needed — omit entirely |
 | "Do you have children?" | Family status discrimination; proxy for availability bias | "This role requires [specific schedule]. Can you meet these requirements?" |
 | "Who takes care of your children?" | Gender-biased caregiving assumption | No alternative needed — omit entirely |
 
@@ -75,7 +81,7 @@ Italian law provides some of the strongest protections in the EU against discrim
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| "Are you pregnant?" | Expressly prohibited (D.Lgs. 198/2006, Art. 27) | No alternative needed — omit entirely |
+| "Are you pregnant?" | Expressly prohibited | No alternative needed — omit entirely |
 | "Do you plan to have children?" | Proxy for pregnancy discrimination | No alternative needed — omit entirely |
 | "Are you on maternity leave?" | Protected status inquiry | "When would you be available to start?" |
 
@@ -83,15 +89,15 @@ Italian law provides some of the strongest protections in the EU against discrim
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| "Do you have any disabilities?" | Protected under D.Lgs. 215/2003 and L. 68/1999 | "Can you perform the essential functions of this role with or without reasonable accommodations?" |
+| "Do you have any disabilities?" | Direct inquiry into disability | "Can you perform the essential functions of this role with or without reasonable accommodations?" |
 | "How many sick days did you take last year?" | Health data is GDPR special category data | No alternative needed — omit entirely |
-| "Do you take any medications?" | Invasive health inquiry (D.Lgs. 276/2003) | No alternative needed — omit entirely |
+| "Do you take any medications?" | Invasive health inquiry; special category data | No alternative needed — omit entirely |
 
 #### Political Opinions
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| "Which party do you vote for?" | Expressly forbidden by L. 300/1970 Art. 8 | No alternative needed — omit entirely |
+| "Which party do you vote for?" | Expressly forbidden | No alternative needed — omit entirely |
 | "What are your political views?" | Constitutional protection (Art. 3, Italian Constitution) | No alternative needed — omit entirely |
 | "Have you participated in political demonstrations?" | Political activity is protected | No alternative needed — omit entirely |
 
@@ -99,9 +105,27 @@ Italian law provides some of the strongest protections in the EU against discrim
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| "Are you a union member?" | Expressly forbidden by L. 300/1970 Art. 8 and GDPR Art. 9 | No alternative needed — omit entirely |
+| "Are you a union member?" | Expressly forbidden; special category data | No alternative needed — omit entirely |
 | "What do you think about unions?" | Indirect inquiry into union affiliation | No alternative needed — omit entirely |
 | "Have you ever been a union representative?" | Protected activity | No alternative needed — omit entirely |
+
+#### Career Gaps and Breaks (proxy)
+
+A gap in a CV often stands for pregnancy, maternity or paternity leave, illness, disability or caregiving. Asking for its reason, or treating it as a risk, reveals those grounds indirectly.
+
+| Do NOT Ask or Do | Why Prohibited | Safe Alternative |
+|---|---|---|
+| "I notice a gap between [date] and [date]. What were you doing?" | Proxy for pregnancy, maternity or paternity, health, disability, caregiving | At most one optional, open question for all candidates: "Is there anything about your career path that your CV does not show and that you would like us to know?" |
+| "Why did you stop working in [year]?" | Same proxy | Omit |
+| Rating a gap as a risk or a red flag, or screening a candidate out because of it | Indirect discrimination on the grounds above | Assess only job-relevant evidence; a gap is never a screening criterion |
+| Recording a reason the candidate volunteers (for example illness, pregnancy, a disability, caring for a relative) | Special category or protected data with no job relevance | Record nothing about it; note only job-relevant skills the candidate mentions |
+
+#### Pay History (EU)
+
+| Do NOT Ask | Why Prohibited | Safe Alternative |
+|---|---|---|
+| "What is your current salary?" / "Qual è la tua RAL attuale?" | Pay-history questions are banned in the EU (`legal-map.md` Section 3) | State the pay range for the role, then ask: "What are your salary expectations for this role?" |
+| "What did you earn in your previous roles?" | Same ban | Omit |
 
 ---
 
@@ -109,11 +133,7 @@ Italian law provides some of the strongest protections in the EU against discrim
 
 ### Legal Framework
 
-- **GDPR (Regulation 2016/679), Article 9**: Prohibits processing of special category data (racial/ethnic origin, political opinions, religious/philosophical beliefs, trade union membership, genetic data, biometric data, health data, sex life/sexual orientation) unless a specific exemption applies.
-- **EU Directive 2000/43/EC** (Racial Equality Directive): Prohibits discrimination based on racial or ethnic origin in employment.
-- **EU Directive 2000/78/EC** (Employment Equality Directive): Prohibits discrimination based on religion/belief, disability, age, and sexual orientation.
-- **EU Directive 2006/54/EC** (Gender Equality Directive): Prohibits sex discrimination in employment.
-- **EU Directive 92/85/EEC** (Pregnant Workers Directive): Protects pregnant workers and those who have recently given birth.
+The EU source for each ground is in `legal-map.md` Section 1 (Directives 2000/43/EC, 2000/78/EC, 2006/54/EC and 92/85/EEC), with GDPR Art. 9 for special category data and Directive 2023/970 for pay transparency (`legal-map.md` Section 3).
 
 ### General Principles
 
@@ -125,13 +145,14 @@ Italian law provides some of the strongest protections in the EU against discrim
 
 | Do NOT Ask | Why Prohibited | Safe Alternative |
 |---|---|---|
-| Questions revealing racial/ethnic origin | GDPR Art. 9; Directive 2000/43/EC | Focus on legal work authorization and language skills |
+| Questions revealing racial/ethnic origin | Special category data (GDPR Art. 9); race and ethnic origin | Focus on legal work authorization and language skills |
 | Questions about political opinions | GDPR Art. 9 | No alternative needed — omit entirely |
-| Questions about religious/philosophical beliefs | GDPR Art. 9; Directive 2000/78/EC | Ask about schedule availability without referencing belief |
+| Questions about religious/philosophical beliefs | Special category data (GDPR Art. 9); religion or belief | Ask about schedule availability without referencing belief |
 | Questions about trade union membership | GDPR Art. 9 | No alternative needed — omit entirely |
-| Questions about health or disability | GDPR Art. 9; Directive 2000/78/EC | Ask about ability to perform essential job functions |
-| Questions about sex life or sexual orientation | GDPR Art. 9; Directive 2006/54/EC | No alternative needed — omit entirely |
+| Questions about health or disability | Special category data (GDPR Art. 9); disability | Ask about ability to perform essential job functions |
+| Questions about sex life or sexual orientation | Special category data (GDPR Art. 9); sexual orientation | No alternative needed — omit entirely |
 | Questions about genetic or biometric data | GDPR Art. 9 | No alternative needed — omit entirely |
+| Questions about current or past pay | Directive 2023/970 Art. 5(2) | State the pay range, then ask for expectations |
 
 ---
 
@@ -168,16 +189,19 @@ Italian law provides some of the strongest protections in the EU against discrim
 When scanning HR documents, flag any content that:
 
 1. **Directly asks** about a prohibited topic (exact match or close synonym)
-2. **Indirectly probes** a prohibited topic through proxy questions (e.g., graduation year as age proxy)
+2. **Indirectly probes** a prohibited topic through proxy questions (e.g., graduation year as age proxy, the reason for a CV gap)
 3. **Requires disclosure** of special category data as a condition of the process
 4. **Uses gendered language** that implies a preference (e.g., "he will manage..." in a JD)
 5. **Sets unnecessary requirements** that disproportionately exclude protected groups (e.g., "native speaker" instead of "fluent")
+6. **Uses a proxy as a criterion** — rates a CV gap, a career break or a volunteered protected reason as a risk, a red flag or a reason to screen out
+7. **Asks about pay history** in an EU jurisdiction
 
 ### Severity Levels
 
+The three levels are the contract in SKILL.md Section 5. Examples for this layer:
+
 | Severity | Description | Example |
 |---|---|---|
-| CRITICAL | Direct prohibited question or explicit discrimination | "Are you pregnant?" in an interview script |
-| HIGH | Indirect/proxy question likely to elicit protected data | "What year did you graduate?" as age proxy |
-| MEDIUM | Potentially exclusionary language or unnecessary requirement | "Native Italian speaker required" |
-| LOW | Gendered or non-inclusive language that should be improved | "The ideal candidate will prove himself..." |
+| CRITICAL | Direct prohibited question, explicit discrimination, or a direct statutory breach | "Are you pregnant?" in an interview script; "Qual è la tua RAL attuale?" in an EU questionnaire |
+| WARNING | Proxy question, indirect discrimination, or a requirement whose legitimacy depends on context | "What year did you graduate?" as age proxy; "What were you doing between 2021 and 2023?"; "Native Italian speaker required" |
+| INFO | Wording that should be improved but reveals no protected ground | "The ideal candidate will prove himself..." in an English internal document |

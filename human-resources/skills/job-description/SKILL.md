@@ -1,6 +1,6 @@
 ---
 name: job-description
-description: "Write professional job descriptions for both technical and non-technical positions. Uses competency-based framework for technical roles (identifying 4-6 core competencies with proficiency levels) and outcome-based framework for non-technical roles (action + object + purpose). Checks inclusive language, flags requirements inflation (>8 requirements), and invokes compliance-check validation before final output. Auto-detects conversation language for Italian/English output. Integrates with **~~knowledge base** for existing JD templates. Use when the user says 'write a job description', 'create a JD', 'job posting for', 'descrizione del lavoro', 'annuncio di lavoro', 'scrivi annuncio', or mentions creating a position listing."
+description: "Use when writing a new job description or job posting — 'write a job description', 'create a JD', 'job posting for', 'descrizione del lavoro', 'annuncio di lavoro', 'scrivi annuncio'. Uses a competency-based framework for technical roles and an outcome-based one for other roles, checks inclusive language and requirement inflation, asks for the pay range the EU requires, and runs compliance-check last; Italian or English output. Not for revising or auditing an existing JD (compliance-check audits it and writes a clean version)."
 ---
 
 # Job Description — Professional JD Generator
@@ -44,11 +44,9 @@ Gather the essential role parameters through conversation:
 
 If not found in memory, ask the user. Save new corporate context to memory for future invocations.
 
-**Output format preference:** On first invocation, ask the user which output format they prefer:
-- `.md` (markdown, default)
-- `.docx` (note: downstream conversion; this skill produces markdown)
+**Output format:** this skill writes Markdown. If the user needs a Word file, offer in Step 8 to convert the Markdown with a document skill or tool available in the session; if none is available, deliver the Markdown and say so.
 
-Save the preference to memory. On subsequent invocations, use the saved preference without asking.
+**Revising an existing JD:** this skill writes new JDs. To revise an existing one, suggest compliance-check in standalone mode, which audits it and can write a corrected ("clean") version; or, if the user wants a rewrite, use the existing JD as source material for Steps 1–3 here.
 
 ### Step 2 — Framework Selection
 
@@ -67,7 +65,7 @@ Collect detailed information for the JD:
 1. **Responsibilities** — ask the user for 5-8 key responsibilities (guide them toward the appropriate framework pattern)
 2. **Required qualifications** — gather must-have qualifications (enforce the 8-maximum limit during gathering)
 3. **Preferred qualifications** — gather nice-to-haves (3-5 items)
-4. **Compensation and benefits** — ask for salary range (note legal requirements by jurisdiction) and top benefits
+4. **Compensation and benefits** — ask for the pay range and top benefits. In EU jurisdictions, tell the user that Directive 2023/970 requires the pay range (or initial pay) to reach applicants before the interview, for example in the ad; a JD without it, and without saying how the range will be given, gets a WARNING from compliance-check (see compliance-check's `legal-map.md` Section 3; check the current national transposition)
 5. **Team and culture context** — concrete details about working environment, team size, methodologies
 
 If **~~knowledge base** is connected: search for existing JDs for similar roles in the organization. Present any matches to the user as starting points or references. Pull corporate benefits boilerplate and equal opportunity statement if available.
@@ -109,7 +107,7 @@ For each issue found, apply the replacement from the guide automatically. Presen
 
 Count the number of required qualifications in the draft. If the count exceeds 8:
 
-1. **Flag the issue** to the user with the research context: "This JD lists [N] required qualifications. Research shows that listings with more than 8 requirements significantly reduce applicant diversity, as women tend to apply only when meeting 100% of requirements."
+1. **Flag the issue** to the user: "This JD lists [N] required qualifications. A common rule of thumb is to keep required items to about 8: every extra requirement discourages people who meet most but not all of them, and a widely cited HP internal report found that women tend to apply only when they meet all listed requirements."
 2. **Recommend specific items to move** from "Required" to "Preferred" — prioritize items that are learnable on the job or not day-one necessities.
 3. **Wait for user confirmation** before making changes.
 
@@ -118,13 +116,9 @@ Also check for:
 - Expert-level requirement in more than 3 areas
 - Redundant requirements that test the same underlying skill
 
-### Step 7 — Compliance Validation
+### Step 7 — Compliance Validation (last check before output)
 
-Invoke the **compliance-check** skill in embedded mode, passing:
-
-- `text` — the current draft content
-- `document_type` — `jd`
-- `jurisdiction` — auto-detected from language and content, or as specified by the user
+Run compliance-check on the draft after all the fixes from Steps 5–6. Load compliance-check with the Skill tool and the arguments `embedded jd`, adding the jurisdiction (`italy`, `eu` or `general`) if the user specified one; otherwise it is auto-detected. The call is defined in compliance-check's Section 5. If the Skill tool cannot load it, read `../compliance-check/SKILL.md` and apply its embedded mode.
 
 Process the returned findings:
 
@@ -134,7 +128,7 @@ Process the returned findings:
 | `WARNING` | Present to the user with the suggested fix. Apply if the user agrees. |
 | `INFO` | Present as recommendations. Apply only if the user requests. |
 
-If compliance-check returns any CRITICAL findings, loop back to fix and re-validate until the draft passes.
+If compliance-check returns any CRITICAL findings, loop back to fix and re-validate until the draft passes. Any later change to the text, including a WARNING fix the user accepts, is re-validated before output.
 
 ### Step 8 — Output
 
@@ -148,8 +142,8 @@ Present a summary to the user:
 - Language
 - Required qualifications count (with green/yellow/red indicator vs. the 8-max threshold)
 - Compliance status (Pass / Pass with warnings / Fail — from Step 7)
-- Any remaining placeholders (e.g., salary range TBD)
-- Suggested next steps: share with hiring manager for review, run pre-screening to create a candidate evaluation questionnaire
+- Any remaining placeholders (e.g., salary range TBD — in EU jurisdictions, a compliance WARNING until the range is added)
+- Suggested next steps: share with hiring manager for review, run pre-screening to create a candidate evaluation questionnaire; offer a Word conversion if the user needs one
 
 ---
 
@@ -204,7 +198,7 @@ Present a summary to the user:
 
 ## What We Offer
 
-- [Compensation range]
+- [Pay range — in EU jurisdictions, required before the interview]
 - [Benefit 1]
 - [Benefit 2]
 - [Growth/development opportunities]

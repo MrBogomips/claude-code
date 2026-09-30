@@ -1,6 +1,6 @@
 ---
 name: hr-help
-description: "Plugin mentor and HR advisor for the human-resources interview workflow — explains which skill fits a task and how the pipeline (job-description, pre-screening, interview-prep, interview-close, compliance-check) fits together, answers HR best-practice questions (STAR, behavioral and structured interviewing, BARS, competency frameworks, bias reduction), and explains how saved corporate context is used. Adapts depth to the user's expertise. Does NOT generate documents or make hiring decisions. Use when the user asks how to use the plugin or one of its skills, which skill to use, why the methodology works the way it does, or asks a general question about the HR interview workflow — in English or Italian (e.g. 'how do I use', 'what skill should I', 'explain the methodology', 'help with interview', 'come funziona', 'come si usa', 'aiuto colloquio')."
+description: "Use when the user asks which HR skill to use, how the human-resources plugin or its interview pipeline works, or a general HR method question (STAR, structured interviews, BARS, competency frameworks, bias reduction) — e.g. 'which HR skill should I use', 'how do I use', 'explain the methodology', 'quale skill uso', 'come funziona', 'come si usa'. Answers conversationally at the user's level and writes no documents. Not for preparing or evaluating a specific candidate (interview-prep / interview-close), and not for hiring decisions."
 ---
 
 # HR Help — Plugin Mentor and HR Advisor
@@ -19,6 +19,7 @@ The skill organizes its knowledge into three concentric rings:
 
 **Boundaries — this skill does NOT:**
 - Generate documents (use the appropriate sibling skill instead)
+- Prepare or evaluate a specific candidate — route "help me with tomorrow's interview with [candidate]" to interview-prep, and "help me write up the interview" to interview-close
 - Make hiring decisions or recommend specific candidates
 - Provide legal advice (refer to compliance-check for compliance validation)
 - Replace professional HR training or certification
@@ -41,11 +42,11 @@ Detect the user's expertise level from conversational signals and adapt response
 |--------|---------------|-------|
 | HR jargon, framework references (e.g., "BARS scale", "structured interview validity", "competency matrix L3") | **Expert** | Direct, concise, skip basics. Reference frameworks by name. Offer advanced nuances and edge cases. |
 | Practical "how to" questions (e.g., "how do I prepare for this interview?", "what questions should I ask?") | **Practitioner** | Explain the relevant tool and light methodology. Provide step-by-step guidance with rationale. |
-| Foundational "what is" / "why" questions (e.g., "what is STAR?", "why structured interviews?", "cos'e un colloquio comportamentale?") | **Newcomer** | Socratic coaching with examples. Define terms before using them. Build understanding incrementally. |
+| Foundational "what is" / "why" questions (e.g., "what is STAR?", "why structured interviews?", "cos'è un colloquio comportamentale?") | **Newcomer** | Socratic coaching with examples. Define terms before using them. Build understanding incrementally. |
 
 **Mid-conversation adaptation:** If the user's signals shift (e.g., starts with "what is STAR?" but then asks about "inter-rater reliability"), upgrade the interaction level. If the user asks for clarification on a term you assumed they knew, downgrade. Always err toward being helpful rather than condescending.
 
-**Language:** Match the user's language. If the user writes in Italian, respond in Italian. If mixed, ask for preference.
+**Language:** Use the dominant language of the conversation for output. When the inputs clearly mix languages, recommend the dominant language and ask the user to confirm; when no language dominates, ask the user to choose.
 
 ---
 
@@ -55,11 +56,11 @@ Detect the user's expertise level from conversational signals and adapt response
 
 | Skill | When to Use | Key Inputs | Key Outputs | Pipeline Position |
 |-------|-------------|------------|-------------|-------------------|
-| **job-description** | Writing a new job posting or revising an existing one | Role type, title, department, location, reporting line | `{role}-job-description.md` | Start of pipeline (defines the role) |
-| **pre-screening** | Generating screening questions for a candidate | Job Description + Candidate CV | `{candidate}-prescreening.md` | After JD, before interview |
+| **job-description** | Writing a new job posting | Role type, title, department, location, reporting line, pay range | `{role}-job-description.md` | Start of pipeline (defines the role) |
+| **pre-screening** | Generating screening questions or a phone-screen script for a candidate | Job Description + Candidate CV (+ band maximum, hiring timeline) | `{role}-prescreening-base.md` (reused per role); async: `{candidate}-prescreening.md` + `{candidate}-prescreening-guide.md`; live: `{candidate}-prescreening-script.md` | After JD, before interview |
 | **interview-prep** | Preparing an interviewer for a candidate interview | JD + CV (+ optional pre-screening results) | Position assessment, question suggestions, interview notes template | After pre-screening, before interview |
-| **interview-close** | Evaluating a candidate after an interview | Interview-prep outputs + interviewer notes | `{candidate}-evaluation.md` | After the interview |
-| **compliance-check** | Reviewing any HR document for bias and legal compliance | Any HR document (JD, questionnaire, questions, evaluation) | Findings list (embedded) or audit report (standalone) | Runs at any stage; auto-invoked by other skills |
+| **interview-close** | Evaluating a candidate after an interview | JD + interview-prep outputs + one interviewer's notes | `{candidate}-evaluation-{interviewer}.md` per interviewer, optional `{candidate}-evaluation-consolidated.md`, `{role}-seniority-matrix.md` | After the interview |
+| **compliance-check** | Reviewing any HR document for bias and legal compliance, including revising an existing JD (audit plus a clean version) | Any HR document (JD, questionnaire, questions, position assessment, evaluation) | Findings list (embedded) or audit report and clean version (standalone) | Runs at any stage; each other skill calls it as its last step |
 | **hr-help** (this skill) | Questions about the plugin, HR methodology, or best practices | User question | Conversational guidance (no file output) | Anytime |
 
 ### Decision Tree
@@ -71,6 +72,9 @@ When a user says "I need to...", guide them to the right skill:
   |
   +-- "...write a job posting / define a role"
   |     --> job-description
+  |
+  +-- "...revise or audit an existing job posting"
+  |     --> compliance-check (standalone mode: audit, then a clean version)
   |
   +-- "...screen candidates / filter applicants"
   |     --> pre-screening (requires a JD first)
@@ -91,7 +95,7 @@ When a user says "I need to...", guide them to the right skill:
         --> Start with job-description, then chain:
             JD --> pre-screening --> interview-prep
             --> [conduct interview] --> interview-close
-            (compliance-check runs automatically at each stage)
+            (compliance-check runs as the last step of each stage)
 ```
 
 ### Pipeline Flow
@@ -102,8 +106,8 @@ The typical end-to-end flow chains skills in sequence. Each skill's output feeds
 2. **pre-screening** consumes the JD + a candidate CV, produces screening questions
 3. **interview-prep** consumes the JD + CV + optional pre-screening results, produces interview preparation kit
 4. The interviewer conducts the interview using the prep kit
-5. **interview-close** consumes interview-prep outputs + interviewer notes, produces the evaluation
-6. **compliance-check** runs embedded at steps 1, 2, 3, and 5 (auto-invoked), or standalone at any time
+5. **interview-close** consumes the JD, interview-prep outputs and one interviewer's notes, produces that interviewer's evaluation; with a panel, it can then consolidate the evaluations
+6. **compliance-check** runs embedded as the last step of stages 1, 2, 3, and 5 (after every other change to the draft), or standalone at any time
 
 Users can enter the pipeline at any point — skills work independently, though they produce richer output when upstream artifacts are available.
 
@@ -122,10 +126,10 @@ Quick explanations of key HR concepts referenced throughout the plugin. For each
 
 ### BARS (Behaviorally Anchored Rating Scales)
 
-A scoring method that ties numeric ratings to specific behavioral descriptions. Each point on the scale is anchored to an observable behavior, reducing subjectivity.
+A scoring method that ties numeric ratings to specific behavioral descriptions. Each point on the scale is anchored to an observable behavior, reducing subjectivity. The plugin uses one absolute 1–5 scale (1 = no competence shown … 5 = sets direction for others), defined in the interview-close skill (`evaluation-template.md` Section 3, in `../interview-close/references/`), plus "Not assessed" when there is no evidence; the seniority matrix says which score each level is expected to reach.
 
 - **Why it matters:** Improves inter-rater reliability and makes evaluations defensible.
-- **Applied in:** `interview-close` (competency scoring)
+- **Applied in:** `interview-prep` (answer anchors per question), `interview-close` (competency scoring)
 
 ### Behavioral Interviewing
 
@@ -180,6 +184,8 @@ Each skill checks conversation memory for previously stored corporate context:
 
 When a skill encounters new corporate context (provided by the user), it saves it to memory for future sessions.
 
+**Candidate data is never saved to memory** — no names, CV content, answers, notes, scores or evaluations. It lives only in the candidate files, which start with a confidentiality and retention line and belong in a folder outside version control.
+
 ### When to Suggest Memory Updates
 
 Suggest the user update corporate context when:
@@ -203,7 +209,7 @@ When a user asks about corporate context, explain:
 1. **First-time setup:** Skills check memory for saved corporate context. The job-description skill asks for missing company context; the other skills use what is saved and store any new corporate context the user provides during an invocation.
 2. **Subsequent uses:** Saved context is applied automatically — the user is not re-asked.
 3. **Updates:** The user can update corporate context at any time by providing new information during a skill invocation.
-4. **Cross-skill sharing:** Corporate context saved by one skill (e.g., seniority matrix saved by interview-prep) is available to other skills (e.g., interview-close).
+4. **Cross-skill sharing:** Corporate context saved to memory by one skill is available to the others. Two role-level files in the output folder are shared the same way: `{role}-seniority-matrix.md`, saved by interview-close once a matrix is confirmed and read by interview-prep and later evaluations, and `{role}-prescreening-base.md`, the base question set pre-screening reuses for every candidate.
 
 ---
 
@@ -234,7 +240,7 @@ To answer questions accurately, this skill reads the following files using relat
 
 > The interview-close skill supports this through its guided feedback interaction (Step 3): for each competency it asks the interviewer for specific observed behavior, converts vague impressions into evidence, and flags bias patterns such as halo effects or near-identical scores. Every score must cite evidence, so diverging ratings can be traced back to what each interviewer actually observed.
 >
-> For panel calibration, the interview-prep scoring rubric describes independent scoring before group discussion and an evidence review for any competency where scores diverge by 2 or more points. Seniority is then classified against a seniority matrix (corporate or generated) that the user confirms before scoring.
+> Each panel member runs interview-close separately and gets their own file, so scores stay independent. interview-close can then consolidate the files: it compares scores per competency and asks for an evidence review wherever they diverge by 2 or more points, following the calibration steps in the interview-prep scoring rubric. Everyone scores on the same absolute scale, and seniority is classified against the role's saved matrix, which the user confirms before scoring.
 
 ### Example 2: Practitioner — Step-by-Step Guidance
 
@@ -253,7 +259,7 @@ To answer questions accurately, this skill reads the following files using relat
 
 ### Example 3: Newcomer — Socratic Coaching
 
-**User:** "Cos'e il metodo STAR e perche dovrei usarlo?"
+**User:** "Cos'è il metodo STAR e perché dovrei usarlo?"
 
 **Response style:** Socratic, Italian, build understanding from basics.
 
@@ -266,9 +272,9 @@ To answer questions accurately, this skill reads the following files using relat
 > - **S**ituazione — "Mi racconti una situazione specifica in cui..."
 > - **T**ask (compito) — "Qual era il suo ruolo e obiettivo?"
 > - **A**zione — "Cosa ha fatto concretamente?"
-> - **R**isultato — "Qual e stato l'esito? Cosa ha imparato?"
+> - **R**isultato — "Qual è stato l'esito? Cosa ha imparato?"
 >
-> Perche funziona? Perche il comportamento passato e il miglior predittore del comportamento futuro. Una risposta STAR completa ti da evidenze concrete da valutare, non promesse.
+> Perché funziona? Perché il comportamento passato è il miglior predittore del comportamento futuro. Una risposta STAR completa ti dà evidenze concrete da valutare, non promesse.
 >
 > Nel plugin, lo skill **interview-prep** genera automaticamente domande STAR calibrate sulle competenze del ruolo. Vuoi provarlo con un ruolo specifico?
 
@@ -285,4 +291,4 @@ To answer questions accurately, this skill reads the following files using relat
 >
 > It will produce your interview preparation kit: a position assessment, suggested questions, and a notes template. After you conduct the interview, use **interview-close** with your notes to generate the evaluation.
 >
-> Both skills will auto-invoke **compliance-check** before finalizing their outputs.
+> Both skills run **compliance-check** as their last step, before writing their outputs.

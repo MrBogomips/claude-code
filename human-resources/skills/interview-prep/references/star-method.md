@@ -135,26 +135,28 @@ The CV claims expertise but the answer suggests surface-level experience.
 
 ## 5. Good vs. Excellent Answer Examples
 
-### Good Answer (Score 4)
+Scores use the canonical absolute scale (`../../interview-close/references/evaluation-template.md` Section 3). A **good** answer is one at the expected score for the target level; an **excellent** answer is one point above it (or a strong 5 where 5 is expected). The examples below are for a Senior role whose seniority matrix expects a 4 in system design.
+
+### Good Answer (Score 4 — meets a Senior target)
 
 **Question:** "Tell me about a time when you had to design a system under tight constraints."
 
 > "We were building a payment processing module for our e-commerce platform. I was the lead developer on the project. The constraint was that we had to integrate with three different payment providers within six weeks. I designed a provider abstraction layer that let us add new providers through configuration rather than code changes. I wrote the core adapter pattern and coordinated with two other developers on the provider-specific implementations. We delivered on time and the system handled the Black Friday traffic spike without issues."
 
-**Why it's Good (not Excellent):**
+**Why it's Good (not Excellent):** it matches anchor 4 — a complex problem solved with ownership, guiding others.
 - Clear STAR structure
 - Identifies specific technical approach (adapter pattern)
 - Shows leadership (coordinated with others)
 - Mentions a positive outcome (on-time, handled traffic)
 - Missing: quantified scale, specific trade-offs considered, metrics on the impact
 
-### Excellent Answer (Score 5)
+### Excellent Answer (Score 5 — above a Senior target)
 
 **Question:** Same question.
 
-> "At [Company], our e-commerce platform processed about 50,000 transactions per day, and we needed to add support for three new payment providers — Stripe, Adyen, and a local provider — within six weeks because our exclusive contract with PayPal was ending. I was the senior engineer responsible for the integration architecture. I evaluated two approaches: a direct integration per provider, which would be faster initially but create maintenance debt, and an abstraction layer with a common interface. I chose the abstraction approach because our roadmap showed two more provider additions in Q2. I designed a provider adapter pattern with a circuit breaker for failover — if one provider's API went down, transactions would automatically route to the next. I wrote the core framework, defined the adapter interface, and pair-programmed the first adapter with a junior developer to establish the pattern, then the team implemented the remaining two in parallel. We delivered three days early. On Black Friday, the system processed 180,000 transactions — 3.6x normal volume — with 99.97% success rate. The circuit breaker triggered twice when Adyen had a brief outage, and transactions failed over to Stripe seamlessly. Six months later, adding a fourth provider took two days instead of the estimated two weeks. If I were doing it again, I'd invest more upfront in observability — we had to add detailed provider-level metrics retroactively."
+> "At [Company], our e-commerce platform processed about 50,000 transactions per day, and we needed to add support for three new payment providers — Provider A, Provider B, and a local provider — within six weeks because our exclusive contract with Provider C was ending. I was the senior engineer responsible for the integration architecture. I evaluated two approaches: a direct integration per provider, which would be faster initially but create maintenance debt, and an abstraction layer with a common interface. I chose the abstraction approach because our roadmap showed two more provider additions in Q2. I designed a provider adapter pattern with a circuit breaker for failover — if one provider's API went down, transactions would automatically route to the next. I wrote the core framework, defined the adapter interface, and pair-programmed the first adapter with a junior developer to establish the pattern, then the team implemented the remaining two in parallel. We delivered three days early. On Black Friday, the system processed 180,000 transactions — 3.6x normal volume — with 99.97% success rate. The circuit breaker triggered twice when Provider B had a brief outage, and transactions failed over to Provider A seamlessly. Six months later, adding a fourth provider took two days instead of the estimated two weeks. If I were doing it again, I'd invest more upfront in observability — we had to add detailed provider-level metrics retroactively."
 
-**Why it's Excellent:**
+**Why it's Excellent:** it matches anchor 5 — the candidate set the pattern the team followed and chose the design against the roadmap.
 - Precise context (50K transactions/day, specific providers, business reason)
 - Clear individual ownership with team context
 - Trade-off analysis (two approaches evaluated, rationale for choice)
@@ -178,7 +180,7 @@ The CV claims expertise but the answer suggests surface-level experience.
 | **Hypothetical deflection** | "What I would do is..." instead of "What I did was..." | May not have the actual experience claimed |
 | **Blame externalization** | "The project failed because management didn't listen" | Lacks accountability and self-reflection |
 | **Single-story reliance** | Uses the same example for every competency | Limited breadth of experience or preparation |
-| **Recency gap** | All examples are 5+ years old for a current competency | Skills may have atrophied or the candidate has not used them recently |
+| **No recent example** | Every example for a competency the role uses daily is old | Ask for the most recent use of the skill and score only the evidence given. Time away from work (a career break, leave, illness) is never a red flag: do not ask about it or score it |
 
 ### Pattern-Level Red Flags (across multiple answers)
 
