@@ -14,7 +14,7 @@
       "name": "context-hygiene",
       "source": "./context-hygiene",
       "description": "Context hygiene for agentic projects — audits CLAUDE.md, rules and auto-memory for wrong, stale and redundant content, and applies only explicitly authorized changes",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "category": "engineering",
       "tags": [
         "context",
@@ -27,7 +27,7 @@
       "name": "human-resources",
       "source": "./human-resources",
       "description": "HR interview workflow — job descriptions, candidate pre-screening, interview preparation, evaluation, compliance checking, and methodology guidance",
-      "version": "0.2.1",
+      "version": "0.3.0",
       "category": "human-resources",
       "tags": [
         "hr",
@@ -42,7 +42,7 @@
       "name": "kaizen",
       "source": "./kaizen",
       "description": "Continuous improvement loops — a generic recursive optimization engine with bundled profiles for Claude Code usage, code refactoring, and process improvement",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "category": "engineering",
       "tags": [
         "kaizen",
@@ -58,7 +58,7 @@
       "name": "personal-voice",
       "source": "./personal-voice",
       "description": "Personal writing voice — writes documents, emails and messages in the author's tone and lexicon, learns from the author's revisions and own texts, and maintains the profile only with per-item approval",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "documentation",
       "tags": [
         "writing",
@@ -73,7 +73,7 @@
       "name": "plantuml",
       "source": "./plantuml",
       "description": "Authoring, rendering, and maintenance of PlantUML diagrams — policy-driven projects with multi-target rendering, lint, validate, review, advisor, and migrate",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "category": "documentation",
       "tags": [
         "plantuml",
@@ -89,7 +89,7 @@
       "name": "project-management",
       "source": "./project-management",
       "description": "SOW writing, review, estimation, and PMI-compliant PERT analysis — an integrated project management pipeline",
-      "version": "1.0.1",
+      "version": "1.1.0",
       "category": "operations",
       "tags": [
         "pmo",
@@ -106,7 +106,7 @@
       "name": "tech-writing",
       "source": "./tech-writing",
       "description": "Technical writing support — transform documents between internal and client-facing audiences: redact reserved material into client deliverables and distill assessments into internal commercial & delivery summaries",
-      "version": "0.2.1",
+      "version": "0.3.0",
       "category": "documentation",
       "tags": [
         "writing",
