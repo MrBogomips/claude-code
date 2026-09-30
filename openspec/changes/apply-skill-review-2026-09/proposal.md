@@ -94,16 +94,28 @@ The owner also decided to retire the developer-tools plugin rather than harden i
 
 ### New Capabilities
 
-Spec deltas under `specs/<plugin>/<capability>/` name them. These are the plugins without specs yet
-(human-resources, kaizen, plantuml, project-management and tech-writing), plus new capabilities of
-personal-voice where needed.
+- `plantuml/policy-generation`, `plantuml/policy-migration`, `plantuml/diagram-authoring`,
+  `plantuml/diagram-validation`, `plantuml/diagram-lint`, `plantuml/skill-invocation`
+- `kaizen/iteration-safety`, `kaizen/kpi-ratchet`, `kaizen/measurement`, `kaizen/profile-storage`,
+  `kaizen/run-state`
+- `project-management/pert-workbook-verification`, `project-management/pert-interaction`,
+  `project-management/sow-pert-handoff`, `project-management/risk-classification`,
+  `project-management/estimate-outputs`, `project-management/sow-review-report`,
+  `project-management/document-input`
+- `human-resources/candidate-screening`, `human-resources/evaluation-scoring`,
+  `human-resources/compliance-contract`, `human-resources/legal-references`,
+  `human-resources/candidate-data-handling`, `human-resources/skill-routing`
+- `tech-writing/confidential-leak-scan`, `tech-writing/bid-commercial-clarifications`,
+  `tech-writing/skill-routing`
+- `context-hygiene/discovery-checks`
 
 ### Modified Capabilities
 
-- `context-hygiene/authorization`, `context-hygiene/apply-safety`: memory items without a backup,
-  and "apply all".
-- `personal-voice/voice-maintenance`, `personal-voice/voice-learning`, `personal-voice/voice-writing`,
-  `personal-voice/voice-store`: as needed by the changes above.
+- `context-hygiene/authorization` and `context-hygiene/apply-safety`: new requirements for "apply all" and
+  for memory items when BACKUP is declined (ADDED; no existing requirement text changes).
+- `personal-voice/voice-learning`, `personal-voice/voice-maintenance`, `personal-voice/voice-store`,
+  `personal-voice/voice-writing`: requirements changed for exemplars, conflicts, decay, scope moves, the
+  project root and precedence of other skills (MODIFIED, plus ADDED where new).
 
 ## Impact
 
