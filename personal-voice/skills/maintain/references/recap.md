@@ -20,13 +20,14 @@ Global store: <path> · Project store: .personal-voice/ (personal)
 
 3. REVIEW (stale) → global › core.md › Tone
    Alternate a long sentence with two short ones… (last reinforced 2026-02-10)
-   Keep, or remove?
+   Keep (not asked again for six months), or remove?
 
 …
 
 At the end of the run the date is recorded in the global store.
 
-Reply with the items to apply, e.g. "1, 3 remove, 2 keep A".
+Reply with the items to apply, e.g. "1, 3 remove, 2 keep A", or "all" for
+every item that needs no decision.
 For a promotion you can also write "1 edit: <new text>" or "1 scope: project",
 "1 scope: [to colleagues]". Items you do not name stay as they are.
 ```

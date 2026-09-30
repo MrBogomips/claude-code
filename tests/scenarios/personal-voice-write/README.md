@@ -41,6 +41,10 @@ plugin loaded from the repository and prints the skills the model invoked:
 bash tests/scenarios/personal-voice-write/trigger.sh "<scratch>/w1" "Draft an email to our client ..."
 ```
 
+With `--marketplace` (or `PV_TRIGGER_MARKETPLACE=1`) it loads every plugin of the repository, so
+collisions with the document skills of other plugins are measured (scenario-triggering.md).
+Keep those runs few: each one is a full headless session.
+
 After each run, the store must be unchanged: the write skill never writes.
 
 ```bash

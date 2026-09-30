@@ -14,13 +14,26 @@ For each authorized item, in number order:
    - **REINFORCE**: update the rule's evidence and `reinforced` date; remove
      the observation.
    - **MERGE**: replace the rules with the merged one.
-   - **CONFLICT**: apply the author's choice; a qualified rule gets its new
-     qualifier; the losing observation is removed.
+   - **CONFLICT**: apply the author's choice.
+     - **Rule A against observation B, "keep A"**: leave A as it is and remove
+       the observation.
+     - **Rule A against observation B, "keep B"**: replace A, at its place in
+       the file, with B promoted as a rule (B's evidence, and its latest source
+       date as `reinforced`); remove the observation. A's evidence does not
+       carry over: it supported the opposite habit.
+     - **Rule against rule**: remove the losing rule; the winning rule stays
+       unchanged.
+     - **Qualify**: the side the author names gets the new qualifier. The other
+       side stays as a rule, or is promoted when it is an observation, so each
+       applies in its own scope; the observation is removed.
+   - **REVIEW** (stale): "keep" adds `reviewed: <today>` to the rule, or updates
+     it, and changes nothing else; "remove" removes the rule.
    - **REMOVE**, **DELETE**, **TRIM**: remove or shorten exactly the named
      entry or exemplar.
    - **MOVE**: add the rule to the destination with the evidence summed, then
      remove it from the source. Refuse a move of personal material into a
-     project store, even if approved.
+     project store, even if approved. The only project store a move can reach
+     is the current project's `.personal-voice/`.
    - Any item whose destination is a project store that does not exist yet
      (a MOVE, or a promotion with "scope: project"): first run the store
      format's Project store initialization. If the author chooses Skip, skip

@@ -1,6 +1,7 @@
 ---
 name: learn
-description: Use when the author revises text Claude wrote for them - pastes the version they actually sent, edits a file Claude wrote, or states corrections such as "I never write X", "too formal", "non scrivo mai così" - when the author shares texts they wrote without AI so Claude can learn their style, when asked to learn from a text for the voice profile, or when the author ends a work session in which the personal-voice plugin was used.
+description: Records the author's tone and lexicon as pending observations in their personal voice profile. Use when the author revises a document or message Claude wrote for them (text for people, not code) - pastes the version they actually sent, edits such a file, or states corrections such as "I never write X", "too formal", "non scrivo mai così" - when the author shares texts they wrote without AI so Claude can learn their style, when asked to learn from a text for the voice profile, or when the author ends a work session in which the personal-voice plugin was used.
+allowed-tools: Bash(git rev-parse:*)
 ---
 
 # Learn the author's voice
@@ -29,16 +30,21 @@ work; never change a rule.
 ## Stores
 
 - **Global store**: `${user_config.store_dir}`
+- **Project store**: `.personal-voice/` at the project root: the directory
+  `git rev-parse --show-toplevel` prints, or the working directory outside git.
+  Never create a store in a subdirectory of the repository.
 - **Format, routing and project-store setup**: `${CLAUDE_PLUGIN_ROOT}/shared/store-format.md`.
   Read it before your first recording in the session.
 
-If the global store path above is empty or still shows the placeholder text
+If the global store path above is empty or still contains the text
 `user_config.store_dir`, tell the author to set **Voice store directory** in
 `/config` and write nothing.
 
 Use the Glob, Read, Write and Edit tools on store files, not shell commands:
 the allow rules the plugin documents cover those tools, so recording raises
-no permission prompt.
+no permission prompt. The one command this skill runs is `git rev-parse`
+(the project root, and the exclude file at project-store setup), which it
+pre-approves.
 
 ## Workflow
 

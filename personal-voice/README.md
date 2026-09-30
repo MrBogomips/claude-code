@@ -37,6 +37,11 @@ specific wins: project over topic, topic over language, language over core.
 It applies only rules you have approved, never pending observations. With an
 empty store it writes normally and does not pretend to know your style.
 
+When another skill or template already fixes the structure, register or terms
+of the text (a client deliverable with its own style guide, a statement of
+work, a corporate template), those win: your profile applies only where they
+leave room, such as word choice within a sentence.
+
 It never touches code, code comments, commit messages or configuration files,
 unless you ask for your voice on that specific text. It only reads the store.
 
@@ -52,7 +57,9 @@ It learns from:
   Claude Code will report the change); corrections you state, such as "I never
   write 'inoltre'";
 - **texts you wrote without AI**, pasted or given as files. Short excerpts are
-  kept as exemplars, at most five per topic and language.
+  kept as exemplars, at most five per topic and language, and only passages
+  without client or project names: exemplars are global and guide texts in
+  every project.
 
 It records only style: tone, words, punctuation, structure, and LLM habits you
 remove. It never records corrected facts, figures, dates, names or scope, and
@@ -87,7 +94,8 @@ evidence for each item:
 - **merges** of overlapping rules, and **conflicts** between contradictory
   ones, which you settle or qualify by audience, topic or language;
 - **removals** of rules that only restate what Claude does anyway;
-- **reviews** of rules not reinforced for six months, and deletion of single
+- **reviews** of rules not reinforced for six months (a rule you keep is not
+  asked about again for another six months), and deletion of single
   observations older than three months;
 - **size limits**: at most 50 rules per file, five exemplars per topic and
   language, 300 words each;
@@ -139,6 +147,11 @@ writes to the global store and to project stores.
 Creating a project store in a git repository edits `.git/info/exclude`. Claude
 Code protects `.git/`, so that one edit asks for permission whatever your rules.
 
+The one shell command the skills run is `git rev-parse`: it finds the project
+root, so a session started in a subdirectory uses the same project store, and
+the exclude file's path in a linked worktree. Each skill pre-approves it, so it
+asks for no permission.
+
 ## What the stores hold
 
 **Global store** (the `store_dir` directory), personal to you:
@@ -166,7 +179,9 @@ The global store holds excerpts of your own writing and notes on how you write.
 It stays in the directory you chose and is never sent anywhere by the plugin.
 
 The project store holds only project material: never exemplars, and never
-anything learned from personal texts. In a git repository, you choose whether
+anything learned from personal texts. Exemplars in the global store are chosen
+without client or project names; a text that has no such passage gives
+observations but no exemplar. In a git repository, you choose whether
 to keep it personal (the default: listed in `.git/info/exclude`, so git ignores
 it) or to version it with the project. Before you choose, the skill explains
 what versioning implies, including that anyone who can read the repository can

@@ -1,6 +1,7 @@
 ---
 name: write
-description: Use when writing text the author will send, publish or hand over as their own, in any language - documents, reports, emails, messages, posts, letters, replies - for example "draft an email to the client", "scrivi una mail al team", "rédige un message pour l'équipe", "schreib einen kurzen Bericht", "escribe un post para LinkedIn", or when asked to write in the author's voice or style. Applies the author's personal voice profile of tone and lexicon. Not for code, code comments, commit messages or configuration files.
+description: Use when writing text the author will send, publish or hand over as their own, in any language - documents, reports, emails, messages, posts, letters, replies - for example "draft an email to the client", "scrivi una mail al team", "rédige un message pour l'équipe", "schreib einen kurzen Bericht", "escribe un post para LinkedIn", or when asked to write in the author's voice or style. Applies the author's personal voice profile of tone and lexicon; when another skill or template fixes the structure, register or terms, those win and the profile fills the room they leave. Not for code, code comments, commit messages or configuration files.
+allowed-tools: Bash(git rev-parse:*)
 ---
 
 # Write in the author's voice
@@ -32,10 +33,12 @@ This skill only reads the store. It never writes to it.
 ## Stores
 
 - **Global store**: `${user_config.store_dir}`
-- **Project store**: `.personal-voice/` at the project root (the git top-level
-  directory, or the working directory outside git), if it exists.
+- **Project store**: `.personal-voice/` at the project root, if it exists. The
+  project root is the directory `git rev-parse --show-toplevel` prints, or the
+  working directory outside git; a session started in a subdirectory uses the
+  same root.
 
-If the global store path above is empty or still shows the placeholder text
+If the global store path above is empty or still contains the text
 `user_config.store_dir`, tell the author once in this session that the voice
 profile is not set up: set **Voice store directory** in `/config`. Then write
 the text normally. A configured directory that does not exist yet is an empty
@@ -43,7 +46,8 @@ store.
 
 List and read store files with the Glob and Read tools, not shell commands:
 the allow rules the plugin documents cover those tools, so no permission
-prompt interrupts the author.
+prompt interrupts the author. The one command this skill runs is
+`git rev-parse --show-toplevel`, which it pre-approves.
 
 ## Before writing
 
@@ -59,8 +63,9 @@ prompt interrupts the author.
 1. `core.md`
 2. `languages/<code>.md` for the target language
 3. `topics/<primary>.md`, then `topics/<secondary>.md`
-4. In the project store: `glossary.md`, and `content-types/<slug>.md` when the
-   text is one of the listed document types, plus `content-types/general.md`
+4. In the project store: `glossary.md`, and `content-types/<slug>.md` when a
+   slug present in `content-types/` names the text's document type, plus
+   `content-types/general.md`
 5. Exemplars: up to two `exemplars/<primary>.<code>.*.md` in the target
    language. If there are none, at most one in another language.
 
@@ -82,3 +87,13 @@ observations are not rules.
   not describe the text as written in their voice.
 - Content comes from the request. The profile changes how the text sounds and
   which words it uses, never the facts.
+
+## With other skills and templates
+
+Another skill, a template or the project's own conventions may already fix the
+text's structure, register or terminology: a client deliverable with its own
+style guide, a statement of work, a corporate template, a document with
+verbatim notices. Follow them. Apply the profile only where they leave room,
+such as word choice within a sentence or the rhythm of a paragraph, and never
+rephrase their verbatim texts. A rule of the profile that contradicts them is
+set aside for that text.

@@ -21,7 +21,8 @@ Create `observations.md` with its frontmatter if it does not exist.
 
 ## 3. Project destinations
 
-When routing sends a trait to the project store:
+When routing sends a trait to the project store, look for `.personal-voice/`
+at the project root the store format defines, not in the working directory:
 
 - `.personal-voice/` exists → record there.
 - It does not exist and the author declined it earlier in this session → drop

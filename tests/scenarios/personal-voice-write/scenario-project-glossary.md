@@ -19,4 +19,5 @@ Fixture created. Working directory: `$F/project`. The topic file prefers "deploy
 
 ## Edge Cases
 - Same request in `$F/plain` → "deploy" (no project store)
+- Same request with working directory `$F/project/src` → still "rilascio": the project root comes from `git rev-parse --show-toplevel`, so the store at the root is found
 - "Scrivi lo status report settimanale" in `$F/project` → starts with one of "In linea", "A rischio", "In ritardo"

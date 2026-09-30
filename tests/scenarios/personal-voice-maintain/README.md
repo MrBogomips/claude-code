@@ -46,6 +46,9 @@ All content is invented; the 50 glossary rules are placeholders
 | M-scope | Project rule "ambiente di test" also has evidence from unrelated texts | project `glossary.md` + global observation |
 | M-git | Project store is personal (listed in `.git/info/exclude`) | `project/.git/info/exclude` |
 
+Some scenarios add a case in their Setup (a contradicting `core.md` rule, observations tagged with
+a project); take the `before` fingerprint after that step.
+
 ## Scenarios
 
 | File | What it tests |
@@ -59,3 +62,6 @@ All content is invented; the 50 glossary rules are placeholders
 | scenario-over-limit.md | A promotion over the 50-rule limit brings a merge or removal into the same recap |
 | scenario-scope-move.md | A project rule that proves general is proposed for the global store |
 | scenario-personal-to-versioned.md | Switching the project store to versioned, with the implications first |
+| scenario-conflict-keep-b.md | CONFLICT "keep B" replaces the rule with the promoted observation; rule against rule removes the loser |
+| scenario-scope-to-project.md | Scope to project only for the current project's tag and non-reinforcing observations; otherwise a note |
+| scenario-stale-kept.md | A stale rule the author keeps gets `reviewed:` and is not flagged again for six months |

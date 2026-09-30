@@ -10,5 +10,5 @@ Run the recap; then reply with the other items but not this one.
 ## Acceptance Criteria
 - [ ] One REVIEW item names the rule and its last-reinforced date
 - [ ] After a reply that does not name it, the rule is still in `core.md`
-- [ ] "N remove" removes it; "N keep" leaves it unchanged
+- [ ] "N remove" removes it; "N keep" leaves its text and evidence unchanged and adds `reviewed: 2026-09-29` (see scenario-stale-kept.md for the next runs)
 - [ ] Baseline (RED) comparison: without the skill, the stale rule is not flagged

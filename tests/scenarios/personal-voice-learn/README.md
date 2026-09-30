@@ -56,3 +56,5 @@ bash tests/scenarios/personal-voice-write/fixture.sh fingerprint "$F" | diff "<s
 | scenario-repeated-trait.md | A repeated trait adds evidence instead of a new observation |
 | scenario-project-store-init.md | Project store initialization, with the default and with a decline |
 | scenario-wrap-up.md | Wrap-up with pending work and with a missed revision |
+| scenario-subdirectory.md | A session started in a subdirectory uses the store at the project root |
+| scenario-exemplar-privacy.md | Exemplars never carry client or project names |
