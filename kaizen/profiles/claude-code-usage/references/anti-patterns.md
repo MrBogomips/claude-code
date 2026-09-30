@@ -4,19 +4,19 @@
 
 ### AP-1: Shotgun Search
 **Pattern:** Multiple broad searches before finding the target
-**Signature:** 3+ `Grep` or `Glob` calls with different patterns for the same target
+**Signature:** 3+ search calls (`Grep`, `Glob`, or `grep`/`find` through Bash) with different patterns for the same target
 **Root cause:** Unclear project structure conventions in CLAUDE.md
 **Fix:** Add file organization section to CLAUDE.md with directory purpose and naming conventions
 
 ### AP-2: Bash Grep Habit
-**Pattern:** Using `bash grep -r` instead of `Grep` tool
-**Signature:** `Bash` tool with `grep` or `rg` commands for content search
-**Root cause:** Tool permissions not configured; old habit from manual CLI use
-**Fix:** Add `Grep` to allowedTools; add "prefer Grep over bash grep" to CLAUDE.md conventions
+**Pattern:** Using `bash grep -r` instead of the `Grep` tool in a session that has it
+**Signature:** `Bash` tool with `grep` or `rg` commands for content search, in a session that also made `Grep` calls. Without Grep calls this is not an anti-pattern: the default toolset on macOS, Linux and WSL searches through Bash
+**Root cause:** Old habit from manual CLI use
+**Fix:** Add "prefer the Grep tool over bash grep" to the CLAUDE.md conventions for sessions that enable it
 
 ### AP-3: Find Instead of Glob
-**Pattern:** Using `bash find` instead of `Glob` tool
-**Signature:** `Bash` tool with `find . -name` commands
+**Pattern:** Using `bash find` instead of the `Glob` tool in a session that has it
+**Signature:** `Bash` tool with `find . -name` commands, in a session that also made `Glob` calls
 **Root cause:** Unfamiliarity with Glob's pattern syntax
 **Fix:** Add glob pattern examples to CLAUDE.md; document common search patterns
 
@@ -25,8 +25,8 @@
 ### AP-4: Cat for Reading
 **Pattern:** Using `bash cat` instead of `Read` tool
 **Signature:** `Bash` tool with `cat`, `head`, or `tail` commands for file reading
-**Root cause:** Habit pattern; Read tool may not be in allowedTools
-**Fix:** Add Read to allowedTools; add note to CLAUDE.md
+**Root cause:** Habit pattern. Read is a read-only tool and needs no permission rule inside the working directory, so permissions are rarely the cause
+**Fix:** Add a "use the Read tool to read files" note to CLAUDE.md
 
 ### AP-5: Excessive Full-File Reads
 **Pattern:** Reading entire large files when only a section is needed
@@ -57,10 +57,10 @@
 **Fix:** Create CLAUDE.md with project structure, conventions, and key commands
 
 ### AP-9: Over-Broad Permissions
-**Pattern:** Using `dangerouslySkipPermissions` or overly broad allowedTools
-**Signature:** Settings that bypass the permission system
+**Pattern:** Skipping permission checks, or allow rules much broader than the work needs
+**Signature:** `"permissions": {"defaultMode": "bypassPermissions"}` in a settings file, habitual use of the `--dangerously-skip-permissions` flag, or wide `permissions.allow` rules such as `"Bash"` with no command pattern
 **Root cause:** Permission prompts felt slow; quick fix applied
-**Fix:** Configure specific allowedTools for commonly used tools; remove dangerous overrides
+**Fix:** Add specific `permissions.allow` rules (for example `"Bash(npm run test *)"`) for the commands the project runs often, and remove the bypass
 
 ### AP-10: Dormant Skills
 **Pattern:** Many installed skills that never trigger

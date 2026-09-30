@@ -9,7 +9,9 @@ description: "Interactive workflow to create custom kaizen improvement profiles.
 
 This skill guides the user through creating a custom PROFILE.md file for the kaizen engine. It produces a validated, ready-to-use profile that follows the engine's template format.
 
-Output: `profiles/{name}/PROFILE.md` in the kaizen plugin directory, or a custom location specified by the user.
+Output: `.kaizen/profiles/{name}/PROFILE.md` at the project root by default. For a profile used across projects, offer `~/.kaizen/profiles/{name}/PROFILE.md` instead. The kaizen engine finds a profile by name in both folders, so `/kaizen {name}` works for either.
+
+Never save into the kaizen plugin directory: it is the plugin cache and is replaced when the plugin updates. If the user wants another location, save there and tell them to start the loop with the file's path (`/kaizen path/to/PROFILE.md`), because the engine does not search other folders by name.
 
 ## 2. Pipeline
 
@@ -36,6 +38,8 @@ For each KPI:
 4. **Unit** — ratio, percentage, count, seconds, custom
 5. **Measurement method** — automated, user-reported, or hybrid
 6. **Formula** — human-readable description of how to calculate
+7. **Epsilon** — the smallest change that counts as real, in this KPI's own unit (see Step 5)
+8. **Observational?** — set `observational: true` when the loop's own changes cannot move the KPI within a run, such as a KPI computed from past activity. It is then tracked and reported but never decides keep or revert
 
 **Guide the user with questions:**
 - "If this improvement works, what number would change?"
@@ -46,9 +50,16 @@ For each KPI:
 
 Based on the KPIs, determine what data the engine needs:
 
-1. **Source type**: files, git history, session logs, API output, user input
-2. **Source path**: where to find the data
-3. **Collection method**: automatic (Read/Grep/Bash) or manual (user provides)
+1. **Source type** — one of the five types the engine can collect:
+   - `config` — files read from a path (configuration or any other files)
+   - `git_history` — the output of a git command
+   - `session_transcripts` — Claude Code session transcripts matching a path glob
+   - `memory` — memory files matching a path glob
+   - `user_provided` — data the user supplies or points to during BOOTSTRAP
+
+   Data that comes from somewhere else, such as an API, is collected by the generated measurement script or supplied by the user as `user_provided`.
+2. **Source path** (or `command` for `git_history`): where to find the data
+3. **Collection method**: automatic (the engine reads files or runs the command) or manual (user provides)
 
 ### Step 4 — Define Mutation Scope
 
@@ -74,7 +85,7 @@ Determine what the engine is allowed to modify:
 3. **Iteration budget** — how many iterations to allow (recommend 5-10)
 
 4. **Convergence** — epsilon and patience values
-   - Help calibrate epsilon to the KPI's scale
+   - Set an `epsilon` on each KPI, in the KPI's own unit: a ratio and a 0–100 percentage need different values. `convergence.epsilon` is only the fallback for a KPI without one
 
 5. **Measurement tool** — should the engine auto-generate a measurement tool?
    - If KPIs are automatable: recommend `tool_generation: true`
@@ -91,17 +102,19 @@ Determine what the engine is allowed to modify:
    - HYPOTHESIZE: common root causes in this domain
    - PROPOSE: appropriate change types and constraints
    - APPLY: special considerations for applying changes
-   - VERIFY: additional verification beyond KPI re-measurement
+   - VERIFY: additional verification beyond KPI re-measurement. Phrase checks a command can run (build, tests, lint) so the engine can turn them into commands; a failing check forces a revert
+   - BOOTSTRAP (only if needed): anything the engine must settle with the user before the first measurement
 
 4. Present the complete profile to the user for review
 
 ### Step 7 — Validate and Save
 
 1. Verify all required frontmatter fields are present
-2. Verify KPI definitions are complete (name, direction, unit)
+2. Verify KPI definitions are complete (name, direction, unit, epsilon)
 3. Verify mutation targets don't overlap with immutable patterns
-4. Save to the specified location
-5. Suggest the user run `/kaizen {profile-name}` to start the loop
+4. Check whether a profile with the same `name` already exists in `.kaizen/profiles/`, `~/.kaizen/profiles/` or the bundled profiles. If it does, show where, and ask whether to replace it or pick another name. A custom profile with a bundled name hides the bundled one. Do not overwrite a file without an explicit yes.
+5. Save to the chosen location. Put any reference files the body names in a `references/` folder next to PROFILE.md: the engine resolves `references/` paths against the profile's own folder.
+6. Suggest the user run `/kaizen {profile-name}` to start the loop (or `/kaizen <path>` for a custom location)
 
 ## 3. Progressive Disclosure
 

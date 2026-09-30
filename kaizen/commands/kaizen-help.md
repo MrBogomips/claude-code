@@ -30,10 +30,10 @@ The kaizen engine runs recursive improvement loops inspired by [karpathy/autores
 Profiles define the improvement domain. Three are bundled:
 
 ### claude-code-usage
-Analyzes Claude Code tool and skill usage patterns. Detects anti-patterns like bash grep instead of Grep tool, missing CLAUDE.md sections, unconfigured permissions. Suggests configuration improvements.
+Analyzes Claude Code tool and skill usage patterns. Detects anti-patterns like `cat` instead of the Read tool, missing CLAUDE.md sections, missing permission rules. Suggests configuration improvements.
 
-**KPIs:** tool_efficiency, search_precision, config_completeness, skill_utilization
-**Mutates:** `.claude/CLAUDE.md`, `.claude/settings.json`, `.claude/settings.local.json`
+**KPIs:** config_completeness decides; tool_efficiency, search_precision and skill_utilization are read from past session transcripts and tracked as observational
+**Mutates:** `CLAUDE.md` or `.claude/CLAUDE.md`, `.claude/settings.json`, `.claude/settings.local.json`, `.claude/rules/`
 **Best for:** Optimizing your Claude Code workflow
 
 ### code-refactoring
@@ -51,12 +51,14 @@ Guides you through designing and running kaizen improvement loops for business p
 **Best for:** Operational and workflow improvements
 
 ### Custom Profiles
-Create your own with `/kaizen-profile-designer` or by copying the profile template.
+Create your own with `/kaizen-profile-designer` or by copying the profile template. Custom profiles live in `.kaizen/profiles/<name>/` (this project) or `~/.kaizen/profiles/<name>/` (all projects), and `/kaizen <name>` finds them there.
 
 ## Strategies
 
 - **Greedy** — single KPI, pure hill-climbing. Keep if improved, revert if not.
-- **Multi-objective** — Pareto dominance. Keep only if no KPI regressed AND at least one improved.
+- **Multi-objective** — Pareto dominance. Keep only if no KPI regressed AND at least one improved; a trade-off is escalated to you unless the run is autonomous.
+
+Each KPI can set its own `epsilon`, in its own unit, as the smallest change that counts. KPIs marked `observational` are tracked and reported but never decide keep or revert. A failed verify check (for example, the build) always reverts.
 
 ## Autonomy Levels
 
@@ -69,9 +71,10 @@ Create your own with `/kaizen-profile-designer` or by copying the profile templa
 Every run creates a structured audit trail in `.kaizen/runs/{run-id}/`:
 
 ```
-manifest.json     — run configuration
+manifest.json     — resolved run configuration (KPIs, epsilons, targets, verify checks, git choices)
 baseline.json     — initial KPI values
-measure.py        — auto-generated measurement tool
+measure.py        — measurement tool, generated or reused from the previous run
+tool-review.md    — adversarial review of a newly generated tool
 iterations/NNN/   — per-iteration data (measurement, analysis, proposal, diff, decision)
 adversarial-review.md — final review
 summary.json      — aggregate results and KPI improvement
@@ -85,19 +88,10 @@ Use `/kaizen-history` to browse the audit trail.
 
 The kaizen engine can record each iteration as a Sequential Thinking chain when this MCP server is connected; it runs without it.
 
-**Installation:**
+**Installation:** MCP servers are configured with `claude mcp add` or in a `.mcp.json` file at the project root, not in `settings.json`:
 
-Add to your `.claude/settings.json` or MCP configuration:
-
-```json
-{
-  "mcpServers": {
-    "sequential-thinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    }
-  }
-}
+```bash
+claude mcp add sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking
 ```
 
 ## Troubleshooting
@@ -105,6 +99,7 @@ Add to your `.claude/settings.json` or MCP configuration:
 | Issue | Solution |
 |-------|----------|
 | Measurement tool fails | Check Python/TS runtime is installed; read the error in the audit trail |
-| All iterations revert | The epsilon may be too high; the scope may be too narrow; try a different approach |
+| All iterations revert | A KPI's epsilon may be too high for its unit; a verify check may be failing; the scope may be too narrow |
+| Asked about uncommitted changes | The mutation targets have uncommitted edits. Commit or stash them, or run without commits |
 | Context window exhaustion | Reduce the iteration budget; the engine writes each iteration to disk and reloads only the summary and last decision |
 | KPIs don't improve | Check if the measurement tool is correct; review the adversarial review output |

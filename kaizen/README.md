@@ -24,15 +24,7 @@ A recursive optimization engine inspired by [karpathy/autoresearch](https://gith
 
 ```bash
 # 1. Install the Sequential Thinking MCP (optional)
-# Add to your Claude Code MCP configuration:
-# {
-#   "mcpServers": {
-#     "sequential-thinking": {
-#       "command": "npx",
-#       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-#     }
-#   }
-# }
+claude mcp add sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking
 
 # 2. Run an improvement loop
 /kaizen claude-code-usage
@@ -52,11 +44,12 @@ Kaizen runs **recursive improvement loops** against measurable KPIs. Each loop f
 │         KAIZEN IMPROVEMENT LOOP              │
 │                                              │
 │  BOOTSTRAP                                   │
-│  ├── Load profile                            │
+│  ├── Load profile (or resume an open run)    │
 │  ├── Collect data sources                    │
-│  ├── Scaffold measurement tool               │
-│  ├── Capture baseline KPIs                   │
-│  └── Adversarial review of measurement tool  │
+│  ├── Check targets for uncommitted edits     │
+│  ├── Scaffold or reuse measurement tool      │
+│  ├── Capture baseline KPIs, verify checks    │
+│  └── Adversarial review of a new tool        │
 │                                              │
 │  ITERATION LOOP (repeat until convergence)   │
 │  ├── MEASURE    → collect current KPIs       │
@@ -78,7 +71,13 @@ Kaizen runs **recursive improvement loops** against measurable KPIs. Each loop f
 | Strategy | Logic | Use When |
 |----------|-------|----------|
 | **Greedy** | Keep if single KPI improves by >= epsilon; revert otherwise | Single optimization target |
-| **Multi-objective** | Keep only if no KPI regresses AND at least one improves (Pareto dominance) | Multiple competing metrics |
+| **Multi-objective** | Keep only if no KPI regresses AND at least one improves (Pareto dominance); trade-offs are escalated unless the run is autonomous | Multiple competing metrics |
+
+Each KPI can set its own `epsilon`, in its own unit, with `convergence.epsilon` as the fallback. KPIs marked `observational` are tracked and reported but never decide an iteration. A failed verify check, such as a broken build, always reverts.
+
+### Git Safety
+
+KEEP commits only the files the iteration changed. At BOOTSTRAP the engine runs `git status` on the mutation targets: if any has uncommitted edits, it asks you to commit or stash them, or to run without commits. It also offers a `kaizen/<run-id>` branch for the run. A file edited outside the loop between iterations is never committed by KEEP.
 
 ### Autonomy Levels
 
@@ -113,10 +112,10 @@ When connected, each iteration can be recorded as a Sequential Thinking chain wi
 
 ### Context Management
 
-The engine compacts context between iterations to prevent window exhaustion:
+The engine keeps its context small between iterations to prevent window exhaustion:
 
 1. After each iteration, detailed analysis is written to disk (audit trail)
-2. The next iteration starts with **reconstructed minimal context**: profile config + current summary + previous decision
+2. The next iteration starts with **reconstructed minimal context**: the run's `manifest.json` (the resolved configuration) + current summary + previous decision
 3. Full history is available on disk but not loaded unless needed
 
 This allows the engine to run many iterations without degradation.
@@ -131,16 +130,18 @@ Analyzes and improves how Claude Code tools and skills are used within a project
 
 | KPI | Direction | Description |
 |-----|-----------|-------------|
-| `tool_efficiency` | maximize | Ratio of dedicated tools vs bash fallbacks |
-| `search_precision` | minimize | Average searches needed to find a target |
-| `config_completeness` | maximize | Coverage of recommended configurations |
-| `skill_utilization` | maximize | Ratio of installed skills actually triggered |
+| `tool_efficiency` | maximize | Ratio of dedicated tools vs bash fallbacks (observational) |
+| `search_precision` | minimize | Average searches needed to find a target (observational) |
+| `config_completeness` | maximize | Coverage of recommended configurations (decides keep/revert) |
+| `skill_utilization` | maximize | Ratio of installed skills actually triggered (observational) |
 
-**Data sources:** Session transcripts, `.claude/` config, git history, agent memory
-**Mutates:** `.claude/CLAUDE.md`, `.claude/settings.json`, `.claude/settings.local.json`
+The three observational KPIs are read from this project's past session transcripts (`~/.claude/projects/<project>/*.jsonl`), so a config change cannot move them within a run; compare them across runs.
+
+**Data sources:** This project's session transcripts, `.claude/` config, git history, auto memory
+**Mutates:** `CLAUDE.md` or `.claude/CLAUDE.md`, `.claude/settings.json`, `.claude/settings.local.json`, `.claude/rules/`
 **Autonomy:** supervised
 
-**Example improvement:** "You used `bash grep` 47 times last week but `Grep` tool only 12 times. Adding this convention to CLAUDE.md would improve tool_efficiency from 0.20 to 0.65."
+**Example improvement:** "`.claude/settings.json` has no permission rules and CLAUDE.md has no tool conventions. Adding a `permissions.allow` rule for the test command raises config_completeness from 47 to 59."
 
 ### code-refactoring
 
@@ -155,6 +156,7 @@ Recursively improves code quality metrics using safe, behavior-preserving refact
 **Data sources:** Project root scan (language, framework, quality config), recent git history
 **Mutates:** Source files in user-specified scope (tests are immutable)
 **Autonomy:** hybrid(3)
+**Verify checks:** the build, test and lint commands confirmed at BOOTSTRAP; a failing check reverts the refactoring
 
 ### process-improvement
 
@@ -170,6 +172,8 @@ Guides you through designing and running kaizen loops for business and operation
 **Autonomy:** supervised (always)
 **Methodology:** PDCA, 5S, 5 Whys, Ishikawa, value stream mapping
 
+KPIs, epsilons and the process-document path are settled with you at BOOTSTRAP and stored in the run's manifest. Iterations can span weeks: running the profile again offers to resume the open run.
+
 ---
 
 ## Commands
@@ -184,7 +188,7 @@ Run an improvement loop.
 
 | Argument | Description |
 |----------|-------------|
-| `profile-name` | Bundled profile name or path to custom PROFILE.md |
+| `profile-name` | Profile name (custom in `.kaizen/profiles/` or `~/.kaizen/profiles/`, or bundled) or path to a PROFILE.md |
 | `--scope` | Override mutation targets |
 | `--budget` | Override iteration budget |
 | `--autonomy` | Override autonomy level |
@@ -217,11 +221,11 @@ Use the profile designer skill:
 /kaizen-profile-designer
 ```
 
-It guides you through KPI definition, data sources, mutation scope, and autonomy configuration.
+It guides you through KPI definition, data sources, mutation scope, and autonomy configuration, and saves the profile to `.kaizen/profiles/<name>/PROFILE.md` (or `~/.kaizen/profiles/<name>/` for all projects).
 
 ### Manual Creation
 
-Copy the profile template from `skills/kaizen-engine/references/profile-template.md` and customize.
+Copy the profile template from `skills/kaizen-engine/references/profile-template.md` to `.kaizen/profiles/<name>/PROFILE.md` and customize. Keep custom profiles out of the plugin directory: it is replaced when the plugin updates. `/kaizen <name>` looks in `.kaizen/profiles/`, then `~/.kaizen/profiles/`, then the bundled profiles.
 
 A profile is a Markdown file with YAML frontmatter:
 
@@ -241,6 +245,7 @@ kpis:
     description: "What this measures"
     direction: maximize
     unit: ratio
+    epsilon: 0.02          # optional, in this KPI's unit
     measurement_method: automated
     formula: "numerator / denominator"
 mutation_targets:
@@ -279,7 +284,7 @@ connectors:
 
 1. Start with 1-2 KPIs — add more only if needed
 2. Keep formulas concrete and unambiguous
-3. Set conservative epsilon to filter noise
+3. Set epsilon per KPI, in the KPI's own unit, to filter noise
 4. Use supervised autonomy for first runs
 5. Define immutables carefully — err on the side of protection
 6. Write detailed phase instructions — your domain knowledge lives here
@@ -288,17 +293,18 @@ connectors:
 
 ## Agents
 
-The engine dispatches 4 specialized agents with optimized model routing:
+The engine dispatches 3 specialized agents with optimized model routing:
 
 | Agent | Model | Purpose | Invoked During |
 |-------|-------|---------|----------------|
-| **kaizen-measurer** | haiku | Run measurement tools, collect KPIs | MEASURE, VERIFY |
 | **kaizen-analyzer** | sonnet | Interpret data, find patterns, rank opportunities | ANALYZE |
 | **kaizen-proposer** | sonnet | Generate minimal, targeted change proposals | PROPOSE |
 | **kaizen-reviewer** | opus | Adversarial validation of tools and changes | BOOTSTRAP, Final Review |
 
+MEASURE and VERIFY need no agent: the engine runs the measurement script through Bash with a 60-second timeout and checks its JSON output itself.
+
 Each agent receives a **tailored, minimal context package** — only the information needed for its phase. This isolation ensures:
-- Measurement can't be biased by proposals
+- Analysis can't be biased by proposals
 - Review can't be influenced by having generated the changes
 - Context stays lean across many iterations
 
@@ -312,10 +318,11 @@ Every run creates a structured audit trail:
 .kaizen/
 └── runs/
     └── 2026-03-23-claude-code-usage-001/
-        ├── manifest.json          # Run configuration and overrides
+        ├── manifest.json          # Resolved configuration: KPIs, epsilons, targets, checks, git choices
         ├── baseline.json          # Initial KPI snapshot
-        ├── measure.py             # Auto-generated measurement tool
+        ├── measure.py             # Measurement tool (generated, or reused from the previous run)
         ├── config.json            # Measurement tool configuration
+        ├── tool-review.md         # Review of a newly generated tool
         ├── iterations/
         │   ├── 001/
         │   │   ├── measurement.json   # KPIs before iteration
@@ -337,12 +344,15 @@ Every run creates a structured audit trail:
 | Project-level | `.kaizen/` at project root |
 | User-level | `~/.kaizen/` |
 
+The engine picks the storage root when a run starts: the project's `.kaizen/` when every mutation target is inside the project, otherwise it asks. It searches both roots for an unfinished run to resume.
+
 ### Cross-Run Continuity
 
-When you run the same profile again, the engine reads the previous run's `summary.json` and uses its final KPIs (the `current` field) as the new baseline. This enables:
+When you run the same profile again, the engine measures a fresh baseline, because the target may have changed since, and stores the previous run's final KPIs (its `current` field) as `previous_final` in the new manifest. While the profile `version` is unchanged, it reuses the previous run's measurement script, so the numbers of both runs come from the same tool. This enables:
 - **Trend tracking** across runs
 - **Diminishing returns detection**
-- **No duplicate baseline capture** on subsequent runs
+
+A run that stopped before converging stays open: running the profile again offers to resume it.
 
 ---
 
@@ -352,20 +362,15 @@ When you run the same profile again, the engine reads the previous run's `summar
 
 The kaizen engine can use the Sequential Thinking MCP server to record each iteration; it is not required.
 
-**Option 1: Claude Code MCP settings**
+MCP servers are not configured in `settings.json`.
 
-Add to `.claude/settings.json` or `~/.claude/settings.json`:
+**Option 1: `claude mcp add`**
 
-```json
-{
-  "mcpServers": {
-    "sequential-thinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    }
-  }
-}
+```bash
+claude mcp add sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking
 ```
+
+This adds the server for you in the current project. Add `--scope user` for all your projects, or `--scope project` to write it to `.mcp.json`.
 
 **Option 2: Project-level .mcp.json**
 
@@ -388,10 +393,6 @@ For profiles with `tool_generation: true`, the engine scaffolds measurement scri
 - **Python**: requires `python3` on PATH
 - **TypeScript**: requires `npx tsx` (install via `npm install -g tsx`)
 
-### Optional: Memory Connector
-
-For enhanced cross-session continuity, configure a memory-capable MCP server or use Claude Code's built-in file-based memory.
-
 ---
 
 ## Troubleshooting
@@ -400,11 +401,12 @@ For enhanced cross-session continuity, configure a memory-capable MCP server or 
 |-------|-------|----------|
 | Measurement tool fails | Python/TS runtime missing | Install the required runtime |
 | Measurement tool produces wrong values | Tool implementation bug | Review the tool source in `.kaizen/runs/{id}/measure.py`; check adversarial review findings |
-| All iterations revert | Epsilon too high; scope too narrow; wrong approach | Lower epsilon; expand mutation scope; try different profile |
+| All iterations revert | A KPI's epsilon too high for its unit; a verify check failing; scope too narrow | Set `epsilon` per KPI; check `failed_check` in decision.json; expand mutation scope |
 | KPIs don't improve after many runs | Diminishing returns | Run `/kaizen-history` to check trends; consider shifting focus |
-| Context window exhaustion | Too many iterations without compaction | Reduce iteration budget; the engine should compact automatically |
+| Context window exhaustion | Too many iterations in one session | Reduce the iteration budget. The engine writes each iteration to disk and reloads only the manifest, summary and last decision; it does not compact the conversation, so run `/compact` or resume the run in a new session |
 | Adversarial review flags issues | Measurement artifacts detected | Review the flagged issues in `.kaizen/runs/{id}/adversarial-review.md`; fix measurement tool |
-| Git commit errors during DECIDE | Git state conflicts | Ensure working tree is clean before running kaizen |
+| Asked about uncommitted changes at start | Mutation targets have uncommitted edits | Commit or stash them, or choose to run without commits |
+| A kept iteration was not committed | The file had edits from outside the loop before APPLY, or the commit failed | See `commit_skipped` in decision.json; review and commit the change yourself |
 
 ---
 
@@ -413,7 +415,7 @@ For enhanced cross-session continuity, configure a memory-capable MCP server or 
 ### v1.0 (Current)
 - Generic improvement engine with 8-phase loop
 - 3 bundled profiles (claude-code-usage, code-refactoring, process-improvement)
-- 4 specialized agents with model routing
+- 3 specialized agents with model routing
 - Profile validation in CI
 - Audit trail with cross-run continuity
 - Adversarial review gates
@@ -433,7 +435,7 @@ For enhanced cross-session continuity, configure a memory-capable MCP server or 
 |------|-------|------------|
 | Skills | 3 | kaizen-engine, kaizen-report, kaizen-profile-designer |
 | Profiles | 3 | claude-code-usage, code-refactoring, process-improvement |
-| Agents | 4 | kaizen-measurer, kaizen-analyzer, kaizen-proposer, kaizen-reviewer |
+| Agents | 3 | kaizen-analyzer, kaizen-proposer, kaizen-reviewer |
 | Commands | 3 | /kaizen, /kaizen-help, /kaizen-history |
 
 ---

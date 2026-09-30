@@ -13,7 +13,7 @@ You are an adversarial reviewer for the kaizen improvement loop. Your role is to
 
 ### Mode 1: Measurement Tool Review (BOOTSTRAP)
 
-Dispatched after the engine scaffolds a measurement tool. You receive:
+Dispatched after the engine generates a new measurement tool (a tool reused from an earlier run was reviewed in that run). You receive:
 - Profile KPI definitions (names, descriptions, directions, formulas)
 - Measurement tool source code
 - Baseline measurement output
@@ -77,8 +77,9 @@ Dispatched after the engine scaffolds a measurement tool. You receive:
 ### Mode 2: Final Run Review (Post-Loop)
 
 Dispatched after the improvement loop completes. You receive:
-- Profile mission (name, description, KPIs)
-- Measurement tool source code
+- Profile mission (name, description, KPIs with their epsilons and observational flags)
+- Measurement tool path and source code
+- The run directory and the list of kept iterations, each with its `diff.patch` path
 - Run summary (baseline → final KPIs, iterations, kept/reverted counts)
 - Sample iteration decisions (first, best, last)
 
@@ -100,7 +101,7 @@ Dispatched after the improvement loop completes. You receive:
    - Look for Goodhart's Law patterns ("when a measure becomes a target, it ceases to be a good measure")
 
 4. **Immutability compliance** — Were boundaries respected?
-   - Check diff.patch files from kept iterations
+   - Read the `diff.patch` of every kept iteration listed in your context (other iteration records are in the run directory if you need them)
    - Verify no immutable patterns were touched
 
 5. **Convergence appropriateness** — Was the stopping reason valid?

@@ -15,11 +15,14 @@ For each KPI, verify:
   - `automated`: can be calculated from files/data without human input
   - `user-reported`: requires human observation
   - `hybrid`: some parts automated, some manual
-- [ ] **Epsilon** is calibrated to the KPI's scale:
+- [ ] **Epsilon** is set on the KPI (`kpis[].epsilon`), in the KPI's own unit:
   - For ratios (0-1): epsilon 0.01-0.05
   - For percentages (0-100): epsilon 1-5
   - For counts: epsilon 1
   - For time (seconds): epsilon depends on scale
+
+  `convergence.epsilon` is only the fallback for KPIs without their own value, so it cannot serve KPIs in different units.
+- [ ] **Observational** is set to `true` if the loop's changes cannot move the KPI within a run (for example, a KPI read from past session transcripts)
 
 ## Data Source Checklist
 
@@ -42,11 +45,14 @@ For each source:
 - [ ] **Autonomy** is appropriate for the domain and user trust level
 - [ ] **Iteration budget** is set (5-10 for first run)
 - [ ] **Patience** is set (2-3 typically)
+- [ ] **Location**: saved under `.kaizen/profiles/{name}/` or `~/.kaizen/profiles/{name}/`, never in the plugin directory, and the name does not clash with another profile
 - [ ] **Measurement tool generation** is decided and language chosen (if automated)
 
 ## Profile Body Checklist
 
 - [ ] Each phase section (MEASURE through VERIFY) has domain-specific instructions
+- [ ] VERIFY names the checks a command can run (build, tests, lint), since a failed check forces a revert
+- [ ] Any `references/` file the body names exists in the profile's own `references/` folder
 - [ ] PROPOSE section includes constraints (what NOT to change)
 - [ ] MEASURE section describes how to collect each KPI value
 - [ ] ANALYZE section describes what good/bad values look like for each KPI
@@ -58,4 +64,5 @@ For each source:
 - **Missing immutables** — always protect tests, git, and dependencies
 - **Autonomous too early** — start supervised until you trust the loop
 - **Epsilon too low** — catches noise instead of improvements
+- **One epsilon for mixed units** — 0.03 on a 0–100 percentage KPI is noise; set `epsilon` per KPI
 - **Budget too high** — 10 is usually enough; diminishing returns after that

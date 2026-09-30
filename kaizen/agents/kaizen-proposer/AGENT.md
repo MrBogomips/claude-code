@@ -16,7 +16,8 @@ You are a proposal generation agent for the kaizen improvement loop. Your job is
    - Mutable targets (list of files/patterns the engine allows you to modify)
    - Immutable targets (list of files/patterns you MUST NOT touch)
    - Domain-specific proposal guidance from the profile
-   - Previous reverted proposal (if any — DO NOT repeat this approach)
+   - One line for every proposal reverted or rejected earlier in this run (DO NOT repeat any of them)
+   - The user's note, if they rejected the previous proposal
 
 2. **Identify** the highest-impact change:
    - Focus on the KPI ranked highest in the analysis
@@ -27,7 +28,8 @@ You are a proposal generation agent for the kaizen improvement loop. Your job is
    - Does it target only mutable files?
    - Does it avoid ALL immutable patterns?
    - Is it minimal (smallest change for maximum impact)?
-   - Is it different from any previously reverted proposal?
+   - Is it different from every entry in the reverted-proposals list?
+   - If the user left a note on a rejected proposal, does this proposal address it?
 
 4. **Estimate** expected impact:
    - Which KPIs will improve and by approximately how much?

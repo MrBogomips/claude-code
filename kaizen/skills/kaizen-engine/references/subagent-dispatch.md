@@ -2,41 +2,19 @@
 
 ## Overview
 
-The kaizen engine dispatches 4 specialized agents during the improvement loop. Each agent receives a **minimal, tailored context package** — only the information needed for its phase. This prevents context bloat and ensures agents reason about their specific task.
+The kaizen engine dispatches 3 specialized agents during the improvement loop. Each agent receives a **minimal, tailored context package** — only the information needed for its phase. This prevents context bloat and ensures agents reason about their specific task.
+
+MEASURE and VERIFY dispatch no agent. Running the measure script and checking its JSON is fully determined by the script, so the engine does it through `Bash` (see `tool-scaffolding.md` → Running the Tool), which saves two model calls per iteration.
 
 ## Agent Registry
 
 | Agent | Model | Invocation Points | Purpose |
 |-------|-------|--------------------|---------|
-| kaizen-measurer | haiku | MEASURE, VERIFY | Run measurement tools, collect KPIs |
 | kaizen-analyzer | sonnet | ANALYZE | Interpret data, find patterns |
 | kaizen-proposer | sonnet | PROPOSE | Generate change proposals |
 | kaizen-reviewer | opus | BOOTSTRAP, Final Review | Adversarial validation |
 
 ## Context Packaging
-
-### kaizen-measurer (haiku)
-
-**Dispatch at:** Phase 1 (MEASURE) and Phase 6 (VERIFY)
-
-**Context package:**
-```
-You are the kaizen-measurer agent. Run the measurement tool and return KPI values.
-
-Measurement script: {path_to_measure.py_or_ts}
-Run directory: {path_to_run_dir}
-Expected KPIs: {list of kpi names from profile}
-Output file: {path_to_measurement.json_or_verification.json}
-
-Instructions:
-1. Execute the measurement script: `python3 {script_path}` or `npx tsx {script_path}`
-2. Capture stdout as the measurement result
-3. If exit code is non-zero, capture stderr for error diagnosis
-4. Write the result to the output file path
-5. Return the KPI values and any errors encountered
-```
-
-**Do NOT include:** Analysis context, previous proposals, profile body, hypothesis text.
 
 ### kaizen-analyzer (sonnet)
 
@@ -47,7 +25,7 @@ Instructions:
 You are the kaizen-analyzer agent. Compare current measurements against the reference point and identify improvement opportunities.
 
 Profile KPIs:
-{for each kpi: name, description, direction, unit}
+{for each kpi in manifest.json: name, description, direction, unit, epsilon, observational}
 
 Current measurement:
 {contents of measurement.json}
@@ -59,8 +37,8 @@ Profile analysis guidance:
 {contents of the ## ANALYZE Phase section from PROFILE.md body}
 
 Instructions:
-1. Calculate per-KPI deltas (absolute and percentage)
-2. Assess trend direction for each KPI
+1. Calculate per-KPI deltas (absolute and percentage); a delta smaller than the KPI's epsilon counts as unchanged
+2. Assess trend direction for each KPI; mark observational KPIs, which are tracked but never decide an iteration
 3. Rank KPIs by room for improvement
 4. Flag any anomalies or unexpected patterns
 5. Write your analysis as structured markdown
@@ -80,16 +58,19 @@ Analysis and hypotheses:
 {contents of iterations/{NNN}/analysis.md}
 
 Mutation targets (you MAY modify these):
-{list of defaults from profile, with any user overrides}
+{mutation_targets.defaults from manifest.json, which includes any user overrides}
 
 Immutable targets (you MUST NOT modify these):
-{list of immutable patterns from profile}
+{mutation_targets.immutable from manifest.json}
 
 Profile proposal guidance:
 {contents of the ## PROPOSE Phase section from PROFILE.md body}
 
-Previous reverted proposal (DO NOT repeat this approach):
-{contents of previous iteration's proposal.md, if it was reverted; "None" if first iteration or previous was kept}
+Proposals reverted or rejected earlier in this run (DO NOT repeat any of them):
+{summary.json reverted_proposals, one line each; "None" if the list is empty}
+
+User note on the previous proposal:
+{decision.json user_note of the previous iteration, if the user rejected it; otherwise "None"}
 
 Instructions:
 1. Based on the analysis, identify the highest-impact change
@@ -104,14 +85,14 @@ Instructions:
 
 ### kaizen-reviewer (opus)
 
-**Dispatch at:** BOOTSTRAP (Step 1e) and Final Review (Step 3)
+**Dispatch at:** BOOTSTRAP (Step 1f, only for a newly generated script) and Final Review (Step 3)
 
 #### BOOTSTRAP dispatch:
 ```
 You are the kaizen-reviewer agent performing adversarial review of a measurement tool.
 
 Profile KPI definitions:
-{for each kpi: name, description, direction, formula}
+{for each KPI as resolved at BOOTSTRAP: name, description, direction, formula}
 
 Measurement tool source code:
 {full contents of measure.py or measure.ts}
@@ -136,10 +117,13 @@ You are the kaizen-reviewer agent performing final adversarial review of a compl
 Profile mission:
   Name: {name}
   Description: {description}
-  KPIs: {list with directions}
+  KPIs: {list from manifest.json with directions, epsilons and observational flags}
 
-Measurement tool source:
-{full contents of measure.py or measure.ts}
+Measurement tool: {path of measure.py or measure.ts}
+{full contents of the script}
+
+Run directory: {path to .kaizen/runs/{run-id}/}
+Kept iterations: {for each kept iteration: number and path of its diff.patch; "None" if nothing was kept}
 
 Run summary:
 {contents of summary.json}
@@ -153,7 +137,7 @@ Review criteria:
 1. Are the reported improvements genuine or measurement artifacts?
 2. Do the applied changes align with the profile's stated mission?
 3. Could any improvement be attributed to gaming the measurement tool?
-4. Were immutable boundaries respected throughout?
+4. Were immutable boundaries respected throughout? Read the diff.patch of every kept iteration.
 5. Is the convergence reason appropriate?
 
 Provide a verdict: PASSED (improvements are genuine) or FLAGGED (concerns identified, with details).
@@ -165,7 +149,7 @@ Use the `Agent` tool with:
 - `subagent_type`: the entry in the available agent list whose name ends with the agent name (plugin agents are listed with a `kaizen:` namespace prefix)
 - `model`: as specified in the registry
 - `prompt`: the context package above, with placeholders filled
-- `description`: brief label (e.g., "Measure KPIs for iteration 3")
+- `description`: brief label (e.g., "Analyze KPIs for iteration 3")
 
 ## Failure Handling
 

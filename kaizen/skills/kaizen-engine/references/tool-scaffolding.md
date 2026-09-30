@@ -42,18 +42,18 @@ Every measurement tool MUST conform to this interface regardless of language:
 ```
 
 ### Config File (config.json)
-Written by the engine during BOOTSTRAP:
+Written by the engine during BOOTSTRAP, with placeholders such as `{project}` already resolved:
 ```json
 {
   "profile": "claude-code-usage",
   "run_id": "2026-03-23-claude-code-usage-001",
   "sources": [
-    {"type": "session_transcripts", "path": "~/.claude/projects/*/sessions/"},
+    {"type": "session_transcripts", "path": "~/.claude/projects/-home-user-work-my-app/*.jsonl"},
     {"type": "config", "path": ".claude/"}
   ],
   "kpis": [
-    {"name": "tool_efficiency", "formula": "dedicated_tool_calls / total_tool_calls", "direction": "maximize"},
-    {"name": "search_precision", "formula": "total_search_operations / unique_search_targets_found", "direction": "minimize"}
+    {"name": "tool_efficiency", "formula": "dedicated_tool_calls / (dedicated_tool_calls + bash_fallback_calls)", "direction": "maximize"},
+    {"name": "config_completeness", "formula": "configured_items / recommended_items * 100", "direction": "maximize"}
   ]
 }
 ```
@@ -193,6 +193,28 @@ try {
   process.exit(1);
 }
 ```
+
+## Running the Tool
+
+The engine runs the script itself in MEASURE, VERIFY and when capturing the baseline. No agent is dispatched for it.
+
+1. Run from the project root with the `Bash` tool and its timeout set to 60000 ms:
+   - Python: `python3 .kaizen/runs/{run-id}/measure.py`
+   - TypeScript: `npx tsx .kaizen/runs/{run-id}/measure.ts`
+
+   Use the tool's timeout rather than a `timeout` shell command, which macOS does not ship.
+2. Check the result:
+
+   | Check | On failure |
+   |-------|------------|
+   | The command finished within 60 s | Abort the iteration and report the hang to the user |
+   | Exit code is 0 | Read the stderr JSON; if `recoverable` and the cause is a typo or path, fix the script and retry once; otherwise abort the iteration |
+   | stdout parses as JSON with a `kpis` object | Treat as a crash: fix and retry once, then abort |
+   | Every automated KPI in the manifest is present and numeric | Log a warning and continue with the KPIs present. In VERIFY, a missing decision KPI fails verification |
+
+3. Write the checked values to `measurement.json`, `verification.json` or `baseline.json` (schema in `run-state.md`), with the run time in `execution_time_ms` and any warnings.
+
+The engine never edits the script during a run except to fix a crash as above. A fix changes what the KPIs mean, so note it in the iteration's decision record.
 
 ## Scaffolding Guidelines
 

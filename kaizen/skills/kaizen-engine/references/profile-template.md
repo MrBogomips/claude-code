@@ -1,6 +1,8 @@
 # Profile Template
 
-Use this template to create a new kaizen improvement profile. Copy the content below into a new file at `profiles/{your-profile-name}/PROFILE.md` and fill in the sections.
+Use this template to create a new kaizen improvement profile. Copy the content below into `.kaizen/profiles/{your-profile-name}/PROFILE.md` at the project root, or into `~/.kaizen/profiles/{your-profile-name}/PROFILE.md` for a profile you use across projects, and fill in the sections. The engine finds a profile by name in both folders. Do not save profiles inside the plugin directory: it is the plugin cache, which is replaced on update.
+
+The folder that holds PROFILE.md is the **profile directory**. A `references/...` path in the body resolves against it, so reference files go in `.kaizen/profiles/{your-profile-name}/references/`.
 
 ---
 
@@ -26,7 +28,7 @@ iteration_budget: 10
 
 # Convergence: when to stop if no improvement is happening
 convergence:
-  epsilon: 0.02    # minimum KPI delta to count as "improvement"
+  epsilon: 0.02    # fallback minimum delta for KPIs that set no epsilon of their own
   patience: 3      # consecutive no-improvement iterations before stopping
 
 # Initial state: how to capture the baseline before the first iteration
@@ -49,6 +51,8 @@ kpis:
     description: "Human-readable description of what this measures"
     direction: maximize        # maximize | minimize
     unit: ratio                # ratio | percentage | count | seconds | custom
+    epsilon: 0.02              # optional: minimum delta that counts, in this KPI's unit
+    observational: false       # optional: true = tracked and reported, never decides keep/revert
     measurement_method: automated  # automated | user-reported | hybrid
     formula: "numerator / denominator — human-readable, not eval'd"
 
@@ -74,12 +78,18 @@ connectors:
 
 These sections provide domain-specific guidance for each phase of the improvement loop. The engine reads the relevant section during each phase.
 
+## BOOTSTRAP Special Handling
+
+Optional. Include it only when the profile needs something settled with the user before the first measurement — for example, KPIs or the mutation target path that depend on the user's situation. The engine reads this section at BOOTSTRAP and stores what it settles in the run's `manifest.json`.
+
 ## MEASURE Phase
 
 Describe how to collect data for your KPIs:
 - What files or sources to examine
 - What patterns to look for
 - How to handle edge cases (missing data, ambiguous values)
+
+The engine reads this section, and every `references/` file it names, before generating the measurement script.
 
 ## ANALYZE Phase
 
@@ -113,7 +123,7 @@ Describe any special considerations for applying changes:
 ## VERIFY Phase
 
 Describe any additional verification beyond KPI re-measurement:
-- Smoke tests to run
+- Checks a command can run (build, tests, lint). At BOOTSTRAP the engine turns them into commands, confirms them with the user and keeps those that pass on the baseline. A failing check forces REVERT, whatever the KPIs say
 - Manual checks the user should perform (for supervised mode)
 - Signs that a change may have unintended side effects
 ```
@@ -124,7 +134,9 @@ Describe any additional verification beyond KPI re-measurement:
 
 1. **Start with 1-2 KPIs** — add more only if needed. Multi-objective optimization is harder.
 2. **Keep formulas concrete** — even though they're human-readable, they should be unambiguous enough to implement as code.
-3. **Set conservative epsilon** — too low catches noise, too high misses real improvements.
+3. **Set epsilon per KPI, in its own unit** — 0.02 suits a ratio but is noise on a 0–100 percentage. Too low catches noise, too high misses real improvements.
 4. **Use supervised autonomy initially** — switch to autonomous once you trust the loop.
 5. **Define immutables carefully** — err on the side of protecting more files.
 6. **Write detailed phase instructions** — the engine is generic; your domain knowledge lives in these sections.
+7. **Mark KPIs the loop cannot move as observational** — a KPI read from past activity (for example, session transcripts) does not change within a run, so it should inform the analysis without deciding keep or revert.
+8. **Bump `version` when a KPI formula changes** — the engine reuses the previous run's measurement script while the version is unchanged.
