@@ -100,4 +100,4 @@
 - [x] 8.5 Bump plantuml 1.1.0, kaizen 1.2.0, project-management 1.1.0, human-resources 0.3.0 in plugin.json and marketplace.json; verify with `bash tests/validate-versions.sh`
 - [x] 8.6 Bump tech-writing 0.3.0, context-hygiene 0.3.0 and personal-voice 0.2.0; verify with `bash tests/validate-versions.sh`
 - [x] 8.7 Run `bash tests/ci/run-structural-tests.sh` and `claude plugin validate ./<plugin> --strict` for every plugin; verify both pass
-- [ ] 8.8 Archive this change with `/opsx:archive` as the last commit before merge
+- [x] 8.8 Archive this change with `/opsx:archive` as the last commit before merge; verify with `openspec validate --all --strict`
