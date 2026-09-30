@@ -1,4 +1,5 @@
-' Fonts — auto-generated from CLAUDE.md "PlantUML Policy".
-
+' Fonts from the Policy. The target files derive their font size from
+' $base_font_size, so the Policy's Base font size reaches every target.
+!$base_font_size = 14
 skinparam defaultFontName "Inter, Arial, sans-serif"
-skinparam defaultFontSize 14
+skinparam defaultFontSize $base_font_size

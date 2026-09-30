@@ -1,2 +1,6 @@
+' generated-sha256: e4368be9067f0b7e86fa249996d8937b1470e98c44a60f2cef36d62236041ba4
+' Generated from the PlantUML Policy in CLAUDE.md. Edit the Policy, then run plantuml-migrate.
+' Fonts from the Policy. The target files derive their font size from $base_font_size.
+!$base_font_size = 14
 skinparam defaultFontName "Inter, Arial, sans-serif"
-skinparam defaultFontSize 14
+skinparam defaultFontSize $base_font_size

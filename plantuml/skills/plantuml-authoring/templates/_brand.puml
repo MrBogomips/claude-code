@@ -1,6 +1,5 @@
-' Brand colors — auto-generated from CLAUDE.md "PlantUML Policy".
-' Do not edit by hand. Re-run plantuml-init to regenerate.
-
+' Brand colors from the Policy. These sample values are what the
+' maintainer test harness renders with; a project gets its own values.
 !$primary = "#0B5FFF"
 !$accent  = "#F59E0B"
 !$neutral = "#475569"

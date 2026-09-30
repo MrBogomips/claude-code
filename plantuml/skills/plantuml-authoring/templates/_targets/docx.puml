@@ -1,5 +1,4 @@
-' Target: docx (PNG embedded in Word).
+' Target: docx (PNG embedded in Word). Font size: the Policy's base size.
 skinparam shadowing false
-skinparam defaultFontSize 14
 skinparam dpi 150
 ' No hyperlink rendering in flat PNG; keep labels self-explanatory.

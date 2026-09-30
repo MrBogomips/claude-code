@@ -4,14 +4,16 @@ Authoring, rendering, and maintenance of PlantUML diagrams in Claude Code projec
 
 ## Status
 
-v1.0.0 — all 8 skills, 4 agents, and 1 command are present and validated by in-tree smoke tests.
+8 skills, 2 agents, 1 command and 2 bundled scripts.
 
-The smoke tests (`plantuml/tests/smoke/`) are static structural assertions: they verify that skills, agents, commands, and the plugin manifest are correctly wired. Behavioral correctness (LLM-driven authoring and maintenance flows) is validated in real use after install.
+The smoke tests (`plantuml/tests/smoke/`) cover two layers. Static checks verify that skills, agents, commands and frontmatter are wired correctly. Behavioural checks run the bundled scripts: the Policy generator and hand-edit detection without plantuml, and, when `plantuml` is on PATH, a docx-only project with nested diagrams, every authoring snippet for every target, and the validation matrix. The LLM-driven flows themselves are validated in real use.
 
 ## Requirements
 
 - `plantuml` CLI — `brew install plantuml` (macOS) or `apt install plantuml` (Debian/Ubuntu)
 - `java` — pulled transitively by the plantuml package
+- Graphviz — only for `Layout engine: dot`
+- `bash`, `awk` and `shasum` or `sha256sum` — used by the bundled scripts; present on macOS and common Linux distributions
 - `jq` — required by the marketplace structural tests
 
 ## Install
@@ -32,7 +34,7 @@ Add this marketplace to Claude Code and install the `plantuml` plugin via the pl
 > Create a sequence diagram for our login flow and save it as diagrams/login.puml
 
   [plantuml-authoring activates]
-  Writing diagrams/login.puml with skinparam includes from _base.puml...
+  Writing diagrams/login.puml, including ../.plantuml/_base.puml...
   Done.
 
 # 3. Maintain it
@@ -41,9 +43,9 @@ Add this marketplace to Claude Code and install the `plantuml` plugin via the pl
   [plantuml-lint activates, dispatches puml-linter agents in parallel]
   diagrams/login.puml: OK
 
-> plantuml-validate mode=bless
+> plantuml-validate mode=bless level=svg-hash
 
-  [plantuml-validate activates, renders all targets, writes baselines]
+  [plantuml-validate activates, runs the visual check, then writes baselines]
   diagrams/login.puml [docx]: blessed
   diagrams/login.puml [web]: blessed
 ```
@@ -56,32 +58,37 @@ Add this marketplace to Claude Code and install the `plantuml` plugin via the pl
 |-----------|------|---------|
 | `plantuml-authoring` | Skill | Create or restructure `.puml` files for any diagram type (UML, C4, ER, ArchiMate, MindMap, WBS, Gantt, Salt, JSON/YAML, nwdiag family) |
 | `plantuml-convert` | Skill | Convert `.puml` files to PNG, SVG, or PDF; used by document skills as a render step |
-| `puml-renderer` | Agent | Build-time worker: render or validate a single (file, target) pair and compare against a baseline |
 
 ### Bootstrap
 
 | Component | Kind | Purpose |
 |-----------|------|---------|
-| `plantuml-bootstrap` | Skill | Create the `## PlantUML Policy` in `CLAUDE.md` and materialize `.plantuml/`; also runs in `mode=reverse` to recover policy from an existing directory |
+| `plantuml-bootstrap` | Skill | Create the `## PlantUML Policy` in `CLAUDE.md` and generate `.plantuml/` with the bundled generator; also runs in `mode=reverse` to recover policy from an existing directory |
 | `/plantuml-init` | Command | User-facing shortcut that delegates to `plantuml-bootstrap` |
 
 ### Maintenance
 
 | Component | Kind | Purpose |
 |-----------|------|---------|
-| `plantuml-lint` | Skill | Check `.puml` files for Policy drift, broken includes, and invariant violations (hardcoded colors, missing `_base.puml`, filename/title mismatch) |
-| `plantuml-validate` | Skill | Render all declared targets and verify output against committed baselines; accepts `mode=check|bless` and `level=checkonly|svg-hash|png-perceptual` |
+| `plantuml-lint` | Skill | Check `.puml` files for Policy drift and invariant violations (missing `_base.puml`, `!include` targets that do not exist, hardcoded colors, filename/`@start` id mismatch) |
+| `plantuml-validate` | Skill | Check every diagram for every declared target: compile it, or compare its SVG hash with a committed baseline; accepts `mode=check|bless` and `level=checkonly|svg-hash|png-perceptual` |
 | `plantuml-review` | Skill | Qualitative review of a diagram for clarity, type-fit, layout, and readability |
 | `plantuml-advisor` | Skill | Advise on diagram-type fit: confirm the current type or suggest a better one with a migration sketch |
-| `plantuml-migrate` | Skill | Apply a Policy change (theme switch, target add/remove, brand colors) across all `.puml` files; backs up `.plantuml/` before any destructive write |
+| `plantuml-migrate` | Skill | Regenerate `.plantuml/` after a Policy change (theme switch, target add/remove, brand colors, fonts, layout), asking before it replaces a hand-edited file and backing up `.plantuml/` first; then checks every diagram |
 
 ### Build-time Workers
 
 | Component | Kind | Purpose |
 |-----------|------|---------|
 | `puml-linter` | Agent | Lint a batch of `.puml` files against Policy invariants; dispatched in parallel by `plantuml-lint` |
-| `puml-migrator` | Agent | Apply a declarative edit plan to a single `.puml` file; dispatched by `plantuml-migrate` |
-| `puml-visual-checker` | Agent | Smoke-check a rendered image for color, font, and layout correctness; build-time only, not user-facing in v1.0.0 |
+| `puml-visual-checker` | Agent | Smoke-check a rendered image for color, font, and layout correctness; dispatched by `plantuml-validate` before it writes baselines |
+
+### Bundled scripts
+
+| Script | Used by | Purpose |
+|--------|---------|---------|
+| `skills/plantuml-bootstrap/scripts/generate-config.sh` | bootstrap, migrate | Policy section of `CLAUDE.md` in, `.plantuml/` out. Writes a `' generated-sha256:` header on every file; `verify` reports hand edits, `policy` prints the parsed Policy |
+| `skills/plantuml-validate/scripts/validate-matrix.sh` | validate, migrate | Runs every (diagram, target) cell with an explicit `PLANTUML_TARGET` and prints one JSON status per cell |
 
 ## Maintenance Flow
 
@@ -102,27 +109,35 @@ From the marketplace root:
 bash tests/ci/run-structural-tests.sh
 ```
 
-Then run the six plugin smoke tests:
+Then run the plugin smoke tests:
 
 ```bash
-for t in bootstrap lint validate review advisor migrate; do
-  bash plantuml/tests/smoke/test-$t.sh
-done
+for t in plantuml/tests/smoke/*.sh; do bash "$t" || exit 1; done
 ```
 
-All must pass before considering the install complete.
+All must pass. The tests that need `plantuml` print a `SKIP` line and pass when it is not on PATH.
 
-## Known Limitations (v1.0.0)
+## Upgrading an existing project
+
+Projects set up before the bundled generator existed:
+
+- Run `plantuml-migrate` once. Their `.plantuml/` files have no hash header, so it shows the diff and asks once before regenerating them (with a backup).
+- Include paths are relative to each diagram's own directory: a diagram in `diagrams/` includes `../.plantuml/_base.puml`.
+- `left to right direction` is no longer written into the shared partials, because sequence, activity, timing, gantt, wbs, interaction-overview and nwdiag diagrams reject it (with the pptx target, all of them failed). Diagrams of the other types that should follow the Policy's Default direction, or turn left-to-right on pptx, add `$apply_direction()` after their includes.
+- The Policy's Base font size, Layout engine and Font family now reach the rendered output; renders may change size or layout accordingly.
+
+## Known Limitations
 
 - `plantuml-validate level=png-perceptual` is not implemented and returns `unsupported`. Use `level=checkonly` (default) or `level=svg-hash` for CI.
 - `plantuml-migrate` has no concurrent-edit locking. Do not run while another tool is writing `.puml` files.
-- `puml-visual-checker` is a build-time agent only; it is not exposed as a user-facing skill in v1.0.0.
+- `puml-visual-checker` is a build-time agent only; it is not exposed as a user-facing skill.
 - Cross-machine `level=svg-hash` comparisons require pinned fonts. On heterogeneous CI, prefer `level=checkonly`.
-- Agents (`agents/<name>/AGENT.md`) are auto-discovered by Claude Code. `plantuml-lint`, `plantuml-validate` and `plantuml-migrate` dispatch them and define no inline fallback, so verify agent availability at first use.
+- Agents (`agents/<name>/AGENT.md`) are auto-discovered by Claude Code. `plantuml-lint` and `plantuml-validate` dispatch them and define no inline fallback, so verify agent availability at first use.
+- `validate-matrix.sh` starts one JVM per (diagram, target) cell, about a second each; large projects need a longer Bash timeout or a file list.
 
 ## Dev
 
-The plugin is the source of truth for all PlantUML evolution. Edits go directly under `plantuml/`. Smoke tests live at `plantuml/tests/smoke/`. The minimal fixture project used by the smoke tests is at `plantuml/tests/fixtures/minimal-project/`.
+The plugin is the source of truth for all PlantUML evolution. Edits go directly under `plantuml/`. Smoke tests live at `plantuml/tests/smoke/`; the fixture projects they use are in `plantuml/tests/fixtures/`. The committed `minimal-project/.plantuml/` must equal the generator's output (a test checks it); after changing a template or the generator, regenerate it with `rm -rf .plantuml && bash ../../../skills/plantuml-bootstrap/scripts/generate-config.sh generate` from that directory.
 
 ### Test harness — reviewer dispatch
 
@@ -143,8 +158,9 @@ spawn subagents from a shell script.
 
 1. Run the orchestrator:
    `bash scripts/run-test-suite.sh`
-   This prints the run directory (e.g. `~/temp/plantuml-tests/2026-
-   04-24-run-01`).
+   This prints the run directory (e.g. `$TMPDIR/plantuml-tests/2026-
+   04-24-run-01`; set `PLANTUML_TEST_ROOT` to put runs elsewhere). Each
+   variant gets a copy of `templates/` as its `.plantuml/`.
 2. For each type directory under `<run>/`, spawn one subagent via
    the `Agent` tool (general-purpose, with `Read` on .puml / .svg /
    .png). **Use the multimodal capability to view PNG.**

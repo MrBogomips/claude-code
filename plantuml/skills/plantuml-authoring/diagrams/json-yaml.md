@@ -38,8 +38,8 @@ preprocessor directives like `!include`. Place the target/include chain
 
 ```plantuml
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 @startjson JSON_OrderResponse
 { ... }
 @endjson
@@ -68,8 +68,8 @@ template already does this.
 
 ```plantuml
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 @startjson JSON_OrderResponse
 {
   "id": "o_771",

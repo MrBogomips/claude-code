@@ -37,8 +37,8 @@ Show the ordered exchange of messages between participants
 ```plantuml
 @startuml Sequence_Checkout
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 actor Customer
 participant "Web App"    as Web

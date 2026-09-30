@@ -1,13 +1,14 @@
 ---
 name: plantuml-advisor
-description: Advise on diagram-type fit for a `.puml` — confirm the current type is right, or suggest a better one with rationale and a migration sketch. Use when an author is unsure whether class, component, sequence, or another type fits the intent best.
-model: sonnet
+description: Advise on diagram-type fit for a `.puml` — confirm the current type is right, or suggest a better one with rationale and a migration sketch. Use when an author is unsure whether class, component, sequence, or another type fits the intent best. Not for a full review of clarity, layout and labels (plantuml-review).
 allowed-tools: Read
+disallowed-tools: Write, Edit
 ---
 
 # PlantUML Advisor
 
-Type-fit advice for a single `.puml`. Interactive, no agent.
+Type-fit advice for a single `.puml`. Interactive, no agent, and
+read-only: the migration sketch is shown, never written.
 
 ## Flow
 

@@ -31,8 +31,8 @@ axis, including absolute/relative time constraints.
 ```plantuml
 @startuml Timing_BatteryCharging
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 robust "Battery" as B
 concise "Charger" as C

@@ -1,5 +1,8 @@
-' Target: pptx (PNG on 16:9 slides).
+' Target: pptx (PNG on 16:9 slides). Slides are read from a distance,
+' so the font is 4 points above the Policy's base size and diagrams that
+' call $apply_direction() run left to right.
 skinparam shadowing false
-skinparam defaultFontSize 18
+!$pptx_font_size = $base_font_size + 4
+skinparam defaultFontSize $pptx_font_size
 skinparam dpi 150
-left to right direction
+!$direction = "left-to-right"

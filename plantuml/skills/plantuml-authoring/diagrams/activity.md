@@ -34,8 +34,8 @@ paths, and swimlanes. Think flowchart with UML semantics.
 ```plantuml
 @startuml Activity_Return_Process
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 start
 :Receive return request;

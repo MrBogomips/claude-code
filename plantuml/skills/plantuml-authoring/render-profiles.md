@@ -9,10 +9,20 @@ accordingly.
 
 | Target | Format | Scale | DPI  | Font size | Max px width | Direction     | Hyperlinks | Shadowing |
 |--------|--------|-------|------|-----------|--------------|---------------|------------|-----------|
-| `web`  | svg    | n/a   | n/a  | 14        | —            | top-to-bottom | enabled    | true      |
-| `docx` | png    | 3     | 150  | 14        | 5800         | top-to-bottom | disabled   | false     |
-| `pdf`  | pdf    | n/a   | 300  | 12        | —            | top-to-bottom | enabled    | true      |
-| `pptx` | png    | 3     | 150  | 18        | 4800 (16:9)  | left-to-right | disabled   | false     |
+| `web`  | svg    | n/a   | n/a  | base      | —            | Policy        | enabled    | true      |
+| `docx` | png    | 3     | 150  | base      | Policy (5800)| Policy        | disabled   | false     |
+| `pdf`  | pdf    | n/a   | 300  | base − 2  | —            | Policy        | enabled    | true      |
+| `pptx` | png    | 3     | 150  | base + 4  | 4800 (16:9)  | left-to-right | disabled   | false     |
+
+- **Font size**: "base" is the Policy's Base font size (default 14), set as
+  `$base_font_size` in `_fonts.puml`; each target file derives its size
+  from it, so changing the Policy changes every target.
+- **Max px width** for docx is the Policy's `Max width (docx)`.
+- **Direction**: "Policy" is the Policy's Default direction. It applies to
+  the diagrams that call `$apply_direction()` after the include chain (see
+  `diagrams/<type>.md`); pptx switches those diagrams to left-to-right.
+  Sequence, activity, timing, gantt, wbs, interaction-overview and nwdiag
+  diagrams reject `left to right direction`, so no partial writes it.
 
 **Rationale per target:**
 - **web**: SVG preserves quality at any zoom, supports hyperlinks. No
@@ -21,8 +31,9 @@ accordingly.
   without bloating the document. Shadowing off = cleaner in print.
   Max 5800 px keeps a single diagram within A4 portrait at ~150 DPI.
 - **pdf**: Direct PDF output keeps vectors. 300 DPI is print-friendly.
-- **pptx**: 16:9 slides, landscape direction by default. Larger font
-  size because slides are seen from distance.
+- **pptx**: 16:9 slides, landscape direction for diagrams that call
+  `$apply_direction()`. Larger font size because slides are seen from
+  distance.
 
 ## Invocation pattern
 
@@ -49,17 +60,29 @@ mkdir -p "$OUT"
 plantuml "-t$FMT" $SCALE_ARGS -o "$OUT" "$SOURCE.puml"
 ```
 
-**Important:** `PLANTUML_TARGET` must be set *before* `plantuml` runs;
-PlantUML evaluates `%getenv(...)` at parse time. If it is unset the
-source file's `!include` of `_targets/$target.puml` will fail —
-this is intentional: it forces the caller to declare a target.
+**Important:** set `PLANTUML_TARGET` explicitly on every `plantuml` call,
+`-checkonly` included. PlantUML evaluates `%getenv(...)` at parse time, and
+a project ships `_targets/<target>.puml` only for the targets its Policy
+declares. When the variable is unset, `_base.puml` falls back to the
+Policy's primary target, which the generator writes into it; that fallback
+serves editors and previewers, not validation. A target the Policy does not
+declare fails on the missing `_targets/<target>.puml`. That is intended: add
+the target to the Policy and run `plantuml-migrate`.
+
+The generator prints the parsed Policy, so a script can read the primary
+target and the docx max width instead of parsing CLAUDE.md:
+
+```bash
+"${CLAUDE_PLUGIN_ROOT}/skills/plantuml-bootstrap/scripts/generate-config.sh" policy
+# primary_target=docx, targets=docx web, max_width_docx=5800, …
+```
 
 ## Default target resolution
 
 1. If user specified a target explicitly in the request → use it.
-2. Else if CLAUDE.md Policy has `Primary target: <X>` → use X.
-3. Else if Policy has `Additional targets:` → use the first one.
-4. Else → `docx` (the enterprise-defaults fallback).
+2. Else if CLAUDE.md has a Policy → its `Primary target` (required).
+3. Else (one-shot diagram without a Policy) → `docx` defaults, inlined in
+   the diagram instead of the include chain.
 
 ## Multi-target rendering
 
@@ -80,9 +103,13 @@ right format.
 ## Max-width post-check (docx, pptx)
 
 After rendering PNG, if ImageMagick's `identify` is available
-(`command -v identify`), run:
+(`command -v identify`), compare the width with the limit: for docx the
+Policy's `Max width (docx)` (`max_width_docx` in the generator's `policy`
+output, default 5800), for pptx 4800.
 
 ```bash
+MAX="$("${CLAUDE_PLUGIN_ROOT}/skills/plantuml-bootstrap/scripts/generate-config.sh" policy \
+  | awk -F= '$1 == "max_width_docx" { print $2 }')"   # pptx: MAX=4800
 W=$(identify -format "%w" "$PNG")
 [ "$W" -le "$MAX" ] || echo "WARN: $PNG is $W px, max is $MAX"
 ```
@@ -99,8 +126,10 @@ out (change direction, split the diagram) or accept.
 1. Append a row to the table above.
 2. Create `templates/_targets/<name>.puml` with the target-specific
    `skinparam` overrides.
-3. Add the `case` branch to the invocation pattern.
-4. Re-run the test suite to validate the new target end-to-end.
+3. Add the name to `ALLOWED_TARGETS` in
+   `plantuml-bootstrap/scripts/generate-config.sh`.
+4. Add the `case` branch to the invocation pattern.
+5. Run `plantuml/tests/smoke/*.sh` and the variant test suite.
 
 No changes needed in individual diagram files — that is the whole point
 of keeping sources target-neutral.

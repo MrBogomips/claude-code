@@ -57,8 +57,9 @@ structure over time.
 ```plantuml
 @startuml Communication_Checkout_Standard
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 title "Communication — Checkout (standard preset)"
 

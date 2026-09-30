@@ -1,3 +1,4 @@
+' generated-sha256: 8de85e255891524c3ea2c638f2b80333d0f841831097e7251c48c26b26667951
+' Generated from the PlantUML Policy in CLAUDE.md. Edit the Policy, then run plantuml-migrate.
+' Theme from the Policy: a built-in PlantUML theme.
 !theme plain
-skinparam backgroundColor $surface
-skinparam ArrowColor $neutral

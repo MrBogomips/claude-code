@@ -1,4 +1,3 @@
-' Target: web (SVG, interactive).
+' Target: web (SVG, interactive). Font size: the Policy's base size.
 skinparam shadowing true
-skinparam defaultFontSize 14
 ' Hyperlinks are honored by SVG viewers; no additional toggle needed.

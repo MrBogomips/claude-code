@@ -1,5 +1,21 @@
-' Auto-generated from PlantUML Policy. Do not edit by hand.
+' generated-sha256: 4d97f47b6cb1d0322f2c40095cc85c10035d835c79c1f4efc56c2e5b28517697
+' Generated from the PlantUML Policy in CLAUDE.md. Edit the Policy, then run plantuml-migrate.
+' Base: the single include entry-point of every diagram.
+' Do NOT add target-specific overrides here; those live in
+' _targets/<target>.puml and are included per diagram via the
+' PLANTUML_TARGET environment variable.
+
+' Fallback for $target when PLANTUML_TARGET is unset: the Policy's primary
+' target, written on the line below. Validation and rendering always set
+' PLANTUML_TARGET explicitly; the fallback serves editors and previewers
+' that render without it.
+!if (%not(%variable_exists("$target")) || $target == "")
+  !$target = "web"
+!endif
+
+' The theme comes before the fonts: a built-in theme resets the font family
+' and size, so the Policy's font settings are applied after it.
 !include _brand.puml
-!include _fonts.puml
 !include _theme.puml
+!include _fonts.puml
 !include _layout.puml

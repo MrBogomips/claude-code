@@ -36,8 +36,9 @@ exist and how are they wired?".
 ```plantuml
 @startuml Component_Checkout
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 package "Checkout" {
   [Cart]     as Cart

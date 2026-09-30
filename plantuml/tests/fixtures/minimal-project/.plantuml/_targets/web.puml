@@ -1,1 +1,5 @@
-' Web target — no extra constraints.
+' generated-sha256: 5ccc545d9987158f8169c372e34af07c10627381c04e08cdfa2463ecf7185c7c
+' Generated from the PlantUML Policy in CLAUDE.md. Edit the Policy, then run plantuml-migrate.
+' Target: web (SVG, interactive). Font size: the Policy's base size.
+skinparam shadowing true
+' Hyperlinks are honored by SVG viewers; no additional toggle needed.

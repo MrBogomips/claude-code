@@ -41,8 +41,9 @@ inheritance, association, aggregation, and composition.
 ```plantuml
 @startuml Class_Order_Domain
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 package "Order Domain" {
   class Order {

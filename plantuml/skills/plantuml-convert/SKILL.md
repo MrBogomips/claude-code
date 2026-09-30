@@ -1,8 +1,7 @@
 ---
 name: plantuml-convert
 description: Convert PlantUML (.puml) files to PNG, SVG, or PDF using the CLI. Use when rendering or exporting diagrams, or when document skills (.docx, .pdf, .pptx) need diagram images as input.
-compatibility: Requires plantuml and java CLI tools installed (macOS: brew install plantuml)
-model: haiku
+compatibility: "Requires the plantuml CLI and Java (macOS: brew install plantuml; Debian/Ubuntu: apt install plantuml)"
 allowed-tools: Bash
 ---
 
@@ -12,13 +11,13 @@ Convert PlantUML `.puml` files to image formats suitable for embedding in docume
 
 ## Prerequisites
 
-PlantUML CLI must be installed. On macOS:
+PlantUML CLI and Java must be installed. Check with `command -v plantuml`.
+If it is not found, stop and tell the user how to install it:
 
-```bash
-brew install plantuml
-```
-
-If `plantuml` is not found, tell the user to install it before proceeding.
+- macOS: `brew install plantuml`
+- Debian/Ubuntu: `sudo apt install plantuml`
+- elsewhere: the `plantuml.jar` download from plantuml.com, run with
+  `java -jar plantuml.jar`
 
 ## Default Configuration
 
@@ -108,7 +107,7 @@ Confirm non-default settings with the user if ambiguous.
 
 | Problem | Solution |
 |---------|----------|
-| `plantuml: command not found` | Run `brew install plantuml` |
-| Blank or broken output | Check .puml syntax with `plantuml -checkonly file.puml` |
+| `plantuml: command not found` | Install it: `brew install plantuml` (macOS) or `sudo apt install plantuml` (Debian/Ubuntu) |
+| Blank or broken output | Check the syntax with `PLANTUML_TARGET=<target> plantuml -checkonly file.puml` (the target is needed in a Policy project) |
 | Output filename unexpected | Check `@startuml Title` in the .puml file |
 | Java errors | PlantUML needs Java; run `java -version` to verify |

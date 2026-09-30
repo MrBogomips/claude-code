@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Seed test-variants/<type>/{minimal,standard,detailed}.puml from the
 # snippet inside each diagrams/<type>.md.
-# Standard = snippet as-is (with .plantuml/ rewritten to absolute paths).
+# Standard = snippet as-is, with its ../.plantuml/ includes rewritten to
+# .plantuml/: generate-variants.sh puts the templates next to each variant.
 # Minimal and detailed are seeded from the standard with a TODO marker;
 # they require hand-editing per type.
 set -euo pipefail
@@ -9,7 +10,6 @@ set -euo pipefail
 SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VAR_DIR="$SKILL_DIR/test-variants"
 DIAG_DIR="$SKILL_DIR/diagrams"
-TPL_DIR="$SKILL_DIR/templates"
 
 mkdir -p "$VAR_DIR"
 
@@ -31,13 +31,10 @@ for f in "$DIAG_DIR"/*.md; do
 
   mkdir -p "$VAR_DIR/$type"
 
-  # Rewrite relative .plantuml/ paths to the skill's templates dir so
-  # variants render without requiring a project setup.
+  # Variants live one directory deeper than the snippets assume, next to a
+  # copy of the templates; no absolute path is written into them.
   std="$VAR_DIR/$type/standard.puml"
-  echo "$block" | sed "
-    s|!include \.plantuml/_base\.puml|!include $TPL_DIR/_base.puml|g
-    s|!include \.plantuml/_targets/\$target\.puml|!include $TPL_DIR/_targets/\$target.puml|g
-  " > "$std"
+  echo "$block" | sed 's|!include \(\.\./\)*\.plantuml/|!include .plantuml/|g' > "$std"
 
   # Minimal and detailed variants require hand-editing.
   if [ ! -f "$VAR_DIR/$type/minimal.puml" ]; then

@@ -35,8 +35,9 @@ paths between nodes.
 ```plantuml
 @startuml Deployment_Prod
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 cloud "AWS eu-west-1" {
   node "ALB" as ALB

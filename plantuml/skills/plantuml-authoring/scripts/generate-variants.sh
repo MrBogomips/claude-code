@@ -10,11 +10,14 @@ if [ ! -d "$VARIANTS_DIR" ] || [ -z "$(ls -A "$VARIANTS_DIR" 2>/dev/null)" ]; th
   exit 1
 fi
 
+# Runs go under PLANTUML_TEST_ROOT, else the system temp directory.
+TEST_ROOT="${PLANTUML_TEST_ROOT:-${TMPDIR:-/tmp}}"
+TEST_ROOT="${TEST_ROOT%/}/plantuml-tests"
 RUN_DATE="$(date +%Y-%m-%d)"
 # Next run number (ls failure on no-match is fine under pipefail with || true)
-existing=$( (ls -d "$HOME/temp/plantuml-tests/${RUN_DATE}-run-"* 2>/dev/null || true) | wc -l | awk '{print $1}')
+existing=$( (ls -d "$TEST_ROOT/${RUN_DATE}-run-"* 2>/dev/null || true) | wc -l | awk '{print $1}')
 next=$(printf '%02d' $((existing + 1)))
-RUN_DIR="$HOME/temp/plantuml-tests/${RUN_DATE}-run-${next}"
+RUN_DIR="$TEST_ROOT/${RUN_DATE}-run-${next}"
 mkdir -p "$RUN_DIR"
 echo "Run directory: $RUN_DIR"
 
@@ -26,6 +29,8 @@ for type_dir in "$VARIANTS_DIR"/*/; do
       dst="$RUN_DIR/$type_name/$variant"
       mkdir -p "$dst"
       cp "$src" "$dst/"
+      # Variants include .plantuml/ relative to their own directory.
+      cp -R "$SKILL_DIR/templates" "$dst/.plantuml"
     else
       echo "SKIP: $type_name/$variant (no source)"
     fi

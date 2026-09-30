@@ -1,6 +1,6 @@
 ---
 name: plantuml-lint
-description: Check `.puml` files for PlantUML Policy drift, broken includes, and invariant violations (hardcoded colors, missing `_base.puml`, filename≠title, duplicated skinparams). Use when reviewing diagrams for compliance.
+description: Check `.puml` files for PlantUML Policy drift and invariant violations (missing `_base.puml` include, `!include` targets that do not exist, hardcoded colors, filename≠`@start` id, duplicated skinparams). Use when reviewing diagrams for compliance.
 allowed-tools: Read, Glob, Grep, Bash, Agent
 ---
 
@@ -10,9 +10,12 @@ Static lint over `.puml` files in the current project.
 
 ## Usage
 
-Default: lint every `.puml` and `.plantuml` and `.iuml` under the project
-root, excluding everything under `.plantuml/` (policy partials and
-`_targets/` overrides, not authored diagrams).
+Default: lint every `.puml` and `.plantuml` under the project root,
+excluding everything under `.plantuml/` (policy partials and `_targets/`
+overrides, not authored diagrams). `.iuml` files are include files with no
+`@start` block, so they are not in the default scope; passed explicitly,
+they are checked only against the rules that apply to include files (R2,
+R6).
 
 Custom path: a single file, glob, or directory passed as argument.
 
@@ -26,11 +29,14 @@ Custom path: a single file, glob, or directory passed as argument.
      policy_present=false
    fi
    ```
+   With a Policy, read its Primary and Additional targets into `targets`
+   (R6 expands `$target` in include paths with each of them). Without one,
+   `targets` is empty.
 2. **Enumerate files** via `Glob`, excluding everything under `.plantuml/`.
 3. **Batch** files into chunks of ≤10.
 4. **Dispatch** each batch to `puml-linter` (agent) via the `Agent` tool. Pass the
-   batch + `project_root` (absolute, from `pwd`) + `policy_present` as
-   the prompt. Run batches in parallel.
+   batch + `project_root` (absolute, from `pwd`) + `policy_present` +
+   `targets` as the prompt. Run batches in parallel.
 5. **Aggregate** the JSON arrays into one. Sort by `file` then `line`.
 6. **Render** a table for the user:
 

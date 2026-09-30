@@ -1,0 +1,10 @@
+@startuml Overview
+!$target = %getenv("PLANTUML_TARGET")
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
+title "Overview, one level below the project root"
+class Order
+class Customer
+Customer --> Order : places
+@enduml

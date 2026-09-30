@@ -1,4 +1,5 @@
-' Layout — auto-generated from CLAUDE.md "PlantUML Policy".
+' Layout. The pragma line carries the Policy's Layout engine and $direction
+' its Default direction.
 
 ' smetana is faster but breaks on concurrent state regions and complex
 ' compositions. Diagram types that need richer layout (state with
@@ -11,3 +12,15 @@ skinparam minClassWidth 90
 skinparam nodesep 60
 skinparam ranksep 80
 skinparam padding 8
+
+' Direction is applied only where a diagram asks for it: `left to right
+' direction` is a syntax error in sequence, activity, timing, gantt, wbs,
+' interaction-overview and nwdiag diagrams. Diagrams of the other types call
+' $apply_direction() right after the include chain; _targets/pptx.puml
+' switches $direction to left-to-right.
+!$direction = "top-to-bottom"
+!procedure $apply_direction()
+  !if ($direction == "left-to-right")
+left to right direction
+  !endif
+!endprocedure

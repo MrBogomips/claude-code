@@ -1,7 +1,6 @@
-' Theme — auto-generated from CLAUDE.md "PlantUML Policy".
-' This is the `custom` variant; when Policy names a built-in theme the
-' init script replaces this file with a one-liner `!theme <name>` plus
-' a background color override.
+' Theme: the `custom` variant, built from the brand colors in _brand.puml.
+' When the Policy names a built-in theme, the generated _theme.puml holds
+' only `!theme <name>` instead of this file.
 
 skinparam backgroundColor $surface
 skinparam ArrowColor $neutral

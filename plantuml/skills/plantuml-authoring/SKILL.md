@@ -40,26 +40,40 @@ Decide which sub-files to load based on the routing rules below.
 3. **Pick detail level preset.** The `diagrams/<type>.md` file lists its
    own `minimal`/`standard`/`detailed` presets. Default to the project's
    `Default detail level` from CLAUDE.md Policy, else `standard`.
-4. **Emit `.puml`.** Start with:
+4. **Emit `.puml`.** Start with the header below. PlantUML resolves
+   `!include` from the diagram's own directory, so the path climbs one `../`
+   per directory between the project root and the file:
+   `diagrams/login.puml` → `../.plantuml/`, `diagrams/auth/login.puml` →
+   `../../.plantuml/`, a file at the root → `.plantuml/`.
    ```
-   @startuml <Title>
+   @startuml <FileBasename>
    !$target = %getenv("PLANTUML_TARGET")
-   !include .plantuml/_base.puml
-   !include .plantuml/_targets/$target.puml
+   !include ../.plantuml/_base.puml
+   !include ../.plantuml/_targets/$target.puml
+   title "<caption>"
    ```
+   Types that accept a layout direction (the `diagrams/<type>.md` snippet
+   shows it) add `$apply_direction()` after the includes, so the Policy's
+   Default direction and the pptx target take effect. Sequence, activity,
+   timing, gantt, wbs, interaction-overview and nwdiag diagrams do not.
    If the project is unconfigured and the user chose "one-shot", inline
    defaults instead of `!include`, and add:
    `' TODO: run /plantuml-init to share styling across diagrams`.
-5. **Validate.** Run `plantuml -checkonly <file>`; must exit 0.
+5. **Validate.** Run `PLANTUML_TARGET=<primary target> plantuml -checkonly <file>`
+   with the Policy's Primary target; it must exit 0. The target is always
+   explicit, because each project ships only its declared `_targets/`. To
+   check every declared target at once, run `plantuml-validate`. Without a
+   Policy (one-shot), run `plantuml -checkonly <file>`.
 6. **Render (if requested).** Invoke `plantuml-convert` with appropriate
    target profile (see `render-profiles.md`).
 
 ## Inherited invariants
 
-Every diagram satisfies the five `plantuml-lint` invariants R1–R5, defined in
+Every diagram satisfies the six `plantuml-lint` invariants R1–R6, defined in
 `${CLAUDE_PLUGIN_ROOT}/agents/puml-linter/AGENT.md`: include `_base.puml`; no inline
-`skinparam` that the base already sets; no hex color literals outside `_*.puml` partials;
-the `@start…` id matches the filename; one `@start…`/`@end…` block per file. R1–R3 apply
+`skinparam` that the base already sets; no hex color literals outside include files
+(`.iuml`, `_*.puml`); the `@start…` id matches the filename; one `@start…`/`@end…` block
+per file; every relative `!include` resolves from the file's own directory. R1–R3 apply
 when the project has a PlantUML Policy.
 
 ## Do NOT

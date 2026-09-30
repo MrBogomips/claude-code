@@ -34,8 +34,8 @@ milestones.
 ```plantuml
 @startgantt Gantt_Release_Q3
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 Project starts 2026-07-01
 
