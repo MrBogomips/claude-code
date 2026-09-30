@@ -37,8 +37,8 @@ left-side branches:
 ```plantuml
 @startmindmap Mindmap_<Subject>
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 skinparam padding 24    ' prevents left-edge clipping
 …
@@ -53,8 +53,8 @@ are long.
 ```plantuml
 @startmindmap Mindmap_PlatformObjectives
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 skinparam padding 24
 

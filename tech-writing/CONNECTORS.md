@@ -1,7 +1,7 @@
 # Connectors
 
-Tool-agnostic connector registry for the tech-writing plugin. Skills reference connectors via
-`~~category` placeholders and degrade gracefully when no server is connected.
+Tool-agnostic connector registry for the tech-writing plugin. Skills refer to each connector by the
+placeholder listed in the table below, and degrade gracefully when no server is connected.
 
 ## Registry
 

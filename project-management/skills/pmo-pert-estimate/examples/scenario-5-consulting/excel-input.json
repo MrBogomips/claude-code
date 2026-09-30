@@ -4,8 +4,6 @@
     "effort_unit": "hours",
     "duration_unit": "weeks",
     "primary_color": "264653",
-    "period_type": "monthly",
-    "start_date": "2026-10-01",
     "management_reserve_pct": 0.1,
     "avg_rate": 250,
     "currency": "EUR",
@@ -40,9 +38,6 @@
       "id": "1",
       "name": "Diagnostic",
       "description": "Assess current state of the three legacy organisations and identify gaps",
-      "best_duration": 3,
-      "likely_duration": 4,
-      "worst_duration": 6,
       "work_packages": [
         {
           "id": "1.1",
@@ -164,9 +159,6 @@
       "id": "2",
       "name": "Strategy Design",
       "description": "Co-design the future operating model with senior leadership",
-      "best_duration": 4,
-      "likely_duration": 6,
-      "worst_duration": 8,
       "work_packages": [
         {
           "id": "2.1",
@@ -294,9 +286,6 @@
       "id": "3",
       "name": "Implementation Support",
       "description": "Hands-on advisory support during first wave of transformation",
-      "best_duration": 5,
-      "likely_duration": 8,
-      "worst_duration": 12,
       "work_packages": [
         {
           "id": "3.1",
@@ -404,9 +393,6 @@
       "id": "4",
       "name": "Knowledge Transfer",
       "description": "Embed the new operating model and build internal capability",
-      "best_duration": 2,
-      "likely_duration": 4,
-      "worst_duration": 6,
       "work_packages": [
         {
           "id": "4.1",
@@ -479,104 +465,6 @@
       ],
       "start_week": 6,
       "end_week": 6
-    }
-  ],
-  "resource_allocation": [
-    {
-      "phase_id": "1",
-      "phase_name": "Diagnostic",
-      "description": "Stakeholder interviews, document review, gap analysis",
-      "team": "Consulting",
-      "role_code": "PRT",
-      "effort": 56
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Diagnostic",
-      "description": "Current state assessment and gap analysis",
-      "team": "Consulting",
-      "role_code": "SC",
-      "effort": 120
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Diagnostic",
-      "description": "Document review and redundancy mapping support",
-      "team": "Consulting",
-      "role_code": "JC",
-      "effort": 64
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "Strategy Design",
-      "description": "TOM design workshops and business case",
-      "team": "Consulting",
-      "role_code": "PRT",
-      "effort": 80
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "Strategy Design",
-      "description": "Org design, governance framework, roadmap",
-      "team": "Consulting",
-      "role_code": "SC",
-      "effort": 152
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "Strategy Design",
-      "description": "Roadmap and governance documentation support",
-      "team": "Consulting",
-      "role_code": "JC",
-      "effort": 80
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Implementation Support",
-      "description": "Leadership coaching and oversight",
-      "team": "Consulting",
-      "role_code": "PRT",
-      "effort": 40
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Implementation Support",
-      "description": "Change management and process redesign",
-      "team": "Consulting",
-      "role_code": "SC",
-      "effort": 128
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Implementation Support",
-      "description": "Process analysis, dashboard prototyping",
-      "team": "Consulting",
-      "role_code": "JC",
-      "effort": 104
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Knowledge Transfer",
-      "description": "Playbook review, train-the-trainer, sign-off",
-      "team": "Consulting",
-      "role_code": "PRT",
-      "effort": 34
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Knowledge Transfer",
-      "description": "Playbook authoring, workshops, final review",
-      "team": "Consulting",
-      "role_code": "SC",
-      "effort": 56
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Knowledge Transfer",
-      "description": "Documentation and toolkit preparation",
-      "team": "Consulting",
-      "role_code": "JC",
-      "effort": 40
     }
   ],
   "risks": [
@@ -657,7 +545,6 @@
       "contingency_effort": 24
     }
   ],
-  "targets": null,
   "scenarios": [
     "Optimistic: ~85% of Fascia MEDIA \u2014 best-case execution for 5-consulting",
     "Realistic: Fascia MEDIA \u2014 current best estimate including overhead and MR",

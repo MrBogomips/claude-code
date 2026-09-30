@@ -30,8 +30,8 @@ node is a unit of work, not a concept.
 ```plantuml
 @startwbs WBS_NewFeature
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 * 1. New Feature
 ** 1.1 Discovery

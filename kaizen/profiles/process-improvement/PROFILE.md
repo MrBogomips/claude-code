@@ -1,13 +1,13 @@
 ---
 name: process-improvement
 description: "Design and facilitate kaizen improvement loops for business and operational processes"
-version: 1.0.0
+version: 1.1.0
 
 strategy: multi-objective
 autonomy: supervised
 iteration_budget: 5
 convergence:
-  epsilon: 0.05
+  epsilon: 0.05    # fallback only: BOOTSTRAP sets each KPI's epsilon in the KPI's own unit
   patience: 2
 
 initial_state:
@@ -59,7 +59,9 @@ This profile helps humans design and run kaizen improvement loops for business a
 
 ## BOOTSTRAP Special Handling
 
-This profile requires additional setup during BOOTSTRAP because KPIs are user-defined:
+This profile requires additional setup during BOOTSTRAP because KPIs are user-defined.
+
+Where the run is stored is settled before this section runs. Because this profile's mutation targets are not known yet, the engine asks the user at the start of BOOTSTRAP: the project's `.kaizen/` for a process that belongs to a specific project, `~/.kaizen/` for a personal or cross-project process. Later sessions find the open run in either place.
 
 1. **Ask the user** to describe the process they want to improve:
    - What is the process? (name, purpose, scope)
@@ -70,22 +72,21 @@ This profile requires additional setup during BOOTSTRAP because KPIs are user-de
    - What is the primary metric to optimize? (e.g., "time from request to delivery")
    - What direction? (minimize/maximize)
    - What unit? (hours, percentage, count, etc.)
+   - What is the smallest change that matters, in that unit? This is the KPI's `epsilon`: in hours it might be 2, for a defect rate in percent 1
    - What is the current value? (baseline)
-   - Is there a secondary metric to track trade-offs?
+   - Is there a secondary metric to track trade-offs? If not, drop `secondary_metric` for this run
 
 3. **Gather process documentation**:
    - Ask the user to provide or point to existing SOPs, checklists, or workflow descriptions; that location becomes the mutation target
    - If no documentation exists, help the user document the current process (this becomes the baseline artifact)
 
-4. **Set the `.kaizen/` location**:
-   - If the process relates to a specific project: use `.kaizen/` at project root
-   - If the process is personal or cross-project: use `~/.kaizen/`
+4. **Record what was settled.** The KPI names, descriptions, directions, units and epsilons, and the process-document path as the mutation target, replace the placeholders in the frontmatter. The engine writes them to the run's `manifest.json` and reads them from there in every later iteration and session.
 
 ## MEASURE Phase
 
 Since KPIs are user-reported:
 
-1. **Present the KPI definitions** to the user as a reminder
+1. **Present the KPI definitions** from the run's manifest to the user as a reminder
 2. **Ask for current values**:
    - "What is the current {primary_metric_name}? (in {unit})"
    - "What is the current {secondary_metric_name}? (in {unit})" (if defined)
@@ -173,4 +174,4 @@ Since process changes take time to show results:
 3. **Ask for qualitative feedback**: "How did the team respond to the change? Any unexpected effects?"
 4. **Record both quantitative and qualitative data**
 
-This profile is inherently slower than code-focused profiles. Each iteration may span days or weeks.
+This profile is inherently slower than code-focused profiles. Each iteration may span days or weeks. The run stays open between sessions: running `/kaizen process-improvement` again offers to resume it at the next iteration, with the KPIs and targets settled at BOOTSTRAP.

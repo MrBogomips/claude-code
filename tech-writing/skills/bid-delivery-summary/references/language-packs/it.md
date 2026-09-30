@@ -54,6 +54,19 @@ di progetto.
 > I calcoli dei costi non sono stati inclusi perché non è stato fornito o autorizzato alcun modello di
 > costo interno approvato.
 
+## Cifre di costo non approvate (verbatim, voce dei Chiarimenti Commerciali)
+
+> Il documento di origine riporta cifre di costo non supportate da un modello di costo approvato;
+> qui non sono riportate. Confermare la base di costo prima di formulare il prezzo.
+
+## Etichette della base di costo (modalità con costi autorizzati)
+
+| Concetto | Etichetta |
+|----------|-----------|
+| Cost basis | Base di costo |
+| Cost model used | Modello di costo |
+| Authorized by | Autorizzato da |
+
 ## Convenzioni
 
 - Unità di effort: `PD` (Person-Days) o `MD` (Man-Days) — coerente con la convenzione del documento di origine.

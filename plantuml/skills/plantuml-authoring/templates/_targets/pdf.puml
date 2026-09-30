@@ -1,4 +1,6 @@
-' Target: pdf (vector, print-safe).
+' Target: pdf (vector, print-safe). Print reads well 2 points below the
+' Policy's base size.
 skinparam shadowing true
-skinparam defaultFontSize 12
+!$pdf_font_size = $base_font_size - 2
+skinparam defaultFontSize $pdf_font_size
 skinparam dpi 300

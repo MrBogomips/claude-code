@@ -3,6 +3,11 @@
 Use this when you know *what* you want to show but not *which diagram
 type*. Load the specific `diagrams/<type>.md` only after selecting.
 
+Every snippet assumes the diagram sits one directory below the project
+root (`diagrams/<name>.puml`), so it includes `../.plantuml/…`. Adjust the
+`../` to the file's depth: PlantUML resolves `!include` from the diagram's
+own directory.
+
 ## "I want to show…"
 
 | You want to show…                                   | Use                      |

@@ -5,8 +5,6 @@
     "duration_unit": "d",
     "primary_color": "1B4FA5",
     "currency": "EUR",
-    "period_type": "weekly",
-    "start_date": "2026-07-06",
     "project_start_date": "2026-07-06",
     "management_reserve_pct": 0.20,
     "avg_rate": 500,
@@ -32,7 +30,6 @@
       "id": "F0",
       "name": "Setup & Discovery",
       "description": "Project kickoff, environment validation, requirements freeze",
-      "best_duration": 5, "likely_duration": 8, "worst_duration": 12,
       "start_week": 1, "end_week": 2,
       "work_packages": [
         {"id": "F0.1", "name": "Project setup", "activities": [
@@ -60,7 +57,6 @@
       "id": "F1",
       "name": "UX & Functional Design",
       "description": "User journeys, wireframes, accessibility-first design",
-      "best_duration": 10, "likely_duration": 15, "worst_duration": 22,
       "start_week": 3, "end_week": 5,
       "work_packages": [
         {"id": "F1.1", "name": "UX", "activities": [
@@ -88,7 +84,6 @@
       "id": "F2",
       "name": "Core Build",
       "description": "Front-end and back-end implementation of the portal",
-      "best_duration": 30, "likely_duration": 45, "worst_duration": 60,
       "start_week": 6, "end_week": 15,
       "work_packages": [
         {"id": "F2.1", "name": "Back-end", "activities": [
@@ -111,7 +106,6 @@
       "id": "F3",
       "name": "Integrations",
       "description": "Three integrations with internal authoritative sources, parallel with F2",
-      "best_duration": 25, "likely_duration": 35, "worst_duration": 50,
       "start_week": 8, "end_week": 15,
       "work_packages": [
         {"id": "F3.1", "name": "Registry integration", "activities": [
@@ -141,7 +135,6 @@
       "id": "F4",
       "name": "Security & Accessibility Audit",
       "description": "Independent audit gate before UAT",
-      "best_duration": 8, "likely_duration": 12, "worst_duration": 18,
       "start_week": 16, "end_week": 18,
       "work_packages": [
         {"id": "F4.1", "name": "Audit", "activities": [
@@ -162,7 +155,6 @@
       "id": "F5",
       "name": "Internal Acceptance",
       "description": "Internal QA pass before client UAT",
-      "best_duration": 6, "likely_duration": 9, "worst_duration": 14,
       "start_week": 17, "end_week": 19,
       "work_packages": [
         {"id": "F5.1", "name": "Internal QA", "activities": [
@@ -178,7 +170,6 @@
       "id": "F6",
       "name": "UAT",
       "description": "Client-side User Acceptance Testing window",
-      "best_duration": 10, "likely_duration": 14, "worst_duration": 20,
       "start_week": 19, "end_week": 22,
       "work_packages": [
         {"id": "F6.1", "name": "UAT support", "activities": [
@@ -194,7 +185,6 @@
       "id": "F7",
       "name": "Production Deployment",
       "description": "Production rollout and 2-week hypercare window",
-      "best_duration": 8, "likely_duration": 12, "worst_duration": 18,
       "start_week": 22, "end_week": 25,
       "work_packages": [
         {"id": "F7.1", "name": "Deploy", "activities": [

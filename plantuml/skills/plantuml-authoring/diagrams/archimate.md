@@ -34,8 +34,9 @@ provides `<archimate/Archimate>` stdlib macros.
 ```plantuml
 @startuml Archimate_OrderManagement
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 !include <archimate/Archimate>
 
 Business_Actor(customer, "Customer")

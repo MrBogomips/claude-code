@@ -7,13 +7,14 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 | Plugin | Description | Category |
 |--------|-------------|----------|
 | [context-hygiene](./context-hygiene) | Context hygiene for agentic projects — audit CLAUDE.md, rules and auto-memory for wrong, stale and redundant content; apply only authorized changes | Engineering |
-| [developer-tools](./developer-tools) | Developer environment tooling — devcontainer generation, stack detection, infrastructure config | Engineering |
 | [human-resources](./human-resources) | HR interview workflow — job descriptions, pre-screening, interview prep, evaluation, compliance | Human Resources |
 | [kaizen](./kaizen) | Continuous improvement loops — recursive optimization engine with profiles for Claude Code usage, refactoring, and process improvement | Engineering |
 | [personal-voice](./personal-voice) | Personal writing voice — write in the author's tone and lexicon, learn from their revisions and own texts; maintain the profile only with per-item approval | Documentation |
 | [plantuml](./plantuml) | PlantUML diagrams — policy-driven authoring, rendering, lint, validate, review, advisor, and migrate | Documentation |
 | [project-management](./project-management) | SOW writing, review, estimation, and PMI-compliant PERT analysis — integrated project management pipeline | Operations |
 | [tech-writing](./tech-writing) | Technical writing support — transform documents between internal and client-facing audiences | Documentation |
+
+> **Retired:** the `developer-tools` plugin (devcontainer generator) was removed in marketplace 4.0.0. It remains available in this repository's git history.
 
 > **Moved:** the `agentic-harness` plugin now lives in its own repository — [MrBogomips/agentic-harness](https://github.com/MrBogomips/agentic-harness). If you installed it from this marketplace, re-add it from there.
 

@@ -1,6 +1,8 @@
 # GDPR Guidelines for HR Recruitment
 
 > Reference file for the compliance-check skill. Provides GDPR principles and practical rules for processing candidate data throughout the recruitment lifecycle.
+>
+> **Not legal advice** — verify with counsel before relying on it. Protected grounds and their statutes are in `legal-map.md`.
 
 ---
 
@@ -39,7 +41,7 @@ Processing candidate data requires at least one lawful basis. In recruitment, th
   - Date of birth (unless age is a legal requirement for the role)
   - Marital or family status
   - Nationality (ask only about right to work)
-  - Social media profiles (unless job-relevant and disclosed in the privacy notice)
+  - Social media profiles (unless job-relevant, limited to professional networks, and disclosed in the privacy notice — WP29 Opinion 2/2017 on data processing at work)
 
 ### 1.4 Purpose Limitation (Article 5(1)(b))
 
@@ -63,6 +65,7 @@ Processing candidate data requires at least one lawful basis. In recruitment, th
 - Use encrypted storage and secure transmission channels
 - Maintain audit trails for access and modifications
 - Ensure third-party recruiters and platforms comply via Data Processing Agreements (Art. 28)
+- Files about a named candidate (screening guides, assessments, notes, evaluations) carry a confidentiality and retention line at the top, are kept out of version-controlled folders, and are never copied into an assistant's memory
 
 ---
 
@@ -143,7 +146,8 @@ Candidates are data subjects with full GDPR rights. HR must be prepared to respo
 |---|---|
 | Collect only: name, contact details, qualifications, work experience, right-to-work status | Data minimization |
 | Do NOT ask for: photo, date of birth, nationality, marital status, number of children | Special category / unnecessary data |
-| Do NOT ask for: salary history (banned in some jurisdictions) | Potential discrimination perpetuation |
+| Do NOT ask about current or past pay — banned in the EU (Directive 2023/970 Art. 5(2), `legal-map.md` Section 3) | Perpetuates pay gaps; CRITICAL in EU jurisdictions |
+| Do NOT ask for the reason for a CV gap; at most one optional, open question for all candidates | Proxy for health, disability, pregnancy and caregiving |
 | Include a link to the privacy notice | Transparency obligation |
 | Provide opt-in checkbox for talent pool with separate consent text | Purpose limitation; consent must be specific |
 
@@ -189,6 +193,14 @@ A DPIA is **required** (Article 35) when recruitment processing is likely to res
 | Special category data processing | Roles requiring health assessments |
 | Innovative technology | Gamified assessments, psychometric profiling |
 | Cross-border data transfers | Using a recruitment platform hosted outside the EEA |
+
+### AI-Assisted Screening
+
+When a tool screens, ranks or scores candidates (including drafts produced with an AI assistant), check that:
+
+1. A person reviews every decision that rejects or ranks a candidate, and the document says so (GDPR Art. 22).
+2. The privacy notice discloses the AI-assisted tool and its purpose (template item 8 below).
+3. The organization has assessed whether the tool is a high-risk AI system under the AI Act, and whether a DPIA is needed (see `legal-map.md` Section 4).
 
 ### DPIA Minimum Content
 
@@ -241,6 +253,12 @@ Contact: [DPO email / HR privacy contact]
 7. CONSENT FOR TALENT POOL (optional)
    [ ] I consent to my data being retained for up to 24 months for consideration
        in future vacancies. I understand I can withdraw this consent at any time.
+
+8. AI-ASSISTED TOOLS (include if used)
+   We use AI-assisted tools to [draft screening questions / summarize interview
+   notes / suggest ratings]. A person reviews every output and makes every
+   decision about your application. You can ask for a human review of any
+   assessment by contacting [DPO email].
 ```
 
 ---
@@ -255,12 +273,14 @@ When scanning HR documents for GDPR compliance, flag content that:
 4. **Uses vague retention language** — e.g., "we keep your data as long as necessary" without a defined period
 5. **Implies automated decision-making** without mentioning human oversight or the right to contest
 6. **Transfers data internationally** without stating the safeguard mechanism (e.g., SCCs, adequacy decision)
+7. **Uses AI-assisted screening** without disclosing it in the privacy notice
 
 ### Severity Levels
 
+The three levels are the contract in SKILL.md Section 5. Examples for this layer:
+
 | Severity | Description | Example |
 |---|---|---|
-| CRITICAL | Direct collection of special category data or major transparency failure | Application form with "Religion" field |
-| HIGH | Missing privacy notice or undefined retention period | No privacy notice linked in job posting |
-| MEDIUM | Unnecessary data collection or vague language | Requesting photo with application |
-| LOW | Minor transparency improvement needed | Privacy notice uses overly technical language |
+| CRITICAL | Direct GDPR breach: collection of special category data, or a candidate-facing form that collects data without a privacy notice | Application form with a "Religion" field; screening questionnaire with no privacy notice |
+| WARNING | Unnecessary data, vague or missing retention, missing disclosure, or a case that depends on context | Requesting a photo with the application; "we keep your data as long as necessary"; job posting without a privacy notice link (the notice can come at application) |
+| INFO | Minor transparency improvement | Privacy notice uses overly technical language |

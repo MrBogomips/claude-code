@@ -77,3 +77,32 @@ jobs:
 
       - name: Run structural validation
         run: bash tests/ci/run-structural-tests.sh
+
+  pert-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PERT test dependencies
+        run: python3 -m pip install -r project-management/skills/pmo-pert-estimate/scripts/requirements-dev.txt
+
+      - name: Run PERT generator and summarizer tests
+        run: python3 -m pytest -q project-management/skills/pmo-pert-estimate/scripts
+
+  plantuml-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PyYAML for the frontmatter checks
+        run: python3 -m pip install pyyaml
+
+      # plantuml itself is not installed: the render tests print SKIP without it,
+      # and the distro package lags far behind the version the tests target.
+      - name: Run plantuml smoke tests
+        run: for t in plantuml/tests/smoke/*.sh; do bash "$t" || exit 1; done

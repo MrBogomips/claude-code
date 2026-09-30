@@ -3,11 +3,11 @@
 ## Project Overview
 
 **Project Name:** Enterprise Resource Planning (ERP) Migration
-**Client:** AdSP Mare di Sardegna
+**Client:** Acme Port Authority
 **Start Date:** 2026-06-01
 **Target Duration:** 12 months (240 working days)
 **Target Effort:** 800 person-days
-**Contract Reference:** AQ ID 2483 – Lotto 1 (Second Edizione)
+**Contract Reference:** Framework Agreement FA-0000 – Lot 1
 
 ## Executive Summary
 

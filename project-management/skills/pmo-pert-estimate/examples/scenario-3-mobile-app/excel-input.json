@@ -4,8 +4,6 @@
     "effort_unit": "pd",
     "duration_unit": "d",
     "primary_color": "E63946",
-    "period_type": "biweekly",
-    "start_date": "2026-07-01",
     "management_reserve_pct": 0.1,
     "avg_rate": 550,
     "currency": "EUR",
@@ -46,9 +44,6 @@
       "id": "1",
       "name": "Discovery",
       "description": "Stakeholder alignment, requirements elicitation and technical feasibility",
-      "best_duration": 5,
-      "likely_duration": 8,
-      "worst_duration": 13,
       "work_packages": [
         {
           "id": "1.1",
@@ -152,9 +147,6 @@
       "id": "2",
       "name": "UX Design",
       "description": "User experience design, wireframing and interactive prototype",
-      "best_duration": 8,
-      "likely_duration": 12,
-      "worst_duration": 18,
       "work_packages": [
         {
           "id": "2.1",
@@ -275,9 +267,6 @@
       "id": "3",
       "name": "Backend Development",
       "description": "REST API implementation, infrastructure setup and backend testing",
-      "best_duration": 12,
-      "likely_duration": 18,
-      "worst_duration": 27,
       "work_packages": [
         {
           "id": "3.1",
@@ -420,9 +409,6 @@
       "id": "4",
       "name": "Mobile Development",
       "description": "Native/cross-platform mobile app implementation and E2E testing",
-      "best_duration": 15,
-      "likely_duration": 22,
-      "worst_duration": 33,
       "work_packages": [
         {
           "id": "4.1",
@@ -553,9 +539,6 @@
       "id": "5",
       "name": "Launch",
       "description": "App store submission, UAT with pilot users and go-live",
-      "best_duration": 5,
-      "likely_duration": 8,
-      "worst_duration": 12,
       "work_packages": [
         {
           "id": "5.1",
@@ -630,136 +613,6 @@
       ],
       "start_week": 15,
       "end_week": 16
-    }
-  ],
-  "resource_allocation": [
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery",
-      "description": "Stakeholder alignment and technical feasibility",
-      "team": "Product",
-      "role_code": "PO",
-      "effort": 9
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery",
-      "description": "Stakeholder alignment and technical feasibility",
-      "team": "Engineering",
-      "role_code": "MOB",
-      "effort": 2
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery",
-      "description": "Stakeholder alignment and technical feasibility",
-      "team": "Engineering",
-      "role_code": "BED",
-      "effort": 8
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "UX Design",
-      "description": "Wireframing and interactive prototype",
-      "team": "Product",
-      "role_code": "PO",
-      "effort": 8
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "UX Design",
-      "description": "Wireframing and interactive prototype",
-      "team": "Engineering",
-      "role_code": "MOB",
-      "effort": 11
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "UX Design",
-      "description": "Wireframing and interactive prototype",
-      "team": "Engineering",
-      "role_code": "QA",
-      "effort": 3
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Backend Development",
-      "description": "REST API implementation and infrastructure",
-      "team": "Engineering",
-      "role_code": "BED",
-      "effort": 24
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Backend Development",
-      "description": "REST API implementation and infrastructure",
-      "team": "Engineering",
-      "role_code": "MOB",
-      "effort": 3
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "Backend Development",
-      "description": "REST API implementation and infrastructure",
-      "team": "Engineering",
-      "role_code": "QA",
-      "effort": 4
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Mobile Development",
-      "description": "Cross-platform app implementation and testing",
-      "team": "Engineering",
-      "role_code": "MOB",
-      "effort": 23
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Mobile Development",
-      "description": "Cross-platform app implementation and testing",
-      "team": "Engineering",
-      "role_code": "BED",
-      "effort": 5
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Mobile Development",
-      "description": "Cross-platform app implementation and testing",
-      "team": "Engineering",
-      "role_code": "QA",
-      "effort": 5
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Launch",
-      "description": "App store submission, UAT and go-live",
-      "team": "Product",
-      "role_code": "PO",
-      "effort": 7
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Launch",
-      "description": "App store submission, UAT and go-live",
-      "team": "Engineering",
-      "role_code": "MOB",
-      "effort": 6
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Launch",
-      "description": "App store submission, UAT and go-live",
-      "team": "Engineering",
-      "role_code": "BED",
-      "effort": 3
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Launch",
-      "description": "App store submission, UAT and go-live",
-      "team": "Engineering",
-      "role_code": "QA",
-      "effort": 4
     }
   ],
   "risks": [

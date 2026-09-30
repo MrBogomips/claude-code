@@ -10,7 +10,7 @@ Rules for mapping SOW document sections to PERT-compatible Work Breakdown Struct
 - **Preserve names**: use the SOW's exact terminology for phases and deliverables (don't rename)
 - **Preserve owners**: map RACI "R" (Responsible) to the activity owner
 - **Flag gaps**: if a phase has no decomposition, flag it for user clarification
-- **Respect 8/80**: extracted work packages should fall within 8-80 hours; flag violations
+- **Respect 8/80**: PERT keeps each leaf activity at 1-10 person-days most-likely (8-80 hours); when a single deliverable is clearly larger, flag it for splitting in PERT Phase 3
 
 ---
 
@@ -42,7 +42,7 @@ Rules for mapping SOW document sections to PERT-compatible Work Breakdown Struct
 |-------------|-------------|
 | Team composition table: Role column | Role code |
 | Team composition table: Organization column | Team assignment |
-| Team composition table: Allocation % | Availability (affects effort calculation) |
+| Team composition table: Allocation % | Note only: the PERT input has no availability field, so it does not change effort |
 | Team composition table: Billable column | Billable flag |
 | RACI matrix: R assignments | Role-to-activity mapping |
 
@@ -70,7 +70,7 @@ Rules for mapping SOW document sections to PERT-compatible Work Breakdown Struct
 
 | SOW Pattern | PERT Config Mapping |
 |-------------|-------------------|
-| Rate card table | PERT rate inputs |
+| Rate card table | Kept for the backfill; the PERT workbook has no per-role rates |
 | CAPEX/OPEX split | Cost categorization |
 | Budget envelope (if stated) | PERT target for reconciliation |
 
@@ -98,7 +98,7 @@ Since summary mode has no explicit phase breakdown, infer phases by:
 | SOW Pattern | RBS Mapping |
 |-------------|-------------|
 | Team table rows | Direct mapping to roles |
-| Allocation % | Availability |
+| Allocation % | Note only (no availability field in PERT) |
 | Billable flag | Billable metadata |
 
 ### Source: Section 4 — Milestones & Billing
@@ -129,7 +129,7 @@ If the SOW structure doesn't clearly distinguish between work packages and activ
 - Let the PERT skill's WBS Builder (Phase 3) further decompose if needed
 
 ### No Risk Section
-If the SOW has no Risk Management section:
+A risk with P×I ≥ 10 is high, as in PERT. If the SOW has no Risk Management section:
 - Create 3-5 standard risks based on project type:
   - Scope creep (P:3, I:4)
   - Key person dependency (P:3, I:3)
@@ -139,6 +139,10 @@ If the SOW has no Risk Management section:
 - Mark as "auto-generated — review recommended"
 
 ### Rate Information
-- If the SOW includes a rate card: pass rates to PERT for cost calculations
-- If the SOW mentions a budget envelope but no rates: pass as PERT target
-- If neither: PERT skill will use its configured AvgRate or ask the user
+- The PERT workbook is in person-days and has no per-role rates. Its only rate is the
+  configured `AvgRate`, which prices the risk contingency.
+- If the SOW includes a rate card: keep it in the extraction and use it in the backfill
+  (cost = PD × rate).
+- If the SOW mentions a budget envelope but no rates: record it as a PERT target (in PD, or
+  as a cost the backfill compares with).
+- If neither: the backfill uses `AvgRate`, or asks the user for a rate.

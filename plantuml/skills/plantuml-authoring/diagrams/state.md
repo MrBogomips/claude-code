@@ -42,8 +42,9 @@ right after the include chain:
 ```plantuml
 @startuml State_Order_Lifecycle
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 !pragma layout dot   ' override smetana for concurrent regions
 …
 @enduml
@@ -58,8 +59,9 @@ level — non-concurrent state diagrams render fine on smetana.
 ```plantuml
 @startuml State_Order_Lifecycle
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 [*] --> Draft
 Draft   --> Submitted : submit()

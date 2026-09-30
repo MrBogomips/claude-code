@@ -52,6 +52,19 @@ delivery planning, staffing decisions, and project governance activities.
 > Cost calculations have not been included because no approved internal costing model was provided or
 > authorized.
 
+## Unapproved cost figures (verbatim, Commercial Clarifications item)
+
+> The source quotes cost figures that no approved costing model backs; they are not reproduced here.
+> Confirm the costing basis before pricing.
+
+## Cost basis labels (cost-authorized mode)
+
+| Concept | Label |
+|---------|-------|
+| Cost basis | Cost basis |
+| Cost model used | Cost model |
+| Authorized by | Authorized by |
+
 ## Conventions
 
 - Effort unit label: `PD` (Person-Days) or `MD` (Man-Days) — match the source's convention.

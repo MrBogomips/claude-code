@@ -71,8 +71,8 @@ outside PlantUML.
 ```plantuml
 @startuml InteractionOverview_Onboarding_Standard
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 title "Onboarding — Interaction Overview (standard)"
 

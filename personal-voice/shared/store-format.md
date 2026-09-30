@@ -9,11 +9,18 @@ learn and maintain skills all follow this file.
 | Store | Location | Holds |
 |---|---|---|
 | Global | The directory set in the plugin's `store_dir` option. The skill that sent you here gives you the path | The author's tone, lexicon and exemplars. Personal to the author |
-| Project | `.personal-voice/` at the project root: the git top-level directory, or the working directory outside git | Project material only: client and project terms, document-type conventions |
+| Project | `.personal-voice/` at the project root (see below) | Project material only: client and project terms, document-type conventions |
 
-If the global path is empty, or still reads as a placeholder that starts with
-`${`, the store is not configured: tell the user to set **Voice store
-directory** in `/config` (or when enabling the plugin) and write nothing.
+**Project root**: the directory `git rev-parse --show-toplevel` prints, or the
+working directory outside git. The skills pre-approve `git rev-parse`, so this
+asks for no permission. A session started in a subdirectory of the repository
+uses the same root, so it finds the existing store and never creates a second
+one in the subdirectory.
+
+If the global path is empty, or still contains the text
+`user_config.store_dir` (the placeholder was not replaced), the store is not
+configured: tell the user to set **Voice store directory** in `/config` (or
+when enabling the plugin) and write nothing.
 
 The global store never lives inside the plugin's installation or data
 directory. Uninstalling the plugin leaves it in place.
@@ -167,6 +174,7 @@ project.
 
 ```
 - [qualifiers] Rule text in English, quoting "verbatim expressions". (evidence: N, reinforced: YYYY-MM-DD)
+- [qualifiers] A rule the author kept at a stale review. (evidence: N, reinforced: YYYY-MM-DD, reviewed: YYYY-MM-DD)
 ```
 
 Qualifiers, in this order, each only when the rule depends on it:
@@ -178,8 +186,11 @@ Qualifiers, in this order, each only when the rule depends on it:
 | Topic (tone rules only) | `[topic: <slug>]` | `[topic: cycling]` |
 
 `evidence` is the number of independent texts or sessions that showed the
-trait. `reinforced` is the date of the most recent one. Entries in
-`languages/<code>.md` always carry that language's qualifier.
+trait. `reinforced` is the date of the most recent one. `reviewed` appears only
+after the author kept the rule at a stale review, and is the date of that
+review; the stale check measures age from the later of `reinforced` and
+`reviewed`. Entries in `languages/<code>.md` always carry that language's
+qualifier.
 
 Glossary entries use the same form, stating the preferred term, the terms to
 avoid and the meaning:
@@ -199,7 +210,7 @@ avoid and the meaning:
 - destination: languages/it.md › Avoid
 - evidence: 1
 - sources:
-  - 2026-09-29 · revision · text: status email to the team · project: example-portal · "Inoltre, il rilascio è pronto." → "E il rilascio è pronto."
+  - 2026-09-29 · revision · text: status email to the team · project: /path/to/example-portal · "Inoltre, il rilascio è pronto." → "E il rilascio è pronto."
 ```
 
 - **Heading**: the trait in a few English words.
@@ -211,7 +222,7 @@ avoid and the meaning:
   rule there.
 - **sources**: one line per independent text: date, source kind (`revision`,
   `spoken correction` or `own text`), a short label for the text, the project
-  as `project: <folder name>` when the text was written in a project, and
+  tag when the global store records a text written in a project, and
   either `"before" → "after"` excerpts or the quoted trait. Give each text a label
   that tells it apart from other texts (what it is, for whom, when). Two lines
   with the same text label count as one piece of evidence.
@@ -224,6 +235,15 @@ avoid and the meaning:
 
 A trait that matches a pending observation adds a line to that observation's
 `sources`; it never creates a second observation.
+
+**Project tag**: `project: <absolute path of the project root>`, written exactly
+as `git rev-parse --show-toplevel` prints it (the working directory outside
+git), for example `project: /path/to/example-portal`. Only sources in the global store carry
+it; there it tells projects apart even when two repositories share a folder
+name (`backend`, `docs`). Sources in a project store carry no project tag: the
+store itself identifies the project, and a personal absolute path must never
+land in a store that may be versioned. When an entry moves into a project
+store, drop the tag from its sources.
 
 ## Routing
 
@@ -312,9 +332,10 @@ Then:
 - **Personal**, or a plain yes that names no option: create `.personal-voice/` and append
   the line `.personal-voice/` to the repository's exclude file, creating it if it
   is missing, with the Edit or Write tool rather than a shell command. Claude
-  Code protects `.git/`, so this edit asks for permission. The exclude file is
-  `.git/info/exclude`; in a linked worktree or submodule, where `.git` is a
-  file, get its path from `git rev-parse --git-path info/exclude`.
+  Code protects `.git/`, so this edit asks for permission. Get the exclude
+  file's path from `git rev-parse --git-path info/exclude`, run in the project
+  root: it prints `.git/info/exclude` in an ordinary clone, and the right path
+  in a linked worktree or submodule, where `.git` is a file.
 - **Versioned**: create `.personal-voice/` and touch no ignore file.
 - **Skip**: create nothing, record no project observations, and do not ask
   again in this session. A later session may offer it again.

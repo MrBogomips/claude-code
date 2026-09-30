@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Layer 1: Connector cross-reference validation
-# Checks that every ~~placeholder in SKILL.md files has a matching entry in CONNECTORS.md
+# Checks that every ~~placeholder in skills, agents, commands and profiles has a matching entry in CONNECTORS.md
 # and that no connector is defined but never referenced.
 set -euo pipefail
 
@@ -24,16 +24,20 @@ for plugin_dir in "$REPO_ROOT"/*/; do
     echo ""
     echo "=== Checking connectors: $plugin_name ==="
 
-    # Collect all ~~placeholder references from SKILL.md files
+    # Collect all ~~placeholder references from every component that reaches the model
     declared_refs=()
-    if [[ -d "$plugin_dir/skills" ]]; then
+    component_dirs=()
+    for component in skills agents commands profiles; do
+        [[ -d "$plugin_dir/$component" ]] && component_dirs+=("$plugin_dir/$component/")
+    done
+    if [[ ${#component_dirs[@]} -gt 0 ]]; then
         while IFS= read -r ref; do
             declared_refs+=("$ref")
-        done < <(grep -rIoh '~~[a-zA-Z ]*' "$plugin_dir/skills/" 2>/dev/null | sort -u || true)
+        done < <(grep -rIoh '~~[a-zA-Z][a-zA-Z -]*' "${component_dirs[@]}" 2>/dev/null | sort -u || true)
     fi
 
     if [[ ${#declared_refs[@]} -eq 0 ]]; then
-        ok "$plugin_name: no connector references found in skills"
+        ok "$plugin_name: no connector references found in components"
         continue
     fi
 
@@ -51,7 +55,7 @@ for plugin_dir in "$REPO_ROOT"/*/; do
         # Strip the ~~ prefix for matching
         placeholder="${ref#\~\~}"
         if ! grep -qi "$placeholder" "$connectors_md"; then
-            error "$plugin_name: connector '$ref' referenced in skills but not defined in CONNECTORS.md"
+            error "$plugin_name: connector '$ref' referenced in components but not defined in CONNECTORS.md"
         else
             ok "$plugin_name: connector '$ref' → defined in CONNECTORS.md"
         fi
@@ -72,7 +76,7 @@ for plugin_dir in "$REPO_ROOT"/*/; do
         done
 
         if [[ "$found" == "false" ]]; then
-            warn "$plugin_name: connector '~~$placeholder' defined in CONNECTORS.md but never referenced in skills"
+            warn "$plugin_name: connector '~~$placeholder' defined in CONNECTORS.md but never referenced in components"
         fi
     done < "$connectors_md"
 done

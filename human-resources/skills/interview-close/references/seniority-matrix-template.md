@@ -6,7 +6,7 @@ This reference provides the default matrix structure, generation rules, industry
 
 ## 1. Default Matrix Structure
 
-The seniority matrix maps competencies (rows) against seniority levels (columns). Each cell contains the expected proficiency score (1–5 BARS) for that competency at that level.
+The seniority matrix maps competencies (rows) against seniority levels (columns). Each cell contains the expected score for that competency at that level, on the canonical absolute 1–5 scale in `evaluation-template.md` Section 3 (1 = no competence shown … 5 = sets direction for others).
 
 ```markdown
 | Competency | Junior (1-2 yrs) | Mid (3-5 yrs) | Senior (5-8 yrs) | Lead/Principal (8+ yrs) |
@@ -34,7 +34,7 @@ The seniority matrix maps competencies (rows) against seniority levels (columns)
 
 2. **Assign weights** — use the same weights from the evaluation template. Core competencies get higher weight (0.20–0.30), supporting competencies lower (0.05–0.10).
 
-3. **Define expected proficiency per level** — for each competency, set the expected 1–5 BARS score at each seniority level:
+3. **Define expected proficiency per level** — for each competency, set the expected score (canonical scale, `evaluation-template.md` Section 3) at each seniority level:
    - **Junior**: can perform basic tasks with guidance (typically 1–2)
    - **Mid**: can work independently on standard tasks (typically 2–3)
    - **Senior**: can handle complex problems and mentor others (typically 3–4)
@@ -43,6 +43,7 @@ The seniority matrix maps competencies (rows) against seniority levels (columns)
 4. **Validate monotonic progression** — ensure no competency has a score that decreases from a lower to higher seniority level.
 
 5. **Present to user for confirmation** — the matrix is a proposal, not a final decision. The user must confirm or edit before it is used for classification.
+6. **Save the confirmed matrix** — write it to `{role}-seniority-matrix.md` in the output folder (Section 5), so later candidates for the same role are scored against the same matrix.
 
 ### Example Generation
 
@@ -132,7 +133,7 @@ The seniority matrix must be confirmed by the user before it is used for classif
    - Should any competency be added, removed, or reweighted?
    ```
 3. **Accept edits** — the user may change any cell value, add/remove competencies, or adjust weights
-4. **Lock matrix** — once the user confirms, the matrix is locked for the evaluation. Record in output: "Matrix confirmed by [user] on [date]"
+4. **Lock and save the matrix** — once the user confirms, the matrix is locked for the evaluation. Record in output: "Matrix confirmed by [user] on [date]", and save it as `{role}-seniority-matrix.md` (Section 5)
 
 ### Important: Do not proceed to classification with an unconfirmed matrix.
 
@@ -140,14 +141,26 @@ The seniority matrix must be confirmed by the user before it is used for classif
 
 ## 5. Matrix Consistency Rule
 
-If a seniority matrix was created or used during the **interview-prep** skill for the same role, reuse the same matrix. This ensures consistency between interview design and evaluation.
+Every candidate for the same role is classified against the same confirmed matrix. The matrix is kept as a file, `{role}-seniority-matrix.md` in the output folder (`{role}` is the sanitized role title, lowercase, hyphens for spaces). It holds no candidate data.
 
 ### Consistency Check
 
-1. Check conversation memory for a previously stored seniority matrix for this role
-2. If found, present it to the user: "I found the seniority matrix used during interview preparation for [Role Title]. Should I use the same matrix for evaluation?"
-3. If confirmed, use as-is. If the user wants changes, note the deviation and update.
-4. If not found, proceed with generation from JD (Section 2).
+1. Look for `{role}-seniority-matrix.md` in the output folder first.
+2. If found, present it to the user: "I found the seniority matrix confirmed for [Role Title] on [date]. Should I use it for this evaluation?"
+3. If confirmed, use as-is. If the user wants changes, save the edited matrix as the new `{role}-seniority-matrix.md`, add "Revised on [date]: [what changed]" at its top, and note in the evaluation that earlier candidates were scored against the previous version.
+4. If not found, use a corporate matrix (from **~~knowledge base** or the user), or generate one from the JD (Section 2). Save it once confirmed.
+
+### File Format
+
+```markdown
+# Seniority Matrix — [Role Title]
+
+Confirmed by [user] on [date]. Scale: `evaluation-template.md` Section 3 of the interview-close skill.
+
+| Competency | Weight | Core? | Junior | Mid | Senior | Lead/Principal |
+|------------|--------|-------|--------|-----|--------|----------------|
+| [Competency 1] | [0.00] | [yes/no] | [1-5] | [1-5] | [1-5] | [1-5] |
+```
 
 ---
 
@@ -155,11 +168,13 @@ If a seniority matrix was created or used during the **interview-prep** skill fo
 
 ### Weighted Average Method
 
-1. For each seniority level in the matrix, compute the distance between the candidate's actual scores and the expected scores:
+1. For each seniority level in the matrix, compute the distance between the candidate's actual scores and the expected scores, over the **assessed** competencies only, with the renormalized weights from `evaluation-template.md` Section 2:
 
 ```
-Distance(level) = SUM( Weight_i × |ActualScore_i - ExpectedScore_i(level)| ) for all competencies i
+Distance(level) = SUM( WeightUsed_i × |ActualScore_i - ExpectedScore_i(level)| ) for assessed competencies i
 ```
+
+Not assessed competencies are left out of the distance and of every threshold rule below.
 
 2. The candidate's suggested level is the level with the **minimum weighted distance**.
 
@@ -171,8 +186,8 @@ After computing the minimum-distance level, apply these threshold rules:
 
 | Rule | Condition | Action |
 |------|-----------|--------|
-| **Floor rule** | Any core competency scored at 1 | Cannot be classified above Junior, regardless of other scores |
-| **Ceiling validation** | Suggested level is Lead/Principal | Verify at least 2 competencies scored 5 AND no competency below 3 |
+| **Floor rule** | Any core competency scored at 1 (evidence of no competence — never Not assessed) | Cannot be classified above Junior, regardless of other scores |
+| **Ceiling validation** | Suggested level is Lead/Principal | Verify at least 2 competencies scored 5 AND no assessed competency below 3 |
 | **Gap rule** | Any competency is 2+ points below expected for the suggested level | Flag as "classification risk" — the competency gap may prevent effective performance at this level |
 | **Strength override** | Any competency is 2+ points above expected for the suggested level | Note as "strength beyond level" — may indicate readiness for next level in that area |
 
@@ -196,6 +211,8 @@ Present the classification as:
 | Senior | [X.XX] | Minimum distance |
 | Lead/Principal | [X.XX] | |
 
+Keep this table in the output: it is the computation behind the suggested level.
+
 ### Flags
 - [Any floor, ceiling, gap, or strength override flags]
 ```
@@ -206,4 +223,4 @@ Present the classification as:
 |------------|----------|
 | **High** | Minimum distance < 0.5 AND next-closest level distance > 1.0 AND no threshold flags |
 | **Medium** | Minimum distance 0.5–1.0 OR next-closest level within 0.5 OR one threshold flag |
-| **Low** | Minimum distance > 1.0 OR multiple threshold flags OR missing evidence on core competencies |
+| **Low** | Minimum distance > 1.0 OR multiple threshold flags OR any competency Not assessed |

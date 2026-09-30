@@ -1,7 +1,7 @@
 # Internal Summary Structure
 
-The document opens with the verbatim `INTERNAL USE ONLY` notice from the language pack, then the 13
-sections below in order. Prefer structured sections, tables, bullet points, and action-oriented
+The document opens with the language pack's verbatim confidentiality notice (`INTERNAL USE ONLY`, or
+`SOLO PER USO INTERNO` in Italian), then the 13 sections below in order. Prefer structured sections, tables, bullet points, and action-oriented
 language. Keep each section to what is useful for commercial and delivery decision-making; exclude
 implementation detail that does not affect planning, staffing, effort, risk, schedule, or commerce.
 
@@ -93,9 +93,10 @@ dependencies. Clearly identify critical-path dependencies.
 
 ## 11. Commercial Considerations
 
-**Cost-authorized mode** (an approved cost model was found and the user confirmed in Step 3) — include:
-estimated costs, cost breakdown, cost drivers, commercial assumptions, optional scope items, areas
-impacting profitability, pricing sensitivities.
+**Cost-authorized mode** (an approved cost model was found and the user confirmed in Step 3) — open
+with the **cost basis**: the cost model used (name, and version or date when it has one), where it was
+found, and who authorized its use. Then include: estimated costs, cost breakdown, cost drivers,
+commercial assumptions, optional scope items, areas impacting profitability, pricing sensitivities.
 
 **Effort-only mode** (default) — include only this statement and no cost figures:
 
@@ -110,7 +111,9 @@ A structured bid-readiness review.
 confirmation, potential scope-creep areas.
 
 **Commercial Clarifications** — cost-affecting assumptions, optional scope items, licensing
-uncertainties, third-party costs requiring validation, commercial constraints.
+uncertainties, third-party costs requiring validation, commercial constraints. In effort-only mode,
+when the source quotes cost figures, include the language pack's "unapproved cost figures" item and
+where those figures appear, without the figures (`cost-model-verification.md`).
 
 **Delivery Clarifications** — unconfirmed timelines, scheduling dependencies, customer-participation
 requirements, approval-process assumptions, governance concerns.

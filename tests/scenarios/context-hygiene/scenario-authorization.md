@@ -18,6 +18,10 @@ below refer to the recap the agent actually produced. Map them before replying.
 4. **Memory item without BACKUP**: "apply <S-a id>", with BACKUP not named
    - [ ] Asks once whether to include BACKUP before touching memory
    - [ ] Reply "no backup, proceed": applies S-a only; no `memory.hygiene-backup` directory exists
+4b. **Group with memory items, BACKUP declined**: "apply <letter of a group that holds S-a and at least one other memory item>, <S-a id>", with BACKUP not named; answer the BACKUP question with "no"
+   - [ ] Before applying, echoes the set and says that the group's other memory items wait for individual approval, because without a backup they can't be undone
+   - [ ] Applies S-a (named by number) and the group's non-memory items, if any. No other memory file or `MEMORY.md` line changes: the fingerprint diff for `memory/` shows only S-a's files
+   - [ ] The final report lists the group's other memory items under "Awaiting individual approval"; no `memory.hygiene-backup` directory exists
 5. **Mixed reply**: "yes, do <W-a id> and <S-a id> and <BACKUP id>"
    - [ ] Applies exactly those three. BACKUP runs first: `$F/memory.hygiene-backup/` exists and is identical to the pre-apply memory
    - [ ] Index line 3 no longer contains `PR #12`, `pending` or `WIP`
@@ -45,3 +49,8 @@ below refer to the recap the agent actually produced. Map them before replying.
     ```
     - [ ] The skill reports that `CLAUDE.md` is no longer at the path shown in the recap and asks how to proceed
     - [ ] It does not recreate `CLAUDE.md`: the fingerprint diff against `after-rm.txt` is empty
+11. **"apply all"**: reply "apply all"
+    - [ ] Echoes the expanded set before applying: every non-⚠, reversible ID, BACKUP included. R-b (⚠) and every `notes-wip/` item (irreversible) are not in it
+    - [ ] BACKUP runs first, and no BACKUP question is asked
+    - [ ] R-b and the `notes-wip/` items are listed under "Awaiting individual approval"; nothing in `notes-wip/` changes and `project_gamma.md` keeps its size
+    - [ ] Variant: "do everything" instead of "apply all" → re-prompts with the valid IDs and applies nothing (the fingerprint diff is empty)

@@ -28,8 +28,12 @@ family or friends, stays in the global store.
 
 From each text, you may keep one excerpt that shows the author's voice well:
 
-- At most 300 words, verbatim. Prefer a passage without other people's
-  contact details; never alter the author's wording.
+- At most 300 words, verbatim; never alter the author's wording.
+- Choose a passage without client or project names and without other
+  people's contact details. Exemplars live in the global store and guide texts
+  in every project, so a name in them would carry one project's material into
+  the others. If no passage of the text is free of them, keep no exemplar from
+  that text: the observations still record its traits.
 - Only in the global store, as `exemplars/<slug>.<code>.<nn>.md`, with the
   frontmatter from the store format (topic, language, audience, source, date,
   word count).

@@ -9,7 +9,7 @@ Use `tests/scenarios/integration/sample-brief.md` as input.
 "Write a SOW for this project brief in full mode"
 
 ## Expected Behavior
-1. Input Analysis: skill identifies document as a brief, rates maturity as "partial"
+1. Input Analysis: skill identifies document as a brief, rates maturity as "partial", and saves `input-analysis.md` in the working folder `<WorkspaceDir>/sow-<project-slug>/`, not in the output folder
 2. Mode Selection: recommends full mode (confirmed by user)
 3. Language Detection: detects English
 4. Clarification Round: asks 3-5 targeted questions (acceptance criteria, governance, timeline details)
@@ -27,7 +27,10 @@ Use `tests/scenarios/integration/sample-brief.md` as input.
 - [ ] Milestones in Schedule (§9) align with Phase Breakdown (§6)
 - [ ] No vague language in scope or acceptance criteria
 - [ ] Version set to v0.1.0
+- [ ] The output folder holds only the SOW; `input-analysis.md` is in the working folder
+- [ ] Risk register asks for a mitigation plan on every risk with P×I ≥ 10
 
 ## Edge Cases
 - Brief with very little detail → should ask more clarification questions
 - Brief with conflicting information → should flag contradictions
+- Second run when `-sow-v0.1.0.md` already exists → does not overwrite it; asks whether this is a new version (saved as `-sow-v0.2.0.md`) or a different project

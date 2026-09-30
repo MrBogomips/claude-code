@@ -1,0 +1,10 @@
+@startuml Login
+!$target = %getenv("PLANTUML_TARGET")
+!include ../../.plantuml/_base.puml
+!include ../../.plantuml/_targets/$target.puml
+title "Login, two levels below the project root"
+actor User
+participant "Auth service" as Auth
+User -> Auth : credentials
+Auth --> User : session
+@enduml

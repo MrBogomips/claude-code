@@ -1,13 +1,13 @@
 ---
 name: code-refactoring
 description: "Recursively improve code quality metrics for a target codebase area"
-version: 1.0.0
+version: 1.1.0
 
 strategy: multi-objective
 autonomy: hybrid(3)
 iteration_budget: 10
 convergence:
-  epsilon: 0.05
+  epsilon: 0.05    # fallback only: each KPI below sets its own epsilon in its own unit
   patience: 3
 
 initial_state:
@@ -29,18 +29,21 @@ kpis:
     description: "Average cyclomatic complexity per function across files in scope. Lower indicates simpler, more maintainable code."
     direction: minimize
     unit: count
+    epsilon: 0.05         # average decision points per function
     measurement_method: automated
     formula: "sum(function_complexity) / count(functions)"
   - name: duplication_ratio
     description: "Percentage of code that exists as duplicated blocks (>= 6 lines identical). Lower is better."
     direction: minimize
     unit: percentage
+    epsilon: 0.1          # percentage points; one removed 6-line block in 10,000 lines moves it 0.12
     measurement_method: automated
     formula: "duplicated_lines / total_lines * 100"
   - name: file_size_compliance
     description: "Percentage of files in scope that are under 400 lines. Higher means better modularization."
     direction: maximize
     unit: percentage
+    epsilon: 0.5          # percentage points
     measurement_method: automated
     formula: "files_under_400_lines / total_files * 100"
 
@@ -69,6 +72,14 @@ connectors:
 ---
 
 # Code Refactoring Improvement Instructions
+
+## BOOTSTRAP Special Handling
+
+Refactorings must preserve behavior, and this profile runs unattended for its first iterations (`hybrid(3)`), so VERIFY needs real checks:
+
+1. Detect the project's build, test and lint commands (for example from `package.json` scripts, a `Makefile`, `pyproject.toml` or the CI configuration) and show them to the user. Ask for any that cannot be detected.
+2. The user confirms which ones become verify checks. The engine runs each once on the baseline and keeps those that pass.
+3. If no check can be recorded, tell the user that behavior preservation will rest on review alone, and suggest `supervised` autonomy for this run.
 
 ## MEASURE Phase
 
@@ -147,6 +158,5 @@ When applying refactoring changes:
 
 After applying the refactoring:
 1. Re-run the measurement tool to check KPIs
-2. If the project has a build/compile step, verify it still passes
-3. If the project has tests, suggest the user run them (supervised mode)
-4. Check that no new linting errors were introduced
+2. Run every verify check recorded at BOOTSTRAP (build, tests, lint). Any failure forces REVERT (`verify_failed`), even when every KPI improved
+3. If no test command was recorded and the run is supervised, ask the user to run the tests before approving the next proposal

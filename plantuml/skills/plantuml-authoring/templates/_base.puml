@@ -1,16 +1,19 @@
-' Base — auto-generated from CLAUDE.md "PlantUML Policy".
-' Single include entry-point. Do NOT add target-specific overrides here;
-' those live in _targets/<target>.puml and are included per-diagram via
-' the PLANTUML_TARGET env var.
+' Base: the single include entry-point of every diagram.
+' Do NOT add target-specific overrides here; those live in
+' _targets/<target>.puml and are included per diagram via the
+' PLANTUML_TARGET environment variable.
 
-' Fallback for $target if PLANTUML_TARGET env var is unset, so the diagram
-' still renders (web-target defaults) instead of failing on a missing
-' _targets/.puml include.
+' Fallback for $target when PLANTUML_TARGET is unset: the Policy's primary
+' target, written on the line below. Validation and rendering always set
+' PLANTUML_TARGET explicitly; the fallback serves editors and previewers
+' that render without it.
 !if (%not(%variable_exists("$target")) || $target == "")
   !$target = "web"
 !endif
 
+' The theme comes before the fonts: a built-in theme resets the font family
+' and size, so the Policy's font settings are applied after it.
 !include _brand.puml
-!include _fonts.puml
 !include _theme.puml
+!include _fonts.puml
 !include _layout.puml

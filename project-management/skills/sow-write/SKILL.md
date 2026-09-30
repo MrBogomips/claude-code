@@ -1,6 +1,6 @@
 ---
 name: sow-write
-description: "Write professional Statements of Work (SOW) in full (15-section enterprise) or summary (9-section contract extraction) mode. Auto-detects language from input documents, supports English and Italian with language packs. Produces structured markdown with optional research subagents for domain gaps. Use this skill whenever the user wants to write a SOW, create a statement of work, draft a proposal, write a capitolato tecnico, prepare an offerta, or mentions 'scrivi SoW'. Also triggers for 'project proposal', 'scope document', 'service agreement draft', or any request to formalize project scope into a deliverable document."
+description: "Write professional Statements of Work (SOW) in full (15-section enterprise) or summary (9-section contract extraction) mode. Auto-detects language from input documents, supports English and Italian with language packs. Produces structured markdown with optional research subagents for domain gaps. Use this skill whenever the user wants to write a SOW or statement of work, turn an existing contract into a summary SOW, write a capitolato tecnico, prepare an offerta or offerta tecnica, or mentions 'scrivi SoW'. Not for other proposals, pitches, business cases, project plans or legal contracts, and not for reviewing a SOW (use sow-review) or estimating one (use sow-estimate)."
 ---
 
 # SOW Write — Statement of Work Generator
@@ -14,7 +14,10 @@ This skill writes professional Statements of Work from project briefs, PRDs, con
 
 The skill auto-detects language from input documents and produces output in the detected language. When language is ambiguous (mixed-language inputs), it asks the user to choose. Language packs provide localized section headers, boilerplate text, and legal terminology.
 
-**Output directory:** the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`).
+**Folders.** This skill uses the plugin's configuration section in the project's `CLAUDE.md` (`## project-management Configuration`, described in `pmo-pert-estimate` Section 2):
+
+- **Output folder:** `OutputDir`, for the finished SOW only. If it is not set, ask the user (suggest `docs/outbox/`) and record it.
+- **Working folder:** `<WorkspaceDir>/sow-<project-slug>/`, for intermediate notes such as the input analysis. `WorkspaceDir` is resolved as in `pmo-pert-estimate` (configured value, else the project's working-documents location, else ask).
 
 **Connector support:** Skills degrade gracefully without connectors. See `CONNECTORS.md` for the full registry.
 
@@ -23,6 +26,7 @@ The skill auto-detects language from input documents and produces output in the 
 - If **~~CRM** is connected: pull client context for personalization
 - If **~~calendar** is connected: check team availability for scheduling sections
 - If **~~email** is connected: share SOW drafts with stakeholders
+- If **~~document converter** is connected: convert DOCX or PPTX inputs to Markdown before analysis. Without one, read Markdown and PDF directly; for other formats look for a converter on the system (`command -v markitdown pandoc`) and ask before running it, or else ask the user for a Markdown or PDF export
 
 ---
 
@@ -40,7 +44,7 @@ If connectors are available:
 - **~~knowledge base**: search for existing templates matching the project domain
 - **~~document storage**: search for related documents (past SOWs for the same client, similar projects)
 
-Save analysis to `<output directory>/<project-name>-input-analysis.md`.
+Save the analysis to `<working folder>/input-analysis.md`. It is a working note, not a deliverable, so it stays out of the output folder.
 
 ### Step 2 — Mode Selection
 
@@ -132,7 +136,9 @@ Flag any inconsistencies to the user with specific fix recommendations.
 
 ### Step 8 — Output
 
-Save the completed SOW to `<output directory>/<project-name>-sow-v0.1.0.md`.
+Save the completed SOW to `<OutputDir>/<project-name>-sow-v0.1.0.md`.
+
+Never overwrite an existing file. If that name is already taken (for example by an earlier run), ask whether this is a new version of the same SOW, then save it as the next free minor version (`v0.2.0`, `v0.3.0`, …), or a different project, then choose another project name.
 
 Present a summary: section count, word count, language, mode, any placeholders remaining, and suggested next steps (run `sow-review` for quality check, run `sow-estimate` for economics).
 

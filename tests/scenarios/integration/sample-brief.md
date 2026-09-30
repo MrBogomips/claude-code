@@ -1,14 +1,14 @@
-# Project Brief: HomeAI Property Management Platform
+# Project Brief: Acme Property Management Platform
 
 ## Parties
-- **Client**: Meridian Properties Group S.r.l. (Milan, Italy)
-- **Vendor**: TechForge Solutions Ltd (London, UK)
+- **Client**: Acme Properties S.r.l. (Italy)
+- **Vendor**: Example Software Ltd (UK)
 
 ## Background
-Meridian Properties manages 2,500+ residential and commercial properties across Northern Italy. Their current property management relies on spreadsheets, email, and a legacy desktop application (PropManager 2.0, circa 2015). They need a modern cloud platform to streamline operations, improve tenant satisfaction, and enable data-driven decision-making.
+Acme Properties manages 2,500+ residential and commercial properties across several Italian regions. Their current property management relies on spreadsheets, email, and a legacy desktop application (circa 2015). They need a modern cloud platform to streamline operations, improve tenant satisfaction, and enable data-driven decision-making.
 
 ## High-Level Scope
-Build a multi-tenant SaaS platform ("HomeAI") that provides:
+Build a multi-tenant SaaS platform ("the Platform") that provides:
 - Property portfolio management (listings, units, tenants, leases)
 - AI-powered maintenance request triage and routing
 - Financial management (rent collection, expense tracking, reporting)
@@ -37,7 +37,7 @@ Ongoing OPEX estimated at EUR 8,000-12,000/month post-launch
 - Go-live: Q1 2027
 
 ## Key Concerns
-- Data migration from PropManager 2.0 (uncertain data quality)
+- Data migration from the legacy desktop application (uncertain data quality)
 - GDPR compliance for tenant PII
 - Integration with existing accounting system (SAP Business One)
 - Multi-language support (Italian primary, English secondary)

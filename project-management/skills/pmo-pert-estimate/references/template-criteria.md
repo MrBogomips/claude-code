@@ -73,7 +73,7 @@ within ±1 PD (rounding tolerance).
 **Also required by the validator**: Risk Description, Category, Affected
 Phases, Priority, Mitigation Action, Owner. Optional: Contingency Cost.
 
-**Footer rows**: `TOTAL CONTINGENCY` and `MANAGEMENT RESERVE`. The MR cell
+**Footer rows**: `TOTAL` (total contingency) and `Management Reserve`, labels in column A. The MR cell
 formula uses the PMI-correct base: `=(WBS!H{total}*(1+pm_pct+devops_pct)+L{contingency_total})*mr_pct`.
 
 ### Summary Sheet

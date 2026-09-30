@@ -31,7 +31,9 @@ rest into pointers or removes it — **only after you authorize each change**.
 3. You name what to apply (`apply A, 3`). Anything not named is left alone.
    Items marked ⚠ (they might remove a rationale) must be named individually.
 4. Before any memory change, a single backup copy of the memory folder is made
-   (if you authorize it). Tracked files rely on git.
+   (if you authorize it). Tracked files rely on git. If you decline the backup,
+   memory changes can't be undone, so only the memory items you named by number
+   are applied.
 
 ## Usage
 

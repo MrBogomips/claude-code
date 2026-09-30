@@ -43,8 +43,8 @@ embeddable in docs.
 ```plantuml
 @startsalt Salt_LoginDialog
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 {
   Sign in to the Shop

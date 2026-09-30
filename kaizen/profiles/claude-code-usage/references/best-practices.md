@@ -13,41 +13,31 @@ A well-configured CLAUDE.md should include:
 
 ## Recommended settings.json Configuration
 
-### allowedTools
+### Permission rules
 
-Tools that should typically be allowed for productive development:
+Permissions live under the `permissions` key of `.claude/settings.json` (shared with the team) or `.claude/settings.local.json` (personal), as `allow`, `ask` and `deny` lists of rules. Allow the commands the project runs often:
 
 ```json
 {
-  "allowedTools": [
-    "Read",
-    "Write",
-    "Edit",
-    "Grep",
-    "Glob",
-    "Bash(git *)",
-    "Bash(npm *)",
-    "Bash(npx *)"
-  ]
+  "permissions": {
+    "allow": [
+      "Bash(npm run test *)",
+      "Bash(npm run build)",
+      "Bash(git diff *)"
+    ]
+  }
 }
 ```
 
-Adjust based on tech stack (add `pip`, `cargo`, `go`, `docker` as needed).
+Adjust the commands to the tech stack. Read-only tools such as Read need no rule inside the working directory.
 
-### Model Configuration
+MCP servers are not configured in settings files: they go in `.mcp.json` at the project root (shared) or are added with `claude mcp add`.
 
-- Use `sonnet` for day-to-day development
-- Switch to `opus` for complex architectural decisions
-- Use `haiku` for lightweight agents
+Before recommending a setting, check it against the current Claude Code settings documentation, since keys and defaults change between releases.
 
 ## Recommended Rules
 
-The `.claude/rules/` directory should contain:
-
-- `coding-style.md` — language-specific conventions
-- `git-workflow.md` — commit message format, branch naming
-- `testing.md` — coverage requirements, TDD workflow
-- `security.md` — input validation, secret handling
+The `.claude/rules/` directory holds the project's rule files, one topic per file. Which topics a project needs depends on the project; there is no required set of names. A rule file may carry `paths` frontmatter so it loads only for matching files.
 
 ## Recommended Memory Usage
 
@@ -63,13 +53,13 @@ The `config_completeness` KPI measures coverage of these items:
 
 | Item | Category | Weight |
 |------|----------|--------|
-| CLAUDE.md exists | Essential | 2 |
+| CLAUDE.md exists (`CLAUDE.md` or `.claude/CLAUDE.md`) | Essential | 2 |
 | CLAUDE.md has project overview | Essential | 2 |
 | CLAUDE.md has directory structure | Essential | 2 |
 | CLAUDE.md has dev workflow | Important | 1 |
 | CLAUDE.md has tool conventions | Important | 1 |
 | settings.json exists | Essential | 2 |
-| allowedTools configured | Essential | 2 |
+| `permissions.allow` configured | Essential | 2 |
 | Rules directory exists | Important | 1 |
 | At least 1 rule file | Important | 1 |
 | Memory directory exists | Optional | 1 |

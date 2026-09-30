@@ -47,8 +47,9 @@ outer rectangle that expose the component's interaction points.
 ```plantuml
 @startuml CompositeStructure_PaymentGateway_Standard
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 title "Payment Gateway — internal composition (standard)"
 

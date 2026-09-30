@@ -35,8 +35,9 @@ Show a data model: entities, their attributes, and the relationships
 ```plantuml
 @startuml ER_OrderModel
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 entity "Customer" as c {
   *id : uuid <<PK>>

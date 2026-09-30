@@ -64,7 +64,7 @@ Detailed criteria for scoring each dimension on a 1-5 scale. Each score level ha
 
 | Score | Criteria |
 |:-----:|----------|
-| 5 | Comprehensive risk register with project-specific risks. All high risks (P×I ≥ 12) have mitigation plans. Assumptions are explicit with impact-if-invalid. Dependencies have owners and deadlines. Management reserve stated. |
+| 5 | Comprehensive risk register with project-specific risks. All high risks (P×I ≥ 10) have mitigation plans. Assumptions are explicit with impact-if-invalid. Dependencies have owners and deadlines. Management reserve stated. |
 | 4 | Good risk register with mostly project-specific risks. Most high risks have mitigations. Assumptions listed but 1-2 lack impact analysis. |
 | 3 | Risk register present but generic (only "scope creep", "delays", "resource turnover"). Some mitigations are vague. Assumptions listed without impact analysis. |
 | 2 | Minimal risk coverage. A few risks listed without P×I scoring. No mitigation plans. Assumptions scattered or missing. |

@@ -1,6 +1,4 @@
-' Auto-generated from PlantUML Policy. Do not edit by hand.
-!$primary = "#1A73E8"
-!$accent  = "#FBBC04"
-!$neutral = "#5F6368"
-!$surface = "#FFFFFF"
-!$danger  = "#D93025"
+' generated-sha256: 130bb6c181399599697868c1f4175cfee98640153e20740654ead9210037c9ae
+' Generated from the PlantUML Policy in CLAUDE.md. Edit the Policy, then run plantuml-migrate.
+' Brand colors from the Policy.
+' The Policy declares no brand colors (built-in theme plain).

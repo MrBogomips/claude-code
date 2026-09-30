@@ -1,6 +1,8 @@
 # Inclusive Language Guide for Job Descriptions
 
-This reference provides guidance on identifying and replacing exclusionary language in job descriptions. It covers gendered, ageist, ableist, and structurally exclusionary patterns with concrete alternatives.
+This reference provides guidance on identifying and replacing exclusionary language in job descriptions. It covers gendered, ageist, ableist, and structurally exclusionary patterns with concrete alternatives. The compliance-check skill also loads it for bias detection.
+
+**Statutes:** this guide names the protected ground; the statute for each ground is in the compliance-check skill's legal map (`../../compliance-check/references/legal-map.md`). Not legal advice.
 
 **Key research finding:** Studies (notably the HP internal report and subsequent academic research) show that women tend to apply for jobs only when they meet 100% of the listed requirements, while men tend to apply when they meet approximately 60%. Every unnecessary or inflated requirement disproportionately reduces the diversity of the applicant pool.
 
@@ -44,7 +46,7 @@ Excessive use of feminine-coded words can signal a lower-status or lower-pay rol
 
 ## 2. Ageist Language
 
-Age discrimination is prohibited under D.Lgs. 216/2003 (Italy), the Equality Act 2010 (UK), and the ADEA (US). Many common JD phrases are indirect age proxies.
+Age discrimination is prohibited in Italy and across the EU (ground: age, in the legal map), as well as under the Equality Act 2010 (UK) and the ADEA (US). Many common JD phrases are indirect age proxies.
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
@@ -62,7 +64,7 @@ Age discrimination is prohibited under D.Lgs. 216/2003 (Italy), the Equality Act
 
 ## 3. Ableist Language
 
-Many JDs include physical requirements that are not essential to the role. Under Italian law (L. 68/1999) and the EU Employment Equality Directive (2000/78/EC), requirements must be genuine occupational qualifications.
+Many JDs include physical requirements that are not essential to the role. Under Italian and EU law (grounds: disability, and disability — targeted hiring, in the legal map), requirements must be genuine occupational qualifications.
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
@@ -100,7 +102,7 @@ If the answer to #2 is "no" or the answer to #3/#4 is "yes," the requirement is 
 
 ### Experience Inflation
 
-**The >8 Requirements Rule:** Job descriptions listing more than 8 required qualifications significantly reduce the applicant pool, disproportionately affecting women, minorities, and non-traditional candidates. This is a key trigger for the requirements inflation check in the JD pipeline.
+**The ~8 requirements rule of thumb:** keep required qualifications to about 8. It is a practical rule, not a research threshold: every extra requirement discourages people who meet most but not all of them, and the HP report above suggests the effect is stronger for women. This is the trigger for the requirements inflation check in the JD pipeline.
 
 Warning signs of experience inflation:
 
@@ -155,7 +157,7 @@ Use these five principles as a final quality checklist for inclusive JD language
 ### Compliance
 - Equal opportunity statement present and jurisdiction-appropriate
 - No prohibited questions or requirements embedded in the JD
-- Salary range included (where legally required)
+- Pay range included (required before the interview in EU jurisdictions — Directive 2023/970)
 - Reasonable accommodation language included
 - Privacy notice reference for data collection (GDPR jurisdictions)
 
@@ -165,12 +167,22 @@ Use these five principles as a final quality checklist for inclusive JD language
 
 ### Italian JDs
 
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| Masculine-only job title: "Sviluppatore" | Excludes women by default | "Sviluppatore/Sviluppatrice" or "Sviluppatore/trice" |
-| "Il candidato ideale" (masculine article) | Gender-defaulting | "La persona ideale", "Chi cerchiamo" |
-| "Lui dovra..." | Masculine pronoun | "La risorsa dovra...", "Dovrai..." (direct address) |
-| "Ragazzo/a sveglio/a" | Ageist and informal | "Persona proattiva e motivata" |
+The "Severity" column is the level compliance-check assigns in an Italian-jurisdiction ad (the three levels of compliance-check's Section 5). The "Ground" column names the row of the legal map to cite.
+
+| Avoid | Why | Use Instead | Severity | Ground |
+|-------|-----|-------------|----------|--------|
+| Masculine-only job title: "Sviluppatore", "Cercasi impiegato" | Names one sex as the requirement by default | "Sviluppatore/Sviluppatrice", "Sviluppatore/trice", or a neutral title ("Persona sviluppatrice software") | CRITICAL | Sex and gender (D.Lgs. 198/2006 Art. 27(2)(b)) |
+| "Il candidato ideale" (masculine article) | Gender-defaulting | "La persona ideale", "Chi cerchiamo" | INFO when the title already addresses both sexes; otherwise part of the CRITICAL title finding | Sex and gender |
+| "Lui dovrà..." | Masculine pronoun | "La risorsa dovrà...", "Dovrai..." (direct address) | INFO | Sex and gender |
+| "Ragazzo/a sveglio/a", "giovane", "età massima 30 anni" | Ageist and informal; an age limit states age as a requirement | "Persona proattiva e motivata"; remove the age limit | WARNING ("ragazzo/a", "giovane"); CRITICAL (an explicit age limit) | Age |
+| "Madrelingua italiana" | Proxy for ethnic or national origin | "Italiano fluente (livello C1/C2)" | WARNING | Race and ethnic origin; nationality |
+| "Bella presenza" | Appearance requirement; proxy for sex, age, ethnic origin and disability | Remove; if the role is client-facing, describe the task ("accoglienza dei clienti in sede") | WARNING | Sex and gender; age; race and ethnic origin; disability |
+| "Automunito/a", "patente B" (role with no driving) | Excludes people who cannot drive, including some people with disabilities | Remove; or "disponibilità a raggiungere le sedi dei clienti" | WARNING (no finding when driving is part of the job) | Disability |
+| "Residente in zona", "residenza a [città]" | Proxy for national or ethnic origin; excludes people willing to relocate | "Disponibilità a lavorare presso la sede di [città]"; for on-call roles, state the response time needed | WARNING | Race and ethnic origin; nationality |
+| "Militesente", "assolto obblighi militari" | Obsolete requirement (compulsory service was suspended in 2005) that applies only to men and signals age | Remove | WARNING | Sex and gender; age |
+| "Sana e robusta costituzione" | Health requirement without occupational justification | Remove, or state the actual physical task if it is essential | WARNING | Disability; special category data (health) |
+| "Inviare CV con foto", "indicare stato civile" | Unnecessary personal data; reveals protected grounds | "Inviare il CV (non è necessaria la foto)"; remove the marital status request | WARNING (photo); CRITICAL (marital status) | Sex and gender; race and ethnic origin; GDPR data minimization |
+| "Cittadinanza italiana" (private-sector role) | Nationality requirement where only the right to work matters | "Autorizzazione a lavorare in Italia" | CRITICAL | Nationality |
 
 Italian law (D.Lgs. 198/2006, Art. 27) specifically prohibits gender-based discrimination in job advertisements. Using gender-inclusive language is not just best practice but a legal requirement.
 
@@ -190,7 +202,8 @@ Italian law (D.Lgs. 198/2006, Art. 27) specifically prohibits gender-based discr
 Before finalizing any JD, verify:
 
 - [ ] No gendered pronouns (he/she) — uses "you" or "they"
-- [ ] Job title is gender-neutral
+- [ ] Job title is gender-neutral (Italian: both forms, e.g. "Sviluppatore/Sviluppatrice")
+- [ ] Italian JDs: no "madrelingua", "bella presenza", "residente in zona", "militesente", or "automunito" for a role with no driving
 - [ ] No masculine-coded power words (ninja, rockstar, dominant, aggressive)
 - [ ] No age proxies (digital native, young, seasoned, years of experience as hard gate)
 - [ ] No non-essential physical requirements
@@ -199,5 +212,6 @@ Before finalizing any JD, verify:
 - [ ] No insider jargon or unexplained acronyms
 - [ ] Equal opportunity statement is present
 - [ ] Reasonable accommodation language is present
+- [ ] Pay range is included, or the JD says how it is given before the interview (EU jurisdictions)
 - [ ] JD is 700 words or fewer
 - [ ] Every requirement can be assessed in an interview or work sample

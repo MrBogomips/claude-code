@@ -31,8 +31,8 @@ relationships between use cases (`include`, `extend`).
 ```plantuml
 @startuml UseCase_Shop
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
 
 left to right direction
 actor Customer

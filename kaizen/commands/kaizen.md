@@ -16,7 +16,7 @@ Run a recursive improvement loop using the kaizen engine.
 
 | Argument | Required | Description |
 |----------|----------|-------------|
-| `profile-name` | No | Name of a bundled profile or path to a custom PROFILE.md. If omitted, shows available profiles and asks user to choose. |
+| `profile-name` | No | Name of a profile (a custom one in `.kaizen/profiles/` or `~/.kaizen/profiles/`, or a bundled one) or a path to a PROFILE.md. If omitted, shows available profiles and asks user to choose. |
 | `--scope <path>` | No | Override the default mutation targets. Narrows the improvement scope to the specified path. |
 | `--budget <N>` | No | Override the iteration budget for this run. |
 | `--autonomy <level>` | No | Override autonomy level: `supervised`, `autonomous`, or `hybrid(N)`. |
@@ -40,7 +40,7 @@ Run a recursive improvement loop using the kaizen engine.
 
 ## What Happens
 
-1. **BOOTSTRAP** — loads the profile, collects data sources, scaffolds measurement tools, captures baseline
+1. **BOOTSTRAP** — loads the profile, offers to resume an unfinished run, collects data sources, checks that the mutation targets have no uncommitted changes (and asks if they do), scaffolds or reuses the measurement tool, captures the baseline
 2. **ITERATION LOOP** — repeats: MEASURE → ANALYZE → HYPOTHESIZE → PROPOSE → APPLY → VERIFY → DECIDE → LOG
 3. **FINAL REVIEW** — adversarial review of all changes and KPI integrity
 4. **REPORT** — summary of improvements, KPI results, and recommendations

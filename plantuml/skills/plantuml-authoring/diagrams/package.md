@@ -34,8 +34,9 @@ depends on what?".
 ```plantuml
 @startuml Package_Layers
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 package "presentation" <<layer>> {
   package "web"  as web

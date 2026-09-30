@@ -1,6 +1,8 @@
 # Connectors
 
-Tool-agnostic connector registry for the project-management plugin. Skills reference connectors via `~~category` placeholders and degrade gracefully when no server is connected.
+Tool-agnostic connector registry for the project-management plugin. Skills refer to each
+connector by the placeholder in the table below and degrade gracefully when no server is
+connected.
 
 ## Registry
 
@@ -12,6 +14,7 @@ Tool-agnostic connector registry for the project-management plugin. Skills refer
 | Calendar | `~~calendar` | Google Calendar, Outlook Calendar | sow-write |
 | Chat | `~~chat` | Slack, Teams | sow-review |
 | CRM | `~~CRM` | Salesforce, HubSpot | sow-write |
+| Document converter | `~~document converter` | markitdown | sow-write, sow-review, sow-estimate |
 
 ## How Skills Use Connectors
 
@@ -23,5 +26,9 @@ Skills check for connected servers at runtime. When a connector is available, th
 - **~~CRM** — pull client context for SOW personalization
 - **~~calendar** — check team availability for scheduling
 - **~~chat** — post review summaries, notify stakeholders
+- **~~document converter** — convert DOCX, PPTX or PDF inputs to Markdown before analysis
 
-When no connector is available, skills fall back to manual input and local file output.
+When no connector is available, skills fall back to manual input and local file output. Without a
+document converter, the SOW skills read Markdown and PDF directly, look for a converter command on
+the system (for example `markitdown` or `pandoc`) and ask before running it, and otherwise ask the
+user for a Markdown or PDF export.

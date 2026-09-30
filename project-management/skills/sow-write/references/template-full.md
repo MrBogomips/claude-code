@@ -263,7 +263,7 @@ Use this template when generating a full enterprise SOW. Each section includes p
 |----|------|--------------------|-------------|-------|----------|-----------|------------|-------|
 | R1 | {RISK} | {P} | {I} | {PxI} | Mitigate/Transfer/Accept/Avoid | {MITIGATION} | {CONTINGENCY} | {OWNER} |
 
-<!-- Risks scoring P x I >= 12 require a mitigation plan. Management reserve covers residual risk. -->
+<!-- Risks scoring P x I >= 10 require a mitigation plan. Management reserve covers residual risk. -->
 
 ---
 

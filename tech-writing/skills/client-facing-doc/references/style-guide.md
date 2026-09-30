@@ -27,6 +27,10 @@ The writing must be:
 - **Enterprise-oriented** — appropriate for a formal customer deliverable
 - **Well-structured** — logical order, easy to navigate
 
+This voice holds even when a personal writing-voice skill is also active: the deliverable's
+structure, register and removals follow this guide and the language pack, and the personal voice
+applies only where they leave room, such as word choice within a sentence.
+
 ## Prefer
 
 - Complete sentences and developed paragraphs
@@ -40,7 +44,9 @@ The writing must be:
 - AI-style summarization (terse, listy, context-free)
 - Marketing language and superlatives
 - Unnecessary verbosity — enough detail to be useful, no more
-- Any meta-reference to the conversion, AI, internal revisions, or removed content
+- Any meta-reference to the conversion, to internal revisions, to removed content, or to the content
+  being AI-generated or AI-assisted (AI components of the solution itself are substance, not
+  meta-references)
 
 > Bullet lists remain appropriate for genuinely enumerable content (requirements, dependencies,
 > steps). The rule is against using bullets as a substitute for explanation, not against lists.

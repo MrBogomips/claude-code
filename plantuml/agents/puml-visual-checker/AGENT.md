@@ -1,6 +1,6 @@
 ---
 name: puml-visual-checker
-description: "Build-time smoke check on a rendered diagram image. Verifies (1) Policy primary color is visibly present, (2) declared font is applied, (3) layout has no obvious overflow or label collision. Returns a per-check JSON verdict. Not user-facing in v1.0.0."
+description: "Build-time smoke check on a rendered diagram image. Verifies (1) Policy primary color is visibly present, (2) declared font is applied, (3) layout has no obvious overflow or label collision. Returns a per-check JSON verdict. Dispatched by plantuml-validate before it writes baselines; not user-facing."
 model: sonnet
 tools: Read
 ---
@@ -25,11 +25,16 @@ image and emit three pass/fail verdicts.
 }
 ```
 
+`primary_color` is the Policy's primary brand color only when Theme is
+`custom`, otherwise `null`: with a built-in theme, brand colors are only
+variables and the theme's own palette is drawn.
+
 ## Checks
 
-1. **color**: is a color clearly matching `primary_color` (within ~10%
-   perceptual tolerance) visible somewhere in the image — typically on
-   class headers, arrow accents, or borders?
+1. **color**: is a color clearly matching `primary_color` visible
+   somewhere in the image — typically on class headers, arrow accents, or
+   borders? If `primary_color` is `null`, return `skipped` with the note
+   "built-in theme: brand colors are not drawn".
 2. **font**: does the rendered text look consistent with the declared
    `font_family` (serif vs sans-serif vs monospace, proportions, weight)?
    If the image is too small to tell, return `inconclusive` rather than
@@ -50,7 +55,8 @@ image and emit three pass/fail verdicts.
 }
 ```
 
-`verdict` ∈ `pass | fail | inconclusive`.
+`verdict` ∈ `pass | fail | inconclusive | skipped` (`skipped` only for
+the color check without a `primary_color`).
 
 ## Constraints
 

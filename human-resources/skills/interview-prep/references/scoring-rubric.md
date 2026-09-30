@@ -2,67 +2,61 @@
 
 ## 1. The 1-5 BARS Scale
 
-Every competency assessed during the interview is scored on a 1-5 scale. Each score level has defined behavioral anchors that describe what a response at that level sounds like. Interviewers must cite specific candidate statements or observed behaviors to justify their score.
+Every competency assessed during the interview is scored on the plugin's **canonical absolute 1–5 scale**, defined once in the interview-close skill: `../../interview-close/references/evaluation-template.md` Section 3. Read the anchors there; this file does not restate them. In short: 1 = no competence shown, 2 = basic with guidance, 3 = independent, 4 = advanced and guides others, 5 = sets direction for others, and **Not assessed** when no evidence was collected (never a 1).
 
-### Scale Definitions
+The anchors are the same for every role and level. What changes by level is the **expected** score, which comes from the seniority matrix for the role (`{role}-seniority-matrix.md` in the output folder, once interview-close has saved one). A "good" answer for a role is one at the expected score; an "excellent" one is a point above it.
 
-| Score | Label | Description | Behavioral Indicators |
-|-------|-------|-------------|----------------------|
-| **5** | **Exceptional** | Strategic impact, exceeded expectations, quantified results | Provides a detailed, structured example with clear individual ownership. Demonstrates impact at organizational or strategic level. Quantifies results with specific metrics. Shows sophisticated trade-off analysis, anticipation of consequences, and reflection on lessons learned. Evidence of leadership, innovation, or going significantly beyond the scope of the role. |
-| **4** | **Strong** | Clear competence, solid examples, good depth | Provides a clear, well-structured example with good specificity. Demonstrates the competency convincingly at the expected level for the role. Describes concrete actions taken and outcomes achieved. Shows some reflection and awareness of alternatives. Minor gaps in quantification or strategic thinking. |
-| **3** | **Adequate** | Meets basics, lacks depth or specificity | Provides a relevant example that demonstrates basic competency. Structure may be loose — some STAR components are thin (typically Action or Result). Describes what was done but lacks detail on why or how decisions were made. Outcomes are described qualitatively rather than quantitatively. Meets the minimum bar but does not differentiate. |
-| **2** | **Weak** | Vague, incomplete, critical gaps | Struggles to provide a specific example. May offer a hypothetical instead of a real experience. Response lacks structure — jumps between topics or omits key components. Cannot articulate individual contribution clearly. Outcomes are absent or vague. Follow-up probes do not yield meaningful additional detail. |
-| **1** | **Poor** | Cannot provide relevant example, significant concerns | Cannot provide any relevant example despite probing. May demonstrate fundamental misunderstanding of the competency. Response may raise red flags: contradicts CV, shows inappropriate judgment, or reveals values misalignment. Active concerns about the candidate's suitability for the role. |
+Interviewers must cite specific candidate statements or observed behaviors to justify their score.
 
 ### Half-Point Guidance
 
-When a response falls between two levels, interviewers may use half-points (e.g., 3.5) during note-taking, but final calibrated scores should use whole numbers. During calibration, round to the score whose behavioral anchors best match the evidence.
+When a response falls between two levels, interviewers may use half-points (e.g., 3.5) during note-taking, but final calibrated scores use whole numbers. During calibration, round to the score whose anchors best match the evidence.
 
 ---
 
 ## 2. Per-Competency Scoring
 
-The BARS scale applies uniformly, but the behavioral anchors must be interpreted in the context of each competency type. Below are calibration notes for common competency categories.
+The canonical anchors apply uniformly; the notes below show what each score looks like for common competency types. They follow the same levels: absent, basic with guidance, independent, advanced and guiding others, setting direction.
 
 ### Technical Competency
 
 | Score | What It Looks Like |
 |-------|-------------------|
-| **5** | Demonstrates deep expertise with a complex, real-world example. Explains trade-offs between multiple approaches. Quantifies technical impact (performance gains, cost savings, reliability improvements). Shows awareness of emerging practices and strategic technical thinking. |
-| **4** | Provides a clear technical example with good depth. Demonstrates solid understanding of the technology and its application. Explains the approach taken and why. Results are described but may lack precise metrics. |
-| **3** | Demonstrates working knowledge of the technology. Example is relevant but lacks depth — may describe what was done without explaining the technical reasoning. Outcomes are vague ("it worked well"). |
-| **2** | Claims experience but cannot describe technical details. May confuse related technologies. Example lacks specificity or describes following instructions rather than independent problem-solving. |
-| **1** | Cannot provide a relevant technical example. May reveal fundamental misunderstanding of the technology or domain. CV claims are not supported by the interview response. |
+| **5** | Sets technical direction for a team or organization: chose between architectures with explicit trade-offs, defined standards others adopted, and quantifies the technical impact (performance, cost, reliability). |
+| **4** | Solves complex or ambiguous technical problems on their own and guides others: explains the approach, the alternatives considered and why, and has reviewed or mentored others' work. |
+| **3** | Works independently on standard technical tasks: describes their own implementation clearly, with the reasoning behind the main choices. |
+| **2** | Handles basic tasks with guidance: can describe what was done, but not the technical reasoning; may confuse related technologies or describe following instructions. |
+| **1** | Shows no competence in the area: cannot give a relevant technical example despite probing, or reveals a fundamental misunderstanding. |
 
 ### Leadership Competency
 
 | Score | What It Looks Like |
 |-------|-------------------|
-| **5** | Describes leading through ambiguity or significant challenge. Demonstrates strategic thinking about team dynamics, stakeholder management, and organizational impact. Quantifies team outcomes (delivery metrics, retention, growth). Shows empathy, adaptability, and self-awareness as a leader. |
-| **4** | Provides a clear leadership example with good detail. Describes how they motivated, guided, or influenced others. Explains decisions made and their rationale. Shows awareness of team needs and stakeholder perspectives. |
-| **3** | Describes a leadership situation but focuses more on task management than people leadership. May describe coordination rather than true leadership. Outcomes relate to deliverables rather than team development. |
-| **2** | Struggles to articulate a leadership example. May describe being in a leadership role but not demonstrating leadership behaviors. Cannot explain how they influenced or developed others. |
-| **1** | Cannot provide a leadership example. May describe situations that reveal poor leadership judgment (e.g., avoiding conflict, taking credit for team work, not supporting team members). |
+| **5** | Sets direction for teams or the organization: led through ambiguity or significant change, shaped how others work, and quantifies team outcomes (delivery, retention, growth). |
+| **4** | Leads a team or initiative through complex situations: describes how they motivated, guided or developed others, the decisions made and why, and stakeholder perspectives. |
+| **3** | Leads independently in standard situations: coordinates work and people for a deliverable, with a clear account of their own role. |
+| **2** | Takes on leadership tasks with guidance: describes being in a leadership role but little of their own influence on others. |
+| **1** | Shows no leadership competence: cannot give an example, or describes situations that reveal poor leadership judgment (e.g., taking credit for team work, not supporting team members). |
 
 ### Communication Competency
 
 | Score | What It Looks Like |
 |-------|-------------------|
-| **5** | Describes adapting communication style to different audiences (technical vs. executive, internal vs. external). Demonstrates handling difficult conversations with empathy and clarity. Quantifies impact of communication (e.g., secured stakeholder buy-in, resolved conflict, improved team alignment). |
-| **4** | Provides a clear example of effective communication. Describes the audience, the message, and the approach. Shows awareness of communication challenges and how they were addressed. |
-| **3** | Describes a communication situation but lacks nuance. May describe what was communicated without explaining how the approach was tailored to the audience. Outcomes are implied rather than stated. |
-| **2** | Struggles to provide a specific communication example. May describe routine communication (status updates, emails) without demonstrating strategic communication skill. |
-| **1** | Cannot provide a relevant example. Response itself may demonstrate poor communication (disorganized, unclear, tangential). |
+| **5** | Sets how others communicate: shapes messages for executives, clients or the organization, handles high-stakes conversations, and shows the impact (buy-in secured, conflict resolved, alignment improved). |
+| **4** | Adapts style to different audiences in complex situations (technical vs. executive, internal vs. external) and handles difficult conversations with clarity. |
+| **3** | Communicates clearly and independently in standard situations: describes the audience, the message and the approach. |
+| **2** | Handles routine communication (status updates, emails) with guidance; struggles to give a specific example of tailoring a message. |
+| **1** | Shows no competence in the area: cannot give a relevant example despite probing. |
 
 ### Domain Expertise
 
 | Score | What It Looks Like |
 |-------|-------------------|
-| **5** | Demonstrates deep domain knowledge applied to a complex, high-stakes situation. Shows understanding of industry trends, regulatory context, and competitive landscape. Explains how domain expertise drove strategic decisions with measurable outcomes. |
-| **4** | Provides a clear example of applying domain knowledge to solve a real problem. Demonstrates solid understanding of the domain's key concepts and challenges. Results are described with good specificity. |
-| **3** | Demonstrates familiarity with the domain. Example shows application of domain knowledge but at a surface level — may describe standard practices rather than expert judgment. |
-| **2** | Claims domain knowledge but cannot demonstrate it with a specific example. May confuse key concepts or describe experience that is tangential to the required domain. |
-| **1** | Cannot demonstrate relevant domain knowledge. May reveal fundamental gaps that would prevent effective performance in the role. |
+| **5** | Sets direction in the domain: uses knowledge of trends, regulation and the competitive landscape to drive strategic decisions with measurable outcomes. |
+| **4** | Applies deep domain knowledge to complex problems and advises others: explains the domain's key concepts and challenges and how they shaped a solution. |
+| **3** | Applies domain knowledge independently to standard problems, following sound practice. |
+| **2** | Knows the domain's basics and applies them with guidance; may confuse key concepts. |
+| **1** | Shows no competence in the domain: cannot demonstrate relevant knowledge despite probing. |
 
 ---
 
@@ -85,7 +79,7 @@ For each competency scored, the interviewer must record:
 
 ```
 Competency: [name]
-Score: [1-5]
+Score: [1-5, or Not assessed]
 Evidence: [specific candidate statement or behavior that justifies this score]
 Follow-up notes: [any additional context from probing]
 ```
@@ -94,22 +88,22 @@ Follow-up notes: [any additional context from probing]
 
 ## 4. Calibration Guidance
 
-Calibration ensures interviewers interpret the 1-5 scale consistently. Without calibration, the same answer may receive a 3 from one interviewer and a 5 from another.
+Calibration ensures interviewers interpret the canonical 1-5 scale consistently. Without calibration, the same answer may receive a 3 from one interviewer and a 5 from another.
 
 ### Pre-Interview Calibration
 
 Before interviews begin (ideally during the interview-prep stage):
 
-1. **Review the BARS anchors together** — all interviewers read the scale definitions and per-competency calibration notes
+1. **Review the anchors together** — all interviewers read the canonical scale and the per-competency calibration notes
 2. **Score a sample answer** — present a written example answer and have each interviewer score independently, then compare and discuss
-3. **Agree on "what does a 3 look like?"** — the middle of the scale is the most common source of divergence; align on what meets the bar vs. what exceeds it
-4. **Clarify role-level expectations** — a "4" for a junior role is different from a "4" for a senior role; establish the baseline for the specific position
+3. **Agree on the neighboring anchors** — most divergence is between adjacent scores (3 vs. 4 especially); align on what separates "independent" from "advanced and guides others"
+4. **Clarify role-level expectations** — a "4" means the same for every role; what differs is the expected score for the target level. Agree on the expected score per competency from the seniority matrix
 
 ### Post-Interview Calibration
 
 After all interviewers have completed their assessments:
 
-1. **Independent scoring first** — each interviewer submits scores before group discussion to prevent anchoring
+1. **Independent scoring first** — each interviewer writes their own evaluation (interview-close saves one file per interviewer) before group discussion to prevent anchoring
 2. **Compare scores per competency** — identify divergences of 2+ points
 3. **Evidence review** — for divergent scores, each interviewer presents their evidence; the group determines which score best fits the evidence
 4. **Consensus or majority** — aim for consensus; if not achievable, use the median score with a note explaining the divergence
@@ -119,9 +113,10 @@ After all interviewers have completed their assessments:
 
 | Pitfall | Description | Mitigation |
 |---------|-------------|------------|
-| **Score inflation** | Interviewers default to 3-4 range, rarely using 1-2 or 5 | Remind that 3 is "adequate" — genuinely meeting the bar, not a consolation score |
-| **Central tendency** | All scores cluster around 3 regardless of answer quality | Review behavioral anchors; force a spread by asking "was this clearly above or below adequate?" |
-| **Different baselines** | One interviewer compares to ideal, another to minimum | Align on "compared to what we need for this specific role at this level" |
+| **Score inflation** | Interviewers default to the expected score for the role, rarely using the rest of the scale | Score against the anchors first; compare with the expected score only afterwards |
+| **Central tendency** | All scores cluster around one value regardless of answer quality | Review the anchors; ask "which of the two neighboring anchors fits the evidence better?" |
+| **Different baselines** | One interviewer compares to ideal, another to minimum | The anchors are the baseline; the matrix, not the interviewer, says what the role needs |
+| **Missing evidence scored low** | A competency the interview did not cover gets a 1 or 2 | Record it as Not assessed; it is left out of the weighted total |
 | **Weighting confusion** | Interviewers inflate scores for competencies they personally value | Use the priority weighting from the question plan, not personal preference |
 
 ---
@@ -139,7 +134,7 @@ Cognitive biases systematically distort interview scoring. Awareness is the firs
 **Mitigation:**
 - Score each competency independently, immediately after the relevant question
 - Do not assign an overall score until all individual competency scores are recorded
-- Review scores at the end: if all scores are identical (e.g., all 4s), challenge whether the evidence truly supports the same level across every competency
+- Review scores at the end: if all scores are identical (e.g., all 4s), challenge whether the evidence truly supports the same level across every competency (interview-close flags this as "low differentiation")
 
 ### Recency Bias
 
@@ -174,7 +169,7 @@ The interviewer forms an early impression (from CV review, first impression, or 
 The interviewer's scoring is influenced by the previous candidate rather than the absolute scale. A mediocre candidate looks strong after a weak one; a strong candidate looks average after an exceptional one.
 
 **Mitigation:**
-- Score against the BARS anchors, not against other candidates
+- Score against the canonical anchors, not against other candidates
 - Complete scoring for each candidate before interviewing the next
 - During calibration, reference the behavioral anchors, not comparisons between candidates
 

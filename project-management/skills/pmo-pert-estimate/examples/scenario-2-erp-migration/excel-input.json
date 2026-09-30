@@ -5,8 +5,6 @@
     "duration_unit": "d",
     "primary_color": "1B4FA5",
     "currency": "EUR",
-    "period_type": "monthly",
-    "start_date": "2026-06-01",
     "management_reserve_pct": 0.15,
     "avg_rate": 600,
     "pm_overhead_pct": 0.1,
@@ -58,9 +56,6 @@
       "id": "1",
       "name": "Discovery & Project Setup",
       "description": "Establish project governance, tooling and baseline understanding",
-      "best_duration": 14,
-      "likely_duration": 20,
-      "worst_duration": 28,
       "work_packages": [
         {
           "id": "1.1",
@@ -184,9 +179,6 @@
       "id": "2",
       "name": "As-Is Analysis",
       "description": "Deep-dive documentation of current business processes and technical landscape",
-      "best_duration": 20,
-      "likely_duration": 28,
-      "worst_duration": 40,
       "work_packages": [
         {
           "id": "2.1",
@@ -314,9 +306,6 @@
       "id": "3",
       "name": "To-Be Design",
       "description": "Architectural and functional design of the target S/4HANA environment",
-      "best_duration": 20,
-      "likely_duration": 30,
-      "worst_duration": 44,
       "work_packages": [
         {
           "id": "3.1",
@@ -448,9 +437,6 @@
       "id": "4",
       "name": "Data Migration",
       "description": "Design, build and execute data extraction, transformation and load activities",
-      "best_duration": 30,
-      "likely_duration": 44,
-      "worst_duration": 60,
       "work_packages": [
         {
           "id": "4.1",
@@ -581,9 +567,6 @@
       "id": "5",
       "name": "Development",
       "description": "Build of configuration, custom extensions and integration components",
-      "best_duration": 40,
-      "likely_duration": 55,
-      "worst_duration": 75,
       "work_packages": [
         {
           "id": "5.1",
@@ -713,9 +696,6 @@
       "id": "6",
       "name": "Testing",
       "description": "Structured testing cycle from unit through to User Acceptance Testing",
-      "best_duration": 30,
-      "likely_duration": 44,
-      "worst_duration": 60,
       "work_packages": [
         {
           "id": "6.1",
@@ -871,9 +851,6 @@
       "id": "7",
       "name": "Training",
       "description": "Knowledge transfer and end-user enablement programme",
-      "best_duration": 20,
-      "likely_duration": 28,
-      "worst_duration": 38,
       "work_packages": [
         {
           "id": "7.1",
@@ -981,9 +958,6 @@
       "id": "8",
       "name": "Go-Live & Stabilisation",
       "description": "Production cutover and post-go-live hypercare support",
-      "best_duration": 14,
-      "likely_duration": 20,
-      "worst_duration": 28,
       "work_packages": [
         {
           "id": "8.1",
@@ -1107,392 +1081,6 @@
       ],
       "start_week": 52,
       "end_week": 55
-    }
-  ],
-  "resource_allocation": [
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery & Project Setup",
-      "description": "Establish project governance, tooling and baseline understanding",
-      "team": "Management",
-      "role_code": "PMO",
-      "effort": 10
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery & Project Setup",
-      "description": "Establish project governance, tooling and baseline understanding",
-      "team": "Management",
-      "role_code": "BDM",
-      "effort": 8
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery & Project Setup",
-      "description": "Establish project governance, tooling and baseline understanding",
-      "team": "Development",
-      "role_code": "SAP",
-      "effort": 12
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery & Project Setup",
-      "description": "Establish project governance, tooling and baseline understanding",
-      "team": "Development",
-      "role_code": "DA",
-      "effort": 5
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery & Project Setup",
-      "description": "Establish project governance, tooling and baseline understanding",
-      "team": "Operations",
-      "role_code": "SRE",
-      "effort": 7
-    },
-    {
-      "phase_id": "1",
-      "phase_name": "Discovery & Project Setup",
-      "description": "Establish project governance, tooling and baseline understanding",
-      "team": "Operations",
-      "role_code": "TRN",
-      "effort": 0
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "As-Is Analysis",
-      "description": "Deep-dive documentation of current business processes and technical landscape",
-      "team": "Management",
-      "role_code": "PMO",
-      "effort": 8
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "As-Is Analysis",
-      "description": "Deep-dive documentation of current business processes and technical landscape",
-      "team": "Management",
-      "role_code": "BDM",
-      "effort": 18
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "As-Is Analysis",
-      "description": "Deep-dive documentation of current business processes and technical landscape",
-      "team": "Development",
-      "role_code": "SAP",
-      "effort": 20
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "As-Is Analysis",
-      "description": "Deep-dive documentation of current business processes and technical landscape",
-      "team": "Development",
-      "role_code": "DA",
-      "effort": 8
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "As-Is Analysis",
-      "description": "Deep-dive documentation of current business processes and technical landscape",
-      "team": "Operations",
-      "role_code": "SRE",
-      "effort": 0
-    },
-    {
-      "phase_id": "2",
-      "phase_name": "As-Is Analysis",
-      "description": "Deep-dive documentation of current business processes and technical landscape",
-      "team": "Operations",
-      "role_code": "TRN",
-      "effort": 0
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "To-Be Design",
-      "description": "Architectural and functional design of the target S/4HANA environment",
-      "team": "Management",
-      "role_code": "PMO",
-      "effort": 6
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "To-Be Design",
-      "description": "Architectural and functional design of the target S/4HANA environment",
-      "team": "Management",
-      "role_code": "BDM",
-      "effort": 22
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "To-Be Design",
-      "description": "Architectural and functional design of the target S/4HANA environment",
-      "team": "Development",
-      "role_code": "SAP",
-      "effort": 24
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "To-Be Design",
-      "description": "Architectural and functional design of the target S/4HANA environment",
-      "team": "Development",
-      "role_code": "DA",
-      "effort": 10
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "To-Be Design",
-      "description": "Architectural and functional design of the target S/4HANA environment",
-      "team": "Operations",
-      "role_code": "SRE",
-      "effort": 10
-    },
-    {
-      "phase_id": "3",
-      "phase_name": "To-Be Design",
-      "description": "Architectural and functional design of the target S/4HANA environment",
-      "team": "Operations",
-      "role_code": "TRN",
-      "effort": 0
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Data Migration",
-      "description": "Design, build and execute data extraction, transformation and load activities",
-      "team": "Management",
-      "role_code": "PMO",
-      "effort": 6
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Data Migration",
-      "description": "Design, build and execute data extraction, transformation and load activities",
-      "team": "Management",
-      "role_code": "BDM",
-      "effort": 5
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Data Migration",
-      "description": "Design, build and execute data extraction, transformation and load activities",
-      "team": "Development",
-      "role_code": "SAP",
-      "effort": 20
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Data Migration",
-      "description": "Design, build and execute data extraction, transformation and load activities",
-      "team": "Development",
-      "role_code": "DA",
-      "effort": 34
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Data Migration",
-      "description": "Design, build and execute data extraction, transformation and load activities",
-      "team": "Operations",
-      "role_code": "SRE",
-      "effort": 0
-    },
-    {
-      "phase_id": "4",
-      "phase_name": "Data Migration",
-      "description": "Design, build and execute data extraction, transformation and load activities",
-      "team": "Operations",
-      "role_code": "TRN",
-      "effort": 0
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Development",
-      "description": "Build of configuration, custom extensions and integration components",
-      "team": "Management",
-      "role_code": "PMO",
-      "effort": 10
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Development",
-      "description": "Build of configuration, custom extensions and integration components",
-      "team": "Management",
-      "role_code": "BDM",
-      "effort": 8
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Development",
-      "description": "Build of configuration, custom extensions and integration components",
-      "team": "Development",
-      "role_code": "SAP",
-      "effort": 62
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Development",
-      "description": "Build of configuration, custom extensions and integration components",
-      "team": "Development",
-      "role_code": "DA",
-      "effort": 15
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Development",
-      "description": "Build of configuration, custom extensions and integration components",
-      "team": "Operations",
-      "role_code": "SRE",
-      "effort": 5
-    },
-    {
-      "phase_id": "5",
-      "phase_name": "Development",
-      "description": "Build of configuration, custom extensions and integration components",
-      "team": "Operations",
-      "role_code": "TRN",
-      "effort": 0
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Testing",
-      "description": "Structured testing cycle from unit through to User Acceptance Testing",
-      "team": "Management",
-      "role_code": "PMO",
-      "effort": 8
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Testing",
-      "description": "Structured testing cycle from unit through to User Acceptance Testing",
-      "team": "Management",
-      "role_code": "BDM",
-      "effort": 22
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Testing",
-      "description": "Structured testing cycle from unit through to User Acceptance Testing",
-      "team": "Development",
-      "role_code": "SAP",
-      "effort": 40
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Testing",
-      "description": "Structured testing cycle from unit through to User Acceptance Testing",
-      "team": "Development",
-      "role_code": "DA",
-      "effort": 5
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Testing",
-      "description": "Structured testing cycle from unit through to User Acceptance Testing",
-      "team": "Operations",
-      "role_code": "SRE",
-      "effort": 8
-    },
-    {
-      "phase_id": "6",
-      "phase_name": "Testing",
-      "description": "Structured testing cycle from unit through to User Acceptance Testing",
-      "team": "Operations",
-      "role_code": "TRN",
-      "effort": 0
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Training",
-      "description": "Knowledge transfer and end-user enablement programme",
-      "team": "Management",
-      "role_code": "PMO",
-      "effort": 4
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Training",
-      "description": "Knowledge transfer and end-user enablement programme",
-      "team": "Management",
-      "role_code": "BDM",
-      "effort": 10
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Training",
-      "description": "Knowledge transfer and end-user enablement programme",
-      "team": "Development",
-      "role_code": "SAP",
-      "effort": 8
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Training",
-      "description": "Knowledge transfer and end-user enablement programme",
-      "team": "Development",
-      "role_code": "DA",
-      "effort": 0
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Training",
-      "description": "Knowledge transfer and end-user enablement programme",
-      "team": "Operations",
-      "role_code": "SRE",
-      "effort": 0
-    },
-    {
-      "phase_id": "7",
-      "phase_name": "Training",
-      "description": "Knowledge transfer and end-user enablement programme",
-      "team": "Operations",
-      "role_code": "TRN",
-      "effort": 28
-    },
-    {
-      "phase_id": "8",
-      "phase_name": "Go-Live & Stabilisation",
-      "description": "Production cutover and post-go-live hypercare support",
-      "team": "Management",
-      "role_code": "PMO",
-      "effort": 8
-    },
-    {
-      "phase_id": "8",
-      "phase_name": "Go-Live & Stabilisation",
-      "description": "Production cutover and post-go-live hypercare support",
-      "team": "Management",
-      "role_code": "BDM",
-      "effort": 6
-    },
-    {
-      "phase_id": "8",
-      "phase_name": "Go-Live & Stabilisation",
-      "description": "Production cutover and post-go-live hypercare support",
-      "team": "Development",
-      "role_code": "SAP",
-      "effort": 22
-    },
-    {
-      "phase_id": "8",
-      "phase_name": "Go-Live & Stabilisation",
-      "description": "Production cutover and post-go-live hypercare support",
-      "team": "Development",
-      "role_code": "DA",
-      "effort": 10
-    },
-    {
-      "phase_id": "8",
-      "phase_name": "Go-Live & Stabilisation",
-      "description": "Production cutover and post-go-live hypercare support",
-      "team": "Operations",
-      "role_code": "SRE",
-      "effort": 14
-    },
-    {
-      "phase_id": "8",
-      "phase_name": "Go-Live & Stabilisation",
-      "description": "Production cutover and post-go-live hypercare support",
-      "team": "Operations",
-      "role_code": "TRN",
-      "effort": 4
     }
   ],
   "risks": [
@@ -1677,10 +1265,6 @@
       "contingency_effort": 3
     }
   ],
-  "targets": {
-    "expected_effort": 800,
-    "expected_duration": 240
-  },
   "scenarios": [
     "Optimistic: ~85% of Fascia MEDIA \u2014 best-case execution for 2-erp-migration",
     "Realistic: Fascia MEDIA \u2014 current best estimate including overhead and MR",

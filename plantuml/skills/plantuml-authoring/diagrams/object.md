@@ -33,8 +33,9 @@ illustrates one instance of that rule.
 ```plantuml
 @startuml Object_Checkout_State
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 object "anne:Customer" as anne {
   id = 42

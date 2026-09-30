@@ -4,7 +4,7 @@
 Provide a complete 15-section SOW (from sow-write output or manually created) with intentional weaknesses:
 - 2 vague scope items ("appropriate solution", "user-friendly interface")
 - 1 missing deliverable (in scope but not in phase breakdown)
-- Risk register with only generic risks
+- Risk register with only generic risks, one of them scored P×I = 10 (P 2, I 5) with no mitigation
 - No escalation path in governance
 
 ## Invocation
@@ -27,4 +27,12 @@ Provide a complete 15-section SOW (from sow-write output or manually created) wi
 - [ ] Risk Coverage score <= 3 (due to generic risks)
 - [ ] Collaboration Model score <= 3 (due to missing escalation)
 - [ ] Critical Issues section lists specific fixes
-- [ ] Overall grade interpretation matches score range
+- [ ] The P×I = 10 risk is reported as a high risk without a mitigation plan
+- [ ] Overall score is the average of the 7 scored dimensions, rounded to two decimals
+- [ ] Overall grade uses the half-open bands: e.g. 31/7 = 4.43 → "Minor improvements recommended", 24/7 = 3.43 → "Significant gaps — revise before signing"
+- [ ] Report saved to `<OutputDir>/<project-name>-sow-review.md` (with the SOW version in the name when the SOW file has one)
+
+## Edge Cases
+- Review of the same SOW run twice → the second report gets a `-2` suffix; the first is not overwritten
+- SOW given as DOCX with no converter connected or installed → asks for a Markdown or PDF export
+- An average of exactly 4.5 → "Ready for signature"; exactly 3.5 → "Minor improvements recommended"

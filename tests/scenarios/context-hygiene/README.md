@@ -49,5 +49,5 @@ dated/versioned names, HANDOFF) — the skill has no built-in folder names.
 | File | What it tests |
 |------|--------------|
 | scenario-dry-run.md | Discovery + recap on the fixture; zero writes |
-| scenario-authorization.md | Authorization protocol: vague replies, IDs, groups, ⚠, backup, drift |
+| scenario-authorization.md | Authorization protocol: vague replies, IDs, groups, ⚠, backup (declined after a group approval), "apply all", drift |
 | scenario-this-repo.md | Read-only dry run on this repository |

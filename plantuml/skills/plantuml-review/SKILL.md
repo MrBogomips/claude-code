@@ -1,13 +1,14 @@
 ---
 name: plantuml-review
-description: Review a single PlantUML diagram for clarity, type-fit, layout, and readability. Use when an author wants qualitative feedback before merging or sharing.
-model: sonnet
+description: Review a single PlantUML diagram for clarity, type-fit, layout, and readability. Use when an author wants qualitative feedback before merging or sharing. Not for deciding only which diagram type to use (plantuml-advisor), and not for Policy compliance checks (plantuml-lint).
 allowed-tools: Read, Bash
+disallowed-tools: Write, Edit
 ---
 
 # PlantUML Review
 
-Qualitative review of a single `.puml` file. Interactive, no agent.
+Qualitative review of a single `.puml` file. Interactive, no agent, and
+read-only: suggestions are given as text, never written to the file.
 
 ## Input
 
@@ -16,11 +17,16 @@ turn).
 
 ## Flow
 
-1. Run `plantuml -checkonly <file>` first. If it errors, surface the
-   syntax error and stop — there is nothing meaningful to review.
-2. Read the file.
-3. If a `## PlantUML Policy` section exists in the project's CLAUDE.md,
-   read it (for label-language, detail-level expectations).
+1. If a `## PlantUML Policy` section exists in the project's CLAUDE.md,
+   read it (for the Primary target, label-language and detail-level
+   expectations).
+2. Compile the file first. With a Policy, run
+   `PLANTUML_TARGET=<Primary target> plantuml -checkonly <file>`: the
+   project ships `_targets/` files only for its declared targets, so the
+   target must be explicit. Without a Policy, run
+   `plantuml -checkonly <file>`. If it errors, surface the syntax error and
+   stop — there is nothing meaningful to review.
+3. Read the file.
 4. Read the relevant `diagrams/<type>.md` from the inherited
    `plantuml-authoring` skill at
    `${CLAUDE_PLUGIN_ROOT}/skills/plantuml-authoring/diagrams/<type>.md`

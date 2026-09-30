@@ -16,6 +16,12 @@ error() { red "ERROR: $*"; ERRORS=$((ERRORS + 1)); }
 warn()  { yellow "WARN: $*"; WARNINGS=$((WARNINGS + 1)); }
 ok()    { green "OK: $*"; }
 
+# Print a SKILL.md without its ${CLAUDE_PLUGIN_ROOT}/... paths, which are resolved
+# against the plugin root separately, so the skill-relative checks don't see them.
+skill_relative_text() {
+    sed -E 's#\$\{CLAUDE_PLUGIN_ROOT\}/[a-zA-Z0-9_./<>-]*##g' "$1"
+}
+
 for plugin_dir in "$REPO_ROOT"/*/; do
     [[ -d "$plugin_dir/.claude-plugin" ]] || continue
     plugin_name="$(basename "$plugin_dir")"
@@ -53,7 +59,18 @@ for plugin_dir in "$REPO_ROOT"/*/; do
             else
                 error "$plugin_name/skills/$skill_name: broken reference '$clean_path' (resolved to $full_path)"
             fi
-        done < <(grep -oE 'references/[a-zA-Z0-9_./-]+\.[a-z]+' "$skill_md" | sort -u || true)
+        done < <(skill_relative_text "$skill_md" | grep -oE 'references/[a-zA-Z0-9_./-]+\.[a-z]+' | sort -u || true)
+
+        # Check ${CLAUDE_PLUGIN_ROOT}/... paths against the plugin root
+        while IFS= read -r root_path; do
+            rel_path="${root_path#\$\{CLAUDE_PLUGIN_ROOT\}/}"
+            full_path="$plugin_dir$rel_path"
+            if [[ -f "$full_path" ]]; then
+                ok "$plugin_name/skills/$skill_name: \${CLAUDE_PLUGIN_ROOT}/$rel_path exists"
+            else
+                error "$plugin_name/skills/$skill_name: broken plugin-root reference '$root_path' (resolved to $full_path)"
+            fi
+        done < <(grep -oE '\$\{CLAUDE_PLUGIN_ROOT\}/[a-zA-Z0-9_./-]+\.[a-z]+' "$skill_md" | sort -u || true)
 
         # Check for references to assets/ and scripts/ paths
         while IFS= read -r asset_path; do
@@ -66,7 +83,7 @@ for plugin_dir in "$REPO_ROOT"/*/; do
                 # Only warn for assets/scripts since they may use <skill-dir> placeholder
                 warn "$plugin_name/skills/$skill_name: asset/script reference '$clean_path' not found at $full_path"
             fi
-        done < <(grep -oE '(assets|scripts)/[a-zA-Z0-9_./-]+\.[a-z]+' "$skill_md" | sort -u || true)
+        done < <(skill_relative_text "$skill_md" | grep -oE '(assets|scripts)/[a-zA-Z0-9_./-]+\.[a-z]+' | sort -u || true)
     done
 
     # Check profile references (profiles follow the same reference pattern as skills)

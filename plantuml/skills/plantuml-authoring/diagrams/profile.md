@@ -34,8 +34,9 @@ application development; common in modeling frameworks.
 ```plantuml
 @startuml Profile_BankingExtensions_Standard
 !$target = %getenv("PLANTUML_TARGET")
-!include .plantuml/_base.puml
-!include .plantuml/_targets/$target.puml
+!include ../.plantuml/_base.puml
+!include ../.plantuml/_targets/$target.puml
+$apply_direction()
 
 title "Banking Profile — UML 2 Profile Extensions (standard)"
 
