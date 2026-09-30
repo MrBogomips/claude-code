@@ -20,11 +20,17 @@
   "apply all".
 - Exception to the IDs-only rule: the literal phrase "apply all" equals every
   non-⚠, reversible ID. Echo the expanded set before applying; ⚠ and
-  irreversible items still need their numbers.
+  irreversible items still need their numbers. Hard rule 1 in `SKILL.md`
+  names this exception.
 - Items marked `needs: BACKUP` authorized without `BACKUP`: ask once
   "Include BACKUP first? Reply `BACKUP` (or its ID) or `no`." Only `BACKUP`
   or its ID authorizes it; proceed without it only on an explicit no. Any
   other reply → ask again.
+- After an explicit no, the memory directory has no backup, so every memory
+  item becomes irreversible. Apply only the memory items the user named by
+  number. Memory items authorized only through a group letter or "apply all"
+  are not applied: say so when you echo the set, and list them in the final
+  report under "Awaiting individual approval".
 - Regroup requests, questions and edits to proposals are not authorization;
   answer, re-present if needed, and wait.
 
@@ -40,8 +46,8 @@ Order: `BACKUP` → edits → `POLICY` → verify.
   user to commit or stash first; do not edit. Never run commit, stash or
   checkout yourself.
 - Untracked or ignored targets: if `git ls-files --error-unmatch FILE` fails
-  and the file is not inside the backed-up memory directory, nothing can
-  restore it. Its recap item must say `risk: irreversible (not tracked)`, it
+  and the file is not inside a memory directory backed up in this run,
+  nothing can restore it. Its recap item must say `risk: irreversible (not tracked)`, it
   must be named individually, and the final report lists it as "not
   recoverable". Untracked (`??`) files follow this rule, not commit/stash.
 - Memory: update fact files and their `MEMORY.md` lines in the same step;
@@ -77,6 +83,7 @@ Order: `BACKUP` → edits → `POLICY` → verify.
 | "The user clearly wants this cleaned, I'll just apply the obvious ones" | Nothing is obvious enough. Recap and stop. |
 | "They said 'go ahead'" | Not an ID. Re-prompt with the IDs. |
 | "The backup is harmless, I'll take it now" | BACKUP is an item. It needs authorization. |
+| "They said no to the backup, but group B covers the memory edits" | No backup means no undo. Only memory items named by number are applied. |
 | "I'll write the recap to a file so it's easier to read" | Chat only. |
 | "This old section is obviously dead" | Old ≠ obsolete. Extract decisions and lessons, tag ⚠, let the user decide. |
 | "This tool isn't installed, so the CLAUDE.md line is wrong" | Local setup is not the repo. Don't flag it. |

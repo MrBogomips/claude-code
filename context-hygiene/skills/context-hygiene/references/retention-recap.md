@@ -78,7 +78,7 @@ After apply:
 
 ```
 Applied: <ids>        Skipped (not authorized): <ids>
-Awaiting individual approval (⚠): <ids or "none">
+Awaiting individual approval (⚠, irreversible, or memory without BACKUP): <ids or "none">
 Always-loaded: <before> → projected <y> → actual <z> tok
 Checks re-run: <remaining findings or "clean">
 Kept items verified: <n>/<n> found (<file> for each)

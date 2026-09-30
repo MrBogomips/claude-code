@@ -13,12 +13,17 @@ propose how to fix it, and apply only what the user authorizes.
 
 1. **Nothing changes without explicit authorization in this run.** Discovery,
    checks and recap are read-only. Until the user names item numbers or group
-   letters, do not write, edit, move, rename, delete, back up or create
-   anything — in the project, the memory directory or anywhere else.
+   letters, or replies with the literal "apply all" (defined in
+   `references/safety.md` §Authorization), do not write, edit, move, rename,
+   delete, back up or create anything — in the project, the memory directory
+   or anywhere else.
 2. **Vague replies are not authorization** ("ok", "sounds good", "go ahead",
    "yes"). Re-prompt with the valid IDs.
 3. **Group approval never covers ⚠ rationale-risk or irreversible (not
-   tracked) items.** They must be named individually.
+   tracked) items.** They must be named individually. A group letter or
+   "apply all" covers the rest. Declining BACKUP makes every memory item
+   irreversible: after an explicit "no" to BACKUP, apply only the memory items
+   the user named individually.
 4. **Chat only.** No report files, no state files, no hooks.
 5. **Never touch** secrets, `settings*.json` (read-only), other projects'
    memory, final/published docs, or global user configuration (unless the
@@ -81,7 +86,8 @@ start applying in the same turn.
 ### 5. Authorization
 
 Parse the reply into an explicit set of IDs (`references/safety.md`
-§Authorization). Regroup requests or questions → answer and wait. Anything
+§Authorization); "apply all" expands to every non-⚠, reversible ID. Regroup
+requests or questions → answer and wait. Anything
 ambiguous → re-prompt. If a reply names IDs and also vaguely approves items
 it does not name ("3, and the rest looks fine"), treat only the named IDs as
 candidates, echo them, and re-prompt for the rest before applying anything. A
@@ -90,7 +96,9 @@ the authorized set before applying.
 
 ### 6. Apply — authorized items only
 
-Order: `BACKUP` → edits → `POLICY`. Per item, re-read the target first. If it
+Order: `BACKUP` → edits → `POLICY`. If the user declined BACKUP, memory items
+authorized only through a group letter or "apply all" are not applied: list
+them under "Awaiting individual approval". Per item, re-read the target first. If it
 changed, was moved or was deleted since the recap, stop that item, report the
 specific state and re-ask. Tracked file with uncommitted changes → ask to
 commit or stash. Update memory fact files and index lines together. Details:
@@ -114,8 +122,9 @@ enriches. Do not assume it is installed.
 | "I'll fix the obvious ones while presenting the recap" | Recap and stop. Every change is an item. |
 | "They said go ahead" | Not an ID. Re-prompt. |
 | "A backup is harmless" | BACKUP is an item. It needs authorization. |
+| "They approved group B and said no to the backup, so the memory edits in B can go" | Without a backup they can't be undone. Apply only the memory items named by number. |
 | "This old text is obviously dead" | Extract decisions and lessons, tag ⚠, let the user decide. |
-| "This folder is obviously scratch" | Two signals or ask. |
+| "This folder is obviously scratch" | Two signals, a CLAUDE.md declaration, or ask. |
 | "I kept the lesson, so the compress is low risk" | It still holds a lesson. Tag ⚠; the user checks the extraction. |
 | "The index line is a separate fix" | Fact file + index line = one item. |
 
