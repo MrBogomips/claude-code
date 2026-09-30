@@ -46,10 +46,12 @@ Order: `BACKUP` → edits → `POLICY` → verify.
   user to commit or stash first; do not edit. Never run commit, stash or
   checkout yourself.
 - Untracked or ignored targets: if `git ls-files --error-unmatch FILE` fails
-  and the file is not inside a memory directory backed up in this run,
-  nothing can restore it. Its recap item must say `risk: irreversible (not tracked)`, it
+  and the file is not inside the memory directory this run's BACKUP item
+  covers, nothing can restore it. Its recap item must say `risk: irreversible (not tracked)`, it
   must be named individually, and the final report lists it as "not
   recoverable". Untracked (`??`) files follow this rule, not commit/stash.
+  Memory items are marked `needs: BACKUP` instead; after an explicit no to
+  BACKUP they count as irreversible (see §Authorization).
 - Memory: update fact files and their `MEMORY.md` lines in the same step;
   never leave a dangling link or an unindexed file you created.
 - Edit only the authorized items; leave every other byte untouched,

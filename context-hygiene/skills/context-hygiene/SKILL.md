@@ -21,9 +21,10 @@ propose how to fix it, and apply only what the user authorizes.
    "yes"). Re-prompt with the valid IDs.
 3. **Group approval never covers ⚠ rationale-risk or irreversible (not
    tracked) items.** They must be named individually. A group letter or
-   "apply all" covers the rest. Declining BACKUP makes every memory item
-   irreversible: after an explicit "no" to BACKUP, apply only the memory items
-   the user named individually.
+   "apply all" covers the rest. Memory items are not irreversible in the
+   recap: they are marked `needs: BACKUP`, because the BACKUP item covers the
+   memory directory. After an explicit "no" to BACKUP they count as
+   irreversible: apply only the memory items the user named individually.
 4. **Chat only.** No report files, no state files, no hooks.
 5. **Never touch** secrets, `settings*.json` (read-only), other projects'
    memory, final/published docs, or global user configuration (unless the
