@@ -1,6 +1,6 @@
 ---
 name: client-facing-doc
-description: "Convert internal or reserved technical documentation (assessments, estimations, AI-assisted drafts, internal notes) into a polished, client-facing deliverable. Silently removes confidential content — costs, rates, budgets, effort estimates, estimation breakdowns, resource assumptions, internal planning, AI prompts and artifacts, drafts, TODOs, internal references — while preserving and improving the customer-relevant technical substance, and produces a separate internal redaction audit for verification. English or Italian. Use when asked to make a document client-facing or customer-ready, or to redact, sanitize or externalize an internal document or assessment for a client (e.g. 'versione per il cliente', 'rendi questo documento condivisibile')."
+description: "Turn an internal technical document (assessment, estimate, AI-assisted draft, internal notes) into a client-facing deliverable. Use when asked to make a document client-facing or customer-ready, or to redact, sanitize or externalize it for a client ('versione per il cliente', 'rendi questo documento condivisibile'). Removes costs, rates, effort, internal planning, prompts, drafts and TODOs; keeps and improves the technical substance; writes a separate redaction audit. English or Italian. Its structure and style guide take precedence over a personal writing-voice skill."
 ---
 
 # Client-Facing Doc — Internal-to-External Document Converter
@@ -26,12 +26,13 @@ an **audience-aware section plan** — which source sections it proposes to *inc
 customer) and which to *remove* (confidential or internal-only) — for the user to confirm or adjust
 (Step 2). Once the plan is approved, execution is automated: within the included sections, removal of
 fine-grained confidential snippets happens silently in a single pass, and anything ambiguous is
-removed. Verification happens **after** the fact through a separate redaction audit, so a leak can be
-caught before the document is shared.
+removed. The written deliverable is then scanned with fixed patterns (Step 6), and verification happens
+**after** the fact through a separate redaction audit, so a leak can be caught before the document is
+shared.
 
 **Outputs:**
 - **Client deliverable** → `<deliverables>/<doc-name>-client-v<N>.md`, where `<deliverables>` is the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`)
-- **Redaction audit** (verification trail, never shared) → `<working-docs>/<doc-name>-redaction-audit.md`, where `<working-docs>` is the working-documents folder the project's CLAUDE.md declares; if none is declared, ask the user, and prefer a git-ignored folder because the audit quotes the removed confidential snippets
+- **Redaction audit** (verification trail, never shared) → `<working-docs>/<doc-name>-client-v<N>-redaction-audit.md`, with the same `v<N>` as the deliverable it audits, so a later run never overwrites an earlier audit. `<working-docs>` is the working-documents folder the project's CLAUDE.md declares; if none is declared, ask the user, and prefer a git-ignored folder because the audit quotes the removed confidential snippets
 
 The original source document is never modified.
 
@@ -127,36 +128,46 @@ Apply the consultative enterprise voice defined in the style guide:
   abbreviations and internal jargon
 - No marketing language, no AI-style summarization, no unnecessary verbosity, no bullet-only
   explanations where prose is warranted
-- No meta-references to the conversion, to AI, to internal revisions, or to removed content
+- No meta-references to the conversion, to internal revisions, to removed content, or to the
+  content being AI-generated or AI-assisted. AI components of the solution itself (a model, an
+  LLM-based feature) are technical substance and stay
 
 Use the language pack for localized section labels and boilerplate.
 
-### Step 6 — Verification Self-Check (Security Boundary)
+When a personal writing-voice skill also applies to this text, this skill's section plan, style
+guide and language pack take precedence; apply the personal voice only where they leave room (word
+choice within a sentence, for example), never to the structure, the register or the removals.
 
-Re-scan the **generated output** for residual confidential markers before writing anything. This is
-the last line of defense against a leak. Flag and remove (logging each to the audit buffer):
-- Currency symbols and rate/price patterns (`€`, `$`, `£`, `k/day`, `/day`, `/hour`, `per diem`)
-- Effort/estimate patterns: `\b\d+\s*(gg|pd|dev-days|man-days|person-days|giorni/uomo)\b`
-- Internal-status terms: `TODO`, `FIXME`, `WIP`, `draft`/`bozza`, `internal`/`interno`/`riservato`,
-  `confidential`/`riservato`
-- AI/process leakage: prompt fragments, "as an AI", chain-of-thought phrasing ("let me think",
-  "step 1: I will"), references to AI tools or generated artifacts
-- References to internal or unpublished documents ("see internal deck", "per the estimation sheet")
+### Step 6 — Write and Scan the Deliverable (Security Boundary)
 
-If any match survives into the output, remove it and record it. The document must read as if
-originally authored for the customer.
+`Read references/residual-patterns.md`
+
+This is the last line of defense against a leak, so it runs on the file that will be shared, with
+patterns that either match or do not:
+
+1. Write the client deliverable to `<deliverables>/<doc-name>-client-v<N>.md` (start at `v1`; use
+   the next free `v<N>` if the target already exists). It is not ready to share until this step and
+   Step 7 are done.
+2. Run every REMOVE pattern with the Grep tool on that file. Remove each hit with the Edit tool,
+   rewriting the sentence so no seam shows, and log it to the audit buffer as a Step 6 removal.
+   Re-run the REMOVE patterns until none matches, at most three passes; if a match remains, report
+   the lines to the user and set the verdict to REVIEW NEEDED.
+3. Run the REVIEW patterns and judge each hit as `references/residual-patterns.md` describes:
+   commercial, effort, internal-status, internal-reference or AI-authorship uses are removed and
+   logged; technical substance such as "internal load balancer", "error budget" or an AI component
+   of the solution is kept and logged as kept for review. When unsure, remove it.
+4. Read the file once more for leaks no pattern can see, as the reference's last section describes.
+
+The document must read as if originally authored for the customer.
 
 ### Step 7 — Output
 
-Write the client deliverable to `<deliverables>/<doc-name>-client-v<N>.md` (start at `v1`; increment the
-suffix to the next free `v<N>` if the target already exists).
-
-Write the redaction audit to `<working-docs>/<doc-name>-redaction-audit.md` using
-`references/audit-template.md`, populated from the audit buffer.
+Write the redaction audit to `<working-docs>/<doc-name>-client-v<N>-redaction-audit.md` (the same
+`v<N>` as the deliverable) using `references/audit-template.md`, populated from the audit buffer.
 
 Present a summary to the user:
 - Removals by category (count)
-- Residual-scan result (clean / items caught in Step 6)
+- Residual-scan result (clean / items caught in Step 6 / hits kept for review)
 - Word count and detected language
 - Path to both output files
 - If a DOCX-generation skill is available (for example `document-skills:docx`), an offer to convert the deliverable to DOCX with it
@@ -172,7 +183,7 @@ Present a summary to the user:
 | Step 3 | `references/confidential-taxonomy.md` |
 | Step 4 | `references/preserve-checklist.md` |
 | Step 5 | `references/style-guide.md` + `references/language-packs/{lang}.md` |
-| Step 6 | (no references — in-skill residual scan) |
+| Step 6 | `references/residual-patterns.md` (Grep scan of the written deliverable) |
 | Step 7 | `references/audit-template.md` |
 
 ---
@@ -182,17 +193,20 @@ Present a summary to the user:
 Before writing output, the skill validates itself:
 
 1. **No-leak guarantee** — the client deliverable contains zero items from the confidential taxonomy.
-   The Step 6 residual scan must run on the final text, not the source.
-2. **No meta-references** — the deliverable contains no mention of the conversion, AI, internal
-   revisions, drafts, removed content, or this skill. It reads as an original customer document.
+   The Step 6 residual scan runs with the Grep tool on the written deliverable file, not on the
+   source, and no REMOVE pattern matches it when the skill finishes.
+2. **No meta-references** — the deliverable contains no mention of the conversion, internal
+   revisions, drafts, removed content, this skill, or the content being AI-generated or AI-assisted.
+   It reads as an original customer document. AI components of the proposed solution are technical
+   substance, not meta-references.
 3. **Every audit entry is categorized** — each entry in the redaction audit cites a taxonomy
    category and a reason. Uncategorized removals are not recorded as confident removals; re-examine.
 4. **Treat doubt as confidential** — if suitability for a customer audience is uncertain, the item is
    removed, not kept. This rule is mandatory and overrides any preference to retain detail.
 5. **Preserve without inventing** — restructuring and prose expansion must not introduce technical
    claims, figures, or commitments absent from the source.
-6. **Audit stays internal** — the redaction audit is written only to the working-documents folder resolved in §1 and is never included
-   in, linked from, or referenced by the client deliverable.
+6. **Audit stays internal** — the redaction audit is written only to the working-documents folder resolved in §1, named after the
+   deliverable version it audits, and is never included in, linked from, or referenced by the client deliverable.
 7. **Section plan honored** — the deliverable includes exactly the sections the user kept in Step 2 and
    none of the sections marked for removal. Deviations from the confirmed plan are not allowed without
    re-confirming with the user.

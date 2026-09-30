@@ -32,5 +32,22 @@ not invent facts the source does not support.
 - **Phase breakdowns** — keep a delivery roadmap that carries no effort or cost figures. Remove any
   breakdown that exists to support estimation or that pairs work with effort/cost.
 
+## Technical vocabulary that looks confidential
+
+Some words the taxonomy uses as cues are also plain technical vocabulary. When they describe the
+solution, they are substance and stay:
+
+- "internal" as an adjective: internal load balancer, internal API, internal network, internal DNS
+- "budget" and "cap" in engineering terms: error budget, latency budget, CAP theorem, rate cap
+- "confidential" as a data class: "confidential data is encrypted at rest"
+- "cost" as a design property: cost-optimized storage tier, cloud cost monitoring
+- hours and days as service levels: a recovery time objective of 4 hours, a 5-working-day response
+  time, written out in full
+- AI components of the solution: a model, an LLM-based feature, an AI service the solution calls
+
+The Step 6 scan flags these words for review rather than removing them (`residual-patterns.md`,
+REVIEW rows); the judgment is whether the sentence describes the solution or the vendor's internal
+work.
+
 When a single passage mixes preservable substance with confidential detail, keep the substance and
 remove only the confidential portion — rewriting the sentence so the seam is invisible.

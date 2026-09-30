@@ -15,7 +15,8 @@ Any of the following, when present in the provided material or a connected knowl
 - Commercial estimation frameworks
 
 A bare currency figure mentioned in passing in the source is **not** an approved cost model. The model
-must be a deliberate, reusable costing artifact.
+must be a deliberate, reusable costing artifact. Such a figure is not dropped silently either: see
+[Prices in the source without an approved model](#prices-in-the-source-without-an-approved-model).
 
 ## Scan order
 
@@ -28,8 +29,11 @@ must be a deliberate, reusable costing artifact.
 
 **If one or more approved cost models are found:**
 - Inform the user that cost-related information can be generated, naming the model(s) found.
-- Ask for **explicit confirmation** before using any of them.
+- Ask for **explicit confirmation** before using any of them, and ask whose authorization to record
+  (a name or a role; the user's own answer is enough).
 - Do **not** calculate costs without confirmation. If the user declines, proceed effort-only.
+- On confirmation, record the **cost basis** for Commercial Considerations: the model used (its name,
+  and its version or date when it has one), where it was found, and who authorized its use.
 
 **If no approved cost model is found:**
 - Produce **effort-only** output, expressed in Person-Days (PD) / Man-Days (MD).
@@ -38,6 +42,19 @@ must be a deliberate, reusable costing artifact.
 
   > Cost calculations have not been included because no approved internal costing model was provided
   > or authorized.
+
+## Prices in the source without an approved model
+
+In effort-only mode (no approved model, or the user declined one), the source may still quote prices,
+rates, budgets or other cost figures. Missing and ambiguous information is a first-class output of
+this skill (`extraction-principles.md`), so these figures are neither repeated nor dropped without a
+word:
+
+- Do not copy any of the figures into the summary.
+- Add one item to the Bid Review Checklist's **Commercial Clarifications**, with the language pack's
+  verbatim "unapproved cost figures" text, and say where in the source the figures appear (section
+  or heading), without the figures themselves.
+- Commercial Considerations still carries only the effort-only statement.
 
 ## Always distinguish
 

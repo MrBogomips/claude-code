@@ -1,6 +1,6 @@
 ---
 name: bid-delivery-summary
-description: "Distill a software project assessment, estimation, technical analysis, architecture study, solution design or AI-generated evaluation into an INTERNAL commercial and delivery summary for sales, bid, account, delivery, project and resource managers and executives — scope, resources, effort, activities, milestones, assumptions, risks, dependencies, commercial considerations, a bid-readiness verdict and a delivery-readiness assessment. Effort-only unless an approved cost model is present and authorized. English or Italian. Use when asked for an internal, commercial, bid or delivery summary of an assessment, or whether a project is ready to bid or propose (e.g. 'is this ready to bid', 'riepilogo interno', 'sintesi per l'offerta', 'siamo pronti per l'offerta')."
+description: "Distill a project assessment, estimate, technical analysis, solution design or AI-generated evaluation into an INTERNAL commercial and delivery summary for bid, sales, account and delivery managers. Use when asked for an internal, commercial, bid or delivery summary of an assessment, or whether a project is ready to bid ('is this ready to bid', 'riepilogo interno', 'sintesi per l'offerta', 'siamo pronti per l'offerta'). Covers scope, roles, effort, milestones, risks, dependencies, a bid-readiness verdict and delivery readiness. Effort-only unless an approved cost model is authorized. English or Italian."
 ---
 
 # Bid & Delivery Summary — Internal Commercial & Delivery Brief
@@ -24,11 +24,12 @@ and delivery planning.
 
 Four rules are mandatory and non-negotiable:
 
-1. **Confidentiality header** — the document always begins with the verbatim `INTERNAL USE ONLY`
-   notice from the language pack.
+1. **Confidentiality header** — the document always begins with the language pack's verbatim
+   confidentiality notice (`INTERNAL USE ONLY` in English, `SOLO PER USO INTERNO` in Italian).
 2. **Cost-model authorization gate** — the skill never invents costs, rates, or margins. Cost figures
    appear only when an approved cost model is present **and** the user explicitly authorizes its use.
-   Otherwise the output is effort-only, expressed in Person-Days (PD) / Man-Days (MD).
+   Otherwise the output is effort-only, expressed in Person-Days (PD) / Man-Days (MD). Prices the
+   source quotes without an approved model are never repeated; they become a clarification item.
 3. **Audience-aware section plan** — before generation, the skill proposes which of the standard
    sections to *include* and which to *remove*, given the source content and the internal audience,
    and asks the user to confirm or adjust.
@@ -39,7 +40,7 @@ The skill pauses for the user at two points: the cost-model gate (Step 3) and th
 approval (Step 4). Everything else runs automatically.
 
 **Output:** the internal summary → `<deliverables>/<doc-name>-internal-summary-v<N>.md`, where `<deliverables>` is the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`). The
-`INTERNAL USE ONLY` header carries the confidentiality semantics.
+confidentiality notice carries the confidentiality semantics.
 
 The skill auto-detects language from the input and produces output in the detected language.
 Supported languages: English (`en`) and Italian (`it`). The user may override with an explicit choice.
@@ -93,11 +94,15 @@ Before producing any cost-related information, run the authorization logic:
    material for an **approved cost model** (rate card, internal costing table, service-catalog
    pricing, pricing matrix, cost-allocation model, commercial estimation framework).
 2. **If one or more approved cost models are found:** inform the user and **ask for explicit
-   confirmation** before using any of them. Do not calculate costs without confirmation.
-3. **If none is found:** produce effort-only output in PD/MD. Do not infer, estimate, or invent costs,
-   rates, margins, or pricing assumptions.
+   confirmation** before using any of them, and ask whose authorization to record (a name or a role).
+   Do not calculate costs without confirmation.
+3. **If none is found, or the user declines:** produce effort-only output in PD/MD. Do not infer,
+   estimate, or invent costs, rates, margins, or pricing assumptions. If the source itself quotes
+   prices, rates or cost figures, note it for the Bid Review Checklist: it becomes a Commercial
+   Clarifications item that says so, without repeating any figure.
 
-Record the resulting mode (effort-only vs cost-authorized) for the section plan and generation.
+Record the resulting mode (effort-only vs cost-authorized), and in cost-authorized mode the cost model
+used and who authorized it, for the section plan and generation.
 
 ### Step 4 — Section Plan Proposal (Audience-Aware)
 
@@ -120,15 +125,15 @@ Review Checklist). **Ask the user to confirm or adjust** before generating. Trea
 as the section set for Step 5.
 
 > Default to including all 13 sections; removal is the exception, justified by non-applicability or a
-> total absence of source material. The mandatory `INTERNAL USE ONLY` notice and the Bid Review
+> total absence of source material. The mandatory confidentiality notice and the Bid Review
 > Checklist are never removed.
 
 ### Step 5 — Section Generation
 
 `Read references/summary-structure.md` and `Read references/language-packs/{lang}.md`
 
-Generate the confirmed sections in order, opening with the verbatim `INTERNAL USE ONLY` notice
-from the language pack. The full standard set is:
+Generate the confirmed sections in order, opening with the language pack's verbatim confidentiality
+notice. The full standard set is:
 
 1. Executive Summary
 2. Scope Summary
@@ -148,6 +153,10 @@ Use tables where the structure specifies them (resource requirements, effort bre
 Prefer structured sections, tables, bullet points, and action-oriented language. Avoid implementation
 deep-dives, architectural detail, marketing language, and verbosity. Clearly distinguish effort
 estimates, cost estimates (only if authorized), and commercial assumptions.
+
+When a personal writing-voice skill also applies, the section structure and the language pack's
+verbatim texts take precedence; apply the personal voice only where they leave room, such as the
+wording of a rationale.
 
 ### Step 6 — Output
 
@@ -178,11 +187,15 @@ and customer questions, and the detected language. If a DOCX-generation skill is
 
 Before writing output, the skill validates itself:
 
-1. **Confidentiality header present** — the document begins with the verbatim `INTERNAL USE ONLY`
-   notice. A summary without it is incomplete.
+1. **Confidentiality header present** — the document begins with the language pack's verbatim
+   confidentiality notice (`INTERNAL USE ONLY`, or `SOLO PER USO INTERNO` in Italian). A summary
+   without it is incomplete.
 2. **No unauthorized costs** — no cost, rate, price, or margin figure appears unless an approved cost
    model was found in Step 3 **and** the user explicitly authorized it. When effort-only, Commercial
-   Considerations contains the standard "no approved cost model" statement and nothing more.
+   Considerations contains the standard "no approved cost model" statement and nothing more; if the
+   source quoted prices, the Commercial Clarifications carry the language pack's "unapproved cost
+   figures" item, with no figure. When cost-authorized, Commercial Considerations names the cost
+   model used and who authorized it.
 3. **Effort in PD/MD** — all effort is expressed in Person-Days or Man-Days, with confirmed /
    estimated / assumed / contingency effort distinguished where the source allows.
 4. **Effort vs cost vs commercial assumptions are separated** — never conflate them.
@@ -191,7 +204,7 @@ Before writing output, the skill validates itself:
 6. **Readiness verdicts are enumerated** — the Bid Readiness Conclusion is exactly one of the four
    defined verdicts, and the Delivery Confidence Level is High / Medium / Low, each with a rationale.
 7. **Section plan honored** — the document contains exactly the sections confirmed in Step 4 and none
-   that were removed; the `INTERNAL USE ONLY` notice and the Bid Review Checklist are always present.
+   that were removed; the confidentiality notice and the Bid Review Checklist are always present.
 8. **Summary only** — the document contains no chain-of-thought, AI commentary, editorial notes, or
    meta-observations about the source.
 
@@ -208,5 +221,5 @@ Supported languages:
 - `it` — Italian (`references/language-packs/it.md`)
 
 For unsupported languages: produce section labels in the detected language, apply the English
-structure and guidance internally, and note the limitation to the user. The `INTERNAL USE ONLY`
+structure and guidance internally, and note the limitation to the user. The confidentiality
 notice is emitted in the closest supported language.
