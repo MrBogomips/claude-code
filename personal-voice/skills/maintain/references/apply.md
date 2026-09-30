@@ -33,7 +33,9 @@ For each authorized item, in number order:
    - **MOVE**: add the rule to the destination with the evidence summed, then
      remove it from the source. Refuse a move of personal material into a
      project store, even if approved. The only project store a move can reach
-     is the current project's `.personal-voice/`.
+     is the current project's `.personal-voice/`. A move into a project store
+     drops the `project:` tags from the sources it carries: the store
+     identifies the project, and no absolute path is written into it.
    - Any item whose destination is a project store that does not exist yet
      (a MOVE, or a promotion with "scope: project"): first run the store
      format's Project store initialization. If the author chooses Skip, skip

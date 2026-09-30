@@ -67,9 +67,9 @@ Maintenance SHALL propose moving a project rule to the global store when it prov
 and a global observation to the project store when it proves project-specific, without ever
 moving personal material into a project store. A move to a project store SHALL target only the
 current project's store, and SHALL be proposed only for an observation that reinforces no rule
-and whose sources all carry the current project's tag. When the sources all carry another
-project's tag, or the observation reinforces a rule, maintenance SHALL propose no move and SHALL
-add a one-line note to the recap instead.
+and whose sources all carry the current project root's absolute path; a folder name alone SHALL
+NOT count as a match. When the sources all carry another path, or the observation reinforces a
+rule, maintenance SHALL propose no move and SHALL add a one-line note to the recap instead.
 
 #### Scenario: Project rule that proves general
 - **WHEN** the same project rule has evidence from texts unrelated to that project
@@ -79,6 +79,6 @@ add a one-line note to the recap instead.
 - **WHEN** a global observation that reinforces nothing has two sources, both tagged with the current project
 - **THEN** maintenance proposes moving it to the current project's store
 
-#### Scenario: Observation from another project
-- **WHEN** a global observation's sources are all tagged with a project other than the current one
+#### Scenario: Observation from another project with the same folder name
+- **WHEN** a global observation's sources are all tagged `/work/client-b/backend` and the current project root is `/work/client-a/backend`
 - **THEN** maintenance proposes no move and notes in the recap which project the evidence comes from

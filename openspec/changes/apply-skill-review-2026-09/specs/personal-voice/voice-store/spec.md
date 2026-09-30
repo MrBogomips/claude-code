@@ -27,12 +27,18 @@ language code; an entry that depends on the audience SHALL carry an audience qua
 rule SHALL record its evidence count and the date it was last reinforced, and, once the author
 kept it at a stale review, the date of that review. Every observation SHALL record its date,
 source kind (revision, spoken correction or own text), language, topic, audience when known,
-and the before and after excerpts or the quoted trait.
+and the before and after excerpts or the quoted trait. A source in the global store SHALL record
+the absolute path of the project root when the text was written in a project; a source in a
+project store SHALL carry no project tag, and a move into a project store SHALL drop the tag.
 
 #### Scenario: Rule format
 - **WHEN** a rule about closing informal Italian emails is stored
 - **THEN** it reads in English, quotes the Italian expression verbatim, carries `[it]` and an
   audience qualifier, and shows its evidence count and last-reinforced date
+
+#### Scenario: Project tag stays out of the project store
+- **WHEN** a global observation tagged with the current project's root path moves into that project's store
+- **THEN** its sources lose the tag, and no absolute path is written into `.personal-voice/`
 
 #### Scenario: Rule kept at a stale review
 - **WHEN** the author keeps a stale rule during maintenance on 2026-09-29

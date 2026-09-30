@@ -147,10 +147,12 @@ writes to the global store and to project stores.
 Creating a project store in a git repository edits `.git/info/exclude`. Claude
 Code protects `.git/`, so that one edit asks for permission whatever your rules.
 
-The one shell command the skills run is `git rev-parse`: it finds the project
-root, so a session started in a subdirectory uses the same project store, and
-the exclude file's path in a linked worktree. Each skill pre-approves it, so it
-asks for no permission.
+The one shell command the skills run without asking is `git rev-parse`: it
+finds the project root, so a session started in a subdirectory uses the same
+project store, and the exclude file's path in a linked worktree. Each skill
+pre-approves it, so it asks for no permission. `git rm --cached` runs only when
+you ask maintenance to stop tracking a versioned project store, with a
+permission prompt.
 
 ## What the stores hold
 
@@ -177,6 +179,9 @@ Files are Markdown. You can read and edit them yourself.
 
 The global store holds excerpts of your own writing and notes on how you write.
 It stays in the directory you chose and is never sent anywhere by the plugin.
+Its pending observations note the path of the project a text was written in,
+so that maintenance can tell projects apart; that path is never written into a
+project store.
 
 The project store holds only project material: never exemplars, and never
 anything learned from personal texts. Exemplars in the global store are chosen

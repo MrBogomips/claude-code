@@ -39,8 +39,10 @@ If the global store path above is empty or still contains the text
 `/config` and stop.
 
 Use the Glob, Read, Write and Edit tools on store files, not shell commands.
-The one command this skill runs is `git rev-parse` (the project root, and the
-exclude file for a git-choice switch), which it pre-approves.
+The one command this skill runs without asking is `git rev-parse` (the project
+root, and the exclude file for a git-choice switch), which it pre-approves.
+`git rm -r --cached .personal-voice` runs only when the author asks for it
+during a git-choice switch, with a permission prompt.
 
 ## Workflow
 
@@ -66,5 +68,6 @@ A request to switch the project store between personal and versioned follows
 | "The stale rule is clearly dead" | Flag it. Keep it unless the author approves removal. |
 | "They kept it last time, so I'll flag it again" | A kept rule carries `reviewed:`; it is stale again only six months after that date. |
 | "All its evidence is from another project, so move it there" | Only the current project's store is reachable. Add a note instead. |
+| "The tag says `backend`, like this repo, so it's ours" | Compare the whole project-root path; folder names repeat across repositories. |
 | "The limit is only 51, close enough" | Propose a merge or removal in the same recap. |
 | "The family nickname is used everywhere, move it to the project" | Personal material never enters a project store. |

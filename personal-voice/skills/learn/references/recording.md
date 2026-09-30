@@ -33,6 +33,10 @@ at the project root the store format defines, not in the working directory:
 
 Never send a trait from a personal text to the project store.
 
+Project tags follow the store format: a source recorded in the global store
+for a text written in a project carries `project: <absolute path of the project
+root>`; a source recorded in the project store carries no project tag.
+
 ## 4. Notice
 
 After writing, show one line in the language of the conversation, naming how

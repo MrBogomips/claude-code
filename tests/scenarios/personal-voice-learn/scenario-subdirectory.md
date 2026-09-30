@@ -14,7 +14,7 @@ versione 2.5 è previsto per venerdì. Buona giornata".
 - Does not offer to create a project store, and creates nothing under `src/`
 
 ## Acceptance Criteria
-- [ ] The observation for the client's term is in `$F/project/.personal-voice/observations.md`, with `project: project` in its source
+- [ ] The observation for the client's term is in `$F/project/.personal-voice/observations.md`, and its source carries no `project:` tag (a project-store source never does)
 - [ ] `$F/project/src/.personal-voice/` does not exist
 - [ ] No project-store initialization question is asked
 - [ ] The notice line names the project store as the destination

@@ -210,7 +210,7 @@ avoid and the meaning:
 - destination: languages/it.md › Avoid
 - evidence: 1
 - sources:
-  - 2026-09-29 · revision · text: status email to the team · project: example-portal · "Inoltre, il rilascio è pronto." → "E il rilascio è pronto."
+  - 2026-09-29 · revision · text: status email to the team · project: /path/to/example-portal · "Inoltre, il rilascio è pronto." → "E il rilascio è pronto."
 ```
 
 - **Heading**: the trait in a few English words.
@@ -222,8 +222,7 @@ avoid and the meaning:
   rule there.
 - **sources**: one line per independent text: date, source kind (`revision`,
   `spoken correction` or `own text`), a short label for the text, the project
-  as `project: <folder name>` (the base name of the project root) when the
-  text was written in a project, and
+  tag when the global store records a text written in a project, and
   either `"before" → "after"` excerpts or the quoted trait. Give each text a label
   that tells it apart from other texts (what it is, for whom, when). Two lines
   with the same text label count as one piece of evidence.
@@ -236,6 +235,15 @@ avoid and the meaning:
 
 A trait that matches a pending observation adds a line to that observation's
 `sources`; it never creates a second observation.
+
+**Project tag**: `project: <absolute path of the project root>`, written exactly
+as `git rev-parse --show-toplevel` prints it (the working directory outside
+git), for example `project: /path/to/example-portal`. Only sources in the global store carry
+it; there it tells projects apart even when two repositories share a folder
+name (`backend`, `docs`). Sources in a project store carry no project tag: the
+store itself identifies the project, and a personal absolute path must never
+land in a store that may be versioned. When an entry moves into a project
+store, drop the tag from its sources.
 
 ## Routing
 
