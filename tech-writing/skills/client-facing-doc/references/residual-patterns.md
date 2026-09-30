@@ -1,12 +1,13 @@
 # Residual Patterns
 
-Step 6 runs these patterns on the **written deliverable file**, not on the source or on text held
-in memory. A pattern either matches the file or it does not, so a leak that slipped through the
+Step 6 runs these patterns on the **written draft** (`<working-docs>/<doc-name>-client-v<N>-draft.md`),
+not on the source or on text held in memory; the draft is copied to the deliverables folder only
+when no REMOVE row matches it. A pattern either matches the file or it does not, so a leak that slipped through the
 rewrite shows up as a concrete line.
 
 ## How to run them
 
-- Use the Grep tool with the deliverable's path, output mode `content` and line numbers on. Set
+- Use the Grep tool with the draft's path, output mode `content` and line numbers on. Set
   `-i` (case-insensitive) when the row says so; the other rows are case-sensitive on purpose.
 - Pass the pattern exactly as written in its code block. The syntax is ripgrep's (Rust regex):
   no look-ahead or look-behind.
@@ -67,14 +68,16 @@ in full by the style rewrite ("5 giorni lavorativi"), so an abbreviated `gg` nev
 
 Full-time-equivalent counts are staffing assumptions for costing (taxonomy B).
 
-### R6 — Hours in an effort context (`-i`)
+### R6 — Hours stated as effort (`-i`)
 
 ```
-\b(effort|impegno|stima|estimated?|estimates)\b.{0,40}\b\d+([.,]\d+)?\s*(h|hrs?|hours?|ore)\b|\b\d+([.,]\d+)?\s*(h|hrs?|hours?|ore)\s+(of|di)\s+(effort|work|lavoro|impegno|sviluppo|development)\b
+\b(effort|impegno)\b.{0,40}\b\d+([.,]\d+)?\s*(h|hrs?|hours?|ore)\b|\b\d+([.,]\d+)?\s*(h|hrs?|hours?|ore)\s+(of|di)\s+(effort|work|lavoro|impegno|sviluppo|development)\b
 ```
 
 `effort for the migration: 120 hours`, `80 ore di sviluppo`. Hours outside an effort context
-(a recovery time objective, a support window) are service levels and are not matched.
+(a recovery time objective, a support window) are service levels and are not matched. An
+"estimated" duration may be customer-facing ("the estimated downtime is 2 hours"), so it is a
+REVIEW row (V6).
 
 ### R7 — Work-in-progress markers (case-sensitive)
 
@@ -85,19 +88,22 @@ Full-time-equivalent counts are staffing assumptions for costing (taxonomy B).
 ### R8 — Internal-status labels (`-i`)
 
 ```
-\b(internal use only|internal only|for internal use only|uso interno|do not share|do not distribute|not for (the )?(client|customer)|non condividere|non divulgare|non diffondere)\b|\[(internal|interno|riservato|confidential|confidenziale|draft|bozza|wip)\]|^[\s#>*_-]*(internal|interno|riservato|riservata|confidenziale|draft|bozza|internal notes?|note interne)[*_]*\s*:
+\b(internal use only|for internal use only|solo (per |ad )?uso interno|riservato all'uso interno|do not share|do not distribute|not for (the )?(client|customer)|non condividere|non divulgare|non diffondere)\b|\[(internal|interno|riservato|confidential|confidenziale|draft|bozza|wip)\]|^[\s#>*_-]*(draft|bozza|internal notes?|note interne)[*_]*\s*:
 ```
 
-Labels only: an "internal only" phrase, a bracketed tag such as `[DRAFT]`, or a line that starts
-with `Internal:`, `Riservato:`, `Bozza:`. The adjective in "internal API" is not a label (V1).
+Labels only: "internal use only", "solo per uso interno", "do not share", a bracketed tag such as
+`[DRAFT]`, or a line that starts with `Draft:`, `Bozza:`, `Internal notes:`. Phrases that are also
+technical ("the metrics endpoint is internal only", "API per uso interno", a line starting with
+`Internal:` that describes an admin interface) are judged through V1.
 
 ### R9 — Upper-case stamps (case-sensitive)
 
 ```
-^[\s#>*_-]*(INTERNAL|INTERNO|RISERVATO|RISERVATA|CONFIDENTIAL|CONFIDENZIALE|DRAFT|BOZZA)[\s*_-]*$|\b(INTERNAL|INTERNO|RISERVATO|CONFIDENTIAL|CONFIDENZIALE|DRAFT|BOZZA):
+^[\s#>]*[*_]*(INTERNAL|INTERNO|RISERVATO|RISERVATA|CONFIDENTIAL|CONFIDENZIALE|DRAFT|BOZZA)[*_]*\s*$|\b(INTERNAL|INTERNO|RISERVATO|CONFIDENTIAL|CONFIDENZIALE|DRAFT|BOZZA):
 ```
 
-A stamp on a line of its own (`RISERVATO`) or followed by a colon (`INTERNAL:`).
+A stamp on a line of its own (`RISERVATO`, `**DRAFT**`) or followed by a colon (`INTERNAL:`). A list
+item such as `- DRAFT` (a document status in a lifecycle list) is not a stamp and goes to V1.
 
 ### R10 — Assistant and reasoning phrasing (`-i`)
 
@@ -143,8 +149,11 @@ of the proposed solution is architecture and is not matched.
 \b(internal|interno|interna|interni|interne|confidential|confidenziale|riservat[oaie]|draft|bozza|bozze|provisional|provvisori[oaie])\b
 ```
 
-Kept when technical: "internal load balancer", "internal API", "internal network", "confidential
-data is encrypted at rest", "draft standard".
+Kept when technical: "internal load balancer", "internal API", "internal network", "the metrics
+endpoint is internal only", `Internal:` heading an admin interface, "API per uso interno",
+"confidential data is encrypted at rest", "draft standard", `- DRAFT` in a status list. Removed when
+the word marks the document or the passage itself as internal to the author's organization ("This
+section is internal only", "Documento ad uso interno", `Riservato:` before commercial notes).
 
 ### V2 — Budget, cap, cost and price words (`-i`)
 
@@ -181,6 +190,16 @@ https?://\S*(intranet|internal|sharepoint|confluence|atlassian\.net|jira|wiki|no
 Kept when the link or handle belongs to the customer or to public documentation; removed when it
 points into the author's organization or names a colleague.
 
+### V6 — Estimated durations (`-i`)
+
+```
+\b(estimated?|estimates|stima|stimat[oaie])\b.{0,40}\b\d+([.,]\d+)?\s*(h|hrs?|hours?|ore)\b
+```
+
+Kept when the duration is a customer-facing fact ("the estimated downtime for the cut-over is 2
+hours", "la stima del fermo è di 3 ore"); removed when it is the effort of the work ("estimated
+at 120 hours").
+
 ## Judging REVIEW hits
 
 For each REVIEW hit, read the whole sentence:
@@ -198,6 +217,6 @@ deliverable is shared.
 
 ## What no pattern can see
 
-After the scan, read the deliverable once more for leaks that have no fixed shape: figures, names
+After the scan, read the draft once more for leaks that have no fixed shape: figures, names
 or plans taken from sections the user marked Remove, and chain-of-thought or prompt text phrased
 in ways the rows above do not cover. Remove and log them like REMOVE hits.

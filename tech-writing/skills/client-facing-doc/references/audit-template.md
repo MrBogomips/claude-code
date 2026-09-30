@@ -12,7 +12,8 @@ below from the audit buffer.
 # Redaction Audit — [Document Name]
 
 Source: [source path/title]
-Client deliverable: [deliverables]/[doc-name]-client-v[N].md
+Client deliverable: [deliverables]/[doc-name]-client-v[N].md | not written (REMOVE pattern still matching)
+Scanned draft: [working-docs]/[doc-name]-client-v[N]-draft.md
 Language: [en | it]
 Date: [date]
 
@@ -20,7 +21,7 @@ Date: [date]
 
 - Total items removed: [count]
 - Removed by category: [A: n, B: n, C: n, D: n, E: n, catch-all: n]
-- Step 6 residual scan (Grep on the written deliverable): [Clean | n items removed | n hits kept for review]
+- Step 6 residual scan (Grep on the written draft): [Clean | n items removed | n hits kept for review]
 - Verdict: [SAFE TO SHARE | REVIEW NEEDED]
 
 ## Removals
@@ -31,17 +32,17 @@ Date: [date]
 |---|----------|----------|-----------------|--------|
 | 1 | [section] | [category] | [short excerpt] | [why unsuitable] |
 
-### Step 6 — Residual markers caught in the written deliverable
+### Step 6 — Residual markers caught in the written draft
 
 | # | Location | Pattern | Category | Marker | Reason |
 |---|----------|---------|----------|--------|--------|
-| 1 | [section, line] | [R1–R14, V1–V5, or "read-through"] | [category] | [marker text] | [why unsuitable] |
+| 1 | [section, line] | [R1–R14, V1–V6, or "read-through"] | [category] | [marker text] | [why unsuitable] |
 
 ### Step 6 — Hits kept for review
 
 | # | Location | Pattern | Text kept | Why it is technical substance |
 |---|----------|---------|-----------|-------------------------------|
-| 1 | [section, line] | [V1–V5] | [e.g. "internal load balancer"] | [e.g. network component of the solution] |
+| 1 | [section, line] | [V1–V6] | [e.g. "internal load balancer"] | [e.g. network component of the solution] |
 
 ## Verdict rationale
 

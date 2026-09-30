@@ -26,13 +26,15 @@ an **audience-aware section plan** — which source sections it proposes to *inc
 customer) and which to *remove* (confidential or internal-only) — for the user to confirm or adjust
 (Step 2). Once the plan is approved, execution is automated: within the included sections, removal of
 fine-grained confidential snippets happens silently in a single pass, and anything ambiguous is
-removed. The written deliverable is then scanned with fixed patterns (Step 6), and verification happens
+removed. The text is written as a draft in the working-documents folder and scanned there with fixed
+patterns (Step 6); it reaches the deliverables folder only once the scan is clean. Verification happens
 **after** the fact through a separate redaction audit, so a leak can be caught before the document is
 shared.
 
 **Outputs:**
 - **Client deliverable** → `<deliverables>/<doc-name>-client-v<N>.md`, where `<deliverables>` is the output folder the project's CLAUDE.md declares; if none is declared, ask the user (suggest `docs/outbox/`)
 - **Redaction audit** (verification trail, never shared) → `<working-docs>/<doc-name>-client-v<N>-redaction-audit.md`, with the same `v<N>` as the deliverable it audits, so a later run never overwrites an earlier audit. `<working-docs>` is the working-documents folder the project's CLAUDE.md declares; if none is declared, ask the user, and prefer a git-ignored folder because the audit quotes the removed confidential snippets
+- **Scanned draft** (working copy, never shared) → `<working-docs>/<doc-name>-client-v<N>-draft.md`, the file Step 6 scans before anything reaches `<deliverables>`
 
 The original source document is never modified.
 
@@ -138,25 +140,28 @@ When a personal writing-voice skill also applies to this text, this skill's sect
 guide and language pack take precedence; apply the personal voice only where they leave room (word
 choice within a sentence, for example), never to the structure, the register or the removals.
 
-### Step 6 — Write and Scan the Deliverable (Security Boundary)
+### Step 6 — Write and Scan the Draft (Security Boundary)
 
 `Read references/residual-patterns.md`
 
-This is the last line of defense against a leak, so it runs on the file that will be shared, with
-patterns that either match or do not:
+This is the last line of defense against a leak, so it runs on the exact text that will be shared,
+with patterns that either match or do not. Unscanned text never lands in the deliverables folder,
+which is the one other people pick files up from:
 
-1. Write the client deliverable to `<deliverables>/<doc-name>-client-v<N>.md` (start at `v1`; use
-   the next free `v<N>` if the target already exists). It is not ready to share until this step and
-   Step 7 are done.
-2. Run every REMOVE pattern with the Grep tool on that file. Remove each hit with the Edit tool,
+1. Pick `v<N>`: start at `v1`, or use the next free `v<N>` in `<deliverables>`. Write the text to
+   `<working-docs>/<doc-name>-client-v<N>-draft.md`.
+2. Run every REMOVE pattern with the Grep tool on the draft. Remove each hit with the Edit tool,
    rewriting the sentence so no seam shows, and log it to the audit buffer as a Step 6 removal.
-   Re-run the REMOVE patterns until none matches, at most three passes; if a match remains, report
-   the lines to the user and set the verdict to REVIEW NEEDED.
+   Re-run the REMOVE patterns until none matches, at most three passes. If a match remains, stop:
+   write nothing to `<deliverables>`, report the lines to the user, set the verdict to REVIEW NEEDED,
+   and go to Step 7 for the audit only.
 3. Run the REVIEW patterns and judge each hit as `references/residual-patterns.md` describes:
    commercial, effort, internal-status, internal-reference or AI-authorship uses are removed and
    logged; technical substance such as "internal load balancer", "error budget" or an AI component
    of the solution is kept and logged as kept for review. When unsure, remove it.
-4. Read the file once more for leaks no pattern can see, as the reference's last section describes.
+4. Read the draft once more for leaks no pattern can see, as the reference's last section describes.
+5. Run the REMOVE patterns one last time. Only when none matches, copy the draft unchanged to
+   `<deliverables>/<doc-name>-client-v<N>.md`.
 
 The document must read as if originally authored for the customer.
 
@@ -164,12 +169,13 @@ The document must read as if originally authored for the customer.
 
 Write the redaction audit to `<working-docs>/<doc-name>-client-v<N>-redaction-audit.md` (the same
 `v<N>` as the deliverable) using `references/audit-template.md`, populated from the audit buffer.
+The draft stays next to it in the working-documents folder.
 
 Present a summary to the user:
 - Removals by category (count)
 - Residual-scan result (clean / items caught in Step 6 / hits kept for review)
 - Word count and detected language
-- Path to both output files
+- Path to the deliverable (or that none was written, and why) and to the audit
 - If a DOCX-generation skill is available (for example `document-skills:docx`), an offer to convert the deliverable to DOCX with it
 
 ---
@@ -183,7 +189,7 @@ Present a summary to the user:
 | Step 3 | `references/confidential-taxonomy.md` |
 | Step 4 | `references/preserve-checklist.md` |
 | Step 5 | `references/style-guide.md` + `references/language-packs/{lang}.md` |
-| Step 6 | `references/residual-patterns.md` (Grep scan of the written deliverable) |
+| Step 6 | `references/residual-patterns.md` (Grep scan of the written draft) |
 | Step 7 | `references/audit-template.md` |
 
 ---
@@ -193,8 +199,8 @@ Present a summary to the user:
 Before writing output, the skill validates itself:
 
 1. **No-leak guarantee** — the client deliverable contains zero items from the confidential taxonomy.
-   The Step 6 residual scan runs with the Grep tool on the written deliverable file, not on the
-   source, and no REMOVE pattern matches it when the skill finishes.
+   The Step 6 residual scan runs with the Grep tool on the written draft, not on the source, and the
+   draft is copied to the deliverables folder only when no REMOVE pattern matches it.
 2. **No meta-references** — the deliverable contains no mention of the conversion, internal
    revisions, drafts, removed content, this skill, or the content being AI-generated or AI-assisted.
    It reads as an original customer document. AI components of the proposed solution are technical

@@ -59,7 +59,7 @@ the written deliverable are in `residual-patterns.md`.
 | TODO items | Outstanding internal actions | `TODO`, `FIXME`, `WIP`, "to do", "da fare" |
 | Temporary annotations | Placeholders and scaffolding | `[…]` placeholders, `XXX`, "fill in later" |
 | References to internal documents | Pointers to internal/unpublished material | "see internal deck", "per the estimation sheet", links to internal stores |
-| Information intended for internal use | Anything explicitly marked internal-only | labels such as "internal only", "uso interno", "INTERNAL:", `[DRAFT]`, "Riservato:" or a "RISERVATO" stamp, "do not share" — not the adjective in "internal API" |
+| Information intended for internal use | Anything explicitly marked internal-only | labels that mark the document or passage as internal, such as "internal use only", "solo per uso interno", "INTERNAL:", `[DRAFT]`, "Riservato:" before commercial notes, a "RISERVATO" stamp, "do not share" — not the adjective in "internal API" or an endpoint that is "internal only" |
 
 ## Catch-all rule
 

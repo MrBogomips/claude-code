@@ -8,20 +8,22 @@ for review, and leaves a versioned audit trail.
 
 ## ADDED Requirements
 
-### Requirement: The residual scan runs fixed patterns on the written deliverable
-client-facing-doc SHALL write the deliverable to its versioned path and then run the REMOVE patterns
-of `references/residual-patterns.md` on that file with the Grep tool, removing every hit and logging
-it, until no REMOVE pattern matches or three passes have run. The patterns SHALL cover currency
+### Requirement: The residual scan runs fixed patterns on a written draft before delivery
+client-facing-doc SHALL write the text as a draft, `<working-docs>/<doc-name>-client-v<N>-draft.md`,
+and run the REMOVE patterns of `references/residual-patterns.md` on that file with the Grep tool,
+removing every hit and logging it, until no REMOVE pattern matches or three passes have run. It SHALL
+copy the draft to `<deliverables>/<doc-name>-client-v<N>.md` only when no REMOVE pattern matches it,
+so unscanned text never reaches the deliverables folder. The patterns SHALL cover currency
 symbols, currency codes and words next to a figure (`EUR`, `euro`, `USD`, `k€`), effort units after a
 figure (`MD`, `PD`, `gg`, `gg/uu`, `giornate/uomo`, `giorni/uomo`, man-days, person-days, man-hours,
 `ore uomo`, story points), FTE, hours stated as effort, work-in-progress markers, internal-status
 labels, assistant and prompt phrasing, and references to internal documents. When a REMOVE pattern
-still matches after three passes, the skill SHALL report the lines and the audit verdict SHALL be
-REVIEW NEEDED.
+still matches after three passes, the skill SHALL write nothing to the deliverables folder, SHALL
+report the lines, and the audit verdict SHALL be REVIEW NEEDED.
 
 #### Scenario: Planted markers in kept sections
 - **WHEN** the source's kept sections contain `EUR 40k`, `30 MD`, `12 gg`, `TODO`, a "Your task is…" prompt line and "see internal deck"
-- **THEN** none of them appears in the written deliverable, and each removal is logged with its pattern ID
+- **THEN** none of them appears in the deliverable copied to the deliverables folder, and each removal is logged with its pattern ID
 
 #### Scenario: Italian effort units
 - **WHEN** the source states effort as `12 giornate/uomo` or `12 gg/uu`
@@ -29,12 +31,18 @@ REVIEW NEEDED.
 
 #### Scenario: Plan before any write
 - **WHEN** the skill presents its Include / Remove section plan
-- **THEN** no file has been written yet, and the deliverable is written only after the user confirms the plan
+- **THEN** no file has been written yet, and the draft is written only after the user confirms the plan
+
+#### Scenario: A REMOVE pattern keeps matching
+- **WHEN** a REMOVE pattern still matches the draft after three passes
+- **THEN** no file is written to the deliverables folder, the draft and the audit stay in the working-documents folder, and the audit verdict is REVIEW NEEDED
 
 ### Requirement: Labels are removed, technical vocabulary is reviewed
-The REMOVE patterns SHALL match internal-status labels only ("internal only", "uso interno",
-`INTERNAL:`, `[DRAFT]`, a "RISERVATO" stamp), not the adjectives. Words that are also technical
-vocabulary (internal, confidential, budget, cap, cost, margin) SHALL be matched by REVIEW patterns:
+The REMOVE patterns SHALL match internal-status labels only ("internal use only", "solo per uso
+interno", "do not share", `INTERNAL:`, `[DRAFT]`, a "RISERVATO" stamp on its own line), not the
+adjectives. Words and phrases that are also technical vocabulary (internal, "internal only", "uso
+interno", a line-start `Internal:`, confidential, budget, cap, cost, margin, an estimated duration)
+SHALL be matched by REVIEW patterns:
 the skill SHALL remove a hit that carries commercial, effort, internal-status, internal-reference or
 AI-authorship meaning, SHALL keep a hit that describes the solution, and SHALL remove it when unsure.
 A kept REVIEW hit SHALL be listed in the audit's "Hits kept for review" table and SHALL make the
@@ -43,6 +51,10 @@ verdict REVIEW NEEDED.
 #### Scenario: Internal load balancer and error budget
 - **WHEN** the source describes an "internal load balancer" and an "error budget" of 43 minutes
 - **THEN** both phrases survive in the deliverable, both appear under "Hits kept for review", and the verdict is REVIEW NEEDED
+
+#### Scenario: Technical uses of label words
+- **WHEN** the source says "the metrics endpoint is internal only", lists `- DRAFT` as a document status, and states "the estimated downtime for the cut-over is 2 hours"
+- **THEN** no REMOVE pattern matches these lines; they are judged as REVIEW hits and kept when they describe the solution
 
 #### Scenario: Internal-use label
 - **WHEN** a kept section contains the line "INTERNAL: do not send to the customer"

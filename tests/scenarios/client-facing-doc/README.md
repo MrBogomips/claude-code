@@ -56,4 +56,4 @@ Run against the fixture itself, it reports every planted marker (a quick self-te
 
 | File | What it tests |
 |------|--------------|
-| scenario-leak-scan.md | Plan before any write; no planted marker in the deliverable; technical vocabulary survives and is listed for review; versioned audit |
+| scenario-leak-scan.md | Plan before any write; scan on a working-docs draft before delivery; no planted marker in the deliverable; technical vocabulary survives and is listed for review; versioned audit |
