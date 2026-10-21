@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Layer 1: OpenSpec validation
 # Runs `openspec validate --all --strict` over openspec/ (main specs and active changes).
-# Uses the openspec CLI on PATH, or the pinned version through npx (Node >= 20.19).
+# Uses the openspec CLI on PATH when it is the pinned version; otherwise runs the pinned version
+# through npx (Node >= 20.19), so local results match CI. A different openspec on PATH is the
+# last resort, with a warning.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,14 +19,21 @@ if [[ ! -d "$REPO_ROOT/openspec" ]]; then
     exit 1
 fi
 
+local_version=""
 if command -v openspec >/dev/null 2>&1; then
-    OPENSPEC=(openspec)
     local_version="$(openspec --version 2>/dev/null || echo unknown)"
-    if [[ "$local_version" != "$OPENSPEC_VERSION" ]]; then
-        yellow "WARN: openspec $local_version on PATH differs from the pinned $OPENSPEC_VERSION used in CI"
-    fi
+fi
+
+if [[ "$local_version" == "$OPENSPEC_VERSION" ]]; then
+    OPENSPEC=(openspec)
 elif command -v npx >/dev/null 2>&1; then
     OPENSPEC=(npx --yes "@fission-ai/openspec@$OPENSPEC_VERSION")
+    if [[ -n "$local_version" ]]; then
+        yellow "NOTE: openspec $local_version on PATH differs from the pinned $OPENSPEC_VERSION; using the pinned version through npx"
+    fi
+elif [[ -n "$local_version" ]]; then
+    OPENSPEC=(openspec)
+    yellow "WARN: openspec $local_version on PATH differs from the pinned $OPENSPEC_VERSION used in CI, and npx is unavailable"
 else
     red "ERROR: OpenSpec CLI not found and npx unavailable."
     red "       Install OpenSpec $OPENSPEC_VERSION or Node >= 20.19 (see CONTRIBUTING.md)."
