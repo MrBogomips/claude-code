@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Layer 1: Connector cross-reference validation
-# Checks that every ~~placeholder in skills, agents, commands and profiles has a matching entry in CONNECTORS.md
+# Checks that every ~~placeholder in skills, agents and commands has a matching entry in CONNECTORS.md
 # and that no connector is defined but never referenced.
 set -euo pipefail
 
@@ -27,7 +27,7 @@ for plugin_dir in "$REPO_ROOT"/*/; do
     # Collect all ~~placeholder references from every component that reaches the model
     declared_refs=()
     component_dirs=()
-    for component in skills agents commands profiles; do
+    for component in skills agents commands; do
         [[ -d "$plugin_dir/$component" ]] && component_dirs+=("$plugin_dir/$component/")
     done
     if [[ ${#component_dirs[@]} -gt 0 ]]; then

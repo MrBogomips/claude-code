@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A curated collection of Claude Code plugins for professional workflows",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "license": "MIT"
   },
   "plugins": [
@@ -41,17 +41,16 @@
     {
       "name": "kaizen",
       "source": "./kaizen",
-      "description": "Continuous improvement loops — a generic recursive optimization engine with bundled profiles for Claude Code usage, code refactoring, and process improvement",
-      "version": "1.2.0",
+      "description": "Session retrospective — links the errors, reworks and ambiguities of a session to the skills, rules, CLAUDE.md, memory, hooks and settings behind them, and applies only explicitly authorized, reviewed fixes to the project's own files",
+      "version": "2.0.0",
       "category": "engineering",
       "tags": [
         "kaizen",
+        "retrospective",
         "improvement",
-        "optimization",
-        "automation",
-        "autoresearch",
-        "kpi",
-        "refactoring"
+        "skills",
+        "claude-md",
+        "hooks"
       ]
     },
     {

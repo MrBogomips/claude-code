@@ -8,7 +8,7 @@ This is a flat-at-root plugin marketplace following the convention used by Anthr
 
 - `context-hygiene/` — context hygiene for agentic projects (CLAUDE.md, rules, auto-memory)
 - `human-resources/` — HR workflow support
-- `kaizen/` — continuous improvement loops
+- `kaizen/` — session retrospective of the skills, rules and settings a session used (Stop hook + skill)
 - `personal-voice/` — personal writing voice (tone and lexicon learned from the author's revisions)
 - `plantuml/` — PlantUML diagram authoring and maintenance
 - `project-management/` — project management workflows
