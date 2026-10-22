@@ -17,6 +17,7 @@ Runs on every push/PR to `main`. Requires `jq` and the OpenSpec CLI (or Node ≥
 | `validate-references.sh` | `references/` paths in SKILL.md resolve to existing files |
 | `validate-versions.sh` | every plugin.json version matches its marketplace.json entry; no orphan entries |
 | `validate-openspec.sh` | `openspec validate --all --strict` over `openspec/` (main specs and active changes) |
+| `test-kaizen-stop-gate.sh` | behavior of the kaizen Stop hook (`kaizen/hooks/stop-gate.sh`) on temp projects and transcripts; needs `git` |
 
 ## Layer 2: Skill Scenarios (manual)
 

@@ -8,7 +8,7 @@ This is a flat-at-root plugin marketplace following the convention used by Anthr
 
 - `context-hygiene/` — context hygiene for agentic projects (CLAUDE.md, rules, auto-memory)
 - `human-resources/` — HR workflow support
-- `kaizen/` — continuous improvement loops
+- `kaizen/` — session retrospective of the skills, rules and settings a session used (Stop hook + skill)
 - `personal-voice/` — personal writing voice (tone and lexicon learned from the author's revisions)
 - `plantuml/` — PlantUML diagram authoring and maintenance
 - `project-management/` — project management workflows
@@ -19,7 +19,7 @@ This is a flat-at-root plugin marketplace following the convention used by Anthr
 Every plugin must contain `.claude-plugin/plugin.json`. Components are discovered by convention:
 
 - **Skills** — `skills/*/SKILL.md`
-- **Agents** — `agents/*/AGENT.md`; restrict an agent's tools with `tools:` in its frontmatter (`allowed-tools:` is the skill/command key and has no effect in an agent)
+- **Agents** — `agents/*/AGENT.md`; restrict an agent's tools with `tools:` in its frontmatter (`allowed-tools:` is the skill/command key and has no effect in an agent); a directory-form agent is dispatched as `<plugin>:<dir>:<name>`, so skills should match the type by suffix rather than hardcode it
 - **Hooks** — `hooks/hooks.json`
 - **Commands** — `commands/*.md`
 

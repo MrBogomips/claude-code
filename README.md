@@ -8,7 +8,7 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 |--------|-------------|----------|
 | [context-hygiene](./context-hygiene) | Context hygiene for agentic projects — audit CLAUDE.md, rules and auto-memory for wrong, stale and redundant content; apply only authorized changes | Engineering |
 | [human-resources](./human-resources) | HR interview workflow — job descriptions, pre-screening, interview prep, evaluation, compliance | Human Resources |
-| [kaizen](./kaizen) | Continuous improvement loops — recursive optimization engine with profiles for Claude Code usage, refactoring, and process improvement | Engineering |
+| [kaizen](./kaizen) | Session retrospective — link a session's errors, reworks and ambiguities to the skills, rules and settings behind them; apply only authorized, reviewed fixes | Engineering |
 | [personal-voice](./personal-voice) | Personal writing voice — write in the author's tone and lexicon, learn from their revisions and own texts; maintain the profile only with per-item approval | Documentation |
 | [plantuml](./plantuml) | PlantUML diagrams — policy-driven authoring, rendering, lint, validate, review, advisor, and migrate | Documentation |
 | [project-management](./project-management) | SOW writing, review, estimation, and PMI-compliant PERT analysis — integrated project management pipeline | Operations |
@@ -70,8 +70,8 @@ Use this when a skill is project-specific — e.g. the `plantuml-*` skills on a 
 **Install globally for your user** (available in every project — lives in `~/.claude/skills/`):
 
 ```bash
-# Add the kaizen continuous-improvement skill everywhere, for Claude Code
-npx skills add MrBogomips/claude-code/kaizen --skill kaizen-engine -g -a claude-code
+# Add the kaizen session-retrospective skill everywhere, for Claude Code
+npx skills add MrBogomips/claude-code/kaizen --skill kaizen -g -a claude-code
 ```
 
 Use this for skills you want on hand everywhere, regardless of which repo you're in.
@@ -81,7 +81,7 @@ Handy follow-ups:
 ```bash
 npx skills list             # show installed skills (project + global)
 npx skills update           # update installed skills
-npx skills remove kaizen-engine -g   # remove a global skill
+npx skills remove kaizen -g   # remove a global skill
 ```
 
 > **Tip:** `npx skills` targets other agents too — add `-a cursor`, `-a codex`, `-a gemini`, etc. (or several at once) to install the same skill across the tools you use.
