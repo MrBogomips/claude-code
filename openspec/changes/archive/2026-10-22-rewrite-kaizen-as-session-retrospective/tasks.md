@@ -28,4 +28,4 @@
 
 - [x] 5.1 Review the diff with a code-review subagent (contradictions, minimization, repository conventions) and fix CRITICAL and HIGH findings; verify the re-review reports none
 - [x] 5.2 Run `bash tests/ci/run-structural-tests.sh` and `claude plugin validate ./kaizen --strict`; verify both pass
-- [ ] 5.3 Archive this change with `/opsx:archive` as the last commit before merge; verify `openspec/specs/kaizen/` holds only `session-gate`, `asset-attribution` and `proposal-apply`
+- [x] 5.3 Archive this change with `/opsx:archive` as the last commit before merge; verify `openspec/specs/kaizen/` holds only `session-gate`, `asset-attribution` and `proposal-apply`
