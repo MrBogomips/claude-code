@@ -16,8 +16,8 @@
 ## 3. Verify
 
 - [x] 3.1 Run `bash tests/ci/run-structural-tests.sh` and verify it passes
-- [ ] 3.2 Run the pre-PR Kaizen retrospective gate (more than 200 lines removed), propose its diffs to the user one by one, and commit only the accepted ones as `chore(kaizen): ...`; verify each diff got an explicit answer
-- [ ] 3.3 Archive this change with `/opsx:archive` as the last commit before merge; verify `openspec/specs/kaizen/` and `openspec/specs/personal-voice/` are gone and `openspec validate --all --strict` passes
+- [x] 3.2 Run the pre-PR Kaizen retrospective gate (more than 200 lines removed), propose its diffs to the user one by one, and commit only the accepted ones as `chore(kaizen): ...`; verify each diff got an explicit answer
+- [x] 3.3 Archive this change with `/opsx:archive` as the last commit before merge; verify `openspec/specs/kaizen/` and `openspec/specs/personal-voice/` are gone and `openspec validate --all --strict` passes
 
 ## Workflow follow-up
 
