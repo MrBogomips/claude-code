@@ -6,10 +6,10 @@ Thank you for your interest in contributing to the Claude Code plugins marketpla
 
 | Category | Directory | Description |
 |----------|-----------|-------------|
-| Engineering | `context-hygiene/`, `kaizen/` | Developer tooling, agentic context, continuous improvement |
+| Engineering | `context-hygiene/` | Developer tooling, agentic context |
 | Human Resources | `human-resources/` | HR workflows, recruiting, evaluation |
 | Operations | `project-management/` | Project management, estimation, reporting |
-| Documentation | `tech-writing/`, `personal-voice/` | Technical writing, style guides, content review, personal writing voice |
+| Documentation | `tech-writing/` | Technical writing, style guides, content review |
 
 ## Repository Structure
 

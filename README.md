@@ -8,8 +8,6 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 |--------|-------------|----------|
 | [context-hygiene](./context-hygiene) | Context hygiene for agentic projects — audit CLAUDE.md, rules and auto-memory for wrong, stale and redundant content; apply only authorized changes | Engineering |
 | [human-resources](./human-resources) | HR interview workflow — job descriptions, pre-screening, interview prep, evaluation, compliance | Human Resources |
-| [kaizen](./kaizen) | Session retrospective — link a session's errors, reworks and ambiguities to the skills, rules and settings behind them; apply only authorized, reviewed fixes | Engineering |
-| [personal-voice](./personal-voice) | Personal writing voice — write in the author's tone and lexicon, learn from their revisions and own texts; maintain the profile only with per-item approval | Documentation |
 | [plantuml](./plantuml) | PlantUML diagrams — policy-driven authoring, rendering, lint, validate, review, advisor, and migrate | Documentation |
 | [project-management](./project-management) | SOW writing, review, estimation, and PMI-compliant PERT analysis — integrated project management pipeline | Operations |
 | [tech-writing](./tech-writing) | Technical writing support — transform documents between internal and client-facing audiences | Documentation |
@@ -17,6 +15,14 @@ A curated collection of [Claude Code](https://claude.com/claude-code) plugins fo
 > **Retired:** the `developer-tools` plugin (devcontainer generator) was removed in marketplace 4.0.0. It remains available in this repository's git history.
 
 > **Moved:** the `agentic-harness` plugin now lives in its own repository — [MrBogomips/agentic-harness](https://github.com/MrBogomips/agentic-harness). If you installed it from this marketplace, re-add it from there.
+
+> **Moved:** the `kaizen` and `personal-voice` plugins now live in [MrBogomips/skills](https://github.com/MrBogomips/skills) and are listed in the `mrbogomips` marketplace. If you installed either from this marketplace, uninstall it and reinstall from there:
+>
+> ```
+> /plugin marketplace add MrBogomips/claude-plugins
+> /plugin install kaizen@mrbogomips
+> /plugin install personal-voice@mrbogomips
+> ```
 
 ## Installation
 
@@ -34,14 +40,14 @@ Add this marketplace, then install the plugins you want.
 claude plugin marketplace add MrBogomips/claude-code
 
 # 2. Install a plugin (the marketplace name is "mrbogomips-tools")
-claude plugin install kaizen@mrbogomips-tools
+claude plugin install context-hygiene@mrbogomips-tools
 ```
 
 Or, inside a Claude Code session, use the slash commands:
 
 ```
 /plugin marketplace add MrBogomips/claude-code
-/plugin install kaizen@mrbogomips-tools
+/plugin install context-hygiene@mrbogomips-tools
 ```
 
 Browse and manage everything interactively with `/plugin`.
@@ -70,8 +76,8 @@ Use this when a skill is project-specific — e.g. the `plantuml-*` skills on a 
 **Install globally for your user** (available in every project — lives in `~/.claude/skills/`):
 
 ```bash
-# Add the kaizen session-retrospective skill everywhere, for Claude Code
-npx skills add MrBogomips/claude-code/kaizen --skill kaizen -g -a claude-code
+# Add the context-hygiene skill everywhere, for Claude Code
+npx skills add MrBogomips/claude-code/context-hygiene --skill context-hygiene -g -a claude-code
 ```
 
 Use this for skills you want on hand everywhere, regardless of which repo you're in.
@@ -81,7 +87,7 @@ Handy follow-ups:
 ```bash
 npx skills list             # show installed skills (project + global)
 npx skills update           # update installed skills
-npx skills remove kaizen -g   # remove a global skill
+npx skills remove context-hygiene -g   # remove a global skill
 ```
 
 > **Tip:** `npx skills` targets other agents too — add `-a cursor`, `-a codex`, `-a gemini`, etc. (or several at once) to install the same skill across the tools you use.

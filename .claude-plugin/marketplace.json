@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A curated collection of Claude Code plugins for professional workflows",
-    "version": "4.0.1",
+    "version": "5.0.0",
     "license": "MIT"
   },
   "plugins": [
@@ -36,36 +36,6 @@
         "compliance",
         "evaluation",
         "job-description"
-      ]
-    },
-    {
-      "name": "kaizen",
-      "source": "./kaizen",
-      "description": "Session retrospective — links the errors, reworks and ambiguities of a session to the skills, rules, CLAUDE.md, memory, hooks and settings behind them, and applies only explicitly authorized, reviewed fixes to the project's own files",
-      "version": "2.0.0",
-      "category": "engineering",
-      "tags": [
-        "kaizen",
-        "retrospective",
-        "improvement",
-        "skills",
-        "claude-md",
-        "hooks"
-      ]
-    },
-    {
-      "name": "personal-voice",
-      "source": "./personal-voice",
-      "description": "Personal writing voice — writes documents, emails and messages in the author's tone and lexicon, learns from the author's revisions and own texts, and maintains the profile only with per-item approval",
-      "version": "0.2.0",
-      "category": "documentation",
-      "tags": [
-        "writing",
-        "voice",
-        "tone",
-        "style",
-        "lexicon",
-        "personalization"
       ]
     },
     {
